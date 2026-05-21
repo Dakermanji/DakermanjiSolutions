@@ -88,7 +88,13 @@
 	},
 	"middlewares": {
 		"profanity": ["customWords.js", "index.js"],
-		"validators": ["auth.js", "common.js", "social.js", "token.js", "weather.js"],
+		"validators": [
+			"auth.js",
+			"common.js",
+			"social.js",
+			"token.js",
+			"weather.js"
+		],
 		"~": [
 			"errorHandler.js",
 			"flash.js",
@@ -197,12 +203,9 @@
 						"main_ar.jpg",
 						"main_en.jpg",
 						"main_fr.jpg",
-						"test_1_ar.jpg",
-						"test_1_en.jpg",
-						"test_1_fr.jpg",
-						"test_2_ar.jpg",
-						"test_2_en.jpg",
-						"test_2_fr.jpg"
+						"city_search_ar.jpg",
+						"city_search_en.jpg",
+						"city_search_fr.jpg"
 					],
 					"under_construction": ["ar.png", "en.png", "fr.png"]
 				},
@@ -264,7 +267,12 @@
 		"i18n": ["locale.js"],
 		"social": ["live.js"],
 		"theme": ["preference.js"],
-		"weather": ["background.js", "forecast.js", "geocoding.js", "locations.js"]
+		"weather": [
+			"background.js",
+			"forecast.js",
+			"geocoding.js",
+			"locations.js"
+		]
 	},
 	"sql": [
 		"01_session.sql",

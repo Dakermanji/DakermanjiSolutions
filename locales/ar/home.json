@@ -132,7 +132,7 @@
 				"title": "تطبيق الطقس",
 				"description": "توقعات الطقس في الوقت الحقيقي باستخدام واجهات برمجة خارجية.",
 				"tech": ["Express", "EJS", "Weather API"],
-				"images": ["main", "test_1", "test_2"],
+				"images": ["main", "city_search"],
 				"link": "weather"
 			},
 			"chat_app": {

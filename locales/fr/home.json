@@ -132,7 +132,7 @@
 				"title": "Application Météo",
 				"description": "Prévisions météo en temps réel via des API externes.",
 				"tech": ["Express", "EJS", "Weather API"],
-				"images": ["main", "test_1", "test_2"],
+				"images": ["main", "city_search"],
 				"link": "weather"
 			},
 			"chat_app": {
