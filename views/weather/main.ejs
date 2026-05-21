@@ -59,8 +59,6 @@
 			<label class="visually-hidden" for="weather-city"><%= t('weather:search.city') %></label>
 			<input type="hidden" name="latitude" data-weather-latitude />
 			<input type="hidden" name="longitude" data-weather-longitude />
-			<input type="hidden" name="viewportWidth" data-weather-viewport-width />
-			<input type="hidden" name="viewportHeight" data-weather-viewport-height />
 			<div class="input-group">
 				<span class="input-group-text"><i class="bi bi-search"></i></span>
 				<input
@@ -75,6 +73,7 @@
 					data-weather-city-input
 				/>
 				<button
+					id='current-location'
 					class="btn btn-action-outline weather-current-location has-tooltip"
 					type="button"
 					data-weather-current-location

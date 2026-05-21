@@ -119,10 +119,19 @@ main.container:has(.weather-page) {
 	border-color: var(--border-soft);
 }
 
-.weather-current-location {
+#current-location {
 	width: 2.75rem;
 	flex: 0 0 auto;
 	padding-inline: 0;
+	border-top-right-radius: var(--bs-border-radius);
+	border-bottom-right-radius: var(--bs-border-radius);
+}
+
+[dir='rtl'] #current-location {
+	border-top-left-radius: var(--bs-border-radius);
+	border-bottom-left-radius: var(--bs-border-radius);
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
 }
 
 .weather-city-results {
@@ -193,6 +202,12 @@ main.container:has(.weather-page) {
 
 .weather-units .btn {
 	min-width: 5.8rem;
+}
+
+.btn-check + .btn:focus,
+.btn-check + .btn:hover {
+	background: var(--color-secondary-hover);
+	color: var(--color-text-body);
 }
 
 .weather-units .btn-check:checked + .btn {

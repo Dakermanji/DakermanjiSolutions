@@ -38,6 +38,13 @@ function normalizeViewportSize(value) {
 	return Math.min(Math.round(size), MAX_VIEWPORT_SIZE);
 }
 
+function getSessionViewport(req) {
+	return {
+		width: normalizeViewportSize(req.session?.weatherViewport?.width),
+		height: normalizeViewportSize(req.session?.weatherViewport?.height),
+	};
+}
+
 export function validateWeatherQuery(req, res, next) {
 	const latitude = parseCoordinate(req.query?.latitude);
 	const longitude = parseCoordinate(req.query?.longitude);
@@ -45,10 +52,7 @@ export function validateWeatherQuery(req, res, next) {
 	const hasLongitude =
 		req.query?.longitude !== undefined && req.query?.longitude !== '';
 	const unit = normalizeUnit(req.query?.unit);
-	const viewport = {
-		width: normalizeViewportSize(req.query?.viewportWidth),
-		height: normalizeViewportSize(req.query?.viewportHeight),
-	};
+	const viewport = getSessionViewport(req);
 
 	if (!hasLatitude && !hasLongitude) {
 		req.weather = { unit, viewport };

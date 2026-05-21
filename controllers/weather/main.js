@@ -22,6 +22,7 @@ const WEATHER_REQUEST_KEY = 'forecast';
 const BACKGROUND_PROVIDER = 'unsplash';
 const BACKGROUND_REQUEST_KEY = 'background';
 const WEATHER_REDIRECT = '/weather';
+const MAX_VIEWPORT_SIZE = 3840;
 
 const emptyLocation = {
 	city: '',
@@ -39,6 +40,27 @@ function renderWeatherView(req, res, { location = emptyLocation, forecastDays = 
 		unit: req.weather?.unit || 'metric',
 		forecastDays,
 	});
+}
+
+function normalizeViewportSize(value) {
+	const size = Number(value);
+
+	if (!Number.isFinite(size) || size <= 0) {
+		return null;
+	}
+
+	return Math.min(Math.round(size), MAX_VIEWPORT_SIZE);
+}
+
+export function saveWeatherViewport(req, res) {
+	const width = normalizeViewportSize(req.body?.width);
+	const height = normalizeViewportSize(req.body?.height);
+
+	if (width && height) {
+		req.session.weatherViewport = { width, height };
+	}
+
+	return res.sendStatus(204);
 }
 
 async function attachWeatherBackground(req, forecast) {

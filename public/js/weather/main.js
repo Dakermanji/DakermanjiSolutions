@@ -14,6 +14,7 @@ let citySearchTimer = null;
 let citySearchController = null;
 let activeCityIndex = -1;
 let renderedCities = [];
+let isSubmittingWeatherForm = false;
 
 function getLocale() {
 	return document.documentElement.lang || 'en';
@@ -45,16 +46,38 @@ function getLocationInputs(form) {
 	return {
 		latitude: form?.querySelector('[data-weather-latitude]'),
 		longitude: form?.querySelector('[data-weather-longitude]'),
-		viewportWidth: form?.querySelector('[data-weather-viewport-width]'),
-		viewportHeight: form?.querySelector('[data-weather-viewport-height]'),
 	};
 }
 
-function setViewportInputs(form) {
-	const { viewportWidth, viewportHeight } = getLocationInputs(form);
+async function saveViewport() {
+	const width = window.innerWidth;
+	const height = window.innerHeight;
 
-	if (viewportWidth) viewportWidth.value = String(window.innerWidth || '');
-	if (viewportHeight) viewportHeight.value = String(window.innerHeight || '');
+	if (!width || !height) {
+		return;
+	}
+
+	await fetch('/weather/viewport', {
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ width, height }),
+	});
+}
+
+async function submitWeatherForm(form) {
+	if (!form) return;
+
+	try {
+		await saveViewport();
+	} catch {
+		// Forecasts still work with the default background size.
+	}
+
+	isSubmittingWeatherForm = true;
+	form.submit();
 }
 
 function hideCityResults() {
@@ -95,7 +118,7 @@ function setActiveCity(index) {
 	options[activeCityIndex]?.scrollIntoView({ block: 'nearest' });
 }
 
-function selectCity(city) {
+async function selectCity(city) {
 	const form = getWeatherForm();
 	const inputs = getLocationInputs(form);
 
@@ -110,10 +133,9 @@ function selectCity(city) {
 
 	if (inputs.latitude) inputs.latitude.value = latitude;
 	if (inputs.longitude) inputs.longitude.value = longitude;
-	setViewportInputs(form);
 
 	hideCityResults();
-	form.requestSubmit();
+	await submitWeatherForm(form);
 }
 
 function getLocaleComma() {
@@ -303,7 +325,7 @@ if (currentLocationButton) {
 		currentLocationButton.setAttribute('aria-busy', 'true');
 
 		navigator.geolocation.getCurrentPosition(
-			(position) => {
+			async (position) => {
 				const latitude = parseCoordinate(position.coords.latitude);
 				const longitude = parseCoordinate(position.coords.longitude);
 
@@ -315,8 +337,7 @@ if (currentLocationButton) {
 
 				latitudeInput.value = latitude;
 				longitudeInput.value = longitude;
-				setViewportInputs(form);
-				form.requestSubmit();
+				await submitWeatherForm(form);
 			},
 			() => {
 				currentLocationButton.disabled = false;
@@ -334,8 +355,13 @@ if (currentLocationButton) {
 const weatherForm = getWeatherForm();
 
 if (weatherForm) {
-	weatherForm.addEventListener('submit', () => {
-		setViewportInputs(weatherForm);
+	weatherForm.addEventListener('submit', (event) => {
+		if (isSubmittingWeatherForm) {
+			return;
+		}
+
+		event.preventDefault();
+		submitWeatherForm(weatherForm);
 	});
 }
 
