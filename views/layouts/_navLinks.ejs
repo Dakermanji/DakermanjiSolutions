@@ -1,9 +1,10 @@
 <!--! views/layouts/_navLinks.ejs -->
-<% if (navbar.length > 0) { %>
-	<% navbar.forEach(nav => { %>
+<% const items = typeof navItems !== 'undefined' ? navItems : (typeof navbar !== 'undefined' ? navbar : []); %>
+<% if (items.length > 0) { %>
+	<% items.forEach(nav => { %>
 		<li class="nav-item">
 			<a
-            class="nav-link has-tooltip"
+            class="nav-link has-tooltip <%= currentRoute === nav.link ? 'active' : '' %>"
 			<%= nav.id ? `id="${nav.id}"` : '' %>
 			href="<%= nav.link %>"
 			aria-label="<%= t(nav.label) %>"

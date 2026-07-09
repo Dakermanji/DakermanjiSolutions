@@ -19,6 +19,7 @@
                 <% if (!user) { %>
                     <%- include('_navNotUser') %>
                 <% } else { %>
+                    <%- include('_navLinks', { navItems: typeof userAppsNavbar !== 'undefined' ? userAppsNavbar : [] }) %>
                     <%- include('_navUser') %>
                 <% } %>
                 <%- include('_navLang') %>

@@ -30,6 +30,9 @@ export const navbarMiddleware = (app) => {
 
 		// Expose navigation items to views
 		res.locals.navbar = Array.isArray(navbar[key]) ? navbar[key] : [];
+		res.locals.userAppsNavbar = Array.isArray(navbar.user_apps)
+			? navbar.user_apps
+			: [];
 
 		// Expose active navigation key for styling / state
 		res.locals.activeNavKey = key;

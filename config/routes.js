@@ -11,6 +11,7 @@ import { Router } from 'express';
 import homeRoutes from '../routes/home.js';
 import langRoutes from '../routes/lang.js';
 import authRoutes from '../routes/auth.js';
+import chatRoutes from '../routes/chat.js';
 import socialRoutes from '../routes/social.js';
 import profileRoutes from '../routes/profile.js';
 import themeRoutes from '../routes/theme.js';
@@ -27,6 +28,9 @@ router.use('/language', langRoutes);
 
 // Auth routes
 router.use('/auth', authRoutes);
+
+// Chat routes
+router.use('/chat', chatRoutes);
 
 // Social routes
 router.use('/social', socialRoutes);

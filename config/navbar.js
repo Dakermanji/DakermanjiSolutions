@@ -12,6 +12,18 @@
  */
 
 export const navbar = {
+	user_apps: [
+		{
+			link: '/chat',
+			label: 'nav.chat',
+			icon: 'bi-chat-dots-fill',
+		},
+		{
+			link: '/weather',
+			label: 'nav.weather',
+			icon: 'bi-cloud-sun-fill',
+		},
+	],
 	index: [
 		{
 			link: '#about',

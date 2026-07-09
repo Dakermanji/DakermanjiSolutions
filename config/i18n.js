@@ -33,6 +33,7 @@ const NAME_SPACES = [
 	'auth',
 	'home',
 	'common',
+	'chat',
 	'social',
 	'profile',
 	'weather',
