@@ -11,12 +11,17 @@ if (usernameEditor) {
 	const originalUsername = input?.value || '';
 
 	function setEditing(isEditing) {
+		window.AppTooltips?.reset(editButton);
+		window.AppTooltips?.reset(cancelButton);
+
 		display?.classList.toggle('d-none', isEditing);
 		form?.classList.toggle('d-none', !isEditing);
 
 		if (isEditing) {
 			input?.focus();
 			input?.select();
+		} else {
+			window.AppTooltips?.initIn(usernameEditor);
 		}
 	}
 
@@ -114,12 +119,7 @@ if (countryEditor) {
 	function initDynamicTooltips(scope) {
 		if (!window.bootstrap?.Tooltip) return;
 
-		scope.querySelectorAll('.has-tooltip').forEach((element) => {
-			bootstrap.Tooltip.getOrCreateInstance(element, {
-				trigger: 'hover',
-				delay: { show: 1000, hide: 0 },
-			});
-		});
+		window.AppTooltips?.initIn(scope);
 	}
 
 	async function loadEditor() {
@@ -147,8 +147,10 @@ if (countryEditor) {
 
 			const cancelButton = target.querySelector('[data-country-cancel]');
 			cancelButton?.addEventListener('click', () => {
+				window.AppTooltips?.reset(cancelButton);
 				display?.classList.remove('d-none');
 				target.classList.add('d-none');
+				window.AppTooltips?.initIn(countryEditor);
 			});
 		} finally {
 			editButton.disabled = false;
@@ -156,6 +158,7 @@ if (countryEditor) {
 	}
 
 	editButton?.addEventListener('click', async () => {
+		window.AppTooltips?.reset(editButton);
 		await loadEditor();
 		display?.classList.add('d-none');
 		target?.classList.remove('d-none');

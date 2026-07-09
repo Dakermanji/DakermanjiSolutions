@@ -68,6 +68,19 @@ function hideAllTooltips() {
 }
 
 /**
+ * Fully removes a tooltip instance from one element.
+ * Useful before hiding/replacing the trigger element.
+ *
+ * @param {Element|null|undefined} el
+ */
+function resetTooltip(el) {
+	if (!el) return;
+
+	const instance = bootstrap.Tooltip.getInstance(el);
+	instance?.dispose();
+}
+
+/**
  * Initializes Bootstrap tooltips within a given DOM scope.
  *
  * Rules:
@@ -133,3 +146,9 @@ initTooltipsIn(document);
 
 // Update responsive-container tooltips on resize
 window.addEventListener('resize', updateResponsiveTooltipState);
+
+window.AppTooltips = {
+	hideAll: hideAllTooltips,
+	initIn: initTooltipsIn,
+	reset: resetTooltip,
+};
