@@ -4,6 +4,7 @@ import UserBlocksModel from '../../models/UserBlocks.js';
 import UserFollowRequestsModel from '../../models/UserFollowRequests.js';
 import UserFollowsModel from '../../models/UserFollows.js';
 import UserSocialNotificationsModel from '../../models/UserSocialNotifications.js';
+import { ensureFriendConversationIfMutual } from '../../services/chat/friends.js';
 import {
 	getFollowRequestActorId,
 	getFollowRequestId,
@@ -74,6 +75,10 @@ export async function runSocialAction(context) {
 		}
 
 		await UserFollowsModel.create(effectiveTargetUserId, actorId);
+		await ensureFriendConversationIfMutual(
+			actorId,
+			effectiveTargetUserId,
+		);
 
 		if (notificationId) {
 			await markNotificationHandled(notificationId, actorId);
@@ -136,6 +141,11 @@ export async function runSocialAction(context) {
 		if (effectiveFollowRequestId) {
 			await UserFollowsModel.create(effectiveTargetUserId, actorId);
 		}
+
+		await ensureFriendConversationIfMutual(
+			actorId,
+			effectiveTargetUserId,
+		);
 
 		if (notificationId) {
 			await markNotificationHandled(notificationId, actorId);
@@ -309,6 +319,7 @@ async function requestFollowAfterUnblock(requesterId, targetId) {
 
 		await UserFollowsModel.create(targetId, requesterId);
 		await UserFollowsModel.create(requesterId, targetId);
+		await ensureFriendConversationIfMutual(requesterId, targetId);
 		await UserSocialNotificationsModel.markFollowRequestNotificationsAsReadAndHandled(
 			targetPendingRequest.id,
 			requesterId,
@@ -329,6 +340,7 @@ async function requestFollowAfterUnblock(requesterId, targetId) {
 	);
 	if (targetAlreadyFollowingRequester) {
 		const followed = await UserFollowsModel.create(requesterId, targetId);
+		await ensureFriendConversationIfMutual(requesterId, targetId);
 		if (followed) {
 			await UserSocialNotificationsModel.create({
 				recipientId: targetId,

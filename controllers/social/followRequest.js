@@ -5,6 +5,7 @@ import UserBlocksModel from '../../models/UserBlocks.js';
 import UserFollowsModel from '../../models/UserFollows.js';
 import UserFollowRequestsModel from '../../models/UserFollowRequests.js';
 import UserSocialNotificationsModel from '../../models/UserSocialNotifications.js';
+import { ensureFriendConversationIfMutual } from '../../services/chat/friends.js';
 import { emitSocialCountsChanged } from '../../services/social/live.js';
 import { fail, success } from '../../services/http/response.js';
 
@@ -132,6 +133,7 @@ export async function followRequest(req, res, next) {
 
 			await UserFollowsModel.create(receiverId, senderId);
 			await UserFollowsModel.create(senderId, receiverId);
+			await ensureFriendConversationIfMutual(senderId, receiverId);
 			await UserSocialNotificationsModel.markFollowRequestNotificationsAsReadAndHandled(
 				receiverPendingRequest.id,
 				senderId,
@@ -159,6 +161,7 @@ export async function followRequest(req, res, next) {
 		);
 		if (receiverAlreadyFollowingSender) {
 			await UserFollowsModel.create(senderId, receiverId);
+			await ensureFriendConversationIfMutual(senderId, receiverId);
 
 			await UserSocialNotificationsModel.create({
 				recipientId: receiverId,
