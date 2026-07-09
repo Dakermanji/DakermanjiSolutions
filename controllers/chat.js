@@ -10,5 +10,6 @@
 export function renderChat(req, res) {
 	res.render('chat/main', {
 		titleKey: 'chat:title',
+		styles: ['chat/main'],
 	});
 }

@@ -1,4 +1,25 @@
 {
 	"title": "Chat",
-	"empty": "Le chat arrive bientôt."
+	"kicker": "Messages",
+	"status": "Prêt pour les conversations",
+	"count": "{{count}}",
+	"selfChat": "Notes",
+	"createRoom": "Créer un salon",
+	"sections": {
+		"friends": {
+			"title": "Amis",
+			"description": "Discussions directes avec les abonnements mutuels.",
+			"empty": "Les discussions entre amis apparaîtront ici."
+		},
+		"privateRooms": {
+			"title": "Salons privés",
+			"description": "Salons sur invitation gérés par des admins.",
+			"empty": "Les salons privés apparaîtront ici."
+		},
+		"publicRooms": {
+			"title": "Salons publics",
+			"description": "Salons ouverts avec modération admin.",
+			"empty": "Les salons publics apparaîtront ici."
+		}
+	}
 }

@@ -1,5 +1,108 @@
 <!--! views/chat/main.ejs -->
-<section class="container py-4" aria-labelledby="chat-title">
-	<h1 id="chat-title"><%= t('chat:title') %></h1>
-	<p class="text-body-secondary mb-0"><%= t('chat:empty') %></p>
+<%
+	const sections = [
+		{
+			id: 'friends',
+			icon: 'bi-person-hearts',
+			count: 0,
+			expanded: true,
+			canOpenSelfChat: true,
+		},
+		{
+			id: 'privateRooms',
+			icon: 'bi-shield-lock-fill',
+			count: 0,
+			expanded: false,
+			canCreateRoom: true,
+		},
+		{
+			id: 'publicRooms',
+			icon: 'bi-megaphone-fill',
+			count: 0,
+			expanded: false,
+			canCreateRoom: true,
+		},
+	];
+%>
+
+<section class="chat-page" aria-labelledby="chat-title">
+	<header class="chat-header">
+		<div>
+			<p class="chat-kicker"><%= t('chat:kicker') %></p>
+			<h1 id="chat-title"><%= t('chat:title') %></h1>
+		</div>
+		<div class="chat-status" aria-label="<%= t('chat:status') %>">
+			<i class="bi bi-broadcast" aria-hidden="true"></i>
+			<span><%= t('chat:status') %></span>
+		</div>
+	</header>
+
+	<div class="accordion chat-accordion" id="chatSections">
+		<% sections.forEach((section) => { %>
+			<%
+				const title = t(`chat:sections.${section.id}.title`);
+				const description = t(`chat:sections.${section.id}.description`);
+				const empty = t(`chat:sections.${section.id}.empty`);
+				const headingId = `chat-${section.id}-heading`;
+				const panelId = `chat-${section.id}-panel`;
+			%>
+			<article class="accordion-item chat-section">
+				<h2 class="accordion-header chat-section-header" id="<%= headingId %>">
+					<button
+						class="accordion-button <%= section.expanded ? '' : 'collapsed' %>"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#<%= panelId %>"
+						aria-expanded="<%= section.expanded ? 'true' : 'false' %>"
+						aria-controls="<%= panelId %>"
+					>
+						<span class="chat-section-icon">
+							<i class="bi <%= section.icon %>" aria-hidden="true"></i>
+						</span>
+						<span class="chat-section-heading">
+							<span><%= title %></span>
+							<small><%= description %></small>
+						</span>
+					</button>
+					<span class="chat-section-count">
+						<%= t('chat:count', { count: section.count }) %>
+					</span>
+					<% if (section.canOpenSelfChat) { %>
+						<button
+							class="btn btn-action-outline chat-header-action has-tooltip"
+							type="button"
+							data-bs-title="<%= t('chat:selfChat') %>"
+							aria-label="<%= t('chat:selfChat') %>"
+						>
+							<i class="bi bi-journal-text" aria-hidden="true"></i>
+						</button>
+					<% } %>
+					<% if (section.canCreateRoom) { %>
+						<button
+							class="btn btn-action-outline chat-header-action has-tooltip"
+							type="button"
+							data-bs-title="<%= t('chat:createRoom') %>"
+							aria-label="<%= t('chat:createRoom') %>"
+						>
+							<i class="bi bi-plus-lg" aria-hidden="true"></i>
+						</button>
+					<% } %>
+
+				</h2>
+				<div
+					id="<%= panelId %>"
+					class="accordion-collapse collapse <%= section.expanded ? 'show' : '' %>"
+					aria-labelledby="<%= headingId %>"
+					data-bs-parent="#chatSections"
+				>
+					<div class="accordion-body">
+						<div class="chat-empty-state">
+							<i class="bi <%= section.icon %>" aria-hidden="true"></i>
+							<p><%= empty %></p>
+						</div>
+					</div>
+				</div>
+			</article>
+		<% }) %>
+	</div>
 </section>

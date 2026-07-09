@@ -1,4 +1,25 @@
 {
 	"title": "Chat",
-	"empty": "Chat is coming soon."
+	"kicker": "Messages",
+	"status": "Ready for conversations",
+	"count": "{{count}}",
+	"selfChat": "Notes",
+	"createRoom": "Create room",
+	"sections": {
+		"friends": {
+			"title": "Friends",
+			"description": "Direct chats with mutual followers.",
+			"empty": "Friend chats will appear here."
+		},
+		"privateRooms": {
+			"title": "Private rooms",
+			"description": "Invite-only rooms managed by admins.",
+			"empty": "Private rooms will appear here."
+		},
+		"publicRooms": {
+			"title": "Public rooms",
+			"description": "Open rooms with admin moderation.",
+			"empty": "Public rooms will appear here."
+		}
+	}
 }

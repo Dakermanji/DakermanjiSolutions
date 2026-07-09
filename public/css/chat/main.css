@@ -1,0 +1,198 @@
+/*! public/css/chat/main.css */
+
+.chat-page {
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 2rem 0 3rem;
+}
+
+.chat-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+.chat-kicker {
+	margin: 0 0 0.25rem;
+	color: var(--color-primary);
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.chat-header h1 {
+	margin: 0;
+	color: var(--color-text-heading);
+}
+
+.chat-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	min-height: 2.5rem;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-muted);
+	background: var(--bg-section);
+	white-space: nowrap;
+}
+
+.chat-status i {
+	color: var(--color-secondary);
+}
+
+.chat-accordion {
+	display: grid;
+	gap: 0.75rem;
+}
+
+.chat-section {
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	overflow: hidden;
+	background: var(--bg-section);
+	box-shadow: var(--shadow-card);
+}
+
+.chat-section-header {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto auto;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 1rem;
+	background: var(--bg-section);
+}
+
+.chat-section .accordion-button {
+	display: grid;
+	grid-template-columns: 2.5rem minmax(0, 1fr) 1.25rem;
+	gap: 0.75rem;
+	padding: 0;
+	color: var(--color-text-body);
+	background: transparent;
+	box-shadow: none;
+}
+
+.chat-section .accordion-button:not(.collapsed) {
+	color: var(--color-text-body);
+	background: transparent;
+}
+
+.chat-section:has(.accordion-button:not(.collapsed)) .chat-section-header {
+	background: var(--bg-card-muted);
+}
+
+.chat-section .accordion-button:focus {
+	box-shadow: 0 0 0 0.2rem var(--color-secondary-alpha);
+}
+
+.chat-section-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 2.5rem;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: var(--radius-sm);
+	color: var(--color-text-inverse);
+	background: var(--color-secondary);
+}
+
+.chat-section-heading {
+	display: grid;
+	gap: 0.15rem;
+	min-width: 0;
+	text-align: start;
+}
+
+.chat-section-heading span {
+	font-weight: 700;
+}
+
+.chat-section-heading small {
+	color: var(--color-text-muted);
+	font-weight: 400;
+}
+
+.chat-section-count {
+	padding: 0.05rem 0.4rem;
+	font-size: 2rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-muted);
+	background: var(--bg-card);
+	font-weight: 700;
+}
+
+.chat-header-action {
+	width: 2.4rem;
+	height: 2.4rem;
+	padding: 0;
+	border-radius: var(--radius-sm);
+}
+
+.chat-header-action i {
+	font-size: 1rem;
+}
+
+.chat-section .accordion-body {
+	padding: 1rem;
+	background: var(--bg-section);
+}
+
+.chat-empty-state {
+	display: grid;
+	justify-items: center;
+	gap: 0.75rem;
+	padding: 2rem 1rem;
+	border: 1px dashed var(--border-soft);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-muted);
+	background: var(--bg-card-muted);
+	text-align: center;
+}
+
+.chat-empty-state > i {
+	color: var(--color-primary);
+	font-size: 2rem;
+}
+
+.chat-empty-state p {
+	margin: 0;
+}
+
+.chat-empty-state .btn {
+	min-width: 9rem;
+}
+
+@media (max-width: 575.98px) {
+	.chat-page {
+		padding-top: 1rem;
+	}
+
+	.chat-header {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.chat-status {
+		width: 100%;
+		justify-content: center;
+		white-space: normal;
+	}
+
+	.chat-section .accordion-button {
+		align-items: flex-start;
+		grid-template-columns: 2.5rem minmax(0, 1fr) 1.25rem;
+	}
+
+	.chat-section-count {
+		margin-top: 0.25rem;
+	}
+}
