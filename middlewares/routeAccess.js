@@ -21,7 +21,6 @@ const PUBLIC_PREFIXES = [
 	'/auth/discord',
 	'/avatar',
 	'/language',
-	'/weather',
 ];
 
 const ASSET_PATH_PATTERN = /\.[a-z0-9]+$/i;
