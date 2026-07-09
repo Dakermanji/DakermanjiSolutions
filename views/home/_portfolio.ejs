@@ -15,35 +15,38 @@
 					<%
 						if (!item) return;
 
-						const images = Array.isArray(item.images) && item.images.length
-							? item.images
-							: ['main'];
+						const images = item.images && typeof item.images === 'object' && !Array.isArray(item.images)
+							? Object.entries(item.images)
+							: [];
+						const imageEntries = images.length
+							? images
+							: [['main', item.title]];
 					%>
 
 					<div class="col-12 col-md-6 col-lg-4 col-xl-3 portfolio-item">
 						<article
 							class="card h-100 border-0 div-2"
 							data-project="<%= key %>"
-							data-images-count="<%= images.length %>"
+							data-images-count="<%= imageEntries.length %>"
 						>
 							<div
 								class="portfolio-media position-relative overflow-hidden"
-								data-slides="<%= images.length %>"
+								data-slides="<%= imageEntries.length %>"
 								data-interval="2200"
 							>
-								<% images.forEach((imageName, index) => { %>
+								<% imageEntries.forEach(([imageName, imageAlt], index) => { %>
 									<img
 										src="/images/home/portfolio/<%= key %>/<%= imageName %>_<%= currentLang %>.jpg"
 										class="portfolio-image <%= index === 0 ? 'active' : '' %>"
-										alt="<%= item.title %> - <%= imageName.replaceAll('_', ' ') %>"
+										alt="<%= imageAlt %>"
 										loading="lazy"
 										<%= index === 0 ? '' : 'aria-hidden="true"' %>
 									/>
 								<% }) %>
 
-								<% if (images.length > 1) { %>
+								<% if (imageEntries.length > 1) { %>
 									<div class="portfolio-dots" aria-hidden="true">
-										<% images.forEach((_, index) => { %>
+										<% imageEntries.forEach((_, index) => { %>
 											<span
 												class="portfolio-dot <%= index === 0 ? 'active' : '' %>"
 												data-slide-index="<%= index %>"

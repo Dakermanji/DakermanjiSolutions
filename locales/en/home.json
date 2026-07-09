@@ -132,28 +132,37 @@
 				"title": "Weather App",
 				"description": "Real-time weather forecasts using external APIs.",
 				"tech": ["Express", "EJS", "Weather API"],
-				"images": ["main", "city_search"],
+				"images": {
+					"main": "Screenshot of the weather app showing Toronto weather",
+					"city_search": "Screenshot of the weather app city search for Toronto"
+				},
 				"link": "weather"
 			},
 			"chat_app": {
 				"title": "Chat App",
 				"description": "Real-time messaging with authentication and sockets.",
 				"tech": ["Express", "Socket.io", "MySQL", "Bcrypt"],
-				"images": ["main"],
+				"images": {
+					"main": "Screenshot of the chat app"
+				},
 				"link": "chat_app"
 			},
 			"visited_countries": {
 				"title": "Visited Countries",
 				"description": "Track and manage visited countries with user accounts.",
 				"tech": ["Express", "MySQL", "Bcrypt", "Nodemailer"],
-				"images": ["main"],
+				"images": {
+					"main": "Screenshot of the visited countries app"
+				},
 				"link": "visited_countries"
 			},
 			"book_reviews": {
 				"title": "Book Reviews",
 				"description": "Search and review books using external APIs.",
 				"tech": ["MySQL", "OpenLibrary API"],
-				"images": ["main"],
+				"images": {
+					"main": "Screenshot of the book reviews app"
+				},
 				"link": "books"
 			}
 		},

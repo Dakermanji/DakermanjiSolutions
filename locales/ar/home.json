@@ -132,28 +132,37 @@
 				"title": "تطبيق الطقس",
 				"description": "توقعات الطقس في الوقت الحقيقي باستخدام واجهات برمجة خارجية.",
 				"tech": ["Express", "EJS", "Weather API"],
-				"images": ["main", "city_search"],
+				"images": {
+					"main": "لقطة شاشة لتطبيق الطقس تعرض طقس دبي",
+					"city_search": "لقطة شاشة لبحث المدينة عن دبي في تطبيق الطقس"
+				},
 				"link": "weather"
 			},
 			"chat_app": {
 				"title": "تطبيق الدردشة",
 				"description": "مراسلة فورية مع نظام تسجيل دخول واستخدام WebSockets.",
 				"tech": ["Express", "Socket.io", "MySQL", "Bcrypt"],
-				"images": ["main"],
+				"images": {
+					"main": "لقطة شاشة لتطبيق الدردشة"
+				},
 				"link": "chat_app"
 			},
 			"visited_countries": {
 				"title": "الدول التي زرتها",
 				"description": "تتبع وإدارة الدول التي تمت زيارتها مع حسابات المستخدمين.",
 				"tech": ["Express", "MySQL", "Bcrypt", "Nodemailer"],
-				"images": ["main"],
+				"images": {
+					"main": "لقطة شاشة لتطبيق الدول التي زرتها"
+				},
 				"link": "visited_countries"
 			},
 			"book_reviews": {
 				"title": "مراجعات الكتب",
 				"description": "البحث عن الكتب وكتابتها مراجعات باستخدام واجهات برمجة خارجية.",
 				"tech": ["MySQL", "OpenLibrary API"],
-				"images": ["main"],
+				"images": {
+					"main": "لقطة شاشة لتطبيق مراجعات الكتب"
+				},
 				"link": "books"
 			}
 		},

@@ -132,28 +132,37 @@
 				"title": "Application Météo",
 				"description": "Prévisions météo en temps réel via des API externes.",
 				"tech": ["Express", "EJS", "Weather API"],
-				"images": ["main", "city_search"],
+				"images": {
+					"main": "Capture d’écran de l’application météo affichant la météo de Toronto",
+					"city_search": "Capture d’écran de la recherche de ville pour Toronto dans l’application météo"
+				},
 				"link": "weather"
 			},
 			"chat_app": {
 				"title": "Application de Chat",
 				"description": "Messagerie en temps réel avec authentification et sockets.",
 				"tech": ["Express", "Socket.io", "MySQL", "Bcrypt"],
-				"images": ["main"],
+				"images": {
+					"main": "Capture d’écran de l’application de chat"
+				},
 				"link": "chat_app"
 			},
 			"visited_countries": {
 				"title": "Pays Visités",
 				"description": "Suivi et gestion des pays visités avec comptes utilisateurs.",
 				"tech": ["Express", "MySQL", "Bcrypt", "Nodemailer"],
-				"images": ["main"],
+				"images": {
+					"main": "Capture d’écran de l’application des pays visités"
+				},
 				"link": "visited_countries"
 			},
 			"book_reviews": {
 				"title": "Avis sur les Livres",
 				"description": "Recherche et évaluation de livres via des API externes.",
 				"tech": ["MySQL", "OpenLibrary API"],
-				"images": ["main"],
+				"images": {
+					"main": "Capture d’écran de l’application d’avis sur les livres"
+				},
 				"link": "books"
 			}
 		},
