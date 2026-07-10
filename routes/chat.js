@@ -3,6 +3,7 @@
 import { Router } from 'express';
 import {
 	closeChatConversation,
+	createChatMessage,
 	getFriendChats,
 	openChatConversation,
 	renderChat,
@@ -14,5 +15,6 @@ router.get('/', renderChat);
 router.get('/friends', getFriendChats);
 router.post('/open', openChatConversation);
 router.post('/close', closeChatConversation);
+router.post('/messages', createChatMessage);
 
 export default router;

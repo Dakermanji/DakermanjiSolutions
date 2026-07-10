@@ -15,8 +15,9 @@
 	"conversation": {
 		"empty": "No messages yet.",
 		"composer": "Message composer",
-		"placeholder": "Messages are coming soon.",
-		"send": "Send"
+		"placeholder": "Write a message...",
+		"send": "Send",
+		"messageError": "Could not send this message."
 	},
 	"sections": {
 		"friends": {

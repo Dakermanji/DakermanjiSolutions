@@ -15,8 +15,9 @@
 	"conversation": {
 		"empty": "لا توجد رسائل بعد.",
 		"composer": "مربع كتابة الرسالة",
-		"placeholder": "الرسائل قادمة قريبًا.",
-		"send": "إرسال"
+		"placeholder": "اكتب رسالة...",
+		"send": "إرسال",
+		"messageError": "تعذر إرسال هذه الرسالة."
 	},
 	"sections": {
 		"friends": {

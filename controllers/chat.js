@@ -5,6 +5,7 @@ import {
 	getOpenFriendConversation,
 	listFriendConversations,
 } from '../services/chat/friends.js';
+import { createFriendMessage } from '../services/chat/messages.js';
 import { isValidUuid } from '../middlewares/validators/common.js';
 
 const CHAT_REDIRECT = '/chat';
@@ -123,4 +124,36 @@ export function closeChatConversation(req, res) {
 	};
 
 	return res.redirect(CHAT_REDIRECT);
+}
+
+/**
+ * Create a message in the active friend conversation.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function createChatMessage(req, res, next) {
+	const activeConversationId = req.session.chat?.activeConversationId || null;
+
+	if (!activeConversationId || !isValidUuid(activeConversationId)) {
+		return res.redirect(CHAT_REDIRECT);
+	}
+
+	try {
+		const message = await createFriendMessage({
+			conversationId: activeConversationId,
+			senderUserId: req.user.id,
+			body: req.body?.message,
+		});
+
+		if (!message) {
+			req.flash('error', 'chat:conversation.messageError');
+		}
+
+		return res.redirect(CHAT_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
 }
