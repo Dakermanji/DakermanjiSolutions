@@ -5,6 +5,12 @@
 	"count": "{{count}}",
 	"selfChat": "ملاحظات",
 	"createRoom": "إنشاء غرفة",
+	"openChat": "فتح الدردشة",
+	"friendFallback": "صديق",
+	"states": {
+		"loading": "جارٍ تحميل الدردشات...",
+		"error": "تعذر تحميل الدردشات. يرجى المحاولة مرة أخرى."
+	},
 	"sections": {
 		"friends": {
 			"title": "الأصدقاء",

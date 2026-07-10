@@ -141,6 +141,7 @@ export async function findFriendConversationsForUser(userId) {
 			cc.id AS conversation_id,
 			cc.last_message_id,
 			cc.updated_at,
+			lm.created_at AS last_message_created_at,
 			friend.id AS friend_id,
 			friend.username AS friend_username,
 			friend.email AS friend_email,
@@ -155,6 +156,8 @@ export async function findFriendConversationsForUser(userId) {
 				WHEN cdc.user_one_id = $1 THEN cdc.user_two_id
 				ELSE cdc.user_one_id
 			END
+		LEFT JOIN chat_messages lm
+			ON lm.id = cc.last_message_id
 		WHERE (cdc.user_one_id = $1 OR cdc.user_two_id = $1)
 			AND cdc.user_one_id <> cdc.user_two_id
 			AND EXISTS (
@@ -175,7 +178,10 @@ export async function findFriendConversationsForUser(userId) {
 				WHERE (ub.blocker_id = $1 AND ub.blocked_id = friend.id)
 					OR (ub.blocker_id = friend.id AND ub.blocked_id = $1)
 			)
-		ORDER BY cc.updated_at DESC;
+		ORDER BY
+			(lm.id IS NULL) ASC,
+			lm.created_at DESC,
+			LOWER(COALESCE(friend.username, friend.email)) ASC;
 	`;
 
 	return queryRows(q, [userId, FRIEND_CONVERSATION_TYPE]);

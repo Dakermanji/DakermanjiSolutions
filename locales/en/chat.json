@@ -5,6 +5,12 @@
 	"count": "{{count}}",
 	"selfChat": "Notes",
 	"createRoom": "Create room",
+	"openChat": "Open chat",
+	"friendFallback": "Friend",
+	"states": {
+		"loading": "Loading chats...",
+		"error": "Could not load chats. Please try again."
+	},
 	"sections": {
 		"friends": {
 			"title": "Friends",

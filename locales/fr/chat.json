@@ -5,6 +5,12 @@
 	"count": "{{count}}",
 	"selfChat": "Notes",
 	"createRoom": "Créer un salon",
+	"openChat": "Ouvrir le chat",
+	"friendFallback": "Ami",
+	"states": {
+		"loading": "Chargement des chats...",
+		"error": "Impossible de charger les chats. Veuillez réessayer."
+	},
 	"sections": {
 		"friends": {
 			"title": "Amis",

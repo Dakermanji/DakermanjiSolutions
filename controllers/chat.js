@@ -13,6 +13,7 @@ export function renderChat(req, res) {
 	res.render('chat/main', {
 		titleKey: 'chat:title',
 		styles: ['chat/main'],
+		scripts: ['chat/main'],
 	});
 }
 
@@ -28,6 +29,7 @@ export async function getFriendChats(req, res, next) {
 	try {
 		const conversations = await listFriendConversations(req.user.id);
 		return res.json({
+			ok: true,
 			conversations,
 		});
 	} catch (error) {
