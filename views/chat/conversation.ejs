@@ -1,0 +1,69 @@
+<!--! views/chat/conversation.ejs -->
+<%
+	const friend = activeConversation.friend || {};
+	const conversation = activeConversation.conversation || {};
+	const friendName =
+		friend.username ||
+		friend.email ||
+		t('chat:friendFallback');
+%>
+
+<section
+	class="chat-page chat-conversation-page"
+	aria-labelledby="chat-conversation-title"
+	data-active-conversation-id="<%= conversation.id %>"
+>
+	<header class="chat-conversation-header">
+		<form method="POST" action="/chat/close" class="chat-back-form">
+			<button
+				class="btn btn-action-outline chat-back-button has-tooltip"
+				type="submit"
+				data-bs-title="<%= t('chat:backToChats') %>"
+				aria-label="<%= t('chat:backToChats') %>"
+			>
+				<i class="bi bi-arrow-left" aria-hidden="true"></i>
+			</button>
+		</form>
+
+		<span
+			class="chat-conversation-avatar"
+			style="background-color: <%= friend.avatar?.background || '' %>;"
+			aria-hidden="true"
+		>
+			<% if (friend.avatar?.src) { %>
+				<img src="<%= friend.avatar.src %>" alt="" />
+			<% } else { %>
+				<%= friendName.slice(0, 1).toUpperCase() %>
+			<% } %>
+		</span>
+
+		<div class="chat-conversation-title">
+			<p class="chat-kicker"><%= t('chat:sections.friends.title') %></p>
+			<h1 id="chat-conversation-title"><%= friendName %></h1>
+		</div>
+	</header>
+
+	<div class="chat-message-surface" aria-live="polite">
+		<div class="chat-empty-state">
+			<i class="bi bi-chat-dots" aria-hidden="true"></i>
+			<p><%= t('chat:conversation.empty') %></p>
+		</div>
+	</div>
+
+	<form class="chat-composer" aria-label="<%= t('chat:conversation.composer') %>">
+		<input
+			class="form-control"
+			type="text"
+			placeholder="<%= t('chat:conversation.placeholder') %>"
+			disabled
+		/>
+		<button
+			class="btn btn-action-secondary"
+			type="button"
+			disabled
+		>
+			<i class="bi bi-send" aria-hidden="true"></i>
+			<span class="visually-hidden"><%= t('chat:conversation.send') %></span>
+		</button>
+	</form>
+</section>

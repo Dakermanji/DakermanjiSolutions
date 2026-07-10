@@ -85,8 +85,18 @@ function createFriendChatItem(item) {
 		friendsBody.dataset.friendFallbackLabel ||
 		'Friend';
 
+	const form = document.createElement('form');
+	form.className = 'chat-friend-form';
+	form.method = 'POST';
+	form.action = friendsBody.dataset.openUrl || '/chat/open';
+
+	const input = document.createElement('input');
+	input.type = 'hidden';
+	input.name = 'conversationId';
+	input.value = conversation.id || '';
+
 	const button = document.createElement('button');
-	button.type = 'button';
+	button.type = 'submit';
 	button.className = 'chat-friend-item';
 	button.dataset.conversationId = conversation.id || '';
 	button.setAttribute('aria-label', `${friendsBody.dataset.openLabel}: ${friendName}`);
@@ -123,7 +133,9 @@ function createFriendChatItem(item) {
 
 	button.append(avatar, content, icon);
 
-	return button;
+	form.append(input, button);
+
+	return form;
 }
 
 function updateFriendsCount(count) {

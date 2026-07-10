@@ -6,10 +6,17 @@
 	"selfChat": "Notes",
 	"createRoom": "Create room",
 	"openChat": "Open chat",
+	"backToChats": "Back to chats",
 	"friendFallback": "Friend",
 	"states": {
 		"loading": "Loading chats...",
 		"error": "Could not load chats. Please try again."
+	},
+	"conversation": {
+		"empty": "No messages yet.",
+		"composer": "Message composer",
+		"placeholder": "Messages are coming soon.",
+		"send": "Send"
 	},
 	"sections": {
 		"friends": {

@@ -6,10 +6,17 @@
 	"selfChat": "Notes",
 	"createRoom": "Créer un salon",
 	"openChat": "Ouvrir le chat",
+	"backToChats": "Retour aux chats",
 	"friendFallback": "Ami",
 	"states": {
 		"loading": "Chargement des chats...",
 		"error": "Impossible de charger les chats. Veuillez réessayer."
+	},
+	"conversation": {
+		"empty": "Aucun message pour le moment.",
+		"composer": "Zone de message",
+		"placeholder": "Les messages arrivent bientôt.",
+		"send": "Envoyer"
 	},
 	"sections": {
 		"friends": {

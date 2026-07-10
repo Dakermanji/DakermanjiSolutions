@@ -42,6 +42,9 @@ export const isSafeEmail = (email) => {
 export const isValidPassword = (password) =>
 	PASSWORD_REGEX.test(String(password ?? ''));
 
+export const isValidUuid = (value) =>
+	validator.isUUID(String(value ?? ''), 4);
+
 /** Non-empty string */
 export const isNonEmptyString = (value) =>
 	typeof value === 'string' && value.trim().length > 0;

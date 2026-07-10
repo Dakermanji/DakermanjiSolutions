@@ -25,7 +25,13 @@
 	];
 %>
 
-<section class="chat-page" aria-labelledby="chat-title">
+<section
+	class="chat-page"
+	aria-labelledby="chat-title"
+	<% if (activeChatConversationId) { %>
+		data-active-conversation-id="<%= activeChatConversationId %>"
+	<% } %>
+>
 	<header class="chat-header">
 		<div>
 			<p class="chat-kicker"><%= t('chat:kicker') %></p>
@@ -116,6 +122,7 @@
 							data-error-label="<%= t('chat:states.error') %>"
 							data-open-label="<%= t('chat:openChat') %>"
 							data-friend-fallback-label="<%= t('chat:friendFallback') %>"
+							data-open-url="/chat/open"
 						<% } %>
 					>
 						<div class="chat-empty-state">

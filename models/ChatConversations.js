@@ -187,8 +187,132 @@ export async function findFriendConversationsForUser(userId) {
 	return queryRows(q, [userId, FRIEND_CONVERSATION_TYPE]);
 }
 
+/**
+ * Check whether one friend conversation is visible to a user.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export async function findVisibleFriendConversationForUser(
+	conversationId,
+	userId,
+) {
+	const q = `
+		SELECT
+			cc.id AS conversation_id,
+			cc.last_message_id,
+			cc.updated_at
+		FROM chat_direct_conversations cdc
+		INNER JOIN chat_conversations cc
+			ON cc.id = cdc.conversation_id
+			AND cc.type = $3
+		INNER JOIN users friend
+			ON friend.id = CASE
+				WHEN cdc.user_one_id = $2 THEN cdc.user_two_id
+				ELSE cdc.user_one_id
+			END
+		WHERE cc.id = $1
+			AND (cdc.user_one_id = $2 OR cdc.user_two_id = $2)
+			AND cdc.user_one_id <> cdc.user_two_id
+			AND EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = $2
+					AND uf.followee_id = friend.id
+			)
+			AND EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = friend.id
+					AND uf.followee_id = $2
+			)
+			AND NOT EXISTS (
+				SELECT 1
+				FROM user_blocks ub
+				WHERE (ub.blocker_id = $2 AND ub.blocked_id = friend.id)
+					OR (ub.blocker_id = friend.id AND ub.blocked_id = $2)
+			)
+		LIMIT 1;
+	`;
+
+	const rows = await queryRows(q, [
+		conversationId,
+		userId,
+		FRIEND_CONVERSATION_TYPE,
+	]);
+	return rows[0] || null;
+}
+
+/**
+ * Find one friend conversation with display data for one user.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export async function findFriendConversationForUserById(
+	conversationId,
+	userId,
+) {
+	const q = `
+		SELECT
+			cc.id AS conversation_id,
+			cc.last_message_id,
+			cc.updated_at,
+			lm.created_at AS last_message_created_at,
+			friend.id AS friend_id,
+			friend.username AS friend_username,
+			friend.email AS friend_email,
+			friend.avatar_seed AS friend_avatar_seed,
+			friend.country_code AS friend_country_code
+		FROM chat_direct_conversations cdc
+		INNER JOIN chat_conversations cc
+			ON cc.id = cdc.conversation_id
+			AND cc.type = $3
+		INNER JOIN users friend
+			ON friend.id = CASE
+				WHEN cdc.user_one_id = $2 THEN cdc.user_two_id
+				ELSE cdc.user_one_id
+			END
+		LEFT JOIN chat_messages lm
+			ON lm.id = cc.last_message_id
+		WHERE cc.id = $1
+			AND (cdc.user_one_id = $2 OR cdc.user_two_id = $2)
+			AND cdc.user_one_id <> cdc.user_two_id
+			AND EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = $2
+					AND uf.followee_id = friend.id
+			)
+			AND EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = friend.id
+					AND uf.followee_id = $2
+			)
+			AND NOT EXISTS (
+				SELECT 1
+				FROM user_blocks ub
+				WHERE (ub.blocker_id = $2 AND ub.blocked_id = friend.id)
+					OR (ub.blocker_id = friend.id AND ub.blocked_id = $2)
+			)
+		LIMIT 1;
+	`;
+
+	const rows = await queryRows(q, [
+		conversationId,
+		userId,
+		FRIEND_CONVERSATION_TYPE,
+	]);
+	return rows[0] || null;
+}
+
 export default {
 	findDirectConversation,
 	findOrCreateFriendConversation,
 	findFriendConversationsForUser,
+	findVisibleFriendConversationForUser,
+	findFriendConversationForUserById,
 };

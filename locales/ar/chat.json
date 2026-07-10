@@ -6,10 +6,17 @@
 	"selfChat": "ملاحظات",
 	"createRoom": "إنشاء غرفة",
 	"openChat": "فتح الدردشة",
+	"backToChats": "العودة إلى الدردشات",
 	"friendFallback": "صديق",
 	"states": {
 		"loading": "جارٍ تحميل الدردشات...",
 		"error": "تعذر تحميل الدردشات. يرجى المحاولة مرة أخرى."
+	},
+	"conversation": {
+		"empty": "لا توجد رسائل بعد.",
+		"composer": "مربع كتابة الرسالة",
+		"placeholder": "الرسائل قادمة قريبًا.",
+		"send": "إرسال"
 	},
 	"sections": {
 		"friends": {
