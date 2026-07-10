@@ -1,6 +1,44 @@
 //! models/ChatMessages.js
 
-import pool from '../config/database.js';
+import pool, { queryRows } from '../config/database.js';
+
+/**
+ * List recent messages for one conversation in display order.
+ *
+ * @param {string} conversationId
+ * @param {number} limit
+ * @returns {Promise<Array>}
+ */
+export async function findRecentConversationMessages(
+	conversationId,
+	limit = 50,
+) {
+	const q = `
+		SELECT *
+		FROM (
+			SELECT
+				cm.id,
+				cm.conversation_id,
+				cm.sender_user_id,
+				cm.body,
+				cm.edited_at,
+				cm.created_at,
+				cm.updated_at,
+				u.username AS sender_username,
+				u.email AS sender_email
+			FROM chat_messages cm
+			INNER JOIN users u
+				ON u.id = cm.sender_user_id
+			WHERE cm.conversation_id = $1
+				AND cm.deleted_at IS NULL
+			ORDER BY cm.created_at DESC, cm.id DESC
+			LIMIT $2
+		) recent_messages
+		ORDER BY recent_messages.created_at ASC, recent_messages.id ASC;
+	`;
+
+	return queryRows(q, [conversationId, limit]);
+}
 
 /**
  * Create a chat message and update the conversation's last message pointer.
@@ -57,5 +95,6 @@ export async function createConversationMessage({
 }
 
 export default {
+	findRecentConversationMessages,
 	createConversationMessage,
 };

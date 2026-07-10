@@ -4,9 +4,27 @@ import ChatMessagesModel from '../../models/ChatMessages.js';
 import ChatConversationsModel from '../../models/ChatConversations.js';
 
 const MESSAGE_BODY_MAX_LENGTH = 2000;
+const RECENT_MESSAGE_LIMIT = 50;
 
 function normalizeMessageBody(body) {
 	return String(body || '').trim();
+}
+
+function formatMessage(message, viewerUserId) {
+	return {
+		id: message.id,
+		conversationId: message.conversation_id,
+		body: message.body,
+		createdAt: message.created_at,
+		updatedAt: message.updated_at,
+		editedAt: message.edited_at,
+		isMine: message.sender_user_id === viewerUserId,
+		sender: {
+			id: message.sender_user_id,
+			username: message.sender_username,
+			email: message.sender_email,
+		},
+	};
 }
 
 /**
@@ -46,8 +64,35 @@ export async function createFriendMessage({
 	});
 }
 
-export { MESSAGE_BODY_MAX_LENGTH };
+/**
+ * List recent messages for an openable friend conversation.
+ *
+ * @param {string} conversationId
+ * @param {string} viewerUserId
+ * @returns {Promise<Array>}
+ */
+export async function listFriendMessages(conversationId, viewerUserId) {
+	const conversation =
+		await ChatConversationsModel.findVisibleFriendConversationForUser(
+			conversationId,
+			viewerUserId,
+		);
+
+	if (!conversation) {
+		return [];
+	}
+
+	const messages = await ChatMessagesModel.findRecentConversationMessages(
+		conversation.conversation_id,
+		RECENT_MESSAGE_LIMIT,
+	);
+
+	return messages.map((message) => formatMessage(message, viewerUserId));
+}
+
+export { MESSAGE_BODY_MAX_LENGTH, RECENT_MESSAGE_LIMIT };
 
 export default {
 	createFriendMessage,
+	listFriendMessages,
 };

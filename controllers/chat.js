@@ -5,7 +5,10 @@ import {
 	getOpenFriendConversation,
 	listFriendConversations,
 } from '../services/chat/friends.js';
-import { createFriendMessage } from '../services/chat/messages.js';
+import {
+	createFriendMessage,
+	listFriendMessages,
+} from '../services/chat/messages.js';
 import { isValidUuid } from '../middlewares/validators/common.js';
 
 const CHAT_REDIRECT = '/chat';
@@ -28,10 +31,16 @@ export async function renderChat(req, res, next) {
 			);
 
 			if (activeConversation) {
+				const messages = await listFriendMessages(
+					activeConversation.conversation.id,
+					req.user.id,
+				);
+
 				return res.render('chat/conversation', {
 					titleKey: 'chat:title',
 					styles: ['chat/main'],
 					activeConversation,
+					messages,
 				});
 			}
 		}

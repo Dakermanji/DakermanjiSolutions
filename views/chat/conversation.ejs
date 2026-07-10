@@ -6,6 +6,15 @@
 		friend.username ||
 		friend.email ||
 		t('chat:friendFallback');
+	const chatMessages = Array.isArray(messages) ? messages : [];
+	const formatMessageTime = (value) => {
+		if (!value) return '';
+
+		return new Intl.DateTimeFormat(currentLang || 'en', {
+			hour: '2-digit',
+			minute: '2-digit',
+		}).format(new Date(value));
+	};
 %>
 
 <section
@@ -44,10 +53,27 @@
 	</header>
 
 	<div class="chat-message-surface" aria-live="polite">
-		<div class="chat-empty-state">
-			<i class="bi bi-chat-dots" aria-hidden="true"></i>
-			<p><%= t('chat:conversation.empty') %></p>
-		</div>
+		<% if (chatMessages.length > 0) { %>
+			<ol class="chat-message-list">
+				<% chatMessages.forEach((message) => { %>
+					<li class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>">
+						<article class="chat-message-bubble">
+							<p><%= message.body %></p>
+							<footer>
+								<time datetime="<%= new Date(message.createdAt).toISOString() %>">
+									<%= formatMessageTime(message.createdAt) %>
+								</time>
+							</footer>
+						</article>
+					</li>
+				<% }) %>
+			</ol>
+		<% } else { %>
+			<div class="chat-empty-state">
+				<i class="bi bi-chat-dots" aria-hidden="true"></i>
+				<p><%= t('chat:conversation.empty') %></p>
+			</div>
+		<% } %>
 	</div>
 
 	<form
