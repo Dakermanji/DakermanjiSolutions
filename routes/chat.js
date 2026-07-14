@@ -8,7 +8,7 @@ import {
 	getOlderChatMessages,
 	openChatConversation,
 	renderChat,
-} from '../controllers/chat.js';
+} from '../controllers/chat/index.js';
 
 const router = Router();
 
