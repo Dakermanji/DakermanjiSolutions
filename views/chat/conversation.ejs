@@ -7,6 +7,7 @@
 		friend.email ||
 		t('chat:friendFallback');
 	const chatMessages = Array.isArray(messages) ? messages : [];
+	const canLoadOlderMessages = Boolean(hasOlderMessages);
 	const formatMessageTime = (value) => {
 		if (!value) return '';
 
@@ -23,6 +24,8 @@
 	data-active-conversation-id="<%= conversation.id %>"
 	data-current-user-id="<%= user.id %>"
 	data-typing-label="<%= t('chat:conversation.typing', { user: friendName }) %>"
+	data-has-older-messages="<%= canLoadOlderMessages ? 'true' : 'false' %>"
+	data-older-messages-url="/chat/messages"
 >
 	<header class="chat-conversation-header">
 		<form method="POST" action="/chat/close" class="chat-back-form">
@@ -61,6 +64,7 @@
 					<li
 						class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>"
 						data-chat-message-id="<%= message.id %>"
+						data-chat-message-created-at="<%= new Date(message.createdAt).toISOString() %>"
 					>
 						<article class="chat-message-bubble">
 							<p><%= message.body %></p>

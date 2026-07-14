@@ -337,8 +337,7 @@
 }
 
 .chat-message-surface {
-	display: grid;
-	align-content: end;
+	display: block;
 	min-height: 22rem;
 	max-height: calc(100vh - 20rem);
 	overflow-y: auto;
@@ -348,7 +347,12 @@
 	background: var(--bg-section);
 }
 
+.chat-message-surface.is-loading-older {
+	scroll-behavior: auto;
+}
+
 .chat-message-surface:has(.chat-empty-state) {
+	display: grid;
 	align-content: center;
 }
 

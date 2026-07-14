@@ -4,7 +4,8 @@ import ChatMessagesModel from '../../models/chat/Messages.js';
 import ChatConversationsModel from '../../models/chat/Conversations.js';
 
 const MESSAGE_BODY_MAX_LENGTH = 2000;
-const RECENT_MESSAGE_LIMIT = 50;
+const RECENT_MESSAGE_LIMIT = 10;
+const MESSAGE_PAGE_LIMIT = 10;
 
 function normalizeMessageBody(body) {
 	return String(body || '').trim();
@@ -40,6 +41,25 @@ function formatLiveMessage(message) {
 			username: message.sender_username,
 			email: message.sender_email,
 		},
+	};
+}
+
+function formatMessagePage(messages, viewerUserId, limit) {
+	const hasMore = messages.length > limit;
+	const pageMessages = hasMore ? messages.slice(1) : messages;
+
+	return {
+		hasMore,
+		messages: pageMessages.map((message) =>
+			formatMessage(message, viewerUserId),
+		),
+	};
+}
+
+function emptyMessagePage() {
+	return {
+		hasMore: false,
+		messages: [],
 	};
 }
 
@@ -101,7 +121,7 @@ export function findOpenableFriendConversation(conversationId, userId) {
  *
  * @param {string} conversationId
  * @param {string} viewerUserId
- * @returns {Promise<Array>}
+ * @returns {Promise<object>}
  */
 export async function listFriendMessages(conversationId, viewerUserId) {
 	const conversation =
@@ -111,21 +131,55 @@ export async function listFriendMessages(conversationId, viewerUserId) {
 		);
 
 	if (!conversation) {
-		return [];
+		return emptyMessagePage();
 	}
 
 	const messages = await ChatMessagesModel.findRecentConversationMessages(
 		conversation.conversation_id,
-		RECENT_MESSAGE_LIMIT,
+		RECENT_MESSAGE_LIMIT + 1,
 	);
 
-	return messages.map((message) => formatMessage(message, viewerUserId));
+	return formatMessagePage(messages, viewerUserId, RECENT_MESSAGE_LIMIT);
 }
 
-export { MESSAGE_BODY_MAX_LENGTH, RECENT_MESSAGE_LIMIT };
+/**
+ * List older messages for an openable friend conversation.
+ *
+ * @param {object} params
+ * @param {string} params.conversationId
+ * @param {string} params.viewerUserId
+ * @param {string} params.beforeId
+ * @returns {Promise<object|null>}
+ */
+export async function listOlderFriendMessages({
+	conversationId,
+	viewerUserId,
+	beforeId,
+}) {
+	const conversation =
+		await ChatConversationsModel.findVisibleFriendConversationForUser(
+			conversationId,
+			viewerUserId,
+		);
+
+	if (!conversation) {
+		return null;
+	}
+
+	const messages = await ChatMessagesModel.findOlderConversationMessages({
+		conversationId: conversation.conversation_id,
+		beforeId,
+		limit: MESSAGE_PAGE_LIMIT + 1,
+	});
+
+	return formatMessagePage(messages, viewerUserId, MESSAGE_PAGE_LIMIT);
+}
+
+export { MESSAGE_BODY_MAX_LENGTH, MESSAGE_PAGE_LIMIT, RECENT_MESSAGE_LIMIT };
 
 export default {
 	createFriendMessage,
 	findOpenableFriendConversation,
+	listOlderFriendMessages,
 	listFriendMessages,
 };

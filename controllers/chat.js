@@ -8,6 +8,7 @@ import {
 } from '../services/chat/friends.js';
 import {
 	createFriendMessage,
+	listOlderFriendMessages,
 	listFriendMessages,
 } from '../services/chat/messages.js';
 import {
@@ -51,7 +52,8 @@ export async function renderChat(req, res, next) {
 					styles: ['chat/main'],
 					scripts: ['chat/conversation'],
 					activeConversation,
-					messages,
+					messages: messages.messages,
+					hasOlderMessages: messages.hasMore,
 				});
 			}
 		}
@@ -88,6 +90,50 @@ export async function getFriendChats(req, res, next) {
 		return res.json({
 			ok: true,
 			conversations,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Return older messages for the active friend conversation.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function getOlderChatMessages(req, res, next) {
+	const activeConversationId = req.session.chat?.activeConversationId || null;
+	const beforeId = String(req.query?.beforeId || '').trim();
+
+	if (
+		!activeConversationId ||
+		!isValidUuid(activeConversationId) ||
+		!isValidUuid(beforeId)
+	) {
+		return res.status(400).json({
+			ok: false,
+		});
+	}
+
+	try {
+		const page = await listOlderFriendMessages({
+			conversationId: activeConversationId,
+			viewerUserId: req.user.id,
+			beforeId,
+		});
+
+		if (!page) {
+			return res.status(404).json({
+				ok: false,
+			});
+		}
+
+		return res.json({
+			ok: true,
+			...page,
 		});
 	} catch (error) {
 		return next(error);

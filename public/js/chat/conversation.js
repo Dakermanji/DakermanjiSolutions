@@ -8,8 +8,21 @@ const typingIndicator = document.querySelector('[data-chat-typing-indicator]');
 let typingStopTimer = null;
 let typingHideTimer = null;
 let isTyping = false;
+let isLoadingOlderMessages = false;
+let hasOlderMessages = chatPage?.dataset.hasOlderMessages === 'true';
 
 if (chatPage && composer && messageSurface) {
+	requestAnimationFrame(() => {
+		scrollToLatestMessage();
+		void fillScrollableHistory();
+	});
+
+	messageSurface.addEventListener('scroll', () => {
+		if (messageSurface.scrollTop > 80) return;
+
+		void loadOlderMessages();
+	});
+
 	const socket = connectChatSocket();
 
 	if (socket) {
@@ -106,13 +119,96 @@ function appendMessage(message, socket = null) {
 	const list = getMessageList();
 	list.appendChild(createMessageRow(message));
 	hideTypingIndicator();
-	messageSurface.scrollTop = messageSurface.scrollHeight;
+	scrollToLatestMessage();
 
 	if (socket && message.sender?.id !== chatPage.dataset.currentUserId) {
 		socket.emit('chat:conversation:read', {
 			conversationId: chatPage.dataset.activeConversationId,
 		});
 	}
+}
+
+function scrollToLatestMessage() {
+	messageSurface.scrollTop = messageSurface.scrollHeight;
+}
+
+async function loadOlderMessages() {
+	if (isLoadingOlderMessages || !hasOlderMessages) return;
+
+	const oldestMessage = messageSurface.querySelector('[data-chat-message-id]');
+	if (!oldestMessage) {
+		hasOlderMessages = false;
+		return;
+	}
+
+	const params = new URLSearchParams({
+		beforeId: oldestMessage.dataset.chatMessageId,
+	});
+
+	isLoadingOlderMessages = true;
+	messageSurface.classList.add('is-loading-older');
+
+	try {
+		const response = await fetch(
+			`${chatPage.dataset.olderMessagesUrl}?${params.toString()}`,
+			{
+				headers: {
+					Accept: 'application/json',
+				},
+				credentials: 'same-origin',
+			},
+		);
+
+		if (!response.ok) {
+			throw new Error(`Request failed with status ${response.status}`);
+		}
+
+		const payload = await response.json();
+
+		if (!payload?.ok || !Array.isArray(payload.messages)) {
+			throw new Error('Invalid older messages payload');
+		}
+
+		prependMessages(payload.messages);
+		hasOlderMessages = Boolean(payload.hasMore);
+		chatPage.dataset.hasOlderMessages = hasOlderMessages ? 'true' : 'false';
+	} catch (error) {
+		console.error('Failed to load older chat messages', error);
+	} finally {
+		isLoadingOlderMessages = false;
+		messageSurface.classList.remove('is-loading-older');
+	}
+}
+
+async function fillScrollableHistory() {
+	while (
+		hasOlderMessages &&
+		!isLoadingOlderMessages &&
+		messageSurface.scrollHeight <= messageSurface.clientHeight
+	) {
+		await loadOlderMessages();
+	}
+}
+
+function prependMessages(messages) {
+	if (messages.length === 0) return;
+
+	const list = getMessageList();
+	const previousScrollHeight = messageSurface.scrollHeight;
+
+	for (const message of [...messages].reverse()) {
+		if (
+			!message?.id ||
+			messageSurface.querySelector(`[data-chat-message-id="${message.id}"]`)
+		) {
+			continue;
+		}
+
+		list.prepend(createMessageRow(message));
+	}
+
+	const nextScrollHeight = messageSurface.scrollHeight;
+	messageSurface.scrollTop += nextScrollHeight - previousScrollHeight;
 }
 
 function handleTypingInput(socket, input) {
@@ -189,6 +285,7 @@ function createMessageRow(message) {
 	const isMine = message.sender?.id === chatPage.dataset.currentUserId;
 	row.className = `chat-message-row ${isMine ? 'is-mine' : 'is-theirs'}`;
 	row.dataset.chatMessageId = message.id;
+	row.dataset.chatMessageCreatedAt = new Date(message.createdAt).toISOString();
 
 	const bubble = document.createElement('article');
 	bubble.className = 'chat-message-bubble';
