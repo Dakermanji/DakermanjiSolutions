@@ -21,6 +21,7 @@
 	class="chat-page chat-conversation-page"
 	aria-labelledby="chat-conversation-title"
 	data-active-conversation-id="<%= conversation.id %>"
+	data-current-user-id="<%= user.id %>"
 >
 	<header class="chat-conversation-header">
 		<form method="POST" action="/chat/close" class="chat-back-form">
@@ -52,11 +53,14 @@
 		</div>
 	</header>
 
-	<div class="chat-message-surface" aria-live="polite">
+	<div class="chat-message-surface" aria-live="polite" data-chat-message-surface>
 		<% if (chatMessages.length > 0) { %>
-			<ol class="chat-message-list">
+			<ol class="chat-message-list" data-chat-message-list>
 				<% chatMessages.forEach((message) => { %>
-					<li class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>">
+					<li
+						class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>"
+						data-chat-message-id="<%= message.id %>"
+					>
 						<article class="chat-message-bubble">
 							<p><%= message.body %></p>
 							<footer>
@@ -69,7 +73,7 @@
 				<% }) %>
 			</ol>
 		<% } else { %>
-			<div class="chat-empty-state">
+			<div class="chat-empty-state" data-chat-empty-state>
 				<i class="bi bi-chat-dots" aria-hidden="true"></i>
 				<p><%= t('chat:conversation.empty') %></p>
 			</div>
@@ -81,6 +85,7 @@
 		method="POST"
 		action="/chat/messages"
 		aria-label="<%= t('chat:conversation.composer') %>"
+		data-chat-composer
 	>
 		<input
 			class="form-control"

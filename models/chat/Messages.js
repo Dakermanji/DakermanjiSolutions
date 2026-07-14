@@ -67,11 +67,11 @@ export async function createConversationMessage({
 					body
 				)
 				VALUES ($1, $2, $3)
-				RETURNING id, conversation_id, sender_user_id, body, created_at, updated_at;
+				RETURNING id;
 			`,
 			[conversationId, senderUserId, body],
 		);
-		const message = messageRows.rows[0];
+		const messageId = messageRows.rows[0].id;
 
 		await client.query(
 			`
@@ -81,7 +81,7 @@ export async function createConversationMessage({
 					updated_at = NOW()
 				WHERE id = $1;
 			`,
-			[conversationId, message.id],
+			[conversationId, messageId],
 		);
 
 		await client.query(
@@ -93,8 +93,30 @@ export async function createConversationMessage({
 				WHERE conversation_id = $1
 					AND user_id = $2;
 			`,
-			[conversationId, senderUserId, message.id],
+			[conversationId, senderUserId, messageId],
 		);
+
+		const messageRowsWithSender = await client.query(
+			`
+				SELECT
+					cm.id,
+					cm.conversation_id,
+					cm.sender_user_id,
+					cm.body,
+					cm.edited_at,
+					cm.created_at,
+					cm.updated_at,
+					u.username AS sender_username,
+					u.email AS sender_email
+				FROM chat_messages cm
+				INNER JOIN users u
+					ON u.id = cm.sender_user_id
+				WHERE cm.id = $1
+				LIMIT 1;
+			`,
+			[messageId],
+		);
+		const message = messageRowsWithSender.rows[0];
 
 		await client.query('COMMIT');
 		return message;

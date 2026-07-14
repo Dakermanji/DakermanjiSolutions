@@ -27,6 +27,22 @@ function formatMessage(message, viewerUserId) {
 	};
 }
 
+function formatLiveMessage(message) {
+	return {
+		id: message.id,
+		conversationId: message.conversation_id,
+		body: message.body,
+		createdAt: message.created_at,
+		updatedAt: message.updated_at,
+		editedAt: message.edited_at,
+		sender: {
+			id: message.sender_user_id,
+			username: message.sender_username,
+			email: message.sender_email,
+		},
+	};
+}
+
 /**
  * Create a friend chat message when the user still has write access.
  *
@@ -57,11 +73,27 @@ export async function createFriendMessage({
 		return null;
 	}
 
-	return ChatMessagesModel.createConversationMessage({
+	const message = await ChatMessagesModel.createConversationMessage({
 		conversationId: conversation.conversation_id,
 		senderUserId,
 		body: normalizedBody,
 	});
+
+	return formatLiveMessage(message);
+}
+
+/**
+ * Check whether a user can open one friend conversation.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export function findOpenableFriendConversation(conversationId, userId) {
+	return ChatConversationsModel.findVisibleFriendConversationForUser(
+		conversationId,
+		userId,
+	);
 }
 
 /**
@@ -94,5 +126,6 @@ export { MESSAGE_BODY_MAX_LENGTH, RECENT_MESSAGE_LIMIT };
 
 export default {
 	createFriendMessage,
+	findOpenableFriendConversation,
 	listFriendMessages,
 };
