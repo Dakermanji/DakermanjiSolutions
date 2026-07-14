@@ -16,6 +16,28 @@
 			minute: '2-digit',
 		}).format(new Date(value));
 	};
+	const formatMessageDate = (value) => {
+		if (!value) return '';
+
+		return new Intl.DateTimeFormat(currentLang || 'en', {
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+		}).format(new Date(value));
+	};
+	const getMessageDateKey = (value) => {
+		if (!value) return '';
+
+		const date = new Date(value);
+		if (Number.isNaN(date.getTime())) return '';
+
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+
+		return `${year}-${month}-${day}`;
+	};
+	let currentMessageDateKey = '';
 %>
 
 <section
@@ -23,7 +45,7 @@
 	aria-labelledby="chat-conversation-title"
 	data-active-conversation-id="<%= conversation.id %>"
 	data-current-user-id="<%= user.id %>"
-	data-typing-label="<%= t('chat:conversation.typing', { user: friendName }) %>"
+	data-typing-label="✍️ <%= t('chat:conversation.typing', { user: friendName }) %>"
 	data-has-older-messages="<%= canLoadOlderMessages ? 'true' : 'false' %>"
 	data-older-messages-url="/chat/messages"
 >
@@ -61,13 +83,26 @@
 		<% if (chatMessages.length > 0) { %>
 			<ol class="chat-message-list" data-chat-message-list>
 				<% chatMessages.forEach((message) => { %>
+					<%
+						const messageDateKey = getMessageDateKey(message.createdAt);
+						const shouldShowDateSeparator =
+							messageDateKey && messageDateKey !== currentMessageDateKey;
+						currentMessageDateKey = messageDateKey || currentMessageDateKey;
+					%>
+					<% if (shouldShowDateSeparator) { %>
+						<li class="chat-date-separator" data-chat-date-separator>
+							<time datetime="<%= messageDateKey %>">
+								-- <%= formatMessageDate(message.createdAt) %> --
+							</time>
+						</li>
+					<% } %>
 					<li
 						class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>"
 						data-chat-message-id="<%= message.id %>"
 						data-chat-message-created-at="<%= new Date(message.createdAt).toISOString() %>"
 					>
 						<article class="chat-message-bubble">
-							<p><%= message.body %></p>
+							<p class="chat-message-text" dir="auto"><%= message.body %></p>
 							<footer>
 								<time datetime="<%= new Date(message.createdAt).toISOString() %>">
 									<%= formatMessageTime(message.createdAt) %>

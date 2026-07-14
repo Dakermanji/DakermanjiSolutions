@@ -13,6 +13,7 @@ let hasOlderMessages = chatPage?.dataset.hasOlderMessages === 'true';
 
 if (chatPage && composer && messageSurface) {
 	requestAnimationFrame(() => {
+		rebuildMessageDateSeparators();
 		scrollToLatestMessage();
 		void fillScrollableHistory();
 	});
@@ -118,6 +119,7 @@ function appendMessage(message, socket = null) {
 
 	const list = getMessageList();
 	list.appendChild(createMessageRow(message));
+	rebuildMessageDateSeparators();
 	hideTypingIndicator();
 	scrollToLatestMessage();
 
@@ -207,6 +209,8 @@ function prependMessages(messages) {
 		list.prepend(createMessageRow(message));
 	}
 
+	rebuildMessageDateSeparators();
+
 	const nextScrollHeight = messageSurface.scrollHeight;
 	messageSurface.scrollTop += nextScrollHeight - previousScrollHeight;
 }
@@ -280,6 +284,38 @@ function getMessageList() {
 	return list;
 }
 
+function rebuildMessageDateSeparators() {
+	const list = messageSurface.querySelector('[data-chat-message-list]');
+	if (!list) return;
+
+	list
+		.querySelectorAll('[data-chat-date-separator]')
+		.forEach((separator) => separator.remove());
+
+	let currentDateKey = '';
+
+	for (const row of [...list.querySelectorAll('[data-chat-message-id]')]) {
+		const dateKey = getMessageDateKey(row.dataset.chatMessageCreatedAt);
+		if (!dateKey || dateKey === currentDateKey) continue;
+
+		currentDateKey = dateKey;
+		row.before(createDateSeparatorRow(dateKey, row.dataset.chatMessageCreatedAt));
+	}
+}
+
+function createDateSeparatorRow(dateKey, value) {
+	const row = document.createElement('li');
+	row.className = 'chat-date-separator';
+	row.dataset.chatDateSeparator = 'true';
+
+	const time = document.createElement('time');
+	time.dateTime = dateKey;
+	time.textContent = `-- ${formatMessageDate(value)} --`;
+
+	row.appendChild(time);
+	return row;
+}
+
 function createMessageRow(message) {
 	const row = document.createElement('li');
 	const isMine = message.sender?.id === chatPage.dataset.currentUserId;
@@ -291,6 +327,8 @@ function createMessageRow(message) {
 	bubble.className = 'chat-message-bubble';
 
 	const body = document.createElement('p');
+	body.className = 'chat-message-text';
+	body.dir = 'auto';
 	body.textContent = message.body || '';
 
 	const footer = document.createElement('footer');
@@ -303,6 +341,30 @@ function createMessageRow(message) {
 	row.appendChild(bubble);
 
 	return row;
+}
+
+function getMessageDateKey(value) {
+	const date = new Date(value);
+	if (Number.isNaN(date.getTime())) return '';
+
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+
+	return `${year}-${month}-${day}`;
+}
+
+function formatMessageDate(value) {
+	if (!value) return '';
+
+	const date = new Date(value);
+	if (Number.isNaN(date.getTime())) return '';
+
+	return new Intl.DateTimeFormat(document.documentElement.lang || 'en', {
+		day: 'numeric',
+		month: 'long',
+		year: 'numeric',
+	}).format(date);
 }
 
 function formatMessageTime(value) {

@@ -391,6 +391,22 @@ body:has(.chat-conversation-page) main.container {
 	justify-content: flex-start;
 }
 
+.chat-date-separator {
+	display: flex;
+	justify-content: center;
+	margin: 0.25rem 0;
+	color: var(--color-text-muted);
+	font-size: 0.8rem;
+	font-weight: 700;
+}
+
+.chat-date-separator time {
+	padding: 0.2rem 0.65rem;
+	border: 1px solid var(--border-soft);
+	border-radius: 999px;
+	background: var(--bg-card-muted);
+}
+
 .chat-message-bubble {
 	display: grid;
 	gap: 0.35rem;
@@ -409,8 +425,10 @@ body:has(.chat-conversation-page) main.container {
 	color: var(--color-text-inverse);
 }
 
-.chat-message-bubble p {
+.chat-message-text {
 	margin: 0;
+	text-align: start;
+	unicode-bidi: plaintext;
 	white-space: pre-wrap;
 }
 
