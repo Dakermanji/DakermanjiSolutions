@@ -182,7 +182,7 @@
 
 .chat-friend-item {
 	display: grid;
-	grid-template-columns: 3rem minmax(0, 1fr) auto;
+	grid-template-columns: 3rem minmax(0, 1fr) auto auto;
 	align-items: center;
 	gap: 0.75rem;
 	width: 100%;
@@ -248,6 +248,24 @@
 
 .chat-friend-open {
 	color: var(--color-text-muted);
+}
+
+.chat-unread-badge,
+.chat-unread-spacer {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 1.5rem;
+	height: 1.5rem;
+}
+
+.chat-unread-badge {
+	padding: 0 0.45rem;
+	border-radius: 999px;
+	color: var(--color-text-inverse);
+	background: var(--color-primary);
+	font-size: 0.8rem;
+	font-weight: 700;
 }
 
 [dir='rtl'] .chat-friend-open {

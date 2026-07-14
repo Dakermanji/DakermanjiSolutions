@@ -1,6 +1,7 @@
 //! services/chat/friends.js
 
 import ChatConversationsModel from '../../models/ChatConversations.js';
+import ChatConversationMembersModel from '../../models/ChatConversationMembers.js';
 import UserBlocksModel from '../../models/UserBlocks.js';
 import UserFollowsModel from '../../models/UserFollows.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
@@ -17,6 +18,8 @@ function formatFriendConversation(conversation) {
 			id: conversation.conversation_id,
 			lastMessageId: conversation.last_message_id,
 			lastMessageCreatedAt: conversation.last_message_created_at,
+			lastReadMessageId: conversation.last_read_message_id,
+			unreadCount: Number(conversation.unread_count || 0),
 			updatedAt: conversation.updated_at,
 		},
 		friend: {
@@ -106,4 +109,28 @@ export async function getOpenFriendConversation(conversationId, userId) {
 		);
 
 	return conversation ? formatFriendConversation(conversation) : null;
+}
+
+/**
+ * Mark an openable friend conversation read through its latest message.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export async function markFriendConversationRead(conversationId, userId) {
+	const conversation =
+		await ChatConversationsModel.findVisibleFriendConversationForUser(
+			conversationId,
+			userId,
+		);
+
+	if (!conversation) {
+		return null;
+	}
+
+	return ChatConversationMembersModel.markReadThroughLatestMessage(
+		conversation.conversation_id,
+		userId,
+	);
 }

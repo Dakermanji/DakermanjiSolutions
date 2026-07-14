@@ -84,6 +84,18 @@ export async function createConversationMessage({
 			[conversationId, message.id],
 		);
 
+		await client.query(
+			`
+				UPDATE chat_conversation_members
+				SET
+					last_read_message_id = $3,
+					updated_at = NOW()
+				WHERE conversation_id = $1
+					AND user_id = $2;
+			`,
+			[conversationId, senderUserId, message.id],
+		);
+
 		await client.query('COMMIT');
 		return message;
 	} catch (error) {

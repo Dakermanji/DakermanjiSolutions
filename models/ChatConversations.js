@@ -142,6 +142,24 @@ export async function findFriendConversationsForUser(userId) {
 			cc.last_message_id,
 			cc.updated_at,
 			lm.created_at AS last_message_created_at,
+			ccm.last_read_message_id,
+			(
+				SELECT COUNT(*)::int
+				FROM chat_messages unread_messages
+				LEFT JOIN chat_messages read_message
+					ON read_message.id = ccm.last_read_message_id
+				WHERE unread_messages.conversation_id = cc.id
+					AND unread_messages.sender_user_id <> $1
+					AND unread_messages.deleted_at IS NULL
+					AND (
+						ccm.last_read_message_id IS NULL
+						OR unread_messages.created_at > read_message.created_at
+						OR (
+							unread_messages.created_at = read_message.created_at
+							AND unread_messages.id > read_message.id
+						)
+					)
+			) AS unread_count,
 			friend.id AS friend_id,
 			friend.username AS friend_username,
 			friend.email AS friend_email,
@@ -151,6 +169,9 @@ export async function findFriendConversationsForUser(userId) {
 		INNER JOIN chat_conversations cc
 			ON cc.id = cdc.conversation_id
 			AND cc.type = $2
+		INNER JOIN chat_conversation_members ccm
+			ON ccm.conversation_id = cc.id
+			AND ccm.user_id = $1
 		INNER JOIN users friend
 			ON friend.id = CASE
 				WHEN cdc.user_one_id = $1 THEN cdc.user_two_id
@@ -207,6 +228,9 @@ export async function findVisibleFriendConversationForUser(
 		INNER JOIN chat_conversations cc
 			ON cc.id = cdc.conversation_id
 			AND cc.type = $3
+		INNER JOIN chat_conversation_members ccm
+			ON ccm.conversation_id = cc.id
+			AND ccm.user_id = $2
 		INNER JOIN users friend
 			ON friend.id = CASE
 				WHEN cdc.user_one_id = $2 THEN cdc.user_two_id
@@ -261,6 +285,24 @@ export async function findFriendConversationForUserById(
 			cc.last_message_id,
 			cc.updated_at,
 			lm.created_at AS last_message_created_at,
+			ccm.last_read_message_id,
+			(
+				SELECT COUNT(*)::int
+				FROM chat_messages unread_messages
+				LEFT JOIN chat_messages read_message
+					ON read_message.id = ccm.last_read_message_id
+				WHERE unread_messages.conversation_id = cc.id
+					AND unread_messages.sender_user_id <> $2
+					AND unread_messages.deleted_at IS NULL
+					AND (
+						ccm.last_read_message_id IS NULL
+						OR unread_messages.created_at > read_message.created_at
+						OR (
+							unread_messages.created_at = read_message.created_at
+							AND unread_messages.id > read_message.id
+						)
+					)
+			) AS unread_count,
 			friend.id AS friend_id,
 			friend.username AS friend_username,
 			friend.email AS friend_email,
@@ -270,6 +312,9 @@ export async function findFriendConversationForUserById(
 		INNER JOIN chat_conversations cc
 			ON cc.id = cdc.conversation_id
 			AND cc.type = $3
+		INNER JOIN chat_conversation_members ccm
+			ON ccm.conversation_id = cc.id
+			AND ccm.user_id = $2
 		INNER JOIN users friend
 			ON friend.id = CASE
 				WHEN cdc.user_one_id = $2 THEN cdc.user_two_id

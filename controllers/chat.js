@@ -4,6 +4,7 @@ import {
 	findOpenableFriendConversation,
 	getOpenFriendConversation,
 	listFriendConversations,
+	markFriendConversationRead,
 } from '../services/chat/friends.js';
 import {
 	createFriendMessage,
@@ -32,6 +33,10 @@ export async function renderChat(req, res, next) {
 
 			if (activeConversation) {
 				const messages = await listFriendMessages(
+					activeConversation.conversation.id,
+					req.user.id,
+				);
+				await markFriendConversationRead(
 					activeConversation.conversation.id,
 					req.user.id,
 				);

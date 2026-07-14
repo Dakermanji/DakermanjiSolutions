@@ -127,11 +127,31 @@ function createFriendChatItem(item) {
 
 	content.append(title, meta);
 
+	const unreadCount = Number(conversation.unreadCount || 0);
+	const unreadBadge = document.createElement('span');
+
+	if (unreadCount > 0) {
+		unreadBadge.className = 'chat-unread-badge';
+		unreadBadge.textContent = new Intl.NumberFormat(
+			document.documentElement.lang || 'en',
+		).format(unreadCount);
+		unreadBadge.setAttribute(
+			'aria-label',
+			(friendsBody.dataset.unreadLabel || '').replace(
+				'{{count}}',
+				unreadBadge.textContent,
+			),
+		);
+	} else {
+		unreadBadge.className = 'chat-unread-spacer';
+		unreadBadge.setAttribute('aria-hidden', 'true');
+	}
+
 	const icon = document.createElement('i');
 	icon.className = 'bi bi-chevron-right chat-friend-open';
 	icon.setAttribute('aria-hidden', 'true');
 
-	button.append(avatar, content, icon);
+	button.append(avatar, content, unreadBadge, icon);
 
 	form.append(input, button);
 

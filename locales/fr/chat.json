@@ -6,6 +6,7 @@
 	"selfChat": "Notes",
 	"createRoom": "Créer un salon",
 	"openChat": "Ouvrir le chat",
+	"unreadMessages": "{{count}} messages non lus",
 	"backToChats": "Retour aux chats",
 	"friendFallback": "Ami",
 	"states": {

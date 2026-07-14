@@ -6,6 +6,7 @@
 	"selfChat": "Notes",
 	"createRoom": "Create room",
 	"openChat": "Open chat",
+	"unreadMessages": "{{count}} unread messages",
 	"backToChats": "Back to chats",
 	"friendFallback": "Friend",
 	"states": {

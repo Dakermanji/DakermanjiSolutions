@@ -6,6 +6,7 @@
 	"selfChat": "ملاحظات",
 	"createRoom": "إنشاء غرفة",
 	"openChat": "فتح الدردشة",
+	"unreadMessages": "{{count}} رسائل غير مقروءة",
 	"backToChats": "العودة إلى الدردشات",
 	"friendFallback": "صديق",
 	"states": {
