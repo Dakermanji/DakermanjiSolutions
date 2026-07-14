@@ -5,7 +5,7 @@ import {
 	listFriendConversations,
 } from '../../services/chat/friends.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
-import { CHAT_REDIRECT } from './constants.js';
+import { CHAT_REDIRECT } from '../../constants/chat.js';
 
 /**
  * Return friend chat conversations for the signed-in user.

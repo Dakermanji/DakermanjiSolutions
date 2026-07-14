@@ -6,7 +6,7 @@ import {
 } from '../../services/chat/messages.js';
 import { emitChatMessageCreated } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
-import { CHAT_REDIRECT } from './constants.js';
+import { CHAT_REDIRECT } from '../../constants/chat.js';
 
 /**
  * Return older messages for the active friend conversation.

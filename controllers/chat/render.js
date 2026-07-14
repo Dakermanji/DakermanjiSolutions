@@ -7,6 +7,7 @@ import {
 import { listFriendMessages } from '../../services/chat/messages.js';
 import { emitChatUnreadCountsChanged } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
+import { CHAT_MESSAGE_LIMITS } from '../../constants/chat.js';
 
 /**
  * Render the chat shell.
@@ -44,6 +45,7 @@ export async function renderChat(req, res, next) {
 					activeConversation,
 					messages: messages.messages,
 					hasOlderMessages: messages.hasMore,
+					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
 				});
 			}
 		}

@@ -1,9 +1,10 @@
 //! models/chat/Conversations.js
 
 import pool, { queryRows } from '../../config/database.js';
-
-const FRIEND_CONVERSATION_TYPE = 'friend';
-const MEMBER_ROLE = 'member';
+import {
+	CHAT_CONVERSATION_MEMBER_ROLES,
+	CHAT_CONVERSATION_TYPES,
+} from '../../constants/chat.js';
 
 function normalizeDirectPair(userAId, userBId) {
 	return userAId <= userBId
@@ -40,7 +41,7 @@ export async function findDirectConversation(userAId, userBId) {
 	const rows = await queryRows(q, [
 		userOneId,
 		userTwoId,
-		FRIEND_CONVERSATION_TYPE,
+		CHAT_CONVERSATION_TYPES.FRIEND,
 	]);
 	return rows[0] || null;
 }
@@ -77,7 +78,7 @@ export async function findOrCreateFriendConversation(userAId, userBId) {
 				VALUES ($1, $2)
 				RETURNING id, type, created_by_user_id, last_message_id, created_at, updated_at;
 			`,
-			[FRIEND_CONVERSATION_TYPE, userAId],
+			[CHAT_CONVERSATION_TYPES.FRIEND, userAId],
 		);
 		const conversation = conversationRows.rows[0];
 
@@ -116,7 +117,12 @@ export async function findOrCreateFriendConversation(userAId, userBId) {
 					($1, $3, $4)
 				ON CONFLICT (conversation_id, user_id) DO NOTHING;
 			`,
-			[conversation.id, userAId, userBId, MEMBER_ROLE],
+			[
+				conversation.id,
+				userAId,
+				userBId,
+				CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,
+			],
 		);
 
 		await client.query('COMMIT');
@@ -205,7 +211,7 @@ export async function findFriendConversationsForUser(userId) {
 			LOWER(COALESCE(friend.username, friend.email)) ASC;
 	`;
 
-	return queryRows(q, [userId, FRIEND_CONVERSATION_TYPE]);
+	return queryRows(q, [userId, CHAT_CONVERSATION_TYPES.FRIEND]);
 }
 
 /**
@@ -265,7 +271,7 @@ export async function countUnreadFriendMessagesForUser(userId) {
 			);
 	`;
 
-	const rows = await queryRows(q, [userId, FRIEND_CONVERSATION_TYPE]);
+	const rows = await queryRows(q, [userId, CHAT_CONVERSATION_TYPES.FRIEND]);
 	return rows[0]?.unread_count || 0;
 }
 
@@ -324,7 +330,7 @@ export async function findVisibleFriendConversationForUser(
 	const rows = await queryRows(q, [
 		conversationId,
 		userId,
-		FRIEND_CONVERSATION_TYPE,
+		CHAT_CONVERSATION_TYPES.FRIEND,
 	]);
 	return rows[0] || null;
 }
@@ -410,7 +416,7 @@ export async function findFriendConversationForUserById(
 	const rows = await queryRows(q, [
 		conversationId,
 		userId,
-		FRIEND_CONVERSATION_TYPE,
+		CHAT_CONVERSATION_TYPES.FRIEND,
 	]);
 	return rows[0] || null;
 }

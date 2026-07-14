@@ -2,10 +2,10 @@
 
 import ChatMessagesModel from '../../models/chat/Messages.js';
 import ChatConversationsModel from '../../models/chat/Conversations.js';
+import { CHAT_MESSAGE_LIMITS } from '../../constants/chat.js';
 
-const MESSAGE_BODY_MAX_LENGTH = 2000;
-const RECENT_MESSAGE_LIMIT = 10;
-const MESSAGE_PAGE_LIMIT = 10;
+const { BODY_MAX_LENGTH, OLDER_PAGE_SIZE, RECENT_PAGE_SIZE } =
+	CHAT_MESSAGE_LIMITS;
 
 function normalizeMessageBody(body) {
 	return String(body || '').trim();
@@ -79,7 +79,7 @@ export async function createFriendMessage({
 }) {
 	const normalizedBody = normalizeMessageBody(body);
 
-	if (!normalizedBody || normalizedBody.length > MESSAGE_BODY_MAX_LENGTH) {
+	if (!normalizedBody || normalizedBody.length > BODY_MAX_LENGTH) {
 		return null;
 	}
 
@@ -136,10 +136,10 @@ export async function listFriendMessages(conversationId, viewerUserId) {
 
 	const messages = await ChatMessagesModel.findRecentConversationMessages(
 		conversation.conversation_id,
-		RECENT_MESSAGE_LIMIT + 1,
+		RECENT_PAGE_SIZE + 1,
 	);
 
-	return formatMessagePage(messages, viewerUserId, RECENT_MESSAGE_LIMIT);
+	return formatMessagePage(messages, viewerUserId, RECENT_PAGE_SIZE);
 }
 
 /**
@@ -169,13 +169,15 @@ export async function listOlderFriendMessages({
 	const messages = await ChatMessagesModel.findOlderConversationMessages({
 		conversationId: conversation.conversation_id,
 		beforeId,
-		limit: MESSAGE_PAGE_LIMIT + 1,
+		limit: OLDER_PAGE_SIZE + 1,
 	});
 
-	return formatMessagePage(messages, viewerUserId, MESSAGE_PAGE_LIMIT);
+	return formatMessagePage(messages, viewerUserId, OLDER_PAGE_SIZE);
 }
 
-export { MESSAGE_BODY_MAX_LENGTH, MESSAGE_PAGE_LIMIT, RECENT_MESSAGE_LIMIT };
+export const MESSAGE_BODY_MAX_LENGTH = BODY_MAX_LENGTH;
+export const MESSAGE_PAGE_LIMIT = OLDER_PAGE_SIZE;
+export const RECENT_MESSAGE_LIMIT = RECENT_PAGE_SIZE;
 
 export default {
 	createFriendMessage,
