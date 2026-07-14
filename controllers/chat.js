@@ -10,7 +10,10 @@ import {
 	createFriendMessage,
 	listFriendMessages,
 } from '../services/chat/messages.js';
-import { emitChatMessageCreated } from '../services/chat/live.js';
+import {
+	emitChatMessageCreated,
+	emitChatUnreadCountsChanged,
+} from '../services/chat/live.js';
 import { isValidUuid } from '../middlewares/validators/common.js';
 
 const CHAT_REDIRECT = '/chat';
@@ -41,6 +44,7 @@ export async function renderChat(req, res, next) {
 					activeConversation.conversation.id,
 					req.user.id,
 				);
+				await emitChatUnreadCountsChanged([req.user.id]);
 
 				return res.render('chat/conversation', {
 					titleKey: 'chat:title',
@@ -167,7 +171,7 @@ export async function createChatMessage(req, res, next) {
 		if (!message) {
 			req.flash('error', 'chat:conversation.messageError');
 		} else {
-			emitChatMessageCreated(message);
+			await emitChatMessageCreated(message);
 		}
 
 		return res.redirect(CHAT_REDIRECT);

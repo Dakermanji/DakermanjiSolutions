@@ -21,7 +21,7 @@ if (chatPage && composer && messageSurface) {
 		);
 
 		socket.on('chat:message:created', (payload) => {
-			appendMessage(payload?.message);
+			appendMessage(payload?.message, socket);
 		});
 		socket.on('chat:typing:updated', (payload) => {
 			showTypingIndicator(payload);
@@ -70,7 +70,7 @@ async function submitLiveMessage(socket) {
 			return;
 		}
 
-		appendMessage(response.message);
+		appendMessage(response.message, socket);
 		input.value = '';
 		input.focus();
 	} catch (error) {
@@ -94,7 +94,7 @@ function emitWithAck(socket, eventName, payload) {
 	});
 }
 
-function appendMessage(message) {
+function appendMessage(message, socket = null) {
 	if (!message?.id || message.conversationId !== chatPage.dataset.activeConversationId) {
 		return;
 	}
@@ -107,6 +107,12 @@ function appendMessage(message) {
 	list.appendChild(createMessageRow(message));
 	hideTypingIndicator();
 	messageSurface.scrollTop = messageSurface.scrollHeight;
+
+	if (socket && message.sender?.id !== chatPage.dataset.currentUserId) {
+		socket.emit('chat:conversation:read', {
+			conversationId: chatPage.dataset.activeConversationId,
+		});
+	}
 }
 
 function handleTypingInput(socket, input) {

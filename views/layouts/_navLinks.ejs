@@ -7,6 +7,9 @@
 			const badgeLabel = nav.badge?.label
 				? t(nav.badge.label, { count: badgeCount })
 				: '';
+			const badgeTemplate = nav.badge?.label
+				? t(nav.badge.label, { count: '{{count}}' })
+				: '';
 		%>
 		<li class="nav-item">
 			<a
@@ -18,8 +21,18 @@
 			>
 				<span class="nav-icon">
 					<i class="bi <%= nav.icon %>"></i>
-					<% if (badgeCount > 0) { %>
-						<span class="nav-badge" aria-label="<%= badgeLabel %>">
+					<% if (nav.badge) { %>
+						<span
+							class="nav-badge"
+							aria-label="<%= badgeLabel %>"
+							<% if (nav.badge.key) { %>
+								data-nav-badge="<%= nav.badge.key %>"
+								data-nav-badge-template="<%= badgeTemplate %>"
+							<% } %>
+							<% if (badgeCount <= 0) { %>
+								hidden
+							<% } %>
+						>
 							<%= new Intl.NumberFormat(currentLang || 'en').format(badgeCount) %>
 						</span>
 					<% } %>

@@ -7,6 +7,7 @@ import {
 	setSocialSocketServer,
 } from '../services/social/live.js';
 import {
+	getChatUserRoom,
 	registerChatSocketHandlers,
 	setChatSocketServer,
 } from '../services/chat/live.js';
@@ -35,6 +36,7 @@ export default function configureSocket(server) {
 
 	io.on('connection', (socket) => {
 		socket.join(getSocialUserRoom(socket.data.userId));
+		socket.join(getChatUserRoom(socket.data.userId));
 		registerChatSocketHandlers(io, socket);
 	});
 

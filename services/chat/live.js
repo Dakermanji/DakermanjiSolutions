@@ -4,13 +4,22 @@ import {
 	createFriendMessage,
 	findOpenableFriendConversation,
 } from './messages.js';
-import { getOpenFriendConversation } from './friends.js';
+import {
+	countUnreadFriendMessages,
+	getOpenFriendConversation,
+	markFriendConversationRead,
+} from './friends.js';
+import ChatConversationMembersModel from '../../models/chat/ConversationMembers.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 
 let chatSocketServer = null;
 
 export function getChatConversationRoom(conversationId) {
 	return `chat:conversation:${conversationId}`;
+}
+
+export function getChatUserRoom(userId) {
+	return `chat:user:${userId}`;
 }
 
 /**
@@ -29,7 +38,7 @@ export function setChatSocketServer(io) {
  * @param {object|null} message
  * @returns {void}
  */
-export function emitChatMessageCreated(message) {
+export async function emitChatMessageCreated(message) {
 	if (!chatSocketServer || !message?.conversationId) return;
 
 	chatSocketServer
@@ -37,6 +46,43 @@ export function emitChatMessageCreated(message) {
 		.emit('chat:message:created', {
 			message,
 		});
+
+	await emitChatUnreadCountsForConversation(message.conversationId);
+}
+
+/**
+ * Emit fresh unread counts to selected users.
+ *
+ * @param {Array<string | null | undefined>} userIds
+ * @returns {Promise<void>}
+ */
+export async function emitChatUnreadCountsChanged(userIds) {
+	if (!chatSocketServer) return;
+
+	for (const userId of new Set(userIds.filter(Boolean))) {
+		const unreadCount = await countUnreadFriendMessages(userId);
+
+		chatSocketServer
+			.to(getChatUserRoom(userId))
+			.emit('chat:unread:changed', {
+				unreadCount,
+			});
+	}
+}
+
+/**
+ * Emit fresh unread counts to all members of one conversation.
+ *
+ * @param {string} conversationId
+ * @returns {Promise<void>}
+ */
+export async function emitChatUnreadCountsForConversation(conversationId) {
+	const userIds =
+		await ChatConversationMembersModel.findConversationMemberUserIds(
+			conversationId,
+		);
+
+	await emitChatUnreadCountsChanged(userIds);
 }
 
 /**
@@ -117,12 +163,7 @@ export function registerChatSocketHandlers(io, socket) {
 				return;
 			}
 
-			io.to(getChatConversationRoom(message.conversationId)).emit(
-				'chat:message:created',
-				{
-					message,
-				},
-			);
+			await emitChatMessageCreated(message);
 
 			acknowledge?.({
 				ok: true,
@@ -164,11 +205,29 @@ export function registerChatSocketHandlers(io, socket) {
 			// Typing indicators are ephemeral; failed updates can be ignored.
 		}
 	});
+
+	socket.on('chat:conversation:read', async (payload) => {
+		const conversationId = String(payload?.conversationId || '').trim();
+
+		if (!isValidUuid(conversationId)) {
+			return;
+		}
+
+		try {
+			await markFriendConversationRead(conversationId, socket.data.userId);
+			await emitChatUnreadCountsChanged([socket.data.userId]);
+		} catch {
+			// Read receipt updates are recoverable on the next page request.
+		}
+	});
 }
 
 export default {
 	emitChatMessageCreated,
+	emitChatUnreadCountsChanged,
+	emitChatUnreadCountsForConversation,
 	getChatConversationRoom,
+	getChatUserRoom,
 	registerChatSocketHandlers,
 	setChatSocketServer,
 };

@@ -46,11 +46,12 @@ export const navbarMiddleware = (app) => {
 					await countUnreadFriendMessages(req.user.id);
 
 				baseUserAppsNavbar.forEach((item) => {
-					if (item.link !== '/chat' || unreadChatCount <= 0) return;
+					if (item.link !== '/chat') return;
 
 					item.badge = {
 						count: unreadChatCount,
 						label: 'chat:unreadMessages',
+						key: 'chatUnread',
 					};
 				});
 			} catch (error) {

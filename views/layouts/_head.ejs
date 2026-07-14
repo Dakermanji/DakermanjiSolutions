@@ -91,7 +91,7 @@
 
     <!-- Static Scripts -->
     <% const staticScripts = ['theme', 'dropdownMenu', 'tooltips', 'modals', 'flash'] %>
-    <% if (user) staticScripts.push('social') %>
+    <% if (user) staticScripts.push('social', 'chat') %>
     <% if (user) { %>
     <script src="/socket.io/socket.io.js" defer></script>
     <% } %>

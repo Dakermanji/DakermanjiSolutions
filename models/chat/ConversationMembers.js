@@ -3,6 +3,23 @@
 import { queryRows } from '../../config/database.js';
 
 /**
+ * List user ids for members in one conversation.
+ *
+ * @param {string} conversationId
+ * @returns {Promise<Array<string>>}
+ */
+export async function findConversationMemberUserIds(conversationId) {
+	const q = `
+		SELECT user_id
+		FROM chat_conversation_members
+		WHERE conversation_id = $1;
+	`;
+
+	const rows = await queryRows(q, [conversationId]);
+	return rows.map((row) => row.user_id);
+}
+
+/**
  * Mark one member as having read through the conversation's latest message.
  *
  * @param {string} conversationId
@@ -32,5 +49,6 @@ export async function markReadThroughLatestMessage(conversationId, userId) {
 }
 
 export default {
+	findConversationMemberUserIds,
 	markReadThroughLatestMessage,
 };
