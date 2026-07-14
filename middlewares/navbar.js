@@ -9,6 +9,7 @@
  */
 
 import { navbar } from '../config/navbar.js';
+import { countUnreadFriendMessages } from '../services/chat/friends.js';
 
 /**
  * Extract the first URL segment from a request path.
@@ -21,18 +22,41 @@ function firstSegment(path = '/') {
 }
 
 export const navbarMiddleware = (app) => {
-	app.use((req, res, next) => {
+	app.use(async (req, res, next) => {
 		// Determine the navigation key based on the first path segment
 		const seg = firstSegment(req.path);
 
 		// Root path maps to "index" navigation
 		const key = seg === '' ? 'index' : seg;
 
+		const baseUserAppsNavbar = Array.isArray(navbar.user_apps)
+			? navbar.user_apps.map((item) => ({ ...item }))
+			: [];
+
 		// Expose navigation items to views
 		res.locals.navbar = Array.isArray(navbar[key]) ? navbar[key] : [];
-		res.locals.userAppsNavbar = Array.isArray(navbar.user_apps)
-			? navbar.user_apps
-			: [];
+		res.locals.userAppsNavbar = baseUserAppsNavbar;
+
+		const isHtmlPageRequest =
+			req.method === 'GET' && req.accepts(['html', 'json']) === 'html';
+
+		if (req.user && isHtmlPageRequest) {
+			try {
+				const unreadChatCount =
+					await countUnreadFriendMessages(req.user.id);
+
+				baseUserAppsNavbar.forEach((item) => {
+					if (item.link !== '/chat' || unreadChatCount <= 0) return;
+
+					item.badge = {
+						count: unreadChatCount,
+						label: 'chat:unreadMessages',
+					};
+				});
+			} catch (error) {
+				return next(error);
+			}
+		}
 
 		// Expose active navigation key for styling / state
 		res.locals.activeNavKey = key;

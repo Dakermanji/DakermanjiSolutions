@@ -2,6 +2,12 @@
 <% const items = typeof navItems !== 'undefined' ? navItems : (typeof navbar !== 'undefined' ? navbar : []); %>
 <% if (items.length > 0) { %>
 	<% items.forEach(nav => { %>
+		<%
+			const badgeCount = Number(nav.badge?.count || 0);
+			const badgeLabel = nav.badge?.label
+				? t(nav.badge.label, { count: badgeCount })
+				: '';
+		%>
 		<li class="nav-item">
 			<a
             class="nav-link has-tooltip <%= currentRoute === nav.link ? 'active' : '' %>"
@@ -12,6 +18,11 @@
 			>
 				<span class="nav-icon">
 					<i class="bi <%= nav.icon %>"></i>
+					<% if (badgeCount > 0) { %>
+						<span class="nav-badge" aria-label="<%= badgeLabel %>">
+							<%= new Intl.NumberFormat(currentLang || 'en').format(badgeCount) %>
+						</span>
+					<% } %>
 				</span>
 				<span class="nav-text"><%= t(nav.label) %></span>
 			</a>

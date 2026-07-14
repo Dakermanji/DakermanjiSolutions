@@ -81,6 +81,16 @@ export async function listFriendConversations(userId) {
 }
 
 /**
+ * Count unread friend chat messages for one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<number>}
+ */
+export function countUnreadFriendMessages(userId) {
+	return ChatConversationsModel.countUnreadFriendMessagesForUser(userId);
+}
+
+/**
  * Check whether one friend conversation can be opened by a user.
  *
  * @param {string} conversationId
