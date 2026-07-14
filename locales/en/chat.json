@@ -18,7 +18,8 @@
 		"composer": "Message composer",
 		"placeholder": "Write a message...",
 		"send": "Send",
-		"messageError": "Could not send this message."
+		"messageError": "Could not send this message.",
+		"typing": "{{user}} is typing..."
 	},
 	"sections": {
 		"friends": {

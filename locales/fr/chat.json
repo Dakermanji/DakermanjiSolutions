@@ -18,7 +18,8 @@
 		"composer": "Zone de message",
 		"placeholder": "Écrire un message...",
 		"send": "Envoyer",
-		"messageError": "Impossible d’envoyer ce message."
+		"messageError": "Impossible d’envoyer ce message.",
+		"typing": "{{user}} écrit..."
 	},
 	"sections": {
 		"friends": {

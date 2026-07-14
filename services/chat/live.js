@@ -134,6 +134,36 @@ export function registerChatSocketHandlers(io, socket) {
 			});
 		}
 	});
+
+	socket.on('chat:typing:update', async (payload) => {
+		const conversationId = String(payload?.conversationId || '').trim();
+
+		if (!isValidUuid(conversationId)) {
+			return;
+		}
+
+		try {
+			const conversation = await findOpenableFriendConversation(
+				conversationId,
+				socket.data.userId,
+			);
+
+			if (!conversation) {
+				return;
+			}
+
+			socket.to(getChatConversationRoom(conversation.conversation_id)).emit(
+				'chat:typing:updated',
+				{
+					conversationId: conversation.conversation_id,
+					userId: socket.data.userId,
+					isTyping: Boolean(payload?.isTyping),
+				},
+			);
+		} catch {
+			// Typing indicators are ephemeral; failed updates can be ignored.
+		}
+	});
 }
 
 export default {

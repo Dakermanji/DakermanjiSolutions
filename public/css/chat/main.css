@@ -408,6 +408,17 @@
 	opacity: 0.8;
 }
 
+.chat-typing-indicator {
+	min-height: 1.5rem;
+	padding: 0 0.25rem;
+	color: var(--color-text-muted);
+	font-size: 0.9rem;
+}
+
+.chat-typing-indicator[hidden] {
+	display: none;
+}
+
 .chat-composer {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) auto;

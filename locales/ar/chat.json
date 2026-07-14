@@ -18,7 +18,8 @@
 		"composer": "مربع كتابة الرسالة",
 		"placeholder": "اكتب رسالة...",
 		"send": "إرسال",
-		"messageError": "تعذر إرسال هذه الرسالة."
+		"messageError": "تعذر إرسال هذه الرسالة.",
+		"typing": "{{user}} يكتب..."
 	},
 	"sections": {
 		"friends": {

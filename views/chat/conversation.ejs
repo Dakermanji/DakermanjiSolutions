@@ -22,6 +22,7 @@
 	aria-labelledby="chat-conversation-title"
 	data-active-conversation-id="<%= conversation.id %>"
 	data-current-user-id="<%= user.id %>"
+	data-typing-label="<%= t('chat:conversation.typing', { user: friendName }) %>"
 >
 	<header class="chat-conversation-header">
 		<form method="POST" action="/chat/close" class="chat-back-form">
@@ -78,6 +79,10 @@
 				<p><%= t('chat:conversation.empty') %></p>
 			</div>
 		<% } %>
+	</div>
+
+	<div class="chat-typing-indicator" data-chat-typing-indicator hidden>
+		<span></span>
 	</div>
 
 	<form

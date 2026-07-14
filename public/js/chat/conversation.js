@@ -3,6 +3,11 @@
 const chatPage = document.querySelector('[data-active-conversation-id]');
 const composer = document.querySelector('[data-chat-composer]');
 const messageSurface = document.querySelector('[data-chat-message-surface]');
+const typingIndicator = document.querySelector('[data-chat-typing-indicator]');
+
+let typingStopTimer = null;
+let typingHideTimer = null;
+let isTyping = false;
 
 if (chatPage && composer && messageSurface) {
 	const socket = connectChatSocket();
@@ -18,10 +23,21 @@ if (chatPage && composer && messageSurface) {
 		socket.on('chat:message:created', (payload) => {
 			appendMessage(payload?.message);
 		});
+		socket.on('chat:typing:updated', (payload) => {
+			showTypingIndicator(payload);
+		});
 
 		composer.addEventListener('submit', (event) => {
 			event.preventDefault();
 			void submitLiveMessage(socket);
+		});
+
+		const input = composer.elements.message;
+		input?.addEventListener('input', () => {
+			handleTypingInput(socket, input);
+		});
+		input?.addEventListener('blur', () => {
+			emitTypingState(socket, false);
 		});
 	}
 }
@@ -40,6 +56,7 @@ async function submitLiveMessage(socket) {
 
 	if (!message) return;
 
+	emitTypingState(socket, false);
 	setComposerDisabled(true);
 
 	try {
@@ -88,7 +105,61 @@ function appendMessage(message) {
 
 	const list = getMessageList();
 	list.appendChild(createMessageRow(message));
+	hideTypingIndicator();
 	messageSurface.scrollTop = messageSurface.scrollHeight;
+}
+
+function handleTypingInput(socket, input) {
+	const hasText = String(input?.value || '').trim().length > 0;
+
+	emitTypingState(socket, hasText);
+
+	clearTimeout(typingStopTimer);
+
+	if (hasText) {
+		typingStopTimer = setTimeout(() => {
+			emitTypingState(socket, false);
+		}, 1200);
+	}
+}
+
+function emitTypingState(socket, nextIsTyping) {
+	if (isTyping === nextIsTyping) return;
+
+	isTyping = nextIsTyping;
+	socket.emit('chat:typing:update', {
+		conversationId: chatPage.dataset.activeConversationId,
+		isTyping: nextIsTyping,
+	});
+}
+
+function showTypingIndicator(payload) {
+	if (
+		!typingIndicator ||
+		payload?.conversationId !== chatPage.dataset.activeConversationId ||
+		payload?.userId === chatPage.dataset.currentUserId
+	) {
+		return;
+	}
+
+	if (!payload.isTyping) {
+		hideTypingIndicator();
+		return;
+	}
+
+	typingIndicator.querySelector('span').textContent =
+		chatPage.dataset.typingLabel || '';
+	typingIndicator.hidden = false;
+
+	clearTimeout(typingHideTimer);
+	typingHideTimer = setTimeout(hideTypingIndicator, 2500);
+}
+
+function hideTypingIndicator() {
+	if (!typingIndicator) return;
+
+	typingIndicator.hidden = true;
+	clearTimeout(typingHideTimer);
 }
 
 function getMessageList() {
