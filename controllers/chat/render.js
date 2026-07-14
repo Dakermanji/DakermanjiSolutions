@@ -41,7 +41,11 @@ export async function renderChat(req, res, next) {
 				return res.render('chat/conversation', {
 					titleKey: 'chat:title',
 					styles: ['chat/main'],
-					scripts: ['chat/conversation'],
+					scripts: [
+						'chat/conversation-page/dates',
+						'chat/conversation-page/renderer',
+						'chat/conversation',
+					],
 					activeConversation,
 					messages: messages.messages,
 					hasOlderMessages: messages.hasMore,

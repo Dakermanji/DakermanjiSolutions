@@ -4,6 +4,7 @@ const chatPage = document.querySelector('[data-active-conversation-id]');
 const composer = document.querySelector('[data-chat-composer]');
 const messageSurface = document.querySelector('[data-chat-message-surface]');
 const typingIndicator = document.querySelector('[data-chat-typing-indicator]');
+const messageRenderer = window.ChatConversationRenderer;
 
 let typingStopTimer = null;
 let typingHideTimer = null;
@@ -11,9 +12,9 @@ let isTyping = false;
 let isLoadingOlderMessages = false;
 let hasOlderMessages = chatPage?.dataset.hasOlderMessages === 'true';
 
-if (chatPage && composer && messageSurface) {
+if (chatPage && composer && messageSurface && messageRenderer) {
 	requestAnimationFrame(() => {
-		rebuildMessageDateSeparators();
+		messageRenderer.rebuildMessageDateSeparators(messageSurface);
 		scrollToLatestMessage();
 		focusComposerInput();
 		void fillScrollableHistory();
@@ -28,12 +29,9 @@ if (chatPage && composer && messageSurface) {
 	const socket = connectChatSocket();
 
 	if (socket) {
-		socket.emit(
-			'chat:conversation:join',
-			{
-				conversationId: chatPage.dataset.activeConversationId,
-			},
-		);
+		socket.emit('chat:conversation:join', {
+			conversationId: chatPage.dataset.activeConversationId,
+		});
 
 		socket.on('chat:message:created', (payload) => {
 			appendMessage(payload?.message, socket);
@@ -121,13 +119,14 @@ function appendMessage(message, socket = null) {
 		return;
 	}
 
-	if (messageSurface.querySelector(`[data-chat-message-id="${message.id}"]`)) {
-		return;
-	}
+	const wasAppended = messageRenderer.appendMessage(
+		messageSurface,
+		message,
+		chatPage.dataset.currentUserId,
+	);
 
-	const list = getMessageList();
-	list.appendChild(createMessageRow(message));
-	rebuildMessageDateSeparators();
+	if (!wasAppended) return;
+
 	hideTypingIndicator();
 	scrollToLatestMessage();
 
@@ -186,7 +185,11 @@ async function loadOlderMessages() {
 			throw new Error('Invalid older messages payload');
 		}
 
-		prependMessages(payload.messages);
+		messageRenderer.prependMessages(
+			messageSurface,
+			payload.messages,
+			chatPage.dataset.currentUserId,
+		);
 		hasOlderMessages = Boolean(payload.hasMore);
 		chatPage.dataset.hasOlderMessages = hasOlderMessages ? 'true' : 'false';
 	} catch (error) {
@@ -205,29 +208,6 @@ async function fillScrollableHistory() {
 	) {
 		await loadOlderMessages();
 	}
-}
-
-function prependMessages(messages) {
-	if (messages.length === 0) return;
-
-	const list = getMessageList();
-	const previousScrollHeight = messageSurface.scrollHeight;
-
-	for (const message of [...messages].reverse()) {
-		if (
-			!message?.id ||
-			messageSurface.querySelector(`[data-chat-message-id="${message.id}"]`)
-		) {
-			continue;
-		}
-
-		list.prepend(createMessageRow(message));
-	}
-
-	rebuildMessageDateSeparators();
-
-	const nextScrollHeight = messageSurface.scrollHeight;
-	messageSurface.scrollTop += nextScrollHeight - previousScrollHeight;
 }
 
 function handleTypingInput(socket, input) {
@@ -281,161 +261,6 @@ function hideTypingIndicator() {
 
 	typingIndicator.hidden = true;
 	clearTimeout(typingHideTimer);
-}
-
-function getMessageList() {
-	const existingList = messageSurface.querySelector('[data-chat-message-list]');
-
-	if (existingList) {
-		return existingList;
-	}
-
-	messageSurface.querySelector('[data-chat-empty-state]')?.remove();
-
-	const list = document.createElement('ol');
-	list.className = 'chat-message-list';
-	list.dataset.chatMessageList = 'true';
-	messageSurface.appendChild(list);
-	return list;
-}
-
-function rebuildMessageDateSeparators() {
-	const list = messageSurface.querySelector('[data-chat-message-list]');
-	if (!list) return;
-
-	list
-		.querySelectorAll('[data-chat-date-separator]')
-		.forEach((separator) => separator.remove());
-
-	let currentDateKey = '';
-
-	for (const row of [...list.querySelectorAll('[data-chat-message-id]')]) {
-		const dateKey = getMessageDateKey(row.dataset.chatMessageCreatedAt);
-		if (!dateKey || dateKey === currentDateKey) continue;
-
-		currentDateKey = dateKey;
-		row.before(createDateSeparatorRow(dateKey, row.dataset.chatMessageCreatedAt));
-	}
-
-	rebuildMessageGroups(list);
-}
-
-function rebuildMessageGroups(list) {
-	const rows = [...list.querySelectorAll('[data-chat-message-id]')];
-
-	for (const row of rows) {
-		row.classList.remove('is-group-start', 'is-group-middle', 'is-group-end');
-		row.dataset.chatGroupStart = 'false';
-		row.dataset.chatGroupEnd = 'false';
-	}
-
-	for (const [index, row] of rows.entries()) {
-		const previousRow = rows[index - 1] || null;
-		const nextRow = rows[index + 1] || null;
-		const isGroupStart = !isSameMessageGroup(previousRow, row);
-		const isGroupEnd = !isSameMessageGroup(row, nextRow);
-
-		row.classList.add(
-			isGroupStart
-				? 'is-group-start'
-				: 'is-group-middle',
-		);
-
-		if (isGroupEnd) {
-			row.classList.add('is-group-end');
-		}
-
-		row.dataset.chatGroupStart = isGroupStart ? 'true' : 'false';
-		row.dataset.chatGroupEnd = isGroupEnd ? 'true' : 'false';
-	}
-}
-
-function isSameMessageGroup(currentRow, nextRow) {
-	if (!currentRow || !nextRow) return false;
-
-	return (
-		currentRow.dataset.chatMessageSenderId ===
-			nextRow.dataset.chatMessageSenderId &&
-		getMessageDateKey(currentRow.dataset.chatMessageCreatedAt) ===
-			getMessageDateKey(nextRow.dataset.chatMessageCreatedAt)
-	);
-}
-
-function createDateSeparatorRow(dateKey, value) {
-	const row = document.createElement('li');
-	row.className = 'chat-date-separator';
-	row.dataset.chatDateSeparator = 'true';
-
-	const time = document.createElement('time');
-	time.dateTime = dateKey;
-	time.textContent = `-- ${formatMessageDate(value)} --`;
-
-	row.appendChild(time);
-	return row;
-}
-
-function createMessageRow(message) {
-	const row = document.createElement('li');
-	const isMine = message.sender?.id === chatPage.dataset.currentUserId;
-	row.className = `chat-message-row ${isMine ? 'is-mine' : 'is-theirs'}`;
-	row.dataset.chatMessageId = message.id;
-	row.dataset.chatMessageSenderId = message.sender?.id || '';
-	row.dataset.chatMessageCreatedAt = new Date(message.createdAt).toISOString();
-
-	const bubble = document.createElement('article');
-	bubble.className = 'chat-message-bubble';
-
-	const body = document.createElement('p');
-	body.className = 'chat-message-text';
-	body.dir = 'auto';
-	body.textContent = message.body || '';
-
-	const footer = document.createElement('footer');
-	const time = document.createElement('time');
-	time.dateTime = new Date(message.createdAt).toISOString();
-	time.textContent = formatMessageTime(message.createdAt);
-
-	footer.appendChild(time);
-	bubble.append(body, footer);
-	row.appendChild(bubble);
-
-	return row;
-}
-
-function getMessageDateKey(value) {
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) return '';
-
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, '0');
-	const day = String(date.getDate()).padStart(2, '0');
-
-	return `${year}-${month}-${day}`;
-}
-
-function formatMessageDate(value) {
-	if (!value) return '';
-
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) return '';
-
-	return new Intl.DateTimeFormat(document.documentElement.lang || 'en', {
-		day: 'numeric',
-		month: 'long',
-		year: 'numeric',
-	}).format(date);
-}
-
-function formatMessageTime(value) {
-	if (!value) return '';
-
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) return '';
-
-	return new Intl.DateTimeFormat(document.documentElement.lang || 'en', {
-		hour: '2-digit',
-		minute: '2-digit',
-	}).format(date);
 }
 
 function setComposerDisabled(disabled) {
