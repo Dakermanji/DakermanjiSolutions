@@ -15,6 +15,7 @@ if (chatPage && composer && messageSurface) {
 	requestAnimationFrame(() => {
 		rebuildMessageDateSeparators();
 		scrollToLatestMessage();
+		focusComposerInput();
 		void fillScrollableHistory();
 	});
 
@@ -68,10 +69,14 @@ async function submitLiveMessage(socket) {
 	const input = composer.elements.message;
 	const message = String(input?.value || '').trim();
 
-	if (!message) return;
+	if (!message) {
+		focusComposerInput();
+		return;
+	}
 
 	emitTypingState(socket, false);
 	setComposerDisabled(true);
+	let shouldRefocus = false;
 
 	try {
 		const response = await emitWithAck(socket, 'chat:message:create', {
@@ -86,12 +91,15 @@ async function submitLiveMessage(socket) {
 
 		appendMessage(response.message, socket);
 		input.value = '';
-		input.focus();
+		shouldRefocus = true;
 	} catch (error) {
 		console.error('Failed to send live chat message', error);
 		composer.submit();
 	} finally {
 		setComposerDisabled(false);
+		if (shouldRefocus) {
+			focusComposerInput();
+		}
 	}
 }
 
@@ -132,6 +140,13 @@ function appendMessage(message, socket = null) {
 
 function scrollToLatestMessage() {
 	messageSurface.scrollTop = messageSurface.scrollHeight;
+}
+
+function focusComposerInput() {
+	const input = composer.elements.message;
+	if (!input || input.disabled) return;
+
+	input.focus({ preventScroll: true });
 }
 
 async function loadOlderMessages() {
