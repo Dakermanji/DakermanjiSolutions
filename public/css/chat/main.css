@@ -373,7 +373,7 @@ body:has(.chat-conversation-page) main.container {
 
 .chat-message-list {
 	display: grid;
-	gap: 0.65rem;
+	gap: 0.25rem;
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -389,6 +389,14 @@ body:has(.chat-conversation-page) main.container {
 
 .chat-message-row.is-theirs {
 	justify-content: flex-start;
+}
+
+.chat-message-row.is-group-start {
+	margin-top: 0.4rem;
+}
+
+.chat-date-separator + .chat-message-row.is-group-start {
+	margin-top: 0;
 }
 
 .chat-date-separator {

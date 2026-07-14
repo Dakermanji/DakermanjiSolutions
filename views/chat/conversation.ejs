@@ -99,6 +99,7 @@
 					<li
 						class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>"
 						data-chat-message-id="<%= message.id %>"
+						data-chat-message-sender-id="<%= message.sender?.id || '' %>"
 						data-chat-message-created-at="<%= new Date(message.createdAt).toISOString() %>"
 					>
 						<article class="chat-message-bubble">

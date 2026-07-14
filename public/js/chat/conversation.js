@@ -316,6 +316,49 @@ function rebuildMessageDateSeparators() {
 		currentDateKey = dateKey;
 		row.before(createDateSeparatorRow(dateKey, row.dataset.chatMessageCreatedAt));
 	}
+
+	rebuildMessageGroups(list);
+}
+
+function rebuildMessageGroups(list) {
+	const rows = [...list.querySelectorAll('[data-chat-message-id]')];
+
+	for (const row of rows) {
+		row.classList.remove('is-group-start', 'is-group-middle', 'is-group-end');
+		row.dataset.chatGroupStart = 'false';
+		row.dataset.chatGroupEnd = 'false';
+	}
+
+	for (const [index, row] of rows.entries()) {
+		const previousRow = rows[index - 1] || null;
+		const nextRow = rows[index + 1] || null;
+		const isGroupStart = !isSameMessageGroup(previousRow, row);
+		const isGroupEnd = !isSameMessageGroup(row, nextRow);
+
+		row.classList.add(
+			isGroupStart
+				? 'is-group-start'
+				: 'is-group-middle',
+		);
+
+		if (isGroupEnd) {
+			row.classList.add('is-group-end');
+		}
+
+		row.dataset.chatGroupStart = isGroupStart ? 'true' : 'false';
+		row.dataset.chatGroupEnd = isGroupEnd ? 'true' : 'false';
+	}
+}
+
+function isSameMessageGroup(currentRow, nextRow) {
+	if (!currentRow || !nextRow) return false;
+
+	return (
+		currentRow.dataset.chatMessageSenderId ===
+			nextRow.dataset.chatMessageSenderId &&
+		getMessageDateKey(currentRow.dataset.chatMessageCreatedAt) ===
+			getMessageDateKey(nextRow.dataset.chatMessageCreatedAt)
+	);
 }
 
 function createDateSeparatorRow(dateKey, value) {
@@ -336,6 +379,7 @@ function createMessageRow(message) {
 	const isMine = message.sender?.id === chatPage.dataset.currentUserId;
 	row.className = `chat-message-row ${isMine ? 'is-mine' : 'is-theirs'}`;
 	row.dataset.chatMessageId = message.id;
+	row.dataset.chatMessageSenderId = message.sender?.id || '';
 	row.dataset.chatMessageCreatedAt = new Date(message.createdAt).toISOString();
 
 	const bubble = document.createElement('article');
