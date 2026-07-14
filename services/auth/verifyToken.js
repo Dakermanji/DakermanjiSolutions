@@ -1,6 +1,6 @@
 //! services/auth/verifyToken.js
 
-import AuthTokenModel from '../../models/AuthToken.js';
+import AuthTokenModel from '../../models/auth/Token.js';
 import tokens from '../../services/auth/tokens.js';
 
 export const tokenTypes = {

@@ -1,6 +1,6 @@
-//! models/UserProvider.js
+//! models/user/provider.js
 
-import { queryRows } from '../config/database.js';
+import { queryRows } from '../../config/database.js';
 
 /**
  * Find a linked user by provider account.

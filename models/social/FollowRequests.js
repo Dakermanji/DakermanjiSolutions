@@ -1,6 +1,6 @@
-//! models/UserFollowRequests.js
+//! models/social/FollowRequests.js
 
-import { query, queryRows } from '../config/database.js';
+import { query, queryRows } from '../../config/database.js';
 
 const BASE_FIELDS = ['id', 'requester_id', 'target_id', 'status', 'created_at'];
 

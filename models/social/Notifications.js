@@ -1,6 +1,6 @@
-//! models/UserSocialNotifications.js
+//! models/social/Notifications.js
 
-import { query, queryRows } from '../config/database.js';
+import { query, queryRows } from '../../config/database.js';
 
 const BASE_FIELDS = [
 	'id',

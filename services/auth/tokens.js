@@ -2,7 +2,7 @@
 
 import crypto from 'node:crypto';
 
-import AuthTokenModel from '../../models/AuthToken.js';
+import AuthTokenModel from '../../models/auth/Token.js';
 
 export const AUTH_EXPIRY_TIME = 1000 * 60 * 60 * 6; // unit is ms, result is 6 hours
 export const ACCOUNT_DELETION_EXPIRY_TIME = 1000 * 60 * 15; // 15 minutes

@@ -1,6 +1,6 @@
 //! services/apiUsage/quota.js
 
-import ExternalApiRequestLogModel from '../../models/ExternalApiRequestLog.js';
+import ExternalApiRequestLogModel from '../../models/apiUsage/RequestLog.js';
 import { API_USAGE_LIMITS } from './limits.js';
 
 function getLimitRules(provider, requestKey) {

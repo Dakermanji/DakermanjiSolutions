@@ -1,6 +1,6 @@
-//! models/AuthSecurityEvent.js
+//! models/auth/SecurityEvent.js
 
-import { query, queryRows } from '../config/database.js';
+import { query, queryRows } from '../../config/database.js';
 
 /**
  * Auth Security Event Model

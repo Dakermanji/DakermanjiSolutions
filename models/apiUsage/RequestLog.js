@@ -1,6 +1,6 @@
-//! models/ExternalApiRequestLog.js
+//! models/apiUsage/RequestLog.js
 
-import { query, queryRows } from '../config/database.js';
+import { query, queryRows } from '../../config/database.js';
 
 async function countRecentByActor({
 	userId,

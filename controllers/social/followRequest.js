@@ -1,10 +1,10 @@
 //! controllers/social/followRequest.js
 
 import UserModel from '../../models/User.js';
-import UserBlocksModel from '../../models/UserBlocks.js';
-import UserFollowsModel from '../../models/UserFollows.js';
-import UserFollowRequestsModel from '../../models/UserFollowRequests.js';
-import UserSocialNotificationsModel from '../../models/UserSocialNotifications.js';
+import UserBlocksModel from '../../models/social/Blocks.js';
+import UserFollowsModel from '../../models/social/Follows.js';
+import UserFollowRequestsModel from '../../models/social/FollowRequests.js';
+import UserSocialNotificationsModel from '../../models/social/Notifications.js';
 import { ensureFriendConversationIfMutual } from '../../services/chat/friends.js';
 import { emitSocialCountsChanged } from '../../services/social/live.js';
 import { fail, success } from '../../services/http/response.js';

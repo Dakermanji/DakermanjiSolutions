@@ -1,6 +1,6 @@
 //! controllers/social/notifications.js
 
-import UserSocialNotificationsModel from '../../models/UserSocialNotifications.js';
+import UserSocialNotificationsModel from '../../models/social/Notifications.js';
 
 /**
  * Return notifications for the signed-in user.

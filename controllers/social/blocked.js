@@ -1,6 +1,6 @@
 //! controllers/social/blocked.js
 
-import UserBlocksModel from '../../models/UserBlocks.js';
+import UserBlocksModel from '../../models/social/Blocks.js';
 
 /**
  * Return blocked users for the signed-in user.

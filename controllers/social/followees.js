@@ -1,6 +1,6 @@
 //! controllers/social/followees.js
 
-import UserFollowsModel from '../../models/UserFollows.js';
+import UserFollowsModel from '../../models/social/Follows.js';
 
 /**
  * Return users followed by the signed-in user.

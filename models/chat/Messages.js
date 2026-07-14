@@ -1,6 +1,6 @@
-//! models/ChatMessages.js
+//! models/chat/Messages.js
 
-import pool, { queryRows } from '../config/database.js';
+import pool, { queryRows } from '../../config/database.js';
 
 /**
  * List recent messages for one conversation in display order.

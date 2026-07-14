@@ -1,6 +1,6 @@
-//! models/AuthSecurity.js
+//! models/auth/Security.js
 
-import { query, queryRows } from '../config/database.js';
+import { query, queryRows } from '../../config/database.js';
 
 /**
  * Auth Security Model

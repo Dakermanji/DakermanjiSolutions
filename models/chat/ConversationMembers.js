@@ -1,6 +1,6 @@
-//! models/ChatConversationMembers.js
+//! models/chat/ConversationMembers.js
 
-import { queryRows } from '../config/database.js';
+import { queryRows } from '../../config/database.js';
 
 /**
  * Mark one member as having read through the conversation's latest message.

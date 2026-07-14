@@ -1,7 +1,7 @@
 //! services/auth/signupLocal.js
 
 import UserModel from '../../models/User.js';
-import AuthTokenModel from '../../models/AuthToken.js';
+import AuthTokenModel from '../../models/auth/Token.js';
 import { sendSignupEmail } from './email.js';
 import tokens from './tokens.js';
 import { tokenTypes } from './verifyToken.js';

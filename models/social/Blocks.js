@@ -1,6 +1,6 @@
-//! models/UserBlocks.js
+//! models/social/Blocks.js
 
-import { query, queryRows } from '../config/database.js';
+import { query, queryRows } from '../../config/database.js';
 
 const BASE_FIELDS = ['id', 'blocker_id', 'blocked_id', 'created_at'];
 const baseFieldsWithAlias = (alias) =>

@@ -1,6 +1,6 @@
-//! models/ChatConversations.js
+//! models/chat/Conversations.js
 
-import pool, { queryRows } from '../config/database.js';
+import pool, { queryRows } from '../../config/database.js';
 
 const FRIEND_CONVERSATION_TYPE = 'friend';
 const MEMBER_ROLE = 'member';

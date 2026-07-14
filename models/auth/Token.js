@@ -1,6 +1,6 @@
-//! models/AuthToken.js
+//! models/auth/Token.js
 
-import { query, queryRows } from '../config/database.js';
+import { query, queryRows } from '../../config/database.js';
 
 /**
  * Create a token.

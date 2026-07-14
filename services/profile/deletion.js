@@ -1,6 +1,6 @@
 //! services/profile/deletion.js
 
-import AuthTokenModel from '../../models/AuthToken.js';
+import AuthTokenModel from '../../models/auth/Token.js';
 import UserModel from '../../models/User.js';
 import {
 	ACCOUNT_DELETION_EXPIRY_TIME,

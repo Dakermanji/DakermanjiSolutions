@@ -1,6 +1,6 @@
 //! services/auth/security.js
 
-import AuthSecurityEventModel from '../../models/AuthSecurityEvent.js';
+import AuthSecurityEventModel from '../../models/auth/SecurityEvent.js';
 
 export const RECOVERY_RATE_LIMIT_RULES = [
 	{ windowMs: 1000 * 60 * 5, max: 3 },

@@ -1,9 +1,9 @@
 //! services/chat/friends.js
 
-import ChatConversationsModel from '../../models/ChatConversations.js';
-import ChatConversationMembersModel from '../../models/ChatConversationMembers.js';
-import UserBlocksModel from '../../models/UserBlocks.js';
-import UserFollowsModel from '../../models/UserFollows.js';
+import ChatConversationsModel from '../../models/chat/Conversations.js';
+import ChatConversationMembersModel from '../../models/chat/ConversationMembers.js';
+import UserBlocksModel from '../../models/social/Blocks.js';
+import UserFollowsModel from '../../models/social/Follows.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
 
 function formatFriendConversation(conversation) {

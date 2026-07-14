@@ -1,7 +1,7 @@
 //! config/passport/strategies/localSecurity.js
 
-import AuthSecurityModel from '../../../models/AuthSecurity.js';
-import AuthSecurityEventModel from '../../../models/AuthSecurityEvent.js';
+import AuthSecurityModel from '../../../models/auth/Security.js';
+import AuthSecurityEventModel from '../../../models/auth/SecurityEvent.js';
 import UserModel from '../../../models/User.js';
 
 /**

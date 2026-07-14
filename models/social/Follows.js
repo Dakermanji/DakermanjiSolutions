@@ -1,6 +1,6 @@
-//! models/UserFollows.js
+//! models/social/Follows.js
 
-import { query, queryRows } from '../config/database.js';
+import { query, queryRows } from '../../config/database.js';
 
 const BASE_FIELDS = ['id', 'follower_id', 'followee_id', 'created_at'];
 const baseFieldsWithAlias = (alias) =>

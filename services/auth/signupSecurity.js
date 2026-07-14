@@ -1,6 +1,6 @@
 //! services/auth/signupSecurity.js
 
-import SignupSecurityModel from '../../models/SignupSecurity.js';
+import SignupSecurityModel from '../../models/auth/SignupSecurity.js';
 
 /**
  * Signup security helpers.

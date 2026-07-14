@@ -1,6 +1,6 @@
 //! controllers/social/actionContext.js
 
-import UserSocialNotificationsModel from '../../models/UserSocialNotifications.js';
+import UserSocialNotificationsModel from '../../models/social/Notifications.js';
 
 /**
  * Build normalized context for one social action.

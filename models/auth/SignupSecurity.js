@@ -1,6 +1,6 @@
-//! models/SignupSecurity.js
+//! models/auth/SignupSecurity.js
 
-import { query, queryRows } from '../config/database.js';
+import { query, queryRows } from '../../config/database.js';
 
 /**
  * Signup Security Model

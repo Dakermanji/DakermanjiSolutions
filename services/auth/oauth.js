@@ -1,8 +1,8 @@
 //! services/auth/oauth.js
 
 import UserModel from '../../models/User.js';
-import AuthSecurityModel from '../../models/AuthSecurity.js';
-import UserProviderModel from '../../models/UserProvider.js';
+import AuthSecurityModel from '../../models/auth/Security.js';
+import UserProviderModel from '../../models/user/provider.js';
 import { getLocale, setLangCookie } from '../i18n/locale.js';
 
 /**

@@ -1,8 +1,8 @@
 //! controllers/social/counts.js
 
-import UserBlocksModel from '../../models/UserBlocks.js';
-import UserFollowsModel from '../../models/UserFollows.js';
-import UserSocialNotificationsModel from '../../models/UserSocialNotifications.js';
+import UserBlocksModel from '../../models/social/Blocks.js';
+import UserFollowsModel from '../../models/social/Follows.js';
+import UserSocialNotificationsModel from '../../models/social/Notifications.js';
 
 /**
  * Return social section counts for the signed-in user.

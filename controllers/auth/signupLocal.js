@@ -3,7 +3,7 @@
 import logger from '../../config/logger.js';
 import { logAuthEvent } from '../../config/passport/strategies/localSecurity.js';
 import UserModel from '../../models/User.js';
-import SignupSecurityModel from '../../models/SignupSecurity.js';
+import SignupSecurityModel from '../../models/auth/SignupSecurity.js';
 import { getRequestMeta } from '../../services/http/requestMeta.js';
 import {
 	isLocked,

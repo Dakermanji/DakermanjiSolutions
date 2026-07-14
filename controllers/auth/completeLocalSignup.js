@@ -2,7 +2,7 @@
 
 import logger from '../../config/logger.js';
 import UserModel from '../../models/User.js';
-import AuthTokenModel from '../../models/AuthToken.js';
+import AuthTokenModel from '../../models/auth/Token.js';
 import { verifyToken, tokenTypes } from '../../services/auth/verifyToken.js';
 import { hashPassword } from '../../services/auth/password.js';
 import { fail } from '../../services/http/response.js';

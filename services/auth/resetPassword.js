@@ -1,7 +1,7 @@
 //! services/auth/resetPassword.js
 
 import UserModel from '../../models/User.js';
-import AuthTokenModel from '../../models/AuthToken.js';
+import AuthTokenModel from '../../models/auth/Token.js';
 import { hashPassword } from './password.js';
 import { verifyToken, tokenTypes } from './verifyToken.js';
 import { logAuthEvent } from '../../config/passport/strategies/localSecurity.js';

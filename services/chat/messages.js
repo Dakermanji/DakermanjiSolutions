@@ -1,7 +1,7 @@
 //! services/chat/messages.js
 
-import ChatMessagesModel from '../../models/ChatMessages.js';
-import ChatConversationsModel from '../../models/ChatConversations.js';
+import ChatMessagesModel from '../../models/chat/Messages.js';
+import ChatConversationsModel from '../../models/chat/Conversations.js';
 
 const MESSAGE_BODY_MAX_LENGTH = 2000;
 const RECENT_MESSAGE_LIMIT = 50;
