@@ -88,7 +88,7 @@ function createFriendChatItem(item) {
 	const form = document.createElement('form');
 	form.className = 'chat-friend-form';
 	form.method = 'POST';
-	form.action = friendsBody.dataset.openUrl || '/chat/open';
+	form.action = friendsBody.dataset.openUrl || '/chat/friends/open';
 
 	const input = document.createElement('input');
 	input.type = 'hidden';

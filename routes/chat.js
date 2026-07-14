@@ -14,9 +14,9 @@ const router = Router();
 
 router.get('/', renderChat);
 router.get('/friends', getFriendChats);
-router.get('/messages', getOlderFriendMessages);
-router.post('/open', openFriendConversation);
-router.post('/close', closeFriendConversation);
-router.post('/messages', createFriendChatMessage);
+router.get('/friends/messages', getOlderFriendMessages);
+router.post('/friends/open', openFriendConversation);
+router.post('/friends/close', closeFriendConversation);
+router.post('/friends/messages', createFriendChatMessage);
 
 export default router;

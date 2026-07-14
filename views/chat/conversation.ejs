@@ -47,10 +47,10 @@
 	data-current-user-id="<%= user.id %>"
 	data-typing-label="✍️ <%= t('chat:conversation.typing', { user: friendName }) %>"
 	data-has-older-messages="<%= canLoadOlderMessages ? 'true' : 'false' %>"
-	data-older-messages-url="/chat/messages"
+	data-older-messages-url="/chat/friends/messages"
 >
 	<header class="chat-conversation-header">
-		<form method="POST" action="/chat/close" class="chat-back-form">
+		<form method="POST" action="/chat/friends/close" class="chat-back-form">
 			<button
 				class="btn btn-action-outline chat-back-button has-tooltip"
 				type="submit"
@@ -127,7 +127,7 @@
 	<form
 		class="chat-composer"
 		method="POST"
-		action="/chat/messages"
+		action="/chat/friends/messages"
 		aria-label="<%= t('chat:conversation.composer') %>"
 		data-chat-composer
 	>
