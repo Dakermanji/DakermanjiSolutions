@@ -1,0 +1,113 @@
+/*! public/css/chat/messages.css */
+
+.chat-message-surface {
+	display: block;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 1rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	background: var(--bg-section);
+}
+
+.chat-message-surface.is-loading-older {
+	scroll-behavior: auto;
+}
+
+.chat-message-surface:has(.chat-empty-state) {
+	display: grid;
+	align-content: center;
+}
+
+.chat-message-list {
+	display: grid;
+	gap: 0.25rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.chat-message-row {
+	display: flex;
+}
+
+.chat-message-row.is-mine {
+	justify-content: flex-end;
+}
+
+.chat-message-row.is-theirs {
+	justify-content: flex-start;
+}
+
+.chat-message-row.is-group-start {
+	margin-top: 0.4rem;
+}
+
+.chat-date-separator + .chat-message-row.is-group-start {
+	margin-top: 0;
+}
+
+.chat-date-separator {
+	display: flex;
+	justify-content: center;
+	margin: 0.25rem 0;
+	color: var(--color-text-muted);
+	font-size: 0.8rem;
+	font-weight: 700;
+}
+
+.chat-date-separator time {
+	padding: 0.2rem 0.65rem;
+	border: 1px solid var(--border-soft);
+	border-radius: 999px;
+	background: var(--bg-card-muted);
+}
+
+.chat-message-bubble {
+	display: grid;
+	gap: 0.35rem;
+	max-width: min(34rem, 82%);
+	padding: 0.65rem 0.8rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	background: var(--bg-card);
+	color: var(--color-text-body);
+	overflow-wrap: anywhere;
+}
+
+.chat-message-row.is-mine .chat-message-bubble {
+	border-color: var(--color-secondary);
+	background: var(--color-secondary);
+	color: var(--color-text-inverse);
+}
+
+.chat-message-text {
+	margin: 0;
+	text-align: start;
+	unicode-bidi: plaintext;
+	white-space: pre-wrap;
+}
+
+.chat-message-bubble footer {
+	display: flex;
+	justify-content: flex-end;
+	color: var(--color-text-muted);
+	font-size: 0.75rem;
+	line-height: 1;
+}
+
+.chat-message-row.is-mine .chat-message-bubble footer {
+	color: var(--color-text-inverse);
+	opacity: 0.8;
+}
+
+.chat-typing-indicator {
+	min-height: 1.5rem;
+	padding: 0 0.25rem;
+	color: var(--color-text-muted);
+	font-size: 0.9rem;
+}
+
+.chat-typing-indicator[hidden] {
+	display: none;
+}
