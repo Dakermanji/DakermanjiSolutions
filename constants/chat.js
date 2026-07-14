@@ -16,6 +16,12 @@ export const CHAT_CONVERSATION_MEMBER_ROLES = Object.freeze({
 	MEMBER: 'member',
 });
 
+export const CHAT_CONVERSATION_MEMBER_STATUSES = Object.freeze({
+	ACTIVE: 'active',
+	MUTED: 'muted',
+	BANNED: 'banned',
+});
+
 export const CHAT_MESSAGE_LIMITS = Object.freeze({
 	BODY_MAX_LENGTH: 2000,
 	RECENT_PAGE_SIZE: 10,

@@ -1,8 +1,11 @@
 //! services/chat/messages.js
 
 import ChatMessagesModel from '../../models/chat/Messages.js';
-import ChatConversationsModel from '../../models/chat/Conversations.js';
 import { CHAT_MESSAGE_LIMITS } from '../../constants/chat.js';
+import {
+	findReadableChatConversation,
+	findWritableChatConversation,
+} from './authorization.js';
 
 const { BODY_MAX_LENGTH, OLDER_PAGE_SIZE, RECENT_PAGE_SIZE } =
 	CHAT_MESSAGE_LIMITS;
@@ -83,11 +86,10 @@ export async function createFriendMessage({
 		return null;
 	}
 
-	const conversation =
-		await ChatConversationsModel.findVisibleFriendConversationForUser(
-			conversationId,
-			senderUserId,
-		);
+	const conversation = await findWritableChatConversation({
+		conversationId,
+		userId: senderUserId,
+	});
 
 	if (!conversation) {
 		return null;
@@ -110,10 +112,10 @@ export async function createFriendMessage({
  * @returns {Promise<object|null>}
  */
 export function findOpenableFriendConversation(conversationId, userId) {
-	return ChatConversationsModel.findVisibleFriendConversationForUser(
+	return findReadableChatConversation({
 		conversationId,
 		userId,
-	);
+	});
 }
 
 /**
@@ -124,11 +126,10 @@ export function findOpenableFriendConversation(conversationId, userId) {
  * @returns {Promise<object>}
  */
 export async function listFriendMessages(conversationId, viewerUserId) {
-	const conversation =
-		await ChatConversationsModel.findVisibleFriendConversationForUser(
-			conversationId,
-			viewerUserId,
-		);
+	const conversation = await findReadableChatConversation({
+		conversationId,
+		userId: viewerUserId,
+	});
 
 	if (!conversation) {
 		return emptyMessagePage();
@@ -156,11 +157,10 @@ export async function listOlderFriendMessages({
 	viewerUserId,
 	beforeId,
 }) {
-	const conversation =
-		await ChatConversationsModel.findVisibleFriendConversationForUser(
-			conversationId,
-			viewerUserId,
-		);
+	const conversation = await findReadableChatConversation({
+		conversationId,
+		userId: viewerUserId,
+	});
 
 	if (!conversation) {
 		return null;

@@ -5,6 +5,7 @@ import ChatConversationMembersModel from '../../models/chat/ConversationMembers.
 import UserBlocksModel from '../../models/social/Blocks.js';
 import UserFollowsModel from '../../models/social/Follows.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
+import { findReadableChatConversation } from './authorization.js';
 
 function formatFriendConversation(conversation) {
 	const friendName =
@@ -98,10 +99,10 @@ export function countUnreadFriendMessages(userId) {
  * @returns {Promise<object|null>}
  */
 export function findOpenableFriendConversation(conversationId, userId) {
-	return ChatConversationsModel.findVisibleFriendConversationForUser(
+	return findReadableChatConversation({
 		conversationId,
 		userId,
-	);
+	});
 }
 
 /**
@@ -112,6 +113,15 @@ export function findOpenableFriendConversation(conversationId, userId) {
  * @returns {Promise<object|null>}
  */
 export async function getOpenFriendConversation(conversationId, userId) {
+	const readableConversation = await findReadableChatConversation({
+		conversationId,
+		userId,
+	});
+
+	if (!readableConversation) {
+		return null;
+	}
+
 	const conversation =
 		await ChatConversationsModel.findFriendConversationForUserById(
 			conversationId,
@@ -129,11 +139,10 @@ export async function getOpenFriendConversation(conversationId, userId) {
  * @returns {Promise<object|null>}
  */
 export async function markFriendConversationRead(conversationId, userId) {
-	const conversation =
-		await ChatConversationsModel.findVisibleFriendConversationForUser(
-			conversationId,
-			userId,
-		);
+	const conversation = await findReadableChatConversation({
+		conversationId,
+		userId,
+	});
 
 	if (!conversation) {
 		return null;
