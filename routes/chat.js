@@ -2,11 +2,11 @@
 
 import { Router } from 'express';
 import {
-	closeChatConversation,
-	createChatMessage,
+	closeFriendConversation,
+	createFriendChatMessage,
 	getFriendChats,
-	getOlderChatMessages,
-	openChatConversation,
+	getOlderFriendMessages,
+	openFriendConversation,
 	renderChat,
 } from '../controllers/chat/index.js';
 
@@ -14,9 +14,9 @@ const router = Router();
 
 router.get('/', renderChat);
 router.get('/friends', getFriendChats);
-router.get('/messages', getOlderChatMessages);
-router.post('/open', openChatConversation);
-router.post('/close', closeChatConversation);
-router.post('/messages', createChatMessage);
+router.get('/messages', getOlderFriendMessages);
+router.post('/open', openFriendConversation);
+router.post('/close', closeFriendConversation);
+router.post('/messages', createFriendChatMessage);
 
 export default router;

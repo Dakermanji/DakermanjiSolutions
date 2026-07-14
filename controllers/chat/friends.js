@@ -35,7 +35,7 @@ export async function getFriendChats(req, res, next) {
  * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
-export async function openChatConversation(req, res, next) {
+export async function openFriendConversation(req, res, next) {
 	const conversationId = String(req.body?.conversationId || '').trim();
 
 	if (!isValidUuid(conversationId)) {
@@ -70,7 +70,7 @@ export async function openChatConversation(req, res, next) {
  * @param {import('express').Response} res
  * @returns {void}
  */
-export function closeChatConversation(req, res) {
+export function closeFriendConversation(req, res) {
 	req.session.chat = {
 		...(req.session.chat || {}),
 		activeConversationId: null,

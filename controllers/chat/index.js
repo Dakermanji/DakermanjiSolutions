@@ -2,11 +2,11 @@
 
 export { renderChat } from './render.js';
 export {
-	closeChatConversation,
+	closeFriendConversation,
 	getFriendChats,
-	openChatConversation,
+	openFriendConversation,
 } from './friends.js';
 export {
-	createChatMessage,
-	getOlderChatMessages,
+	createFriendChatMessage,
+	getOlderFriendMessages,
 } from './messages.js';

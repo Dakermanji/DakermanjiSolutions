@@ -16,7 +16,7 @@ import { CHAT_REDIRECT } from './constants.js';
  * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
-export async function getOlderChatMessages(req, res, next) {
+export async function getOlderFriendMessages(req, res, next) {
 	const activeConversationId = req.session.chat?.activeConversationId || null;
 	const beforeId = String(req.query?.beforeId || '').trim();
 
@@ -60,7 +60,7 @@ export async function getOlderChatMessages(req, res, next) {
  * @param {import('express').NextFunction} next
  * @returns {Promise<void>}
  */
-export async function createChatMessage(req, res, next) {
+export async function createFriendChatMessage(req, res, next) {
 	const activeConversationId = req.session.chat?.activeConversationId || null;
 
 	if (!activeConversationId || !isValidUuid(activeConversationId)) {
