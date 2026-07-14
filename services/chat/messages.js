@@ -6,12 +6,35 @@ import {
 	findReadableChatConversation,
 	findWritableChatConversation,
 } from './authorization.js';
+import { getUserAvatarProfile } from '../avatar/dicebear.js';
 
 const { BODY_MAX_LENGTH, OLDER_PAGE_SIZE, RECENT_PAGE_SIZE } =
 	CHAT_MESSAGE_LIMITS;
 
 function normalizeMessageBody(body) {
 	return String(body || '').trim();
+}
+
+function formatMessageSender(message) {
+	const displayName =
+		message.sender_username ||
+		message.sender_email ||
+		'User';
+	const avatar = getUserAvatarProfile(
+		message.sender_avatar_seed || displayName,
+	);
+
+	return {
+		id: message.sender_user_id,
+		username: message.sender_username,
+		email: message.sender_email,
+		displayName,
+		countryCode: message.sender_country_code,
+		avatar: {
+			src: avatar.src,
+			background: avatar.background,
+		},
+	};
 }
 
 function formatMessage(message, viewerUserId) {
@@ -23,11 +46,7 @@ function formatMessage(message, viewerUserId) {
 		updatedAt: message.updated_at,
 		editedAt: message.edited_at,
 		isMine: message.sender_user_id === viewerUserId,
-		sender: {
-			id: message.sender_user_id,
-			username: message.sender_username,
-			email: message.sender_email,
-		},
+		sender: formatMessageSender(message),
 	};
 }
 
@@ -39,11 +58,7 @@ function formatLiveMessage(message) {
 		createdAt: message.created_at,
 		updatedAt: message.updated_at,
 		editedAt: message.edited_at,
-		sender: {
-			id: message.sender_user_id,
-			username: message.sender_username,
-			email: message.sender_email,
-		},
+		sender: formatMessageSender(message),
 	};
 }
 

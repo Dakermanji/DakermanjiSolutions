@@ -25,7 +25,9 @@ export async function findRecentConversationMessages(
 				cm.created_at,
 				cm.updated_at,
 				u.username AS sender_username,
-				u.email AS sender_email
+				u.email AS sender_email,
+				u.avatar_seed AS sender_avatar_seed,
+				u.country_code AS sender_country_code
 			FROM chat_messages cm
 			INNER JOIN users u
 				ON u.id = cm.sender_user_id
@@ -73,7 +75,9 @@ export async function findOlderConversationMessages({
 				cm.created_at,
 				cm.updated_at,
 				u.username AS sender_username,
-				u.email AS sender_email
+				u.email AS sender_email,
+				u.avatar_seed AS sender_avatar_seed,
+				u.country_code AS sender_country_code
 			FROM chat_messages cm
 			CROSS JOIN cursor_message cursor
 			INNER JOIN users u
@@ -167,7 +171,9 @@ export async function createConversationMessage({
 					cm.created_at,
 					cm.updated_at,
 					u.username AS sender_username,
-					u.email AS sender_email
+					u.email AS sender_email,
+					u.avatar_seed AS sender_avatar_seed,
+					u.country_code AS sender_country_code
 				FROM chat_messages cm
 				INNER JOIN users u
 					ON u.id = cm.sender_user_id
