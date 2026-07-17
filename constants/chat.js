@@ -10,6 +10,18 @@ export const CHAT_CONVERSATION_TYPES = Object.freeze({
 	PROJECT_ROOM: 'project_room',
 });
 
+export const CHAT_ROOM_VISIBILITY = Object.freeze({
+	PUBLIC: 'public',
+	PRIVATE_LISTED: 'private_listed',
+	PRIVATE_UNLISTED: 'private_unlisted',
+});
+
+export const CHAT_ROOM_JOIN_POLICIES = Object.freeze({
+	OPEN: 'open',
+	REQUEST: 'request',
+	INVITE_ONLY: 'invite_only',
+});
+
 export const CHAT_CONVERSATION_MEMBER_ROLES = Object.freeze({
 	OWNER: 'owner',
 	ADMIN: 'admin',
