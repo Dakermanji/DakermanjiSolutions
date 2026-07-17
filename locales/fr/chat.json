@@ -29,8 +29,17 @@
 		"createError": "Impossible de créer ce salon.",
 		"searchTitle": "Rechercher un salon",
 		"searchLabel": "Nom du salon",
+		"searchSubmit": "Rechercher",
 		"searchPlaceholder": "Rechercher des salons publics et privés listés...",
 		"searchEmpty": "Recherchez des salons publics, des salons privés listés et les salons que vous avez déjà rejoints.",
+		"searchNoResults": "Aucun salon ne correspond à votre recherche.",
+		"searchError": "Impossible de rechercher des salons. Veuillez réessayer.",
+		"owner": "Propriétaire : {{owner}}",
+		"actions": {
+			"open": "Ouvrir le salon",
+			"join": "Rejoindre le salon",
+			"request": "Demander à rejoindre"
+		},
 		"name": "Nom du salon",
 		"description": "Description",
 		"visibility": "Visibilité",

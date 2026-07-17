@@ -29,8 +29,17 @@
 		"createError": "Could not create this room.",
 		"searchTitle": "Search rooms",
 		"searchLabel": "Room name",
+		"searchSubmit": "Search",
 		"searchPlaceholder": "Search public and listed private rooms...",
 		"searchEmpty": "Search for public rooms, listed private rooms, and rooms you already joined.",
+		"searchNoResults": "No rooms matched your search.",
+		"searchError": "Could not search rooms. Please try again.",
+		"owner": "Owner: {{owner}}",
+		"actions": {
+			"open": "Open room",
+			"join": "Join room",
+			"request": "Request to join"
+		},
 		"name": "Room name",
 		"description": "Description",
 		"visibility": "Visibility",

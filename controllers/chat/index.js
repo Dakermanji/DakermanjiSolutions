@@ -15,4 +15,5 @@ export {
 	getPrivateRooms,
 	getPublicRooms,
 	openRoomConversation,
+	searchVisibleRooms,
 } from './rooms.js';

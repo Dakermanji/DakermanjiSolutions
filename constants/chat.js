@@ -22,9 +22,17 @@ export const CHAT_ROOM_JOIN_POLICIES = Object.freeze({
 	INVITE_ONLY: 'invite_only',
 });
 
+export const CHAT_ROOM_SEARCH_ACTIONS = Object.freeze({
+	OPEN: 'open',
+	JOIN: 'join',
+	REQUEST: 'request',
+});
+
 export const CHAT_ROOM_LIMITS = Object.freeze({
 	NAME_MAX_LENGTH: 50,
 	DESCRIPTION_MAX_LENGTH: 500,
+	SEARCH_MAX_LENGTH: 80,
+	SEARCH_RESULT_LIMIT: 20,
 });
 
 export const CHAT_ROOM_VISIBILITY_JOIN_POLICIES = Object.freeze({

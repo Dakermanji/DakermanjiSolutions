@@ -5,6 +5,7 @@ import {
 	findOpenableRoomConversation,
 	listPrivateRooms,
 	listPublicRooms,
+	searchRooms,
 } from '../../services/chat/rooms.js';
 import { CHAT_REDIRECT } from '../../constants/chat.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
@@ -110,6 +111,26 @@ export async function getPublicRooms(req, res, next) {
 export async function getPrivateRooms(req, res, next) {
 	try {
 		const rooms = await listPrivateRooms(req.user.id);
+		return res.json({
+			ok: true,
+			rooms,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Search public/listed rooms and joined unlisted rooms.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function searchVisibleRooms(req, res, next) {
+	try {
+		const rooms = await searchRooms(req.user.id, req.query?.q);
 		return res.json({
 			ok: true,
 			rooms,

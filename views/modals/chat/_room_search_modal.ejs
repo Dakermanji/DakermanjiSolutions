@@ -22,14 +22,24 @@
 			</div>
 
 			<div class="modal-body">
-				<form class="chat-room-search-form" role="search">
+				<form
+					class="chat-room-search-form"
+					role="search"
+					data-chat-room-search-form
+					data-url="/chat/rooms/search"
+					data-open-url="/chat/rooms/open"
+					data-loading-label="<%= t('chat:states.loading') %>"
+					data-empty-label="<%= t('chat:rooms.searchNoResults') %>"
+					data-error-label="<%= t('chat:rooms.searchError') %>"
+					data-owner-label="<%= t('chat:rooms.owner') %>"
+					data-open-label="<%= t('chat:rooms.actions.open') %>"
+					data-join-label="<%= t('chat:rooms.actions.join') %>"
+					data-request-label="<%= t('chat:rooms.actions.request') %>"
+				>
 					<label for="chatRoomSearchQuery" class="form-label">
 						<%= t('chat:rooms.searchLabel') %>
 					</label>
 					<div class="input-group">
-						<span class="input-group-text" aria-hidden="true">
-							<i class="bi bi-search"></i>
-						</span>
 						<input
 							id="chatRoomSearchQuery"
 							type="search"
@@ -38,6 +48,12 @@
 							placeholder="<%= t('chat:rooms.searchPlaceholder') %>"
 							autocomplete="off"
 						/>
+						<button class="btn btn-action" type="submit">
+							<i class="bi bi-search" aria-hidden="true"></i>
+							<span class="visually-hidden">
+								<%= t('chat:rooms.searchSubmit') %>
+							</span>
+						</button>
 					</div>
 				</form>
 

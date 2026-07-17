@@ -3,16 +3,45 @@
 import ChatRoomsModel from '../../models/chat/Rooms.js';
 import ChatConversationMembersModel from '../../models/chat/ConversationMembers.js';
 import {
+	CHAT_ROOM_JOIN_POLICIES,
 	CHAT_ROOM_VISIBILITY_CONVERSATION_TYPES,
 	CHAT_ROOM_VISIBILITY_JOIN_POLICIES,
+	CHAT_ROOM_LIMITS,
+	CHAT_ROOM_SEARCH_ACTIONS,
 } from '../../constants/chat.js';
 import { validateCreateRoomInput } from '../../middlewares/validators/chat.js';
+
+const { SEARCH_MAX_LENGTH, SEARCH_RESULT_LIMIT } = CHAT_ROOM_LIMITS;
 
 function getRoomSettings(visibility) {
 	return {
 		conversationType: CHAT_ROOM_VISIBILITY_CONVERSATION_TYPES[visibility],
 		joinPolicy: CHAT_ROOM_VISIBILITY_JOIN_POLICIES[visibility],
 	};
+}
+
+function normalizeSearchQuery(query) {
+	return String(query || '')
+		.normalize('NFKC')
+		.trim()
+		.replace(/\s+/g, ' ')
+		.slice(0, SEARCH_MAX_LENGTH);
+}
+
+function escapeLikePattern(value) {
+	return value.replace(/[!%_]/g, (character) => `!${character}`);
+}
+
+function getSearchAction(room) {
+	if (room.member_role) {
+		return CHAT_ROOM_SEARCH_ACTIONS.OPEN;
+	}
+
+	if (room.join_policy === CHAT_ROOM_JOIN_POLICIES.OPEN) {
+		return CHAT_ROOM_SEARCH_ACTIONS.JOIN;
+	}
+
+	return CHAT_ROOM_SEARCH_ACTIONS.REQUEST;
 }
 
 function formatRoom(room) {
@@ -38,6 +67,19 @@ function formatRoom(room) {
 			username: room.owner_username,
 			email: room.owner_email,
 			displayName: ownerName,
+		},
+	};
+}
+
+function formatSearchRoom(room) {
+	const formatted = formatRoom(room);
+
+	return {
+		...formatted,
+		room: {
+			...formatted.room,
+			isMember: Boolean(room.member_role),
+			action: getSearchAction(room),
 		},
 	};
 }
@@ -120,6 +162,29 @@ export async function listPrivateRooms(userId) {
 }
 
 /**
+ * Search public/listed rooms plus joined unlisted rooms for one user.
+ *
+ * @param {string} userId
+ * @param {string} query
+ * @returns {Promise<Array>}
+ */
+export async function searchRooms(userId, query) {
+	const normalizedQuery = normalizeSearchQuery(query);
+
+	if (!normalizedQuery) {
+		return [];
+	}
+
+	const rooms = await ChatRoomsModel.searchVisibleRoomsForUser({
+		userId,
+		query: `%${escapeLikePattern(normalizedQuery)}%`,
+		limit: SEARCH_RESULT_LIMIT,
+	});
+
+	return rooms.map(formatSearchRoom);
+}
+
+/**
  * Check whether one room conversation can be opened by a user.
  *
  * @param {string} conversationId
@@ -191,5 +256,6 @@ export default {
 	listPrivateRooms,
 	listPublicRooms,
 	markRoomConversationRead,
+	searchRooms,
 	validateCreateRoomInput,
 };
