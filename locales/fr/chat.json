@@ -5,6 +5,7 @@
 	"count": "{{count}}",
 	"selfChat": "Notes",
 	"createRoom": "Créer un salon",
+	"searchRooms": "Rechercher un salon",
 	"openChat": "Ouvrir le chat",
 	"unreadMessages": "{{count}} messages non lus",
 	"backToChats": "Retour aux chats",

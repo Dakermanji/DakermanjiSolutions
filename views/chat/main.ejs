@@ -42,10 +42,14 @@
 			<p class="chat-kicker"><%= t('chat:kicker') %></p>
 			<h1 id="chat-title"><%= t('chat:title') %></h1>
 		</div>
-		<div class="chat-status" aria-label="<%= t('chat:status') %>">
-			<i class="bi bi-broadcast" aria-hidden="true"></i>
-			<span><%= t('chat:status') %></span>
-		</div>
+		<button
+			class="chat-status chat-search-rooms-button"
+			type="button"
+			aria-label="<%= t('chat:searchRooms') %>"
+		>
+			<i class="bi bi-search" aria-hidden="true"></i>
+			<span><%= t('chat:searchRooms') %></span>
+		</button>
 	</header>
 
 	<div class="accordion chat-accordion" id="chatSections">

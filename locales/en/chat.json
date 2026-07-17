@@ -5,6 +5,7 @@
 	"count": "{{count}}",
 	"selfChat": "Notes",
 	"createRoom": "Create room",
+	"searchRooms": "Search rooms",
 	"openChat": "Open chat",
 	"unreadMessages": "{{count}} unread messages",
 	"backToChats": "Back to chats",

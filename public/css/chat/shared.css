@@ -43,6 +43,22 @@
 	color: var(--color-secondary);
 }
 
+.chat-search-rooms-button {
+	cursor: pointer;
+	transition:
+		border-color var(--transition-time-method),
+		background-color var(--transition-time-method),
+		color var(--transition-time-method);
+}
+
+.chat-search-rooms-button:hover,
+.chat-search-rooms-button:focus-visible {
+	border-color: var(--color-secondary);
+	color: var(--color-text-body);
+	background: var(--bg-pill-hover);
+	outline: none;
+}
+
 .chat-empty-state {
 	display: grid;
 	justify-items: center;
