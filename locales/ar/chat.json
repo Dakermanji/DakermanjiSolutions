@@ -22,8 +22,18 @@
 		"typing": "{{user}} يكتب..."
 	},
 	"rooms": {
+		"createTitle": "إنشاء غرفة",
+		"createSubmit": "إنشاء الغرفة",
 		"createSuccess": "تم إنشاء الغرفة.",
-		"createError": "تعذر إنشاء هذه الغرفة."
+		"createError": "تعذر إنشاء هذه الغرفة.",
+		"name": "اسم الغرفة",
+		"description": "الوصف",
+		"visibility": "الظهور",
+		"visibilityOptions": {
+			"public": "عامة",
+			"privateListed": "خاصة، ظاهرة في البحث",
+			"privateUnlisted": "خاصة، غير ظاهرة في البحث"
+		}
 	},
 	"sections": {
 		"friends": {

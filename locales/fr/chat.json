@@ -22,8 +22,18 @@
 		"typing": "{{user}} écrit..."
 	},
 	"rooms": {
+		"createTitle": "Créer un salon",
+		"createSubmit": "Créer le salon",
 		"createSuccess": "Salon créé.",
-		"createError": "Impossible de créer ce salon."
+		"createError": "Impossible de créer ce salon.",
+		"name": "Nom du salon",
+		"description": "Description",
+		"visibility": "Visibilité",
+		"visibilityOptions": {
+			"public": "Public",
+			"privateListed": "Privé, listé",
+			"privateUnlisted": "Privé, non listé"
+		}
 	},
 	"sections": {
 		"friends": {

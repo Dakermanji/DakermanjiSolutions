@@ -1,0 +1,116 @@
+<!--! views/modals/chat/_room_modal.ejs -->
+
+<div
+	class="modal fade"
+	id="chatRoomModal"
+	tabindex="-1"
+	aria-labelledby="chatRoomModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="chatRoomModalLabel">
+					<%= t('chat:rooms.createTitle') %>
+				</h5>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="<%= t('common:close') %>"
+				></button>
+			</div>
+
+			<form method="POST" action="/chat/rooms">
+				<%- include('../../partials/_csrf') %>
+
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="chatRoomName" class="form-label">
+							<%= t('chat:rooms.name') %>
+						</label>
+						<input
+							id="chatRoomName"
+							type="text"
+							class="form-control"
+							name="name"
+							required
+							maxlength="50"
+							autocomplete="off"
+						/>
+					</div>
+
+					<div class="mb-3">
+						<label for="chatRoomDescription" class="form-label">
+							<%= t('chat:rooms.description') %>
+						</label>
+						<textarea
+							id="chatRoomDescription"
+							class="form-control"
+							name="description"
+							rows="4"
+							maxlength="500"
+						></textarea>
+					</div>
+
+					<fieldset class="mb-0">
+						<legend class="form-label">
+							<%= t('chat:rooms.visibility') %>
+						</legend>
+
+						<div class="vstack gap-2">
+							<label class="form-check">
+								<input
+									class="form-check-input"
+									type="radio"
+									name="visibility"
+									value="<%= roomVisibility.PUBLIC %>"
+									data-chat-room-visibility-option="public"
+									required
+								/>
+								<span class="form-check-label">
+									<%= t('chat:rooms.visibilityOptions.public') %>
+								</span>
+							</label>
+
+							<label class="form-check">
+								<input
+									class="form-check-input"
+									type="radio"
+									name="visibility"
+									value="<%= roomVisibility.PRIVATE_LISTED %>"
+									data-chat-room-visibility-option="private_listed"
+								/>
+								<span class="form-check-label">
+									<%= t('chat:rooms.visibilityOptions.privateListed') %>
+								</span>
+							</label>
+
+							<label class="form-check">
+								<input
+									class="form-check-input"
+									type="radio"
+									name="visibility"
+									value="<%= roomVisibility.PRIVATE_UNLISTED %>"
+									data-chat-room-visibility-option="private_unlisted"
+								/>
+								<span class="form-check-label">
+									<%= t('chat:rooms.visibilityOptions.privateUnlisted') %>
+								</span>
+							</label>
+						</div>
+					</fieldset>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<%= t('common:cancel') %>
+					</button>
+					<button type="submit" class="btn btn-action">
+						<%= t('chat:rooms.createSubmit') %>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

@@ -34,6 +34,7 @@
 		reset_password: { id: 'resetPasswordModal' },
 		profile_password: { id: 'profilePasswordModal' },
 		profile_delete_account: { id: 'profileDeleteAccountModal' },
+		chat_room: { id: 'chatRoomModal' },
 	};
 
 	const target = MODALS[modalName];

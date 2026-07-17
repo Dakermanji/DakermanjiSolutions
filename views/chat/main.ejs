@@ -14,6 +14,7 @@
 			count: 0,
 			expanded: false,
 			canCreateRoom: true,
+			defaultRoomVisibility: roomVisibility.PRIVATE_UNLISTED,
 		},
 		{
 			id: 'publicRooms',
@@ -21,6 +22,7 @@
 			count: 0,
 			expanded: false,
 			canCreateRoom: true,
+			defaultRoomVisibility: roomVisibility.PUBLIC,
 		},
 	];
 %>
@@ -95,6 +97,9 @@
 							class="btn btn-action-outline chat-header-action has-tooltip"
 							type="button"
 							data-bs-title="<%= t('chat:createRoom') %>"
+							data-bs-toggle="modal"
+							data-bs-target="#chatRoomModal"
+							data-chat-room-visibility="<%= section.defaultRoomVisibility %>"
 							aria-label="<%= t('chat:createRoom') %>"
 						>
 							<i class="bi bi-plus-lg" aria-hidden="true"></i>
@@ -136,3 +141,5 @@
 		<% }) %>
 	</div>
 </section>
+
+<%- include('../modals/chat/_room_modal', { roomVisibility }) %>

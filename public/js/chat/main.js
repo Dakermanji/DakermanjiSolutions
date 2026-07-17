@@ -9,6 +9,8 @@ const friendsBody = document.querySelector(
 const friendsCount = document.querySelector(
 	'[data-chat-count-section="friends"]',
 );
+const roomModal = document.getElementById('chatRoomModal');
+const roomCreateButtons = document.querySelectorAll('[data-chat-room-visibility]');
 
 if (friendsCollapse && friendsBody) {
 	friendsCollapse.addEventListener('show.bs.collapse', () => {
@@ -17,6 +19,21 @@ if (friendsCollapse && friendsBody) {
 
 	if (friendsCollapse.classList.contains('show')) {
 		void loadFriendChats();
+	}
+}
+
+if (roomModal && roomCreateButtons.length > 0) {
+	for (const button of roomCreateButtons) {
+		button.addEventListener('click', () => {
+			const visibility = button.dataset.chatRoomVisibility || '';
+			const visibilityInput = roomModal.querySelector(
+				`input[name="visibility"][value="${CSS.escape(visibility)}"]`,
+			);
+
+			if (visibilityInput) {
+				visibilityInput.checked = true;
+			}
+		});
 	}
 }
 

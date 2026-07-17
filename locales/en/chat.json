@@ -22,8 +22,18 @@
 		"typing": "{{user}} is typing..."
 	},
 	"rooms": {
+		"createTitle": "Create room",
+		"createSubmit": "Create room",
 		"createSuccess": "Room created.",
-		"createError": "Could not create this room."
+		"createError": "Could not create this room.",
+		"name": "Room name",
+		"description": "Description",
+		"visibility": "Visibility",
+		"visibilityOptions": {
+			"public": "Public",
+			"privateListed": "Private, listed",
+			"privateUnlisted": "Private, unlisted"
+		}
 	},
 	"sections": {
 		"friends": {

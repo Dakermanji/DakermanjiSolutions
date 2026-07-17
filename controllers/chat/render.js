@@ -7,7 +7,10 @@ import {
 import { listFriendMessages } from '../../services/chat/messages.js';
 import { emitChatUnreadCountsChanged } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
-import { CHAT_MESSAGE_LIMITS } from '../../constants/chat.js';
+import {
+	CHAT_MESSAGE_LIMITS,
+	CHAT_ROOM_VISIBILITY,
+} from '../../constants/chat.js';
 
 /**
  * Render the chat shell.
@@ -40,7 +43,7 @@ export async function renderChat(req, res, next) {
 
 				return res.render('chat/conversation', {
 					titleKey: 'chat:title',
-					styles: ['chat/main'],
+					styles: ['modals/main', 'chat/main'],
 					scripts: [
 						'chat/conversation-page/dates',
 						'chat/conversation-page/renderer',
@@ -63,9 +66,10 @@ export async function renderChat(req, res, next) {
 
 		return res.render('chat/main', {
 			titleKey: 'chat:title',
-			styles: ['chat/main'],
+			styles: ['modals/main', 'chat/main'],
 			scripts: ['chat/main'],
 			activeChatConversationId: null,
+			roomVisibility: CHAT_ROOM_VISIBILITY,
 		});
 	} catch (error) {
 		return next(error);

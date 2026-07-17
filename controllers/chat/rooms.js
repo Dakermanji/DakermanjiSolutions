@@ -26,6 +26,7 @@ export async function createChatRoom(req, res, next) {
 
 		if (!result.room) {
 			req.flash('error', 'chat:rooms.createError');
+			req.flash('modal', 'chat_room');
 			return res.redirect(CHAT_REDIRECT);
 		}
 
