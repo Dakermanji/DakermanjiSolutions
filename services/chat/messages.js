@@ -6,6 +6,7 @@ import {
 	findReadableChatConversation,
 	findWritableChatConversation,
 } from './authorization.js';
+import { findOpenableRoomConversation } from './rooms.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
 
 const { BODY_MAX_LENGTH, OLDER_PAGE_SIZE, RECENT_PAGE_SIZE } =
@@ -159,6 +160,31 @@ export async function listFriendMessages(conversationId, viewerUserId) {
 }
 
 /**
+ * List recent messages for an openable room conversation.
+ *
+ * @param {string} conversationId
+ * @param {string} viewerUserId
+ * @returns {Promise<object>}
+ */
+export async function listRoomMessages(conversationId, viewerUserId) {
+	const conversation = await findOpenableRoomConversation(
+		conversationId,
+		viewerUserId,
+	);
+
+	if (!conversation) {
+		return emptyMessagePage();
+	}
+
+	const messages = await ChatMessagesModel.findRecentConversationMessages(
+		conversation.conversation_id,
+		RECENT_PAGE_SIZE + 1,
+	);
+
+	return formatMessagePage(messages, viewerUserId, RECENT_PAGE_SIZE);
+}
+
+/**
  * List older messages for an openable friend conversation.
  *
  * @param {object} params
@@ -199,4 +225,5 @@ export default {
 	findOpenableFriendConversation,
 	listOlderFriendMessages,
 	listFriendMessages,
+	listRoomMessages,
 };

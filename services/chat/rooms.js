@@ -1,6 +1,7 @@
 //! services/chat/rooms.js
 
 import ChatRoomsModel from '../../models/chat/Rooms.js';
+import ChatConversationMembersModel from '../../models/chat/ConversationMembers.js';
 import {
 	CHAT_ROOM_VISIBILITY_CONVERSATION_TYPES,
 	CHAT_ROOM_VISIBILITY_JOIN_POLICIES,
@@ -38,6 +39,22 @@ function formatRoom(room) {
 			email: room.owner_email,
 			displayName: ownerName,
 		},
+	};
+}
+
+function formatOpenRoomConversation(room) {
+	const formatted = formatRoom(room);
+
+	return {
+		kind: 'room',
+		conversation: {
+			id: room.conversation_id,
+			lastMessageId: room.last_message_id,
+			lastReadMessageId: room.last_read_message_id,
+			updatedAt: room.updated_at,
+		},
+		room: formatted.room,
+		owner: formatted.owner,
 	};
 }
 
@@ -117,6 +134,38 @@ export function findOpenableRoomConversation(conversationId, userId) {
 }
 
 /**
+ * Find one openable room conversation with display data.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export async function getOpenRoomConversation(conversationId, userId) {
+	const room = await findOpenableRoomConversation(conversationId, userId);
+	return room ? formatOpenRoomConversation(room) : null;
+}
+
+/**
+ * Mark an openable room conversation read through its latest message.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export async function markRoomConversationRead(conversationId, userId) {
+	const room = await findOpenableRoomConversation(conversationId, userId);
+
+	if (!room) {
+		return null;
+	}
+
+	return ChatConversationMembersModel.markReadThroughLatestMessage(
+		room.conversation_id,
+		userId,
+	);
+}
+
+/**
  * Count visible room sections for one user.
  *
  * @param {string} userId
@@ -138,7 +187,9 @@ export default {
 	countVisibleRooms,
 	createRoom,
 	findOpenableRoomConversation,
+	getOpenRoomConversation,
 	listPrivateRooms,
 	listPublicRooms,
+	markRoomConversationRead,
 	validateCreateRoomInput,
 };

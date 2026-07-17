@@ -12,11 +12,13 @@ let isTyping = false;
 let isLoadingOlderMessages = false;
 let hasOlderMessages = chatPage?.dataset.hasOlderMessages === 'true';
 
-if (chatPage && composer && messageSurface && messageRenderer) {
+if (chatPage && messageSurface && messageRenderer) {
 	requestAnimationFrame(() => {
 		messageRenderer.rebuildMessageDateSeparators(messageSurface);
 		scrollToLatestMessage();
-		focusComposerInput();
+		if (composer) {
+			focusComposerInput();
+		}
 		void fillScrollableHistory();
 	});
 
@@ -26,7 +28,7 @@ if (chatPage && composer && messageSurface && messageRenderer) {
 		void loadOlderMessages();
 	});
 
-	const socket = connectChatSocket();
+	const socket = composer ? connectChatSocket() : null;
 
 	if (socket) {
 		socket.emit('chat:conversation:join', {

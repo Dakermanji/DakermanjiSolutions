@@ -229,13 +229,18 @@ export async function findVisibleRoomConversationForUser(
 		SELECT
 			cr.id AS room_id,
 			cr.conversation_id,
+			cr.description,
 			cr.visibility,
 			cr.join_policy,
 			cc.type AS conversation_type,
 			cc.title,
+			cc.created_by_user_id,
 			cc.last_message_id,
 			cc.updated_at,
-			ccm.role AS member_role
+			ccm.role AS member_role,
+			ccm.last_read_message_id,
+			owner.username AS owner_username,
+			owner.email AS owner_email
 		FROM chat_rooms cr
 		INNER JOIN chat_conversations cc
 			ON cc.id = cr.conversation_id
@@ -243,6 +248,8 @@ export async function findVisibleRoomConversationForUser(
 			ON ccm.conversation_id = cc.id
 			AND ccm.user_id = $2
 			AND ccm.archived_at IS NULL
+		INNER JOIN users owner
+			ON owner.id = cc.created_by_user_id
 		WHERE cr.conversation_id = $1
 			AND cr.archived_at IS NULL
 			AND cc.archived_at IS NULL

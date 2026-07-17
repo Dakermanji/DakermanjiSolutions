@@ -1,13 +1,24 @@
 <!--! views/chat/conversation.ejs -->
 <%
 	const friend = activeConversation.friend || {};
+	const room = activeConversation.room || {};
 	const conversation = activeConversation.conversation || {};
+	const isRoomConversation = activeConversation.kind === 'room' || Boolean(room.id);
 	const friendName =
 		friend.username ||
 		friend.email ||
 		t('chat:friendFallback');
+	const roomName = room.title || t('chat:createRoom');
+	const conversationName = isRoomConversation ? roomName : friendName;
+	const conversationKicker = isRoomConversation
+		? t(
+			room.visibility === 'public'
+				? 'chat:sections.publicRooms.title'
+				: 'chat:sections.privateRooms.title',
+		)
+		: t('chat:sections.friends.title');
 	const chatMessages = Array.isArray(messages) ? messages : [];
-	const canLoadOlderMessages = Boolean(hasOlderMessages);
+	const canLoadOlderMessages = !isRoomConversation && Boolean(hasOlderMessages);
 	const formatMessageTime = (value) => {
 		if (!value) return '';
 
@@ -45,7 +56,7 @@
 	aria-labelledby="chat-conversation-title"
 	data-active-conversation-id="<%= conversation.id %>"
 	data-current-user-id="<%= user.id %>"
-	data-typing-label="✍️ <%= t('chat:conversation.typing', { user: friendName }) %>"
+	data-typing-label="✍️ <%= t('chat:conversation.typing', { user: conversationName }) %>"
 	data-has-older-messages="<%= canLoadOlderMessages ? 'true' : 'false' %>"
 	data-older-messages-url="/chat/friends/messages"
 >
@@ -63,19 +74,19 @@
 
 		<span
 			class="chat-conversation-avatar"
-			style="background-color: <%= friend.avatar?.background || '' %>;"
+			style="background-color: <%= isRoomConversation ? '' : (friend.avatar?.background || '') %>;"
 			aria-hidden="true"
 		>
-			<% if (friend.avatar?.src) { %>
+			<% if (!isRoomConversation && friend.avatar?.src) { %>
 				<img src="<%= friend.avatar.src %>" alt="" />
 			<% } else { %>
-				<%= friendName.slice(0, 1).toUpperCase() %>
+				<%= conversationName.slice(0, 1).toUpperCase() %>
 			<% } %>
 		</span>
 
 		<div class="chat-conversation-title">
-			<p class="chat-kicker"><%= t('chat:sections.friends.title') %></p>
-			<h1 id="chat-conversation-title"><%= friendName %></h1>
+			<p class="chat-kicker"><%= conversationKicker %></p>
+			<h1 id="chat-conversation-title"><%= conversationName %></h1>
 		</div>
 	</header>
 
@@ -125,28 +136,30 @@
 		<span></span>
 	</div>
 
-	<form
-		class="chat-composer"
-		method="POST"
-		action="/chat/friends/messages"
-		aria-label="<%= t('chat:conversation.composer') %>"
-		data-chat-composer
-	>
-		<input
-			class="form-control"
-			type="text"
-			name="message"
-			maxlength="<%= messageBodyMaxLength %>"
-			placeholder="<%= t('chat:conversation.placeholder') %>"
-			autocomplete="off"
-			required
-		/>
-		<button
-			class="btn btn-action-secondary"
-			type="submit"
+	<% if (!isRoomConversation) { %>
+		<form
+			class="chat-composer"
+			method="POST"
+			action="/chat/friends/messages"
+			aria-label="<%= t('chat:conversation.composer') %>"
+			data-chat-composer
 		>
-			<i class="bi bi-send" aria-hidden="true"></i>
-			<span class="visually-hidden"><%= t('chat:conversation.send') %></span>
-		</button>
-	</form>
+			<input
+				class="form-control"
+				type="text"
+				name="message"
+				maxlength="<%= messageBodyMaxLength %>"
+				placeholder="<%= t('chat:conversation.placeholder') %>"
+				autocomplete="off"
+				required
+			/>
+			<button
+				class="btn btn-action-secondary"
+				type="submit"
+			>
+				<i class="bi bi-send" aria-hidden="true"></i>
+				<span class="visually-hidden"><%= t('chat:conversation.send') %></span>
+			</button>
+		</form>
+	<% } %>
 </section>

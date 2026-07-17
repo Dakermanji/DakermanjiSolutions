@@ -5,8 +5,15 @@ import {
 	listFriendConversations,
 	markFriendConversationRead,
 } from '../../services/chat/friends.js';
-import { listFriendMessages } from '../../services/chat/messages.js';
-import { countVisibleRooms } from '../../services/chat/rooms.js';
+import {
+	listFriendMessages,
+	listRoomMessages,
+} from '../../services/chat/messages.js';
+import {
+	countVisibleRooms,
+	getOpenRoomConversation,
+	markRoomConversationRead,
+} from '../../services/chat/rooms.js';
 import { emitChatUnreadCountsChanged } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import {
@@ -52,6 +59,36 @@ export async function renderChat(req, res, next) {
 						'chat/conversation',
 					],
 					activeConversation,
+					messages: messages.messages,
+					hasOlderMessages: messages.hasMore,
+					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
+				});
+			}
+
+			const activeRoomConversation = await getOpenRoomConversation(
+				activeConversationId,
+				req.user.id,
+			);
+
+			if (activeRoomConversation) {
+				const messages = await listRoomMessages(
+					activeRoomConversation.conversation.id,
+					req.user.id,
+				);
+				await markRoomConversationRead(
+					activeRoomConversation.conversation.id,
+					req.user.id,
+				);
+
+				return res.render('chat/conversation', {
+					titleKey: 'chat:title',
+					styles: ['modals/main', 'chat/main'],
+					scripts: [
+						'chat/conversation-page/dates',
+						'chat/conversation-page/renderer',
+						'chat/conversation',
+					],
+					activeConversation: activeRoomConversation,
 					messages: messages.messages,
 					hasOlderMessages: messages.hasMore,
 					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
