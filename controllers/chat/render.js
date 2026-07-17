@@ -2,9 +2,11 @@
 
 import {
 	getOpenFriendConversation,
+	listFriendConversations,
 	markFriendConversationRead,
 } from '../../services/chat/friends.js';
 import { listFriendMessages } from '../../services/chat/messages.js';
+import { countVisibleRooms } from '../../services/chat/rooms.js';
 import { emitChatUnreadCountsChanged } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import {
@@ -64,12 +66,22 @@ export async function renderChat(req, res, next) {
 			};
 		}
 
+		const [friendConversations, roomCounts] = await Promise.all([
+			listFriendConversations(req.user.id),
+			countVisibleRooms(req.user.id),
+		]);
+
 		return res.render('chat/main', {
 			titleKey: 'chat:title',
 			styles: ['modals/main', 'chat/main'],
 			scripts: ['chat/main'],
 			activeChatConversationId: null,
 			roomVisibility: CHAT_ROOM_VISIBILITY,
+			chatSectionCounts: {
+				friends: friendConversations.length,
+				privateRooms: roomCounts.privateRooms,
+				publicRooms: roomCounts.publicRooms,
+			},
 		});
 	} catch (error) {
 		return next(error);

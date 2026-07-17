@@ -102,7 +102,26 @@ export async function listPrivateRooms(userId) {
 	return rooms.map(formatRoom);
 }
 
+/**
+ * Count visible room sections for one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<object>}
+ */
+export async function countVisibleRooms(userId) {
+	const [privateRooms, publicRooms] = await Promise.all([
+		ChatRoomsModel.countPrivateRoomsForUser(userId),
+		ChatRoomsModel.countPublicRoomsForUser(userId),
+	]);
+
+	return {
+		privateRooms,
+		publicRooms,
+	};
+}
+
 export default {
+	countVisibleRooms,
 	createRoom,
 	listPrivateRooms,
 	listPublicRooms,

@@ -4,7 +4,7 @@
 		{
 			id: 'friends',
 			icon: 'bi-person-hearts',
-			count: 0,
+			count: chatSectionCounts?.friends || 0,
 			expanded: true,
 			url: '/chat/friends',
 			canOpenSelfChat: true,
@@ -12,7 +12,7 @@
 		{
 			id: 'privateRooms',
 			icon: 'bi-shield-lock-fill',
-			count: 0,
+			count: chatSectionCounts?.privateRooms || 0,
 			expanded: false,
 			url: '/chat/rooms/private',
 			canCreateRoom: true,
@@ -21,7 +21,7 @@
 		{
 			id: 'publicRooms',
 			icon: 'bi-megaphone-fill',
-			count: 0,
+			count: chatSectionCounts?.publicRooms || 0,
 			expanded: false,
 			url: '/chat/rooms/public',
 			canCreateRoom: true,

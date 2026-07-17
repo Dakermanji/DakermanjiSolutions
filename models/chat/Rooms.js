@@ -63,6 +63,22 @@ function buildVisibleRoomsQuery(visibilityCondition) {
 	`;
 }
 
+function buildVisibleRoomsCountQuery(visibilityCondition) {
+	return `
+		SELECT COUNT(*)::int AS room_count
+		FROM chat_rooms cr
+		INNER JOIN chat_conversations cc
+			ON cc.id = cr.conversation_id
+		INNER JOIN chat_conversation_members ccm
+			ON ccm.conversation_id = cc.id
+			AND ccm.user_id = $1
+			AND ccm.archived_at IS NULL
+		WHERE ${visibilityCondition}
+			AND cr.archived_at IS NULL
+			AND cc.archived_at IS NULL;
+	`;
+}
+
 /**
  * Create a room conversation, its room metadata, and the owner membership.
  *
@@ -165,6 +181,21 @@ export function findPublicRoomsForUser(userId) {
 }
 
 /**
+ * Count joined public rooms visible to one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<number>}
+ */
+export async function countPublicRoomsForUser(userId) {
+	const rows = await queryRows(
+		buildVisibleRoomsCountQuery('cr.visibility = $2'),
+		[userId, CHAT_ROOM_VISIBILITY.PUBLIC],
+	);
+
+	return rows[0]?.room_count || 0;
+}
+
+/**
  * Find joined private rooms visible to one user.
  *
  * Includes listed and unlisted private rooms once the user is a member.
@@ -183,7 +214,28 @@ export function findPrivateRoomsForUser(userId) {
 	);
 }
 
+/**
+ * Count joined private rooms visible to one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<number>}
+ */
+export async function countPrivateRoomsForUser(userId) {
+	const rows = await queryRows(
+		buildVisibleRoomsCountQuery('cr.visibility IN ($2, $3)'),
+		[
+			userId,
+			CHAT_ROOM_VISIBILITY.PRIVATE_LISTED,
+			CHAT_ROOM_VISIBILITY.PRIVATE_UNLISTED,
+		],
+	);
+
+	return rows[0]?.room_count || 0;
+}
+
 export default {
+	countPrivateRoomsForUser,
+	countPublicRoomsForUser,
 	createRoomConversation,
 	findPrivateRoomsForUser,
 	findPublicRoomsForUser,
