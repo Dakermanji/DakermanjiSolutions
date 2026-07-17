@@ -1,0 +1,69 @@
+<!--! views/modals/chat/_room_search_modal.ejs -->
+
+<div
+	class="modal fade"
+	id="chatRoomSearchModal"
+	tabindex="-1"
+	aria-labelledby="chatRoomSearchModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="chatRoomSearchModalLabel">
+					<%= t('chat:rooms.searchTitle') %>
+				</h5>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="<%= t('common:close') %>"
+				></button>
+			</div>
+
+			<div class="modal-body">
+				<form class="chat-room-search-form" role="search">
+					<label for="chatRoomSearchQuery" class="form-label">
+						<%= t('chat:rooms.searchLabel') %>
+					</label>
+					<div class="input-group">
+						<span class="input-group-text" aria-hidden="true">
+							<i class="bi bi-search"></i>
+						</span>
+						<input
+							id="chatRoomSearchQuery"
+							type="search"
+							class="form-control"
+							name="query"
+							placeholder="<%= t('chat:rooms.searchPlaceholder') %>"
+							autocomplete="off"
+						/>
+					</div>
+				</form>
+
+				<div class="chat-room-search-results" data-chat-room-search-results>
+					<div class="chat-room-search-empty">
+						<i class="bi bi-search" aria-hidden="true"></i>
+						<p><%= t('chat:rooms.searchEmpty') %></p>
+					</div>
+				</div>
+
+				<template data-chat-room-search-result-template>
+					<div class="chat-room-search-result">
+						<span class="chat-room-search-type" data-room-type-icon></span>
+						<span class="chat-room-search-content">
+							<strong data-room-title></strong>
+							<small data-room-description></small>
+							<small data-room-owner></small>
+						</span>
+						<button
+							class="btn btn-action-outline chat-room-search-action has-tooltip"
+							type="button"
+							data-room-action
+						></button>
+					</div>
+				</template>
+			</div>
+		</div>
+	</div>
+</div>

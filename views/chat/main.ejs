@@ -45,6 +45,8 @@
 		<button
 			class="chat-status chat-search-rooms-button"
 			type="button"
+			data-bs-toggle="modal"
+			data-bs-target="#chatRoomSearchModal"
 			aria-label="<%= t('chat:searchRooms') %>"
 		>
 			<i class="bi bi-search" aria-hidden="true"></i>
@@ -158,3 +160,4 @@
 </section>
 
 <%- include('../modals/chat/_room_modal', { roomVisibility }) %>
+<%- include('../modals/chat/_room_search_modal') %>
