@@ -4,10 +4,15 @@ import {
 	CHAT_ROOM_LIMITS,
 	CHAT_ROOM_VISIBILITY,
 } from '../../constants/chat.js';
+import { validateNoProfanity } from '../profanity/index.js';
 import { normalizeText } from './common.js';
 
 const { DESCRIPTION_MAX_LENGTH, NAME_MAX_LENGTH } = CHAT_ROOM_LIMITS;
 const VALID_ROOM_VISIBILITIES = new Set(Object.values(CHAT_ROOM_VISIBILITY));
+const PROFANITY_CHECKED_ROOM_VISIBILITIES = new Set([
+	CHAT_ROOM_VISIBILITY.PUBLIC,
+	CHAT_ROOM_VISIBILITY.PRIVATE_LISTED,
+]);
 
 function normalizeRoomName(name) {
 	return normalizeText(name).replace(/\s+/g, ' ');
@@ -20,6 +25,10 @@ function normalizeRoomDescription(description) {
 
 function normalizeRoomVisibility(visibility) {
 	return normalizeText(visibility);
+}
+
+function shouldCheckRoomProfanity(visibility) {
+	return PROFANITY_CHECKED_ROOM_VISIBILITIES.has(visibility);
 }
 
 /**
@@ -51,6 +60,11 @@ export function validateCreateRoomInput({
 		errors.name = 'Room name is required.';
 	} else if (normalizedName.length > NAME_MAX_LENGTH) {
 		errors.name = `Room name must be ${NAME_MAX_LENGTH} characters or less.`;
+	} else if (
+		shouldCheckRoomProfanity(normalizedVisibility) &&
+		!validateNoProfanity(normalizedName)
+	) {
+		errors.name = 'Room name contains inappropriate language.';
 	}
 
 	if (
@@ -59,6 +73,12 @@ export function validateCreateRoomInput({
 	) {
 		errors.description =
 			`Room description must be ${DESCRIPTION_MAX_LENGTH} characters or less.`;
+	} else if (
+		normalizedDescription &&
+		shouldCheckRoomProfanity(normalizedVisibility) &&
+		!validateNoProfanity(normalizedDescription)
+	) {
+		errors.description = 'Room description contains inappropriate language.';
 	}
 
 	if (!VALID_ROOM_VISIBILITIES.has(normalizedVisibility)) {
