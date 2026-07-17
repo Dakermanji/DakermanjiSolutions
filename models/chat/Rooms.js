@@ -3,8 +3,6 @@
 import pool from '../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_ROLES,
-	CHAT_ROOM_VISIBILITY_CONVERSATION_TYPES,
-	CHAT_ROOM_VISIBILITY_JOIN_POLICIES,
 } from '../../constants/chat.js';
 
 /**
@@ -14,22 +12,19 @@ import {
  * @param {string} room.ownerUserId
  * @param {string} room.name
  * @param {string|null} room.description
+ * @param {string} room.conversationType
  * @param {string} room.visibility
+ * @param {string} room.joinPolicy
  * @returns {Promise<object>}
  */
 export async function createRoomConversation({
 	ownerUserId,
 	name,
 	description = null,
+	conversationType,
 	visibility,
+	joinPolicy,
 }) {
-	const conversationType = CHAT_ROOM_VISIBILITY_CONVERSATION_TYPES[visibility];
-	const joinPolicy = CHAT_ROOM_VISIBILITY_JOIN_POLICIES[visibility];
-
-	if (!conversationType || !joinPolicy) {
-		throw new Error('Unsupported chat room visibility.');
-	}
-
 	const client = await pool.connect();
 
 	try {
