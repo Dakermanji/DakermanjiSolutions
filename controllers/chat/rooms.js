@@ -2,10 +2,12 @@
 
 import {
 	createRoom,
+	findOpenableRoomConversation,
 	listPrivateRooms,
 	listPublicRooms,
 } from '../../services/chat/rooms.js';
 import { CHAT_REDIRECT } from '../../constants/chat.js';
+import { isValidUuid } from '../../middlewares/validators/common.js';
 
 function getRoomInput(req) {
 	return {
@@ -35,6 +37,42 @@ export async function createChatRoom(req, res, next) {
 		}
 
 		req.flash('success', 'chat:rooms.createSuccess');
+		return res.redirect(CHAT_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Store the selected room conversation in the session, then return to /chat.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function openRoomConversation(req, res, next) {
+	const conversationId = String(req.body?.conversationId || '').trim();
+
+	if (!isValidUuid(conversationId)) {
+		return res.redirect(CHAT_REDIRECT);
+	}
+
+	try {
+		const conversation = await findOpenableRoomConversation(
+			conversationId,
+			req.user.id,
+		);
+
+		if (!conversation) {
+			return res.redirect(CHAT_REDIRECT);
+		}
+
+		req.session.chat = {
+			...(req.session.chat || {}),
+			activeConversationId: conversation.conversation_id,
+		};
+
 		return res.redirect(CHAT_REDIRECT);
 	} catch (error) {
 		return next(error);

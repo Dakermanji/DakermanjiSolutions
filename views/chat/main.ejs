@@ -131,6 +131,10 @@
 							data-empty-label="<%= empty %>"
 							data-error-label="<%= t('chat:states.error') %>"
 							data-unread-label="<%= t('chat:unreadMessages') %>"
+							<% if (isRoomsSection) { %>
+								data-open-url="/chat/rooms/open"
+								data-open-label="<%= t('chat:openChat') %>"
+							<% } %>
 							<% if (isFriendsSection) { %>
 								data-open-label="<%= t('chat:openChat') %>"
 								data-friend-fallback-label="<%= t('chat:friendFallback') %>"

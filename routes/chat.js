@@ -10,6 +10,7 @@ import {
 	getPrivateRooms,
 	getPublicRooms,
 	openFriendConversation,
+	openRoomConversation,
 	renderChat,
 } from '../controllers/chat/index.js';
 
@@ -24,5 +25,6 @@ router.post('/friends/open', openFriendConversation);
 router.post('/friends/close', closeFriendConversation);
 router.post('/friends/messages', createFriendChatMessage);
 router.post('/rooms', createChatRoom);
+router.post('/rooms/open', openRoomConversation);
 
 export default router;

@@ -215,6 +215,45 @@ export function findPrivateRoomsForUser(userId) {
 }
 
 /**
+ * Find one visible room conversation for one user.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export async function findVisibleRoomConversationForUser(
+	conversationId,
+	userId,
+) {
+	const q = `
+		SELECT
+			cr.id AS room_id,
+			cr.conversation_id,
+			cr.visibility,
+			cr.join_policy,
+			cc.type AS conversation_type,
+			cc.title,
+			cc.last_message_id,
+			cc.updated_at,
+			ccm.role AS member_role
+		FROM chat_rooms cr
+		INNER JOIN chat_conversations cc
+			ON cc.id = cr.conversation_id
+		INNER JOIN chat_conversation_members ccm
+			ON ccm.conversation_id = cc.id
+			AND ccm.user_id = $2
+			AND ccm.archived_at IS NULL
+		WHERE cr.conversation_id = $1
+			AND cr.archived_at IS NULL
+			AND cc.archived_at IS NULL
+		LIMIT 1;
+	`;
+
+	const rows = await queryRows(q, [conversationId, userId]);
+	return rows[0] || null;
+}
+
+/**
  * Count joined private rooms visible to one user.
  *
  * @param {string} userId
@@ -239,4 +278,5 @@ export default {
 	createRoomConversation,
 	findPrivateRoomsForUser,
 	findPublicRoomsForUser,
+	findVisibleRoomConversationForUser,
 };

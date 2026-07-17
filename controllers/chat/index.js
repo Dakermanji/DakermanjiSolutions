@@ -14,4 +14,5 @@ export {
 	createChatRoom,
 	getPrivateRooms,
 	getPublicRooms,
+	openRoomConversation,
 } from './rooms.js';

@@ -139,10 +139,21 @@ function createRoomItem(item, sectionBody) {
 	const roomName = room.title || '';
 	const ownerName = owner.displayName || owner.username || owner.email || '';
 
+	const form = document.createElement('form');
+	form.className = 'chat-friend-form';
+	form.method = 'POST';
+	form.action = sectionBody.dataset.openUrl || '/chat/rooms/open';
+
+	const input = document.createElement('input');
+	input.type = 'hidden';
+	input.name = 'conversationId';
+	input.value = room.conversationId || '';
+
 	const button = document.createElement('button');
-	button.type = 'button';
+	button.type = 'submit';
 	button.className = 'chat-friend-item';
 	button.dataset.conversationId = room.conversationId || '';
+	button.setAttribute('aria-label', `${sectionBody.dataset.openLabel}: ${roomName}`);
 
 	const avatar = document.createElement('span');
 	avatar.className = 'chat-friend-avatar';
@@ -171,8 +182,9 @@ function createRoomItem(item, sectionBody) {
 	icon.setAttribute('aria-hidden', 'true');
 
 	button.append(avatar, content, unreadBadge, icon);
+	form.append(input, button);
 
-	return button;
+	return form;
 }
 
 function createFriendChatItem(item) {

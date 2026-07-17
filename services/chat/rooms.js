@@ -103,6 +103,20 @@ export async function listPrivateRooms(userId) {
 }
 
 /**
+ * Check whether one room conversation can be opened by a user.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export function findOpenableRoomConversation(conversationId, userId) {
+	return ChatRoomsModel.findVisibleRoomConversationForUser(
+		conversationId,
+		userId,
+	);
+}
+
+/**
  * Count visible room sections for one user.
  *
  * @param {string} userId
@@ -123,6 +137,7 @@ export async function countVisibleRooms(userId) {
 export default {
 	countVisibleRooms,
 	createRoom,
+	findOpenableRoomConversation,
 	listPrivateRooms,
 	listPublicRooms,
 	validateCreateRoomInput,
