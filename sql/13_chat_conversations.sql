@@ -27,7 +27,8 @@ BEGIN
 			'friend',
 			'self',
 			'private_room',
-			'public_room'
+			'public_room',
+			'project_room'
 		);
 	END IF;
 END$$;
@@ -59,7 +60,7 @@ CREATE TABLE IF NOT EXISTS "chat_conversations" (
 	-- room titles are only useful for room conversations
 	CONSTRAINT "chat_conversations_title_check"
 		CHECK (
-			("type" IN ('private_room', 'public_room') AND "title" IS NOT NULL)
+			("type" IN ('private_room', 'public_room', 'project_room') AND "title" IS NOT NULL)
 			OR ("type" IN ('friend', 'self') AND "title" IS NULL)
 		)
 );
