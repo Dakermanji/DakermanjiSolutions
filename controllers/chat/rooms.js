@@ -1,6 +1,10 @@
 //! controllers/chat/rooms.js
 
-import { createRoom } from '../../services/chat/rooms.js';
+import {
+	createRoom,
+	listPrivateRooms,
+	listPublicRooms,
+} from '../../services/chat/rooms.js';
 import { CHAT_REDIRECT } from '../../constants/chat.js';
 
 function getRoomInput(req) {
@@ -32,6 +36,46 @@ export async function createChatRoom(req, res, next) {
 
 		req.flash('success', 'chat:rooms.createSuccess');
 		return res.redirect(CHAT_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Return public rooms visible to the signed-in user.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function getPublicRooms(req, res, next) {
+	try {
+		const rooms = await listPublicRooms(req.user.id);
+		return res.json({
+			ok: true,
+			rooms,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Return private rooms visible to the signed-in user.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function getPrivateRooms(req, res, next) {
+	try {
+		const rooms = await listPrivateRooms(req.user.id);
+		return res.json({
+			ok: true,
+			rooms,
+		});
 	} catch (error) {
 		return next(error);
 	}

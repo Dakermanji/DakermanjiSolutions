@@ -14,6 +14,33 @@ function getRoomSettings(visibility) {
 	};
 }
 
+function formatRoom(room) {
+	const ownerName = room.owner_username || room.owner_email || '';
+
+	return {
+		room: {
+			id: room.room_id,
+			conversationId: room.conversation_id,
+			title: room.title,
+			description: room.description,
+			visibility: room.visibility,
+			joinPolicy: room.join_policy,
+			memberRole: room.member_role,
+			lastMessageId: room.last_message_id,
+			lastMessageCreatedAt: room.last_message_created_at,
+			lastReadMessageId: room.last_read_message_id,
+			unreadCount: Number(room.unread_count || 0),
+			updatedAt: room.updated_at,
+		},
+		owner: {
+			id: room.created_by_user_id,
+			username: room.owner_username,
+			email: room.owner_email,
+			displayName: ownerName,
+		},
+	};
+}
+
 /**
  * Create a room conversation after normalizing and validating input.
  *
@@ -53,7 +80,31 @@ export async function createRoom(input) {
 	};
 }
 
+/**
+ * List public rooms visible to one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<Array>}
+ */
+export async function listPublicRooms(userId) {
+	const rooms = await ChatRoomsModel.findPublicRoomsForUser(userId);
+	return rooms.map(formatRoom);
+}
+
+/**
+ * List private rooms visible to one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<Array>}
+ */
+export async function listPrivateRooms(userId) {
+	const rooms = await ChatRoomsModel.findPrivateRoomsForUser(userId);
+	return rooms.map(formatRoom);
+}
+
 export default {
 	createRoom,
+	listPrivateRooms,
+	listPublicRooms,
 	validateCreateRoomInput,
 };
