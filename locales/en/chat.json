@@ -21,6 +21,10 @@
 		"messageError": "Could not send this message.",
 		"typing": "{{user}} is typing..."
 	},
+	"rooms": {
+		"createSuccess": "Room created.",
+		"createError": "Could not create this room."
+	},
 	"sections": {
 		"friends": {
 			"title": "Friends",

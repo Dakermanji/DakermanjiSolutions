@@ -21,6 +21,10 @@
 		"messageError": "Impossible d’envoyer ce message.",
 		"typing": "{{user}} écrit..."
 	},
+	"rooms": {
+		"createSuccess": "Salon créé.",
+		"createError": "Impossible de créer ce salon."
+	},
 	"sections": {
 		"friends": {
 			"title": "Amis",

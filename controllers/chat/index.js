@@ -10,3 +10,4 @@ export {
 	createFriendChatMessage,
 	getOlderFriendMessages,
 } from './messages.js';
+export { createChatRoom } from './rooms.js';
