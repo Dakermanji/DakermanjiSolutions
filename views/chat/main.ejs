@@ -6,6 +6,7 @@
 			icon: 'bi-person-hearts',
 			count: 0,
 			expanded: true,
+			url: '/chat/friends',
 			canOpenSelfChat: true,
 		},
 		{
@@ -13,6 +14,7 @@
 			icon: 'bi-shield-lock-fill',
 			count: 0,
 			expanded: false,
+			url: '/chat/rooms/private',
 			canCreateRoom: true,
 			defaultRoomVisibility: roomVisibility.PRIVATE_UNLISTED,
 		},
@@ -21,6 +23,7 @@
 			icon: 'bi-megaphone-fill',
 			count: 0,
 			expanded: false,
+			url: '/chat/rooms/public',
 			canCreateRoom: true,
 			defaultRoomVisibility: roomVisibility.PUBLIC,
 		},
@@ -52,6 +55,7 @@
 				const description = t(`chat:sections.${section.id}.description`);
 				const empty = t(`chat:sections.${section.id}.empty`);
 				const isFriendsSection = section.id === 'friends';
+				const isRoomsSection = section.id === 'privateRooms' || section.id === 'publicRooms';
 				const headingId = `chat-${section.id}-heading`;
 				const panelId = `chat-${section.id}-panel`;
 				const bodyId = `chat-${section.id}-body`;
@@ -76,8 +80,8 @@
 					</button>
 					<span
 						class="chat-section-count"
-						<% if (isFriendsSection) { %>
-							data-chat-count-section="friends"
+						<% if (isFriendsSection || isRoomsSection) { %>
+							data-chat-count-section="<%= section.id %>"
 						<% } %>
 					>
 						<%= t('chat:count', { count: section.count }) %>
@@ -112,23 +116,26 @@
 					class="accordion-collapse collapse <%= section.expanded ? 'show' : '' %>"
 					aria-labelledby="<%= headingId %>"
 					data-bs-parent="#chatSections"
-					<% if (isFriendsSection) { %>
-						data-chat-section-collapse="friends"
+					<% if (isFriendsSection || isRoomsSection) { %>
+						data-chat-section-collapse="<%= section.id %>"
 					<% } %>
 				>
 					<div
 						id="<%= bodyId %>"
 						class="accordion-body"
-						<% if (isFriendsSection) { %>
-							data-chat-section-body="friends"
-							data-url="/chat/friends"
+						<% if (isFriendsSection || isRoomsSection) { %>
+							data-chat-section-body="<%= section.id %>"
+							data-url="<%= section.url %>"
+							data-icon-class="<%= section.icon %>"
 							data-loading-label="<%= t('chat:states.loading') %>"
 							data-empty-label="<%= empty %>"
 							data-error-label="<%= t('chat:states.error') %>"
-							data-open-label="<%= t('chat:openChat') %>"
 							data-unread-label="<%= t('chat:unreadMessages') %>"
-							data-friend-fallback-label="<%= t('chat:friendFallback') %>"
-							data-open-url="/chat/friends/open"
+							<% if (isFriendsSection) { %>
+								data-open-label="<%= t('chat:openChat') %>"
+								data-friend-fallback-label="<%= t('chat:friendFallback') %>"
+								data-open-url="/chat/friends/open"
+							<% } %>
 						<% } %>
 					>
 						<div class="chat-empty-state">
