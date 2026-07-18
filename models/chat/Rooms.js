@@ -3,6 +3,7 @@
 import pool, { queryRows } from '../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_ROLES,
+	CHAT_ROOM_JOIN_POLICIES,
 	CHAT_ROOM_VISIBILITY,
 } from '../../constants/chat.js';
 
@@ -348,6 +349,61 @@ export function searchVisibleRoomsForUser({ userId, query, limit }) {
 	]);
 }
 
+/**
+ * Join a public room by conversation id.
+ *
+ * Existing archived memberships are restored so the operation is idempotent.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.userId
+ * @returns {Promise<object|null>}
+ */
+export async function joinPublicRoomConversation({ conversationId, userId }) {
+	const q = `
+		INSERT INTO chat_conversation_members (
+			conversation_id,
+			user_id,
+			role,
+			archived_at
+		)
+		SELECT
+			cr.conversation_id,
+			$2,
+			$5,
+			NULL
+		FROM chat_rooms cr
+		INNER JOIN chat_conversations cc
+			ON cc.id = cr.conversation_id
+		WHERE cr.conversation_id = $1
+			AND cr.visibility = $3
+			AND cr.join_policy = $4
+			AND cr.archived_at IS NULL
+			AND cc.archived_at IS NULL
+		ON CONFLICT (conversation_id, user_id)
+		DO UPDATE SET
+			archived_at = NULL,
+			updated_at = NOW()
+		RETURNING
+			conversation_id,
+			user_id,
+			role,
+			last_read_message_id,
+			joined_at,
+			updated_at;
+	`;
+
+	const rows = await queryRows(q, [
+		conversationId,
+		userId,
+		CHAT_ROOM_VISIBILITY.PUBLIC,
+		CHAT_ROOM_JOIN_POLICIES.OPEN,
+		CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,
+	]);
+
+	return rows[0] || null;
+}
+
 export default {
 	countPrivateRoomsForUser,
 	countPublicRoomsForUser,
@@ -355,5 +411,6 @@ export default {
 	findPrivateRoomsForUser,
 	findPublicRoomsForUser,
 	findVisibleRoomConversationForUser,
+	joinPublicRoomConversation,
 	searchVisibleRoomsForUser,
 };

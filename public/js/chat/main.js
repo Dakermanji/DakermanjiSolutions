@@ -173,6 +173,7 @@ function createRoomSearchResult(item) {
 		: '';
 
 	setupRoomSearchAction(actionButton, room);
+	window.AppTooltips?.initIn(result);
 
 	return result;
 }
@@ -199,7 +200,7 @@ function setupRoomSearchAction(button, room) {
 	const icon = document.createElement('i');
 
 	button.textContent = '';
-	button.title = label;
+	button.setAttribute('data-bs-title', label);
 	button.setAttribute('aria-label', label);
 	icon.className = `bi ${getRoomSearchActionIcon(action)}`;
 	icon.setAttribute('aria-hidden', 'true');
@@ -207,7 +208,20 @@ function setupRoomSearchAction(button, room) {
 
 	if (action === 'open') {
 		button.addEventListener('click', () => {
-			submitRoomOpenForm(room.conversationId);
+			submitRoomActionForm(
+				room.conversationId,
+				roomSearchForm.dataset.openUrl || '/chat/rooms/open',
+			);
+		});
+		return;
+	}
+
+	if (action === 'join') {
+		button.addEventListener('click', () => {
+			submitRoomActionForm(
+				room.conversationId,
+				roomSearchForm.dataset.joinUrl || '/chat/rooms/join',
+			);
 		});
 		return;
 	}
@@ -215,12 +229,12 @@ function setupRoomSearchAction(button, room) {
 	button.disabled = true;
 }
 
-function submitRoomOpenForm(conversationId) {
+function submitRoomActionForm(conversationId, actionUrl) {
 	if (!conversationId) return;
 
 	const form = document.createElement('form');
 	form.method = 'POST';
-	form.action = roomSearchForm.dataset.openUrl || '/chat/rooms/open';
+	form.action = actionUrl;
 	form.hidden = true;
 
 	const input = document.createElement('input');

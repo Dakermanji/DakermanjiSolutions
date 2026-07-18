@@ -9,6 +9,7 @@ import {
 	getOlderFriendMessages,
 	getPrivateRooms,
 	getPublicRooms,
+	joinPublicRoomConversation,
 	openFriendConversation,
 	openRoomConversation,
 	renderChat,
@@ -27,6 +28,7 @@ router.post('/friends/open', openFriendConversation);
 router.post('/friends/close', closeFriendConversation);
 router.post('/friends/messages', createFriendChatMessage);
 router.post('/rooms', createChatRoom);
+router.post('/rooms/join', joinPublicRoomConversation);
 router.post('/rooms/open', openRoomConversation);
 
 export default router;

@@ -27,6 +27,8 @@
 		"createSubmit": "Create room",
 		"createSuccess": "Room created.",
 		"createError": "Could not create this room.",
+		"joinSuccess": "Joined room.",
+		"joinError": "Could not join this room.",
 		"searchTitle": "Search rooms",
 		"searchLabel": "Room name",
 		"searchSubmit": "Search",

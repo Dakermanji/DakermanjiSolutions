@@ -185,6 +185,27 @@ export async function searchRooms(userId, query) {
 }
 
 /**
+ * Join one public room and return its open conversation data.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.userId
+ * @returns {Promise<object|null>}
+ */
+export async function joinPublicRoom({ conversationId, userId }) {
+	const membership = await ChatRoomsModel.joinPublicRoomConversation({
+		conversationId,
+		userId,
+	});
+
+	if (!membership) {
+		return null;
+	}
+
+	return getOpenRoomConversation(conversationId, userId);
+}
+
+/**
  * Check whether one room conversation can be opened by a user.
  *
  * @param {string} conversationId
@@ -253,6 +274,7 @@ export default {
 	createRoom,
 	findOpenableRoomConversation,
 	getOpenRoomConversation,
+	joinPublicRoom,
 	listPrivateRooms,
 	listPublicRooms,
 	markRoomConversationRead,

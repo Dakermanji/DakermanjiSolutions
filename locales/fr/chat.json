@@ -27,6 +27,8 @@
 		"createSubmit": "Créer le salon",
 		"createSuccess": "Salon créé.",
 		"createError": "Impossible de créer ce salon.",
+		"joinSuccess": "Salon rejoint.",
+		"joinError": "Impossible de rejoindre ce salon.",
 		"searchTitle": "Rechercher un salon",
 		"searchLabel": "Nom du salon",
 		"searchSubmit": "Rechercher",

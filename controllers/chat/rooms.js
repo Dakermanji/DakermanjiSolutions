@@ -3,6 +3,7 @@
 import {
 	createRoom,
 	findOpenableRoomConversation,
+	joinPublicRoom,
 	listPrivateRooms,
 	listPublicRooms,
 	searchRooms,
@@ -74,6 +75,45 @@ export async function openRoomConversation(req, res, next) {
 			activeConversationId: conversation.conversation_id,
 		};
 
+		return res.redirect(CHAT_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Join a public room, store it in the session, then return to /chat.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function joinPublicRoomConversation(req, res, next) {
+	const conversationId = String(req.body?.conversationId || '').trim();
+
+	if (!isValidUuid(conversationId)) {
+		req.flash('error', 'chat:rooms.joinError');
+		return res.redirect(CHAT_REDIRECT);
+	}
+
+	try {
+		const roomConversation = await joinPublicRoom({
+			conversationId,
+			userId: req.user.id,
+		});
+
+		if (!roomConversation) {
+			req.flash('error', 'chat:rooms.joinError');
+			return res.redirect(CHAT_REDIRECT);
+		}
+
+		req.session.chat = {
+			...(req.session.chat || {}),
+			activeConversationId: roomConversation.conversation.id,
+		};
+
+		req.flash('success', 'chat:rooms.joinSuccess');
 		return res.redirect(CHAT_REDIRECT);
 	} catch (error) {
 		return next(error);
