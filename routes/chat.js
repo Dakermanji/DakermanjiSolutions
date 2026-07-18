@@ -13,6 +13,7 @@ import {
 	openFriendConversation,
 	openRoomConversation,
 	renderChat,
+	requestPrivateRoomAccess,
 	searchVisibleRooms,
 } from '../controllers/chat/index.js';
 
@@ -30,5 +31,6 @@ router.post('/friends/messages', createFriendChatMessage);
 router.post('/rooms', createChatRoom);
 router.post('/rooms/join', joinPublicRoomConversation);
 router.post('/rooms/open', openRoomConversation);
+router.post('/rooms/request', requestPrivateRoomAccess);
 
 export default router;

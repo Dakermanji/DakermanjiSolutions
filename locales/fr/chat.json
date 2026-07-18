@@ -29,6 +29,8 @@
 		"createError": "Impossible de créer ce salon.",
 		"joinSuccess": "Salon rejoint.",
 		"joinError": "Impossible de rejoindre ce salon.",
+		"requestSuccess": "Demande envoyée.",
+		"requestError": "Impossible de demander l’accès à ce salon.",
 		"searchTitle": "Rechercher un salon",
 		"searchLabel": "Nom du salon",
 		"searchSubmit": "Rechercher",
@@ -40,7 +42,8 @@
 		"actions": {
 			"open": "Ouvrir le salon",
 			"join": "Rejoindre le salon",
-			"request": "Demander à rejoindre"
+			"request": "Demander à rejoindre",
+			"pending": "Demande en attente"
 		},
 		"name": "Nom du salon",
 		"description": "Description",

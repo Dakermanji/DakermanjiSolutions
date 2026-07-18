@@ -226,6 +226,16 @@ function setupRoomSearchAction(button, room) {
 		return;
 	}
 
+	if (action === 'request') {
+		button.addEventListener('click', () => {
+			submitRoomActionForm(
+				room.conversationId,
+				roomSearchForm.dataset.requestUrl || '/chat/rooms/request',
+			);
+		});
+		return;
+	}
+
 	button.disabled = true;
 }
 
@@ -250,12 +260,14 @@ function submitRoomActionForm(conversationId, actionUrl) {
 function getRoomSearchActionLabel(action) {
 	if (action === 'join') return roomSearchForm.dataset.joinLabel || '';
 	if (action === 'request') return roomSearchForm.dataset.requestLabel || '';
+	if (action === 'pending') return roomSearchForm.dataset.pendingLabel || '';
 	return roomSearchForm.dataset.openLabel || '';
 }
 
 function getRoomSearchActionIcon(action) {
 	if (action === 'join') return 'bi-plus-lg';
 	if (action === 'request') return 'bi-person-plus-fill';
+	if (action === 'pending') return 'bi-hourglass-split';
 	return 'bi-box-arrow-in-right';
 }
 

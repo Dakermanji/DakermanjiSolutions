@@ -6,6 +6,7 @@ import {
 	joinPublicRoom,
 	listPrivateRooms,
 	listPublicRooms,
+	requestPrivateListedRoom,
 	searchRooms,
 } from '../../services/chat/rooms.js';
 import { CHAT_REDIRECT } from '../../constants/chat.js';
@@ -114,6 +115,40 @@ export async function joinPublicRoomConversation(req, res, next) {
 		};
 
 		req.flash('success', 'chat:rooms.joinSuccess');
+		return res.redirect(CHAT_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Request access to a listed private room, then return to /chat.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function requestPrivateRoomAccess(req, res, next) {
+	const conversationId = String(req.body?.conversationId || '').trim();
+
+	if (!isValidUuid(conversationId)) {
+		req.flash('error', 'chat:rooms.requestError');
+		return res.redirect(CHAT_REDIRECT);
+	}
+
+	try {
+		const request = await requestPrivateListedRoom({
+			conversationId,
+			userId: req.user.id,
+		});
+
+		if (!request) {
+			req.flash('error', 'chat:rooms.requestError');
+			return res.redirect(CHAT_REDIRECT);
+		}
+
+		req.flash('success', 'chat:rooms.requestSuccess');
 		return res.redirect(CHAT_REDIRECT);
 	} catch (error) {
 		return next(error);

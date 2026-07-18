@@ -240,6 +240,7 @@ export async function findVisibleRoomConversationForUser(
 			cc.updated_at,
 			ccm.role AS member_role,
 			ccm.last_read_message_id,
+			pending_request.status AS pending_request_status,
 			owner.username AS owner_username,
 			owner.email AS owner_email
 		FROM chat_rooms cr
@@ -319,6 +320,10 @@ export function searchVisibleRoomsForUser({ userId, query, limit }) {
 			ON ccm.conversation_id = cc.id
 			AND ccm.user_id = $1
 			AND ccm.archived_at IS NULL
+		LEFT JOIN chat_room_join_requests pending_request
+			ON pending_request.room_id = cr.id
+			AND pending_request.requested_by_user_id = $1
+			AND pending_request.status = 'pending'
 		WHERE cr.archived_at IS NULL
 			AND cc.archived_at IS NULL
 			AND (

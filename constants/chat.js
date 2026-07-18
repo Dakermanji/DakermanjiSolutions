@@ -26,6 +26,14 @@ export const CHAT_ROOM_SEARCH_ACTIONS = Object.freeze({
 	OPEN: 'open',
 	JOIN: 'join',
 	REQUEST: 'request',
+	PENDING: 'pending',
+});
+
+export const CHAT_ROOM_JOIN_REQUEST_STATUSES = Object.freeze({
+	PENDING: 'pending',
+	APPROVED: 'approved',
+	REJECTED: 'rejected',
+	CANCELED: 'canceled',
 });
 
 export const CHAT_ROOM_LIMITS = Object.freeze({

@@ -29,6 +29,8 @@
 		"createError": "Could not create this room.",
 		"joinSuccess": "Joined room.",
 		"joinError": "Could not join this room.",
+		"requestSuccess": "Join request sent.",
+		"requestError": "Could not request access to this room.",
 		"searchTitle": "Search rooms",
 		"searchLabel": "Room name",
 		"searchSubmit": "Search",
@@ -40,7 +42,8 @@
 		"actions": {
 			"open": "Open room",
 			"join": "Join room",
-			"request": "Request to join"
+			"request": "Request to join",
+			"pending": "Request pending"
 		},
 		"name": "Room name",
 		"description": "Description",

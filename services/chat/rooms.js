@@ -2,8 +2,10 @@
 
 import ChatRoomsModel from '../../models/chat/Rooms.js';
 import ChatConversationMembersModel from '../../models/chat/ConversationMembers.js';
+import ChatRoomJoinRequestsModel from '../../models/chat/RoomJoinRequests.js';
 import {
 	CHAT_ROOM_JOIN_POLICIES,
+	CHAT_ROOM_JOIN_REQUEST_STATUSES,
 	CHAT_ROOM_VISIBILITY_CONVERSATION_TYPES,
 	CHAT_ROOM_VISIBILITY_JOIN_POLICIES,
 	CHAT_ROOM_LIMITS,
@@ -37,6 +39,10 @@ function getSearchAction(room) {
 		return CHAT_ROOM_SEARCH_ACTIONS.OPEN;
 	}
 
+	if (room.pending_request_status === CHAT_ROOM_JOIN_REQUEST_STATUSES.PENDING) {
+		return CHAT_ROOM_SEARCH_ACTIONS.PENDING;
+	}
+
 	if (room.join_policy === CHAT_ROOM_JOIN_POLICIES.OPEN) {
 		return CHAT_ROOM_SEARCH_ACTIONS.JOIN;
 	}
@@ -59,6 +65,7 @@ function formatRoom(room) {
 			lastMessageId: room.last_message_id,
 			lastMessageCreatedAt: room.last_message_created_at,
 			lastReadMessageId: room.last_read_message_id,
+			pendingRequestStatus: room.pending_request_status,
 			unreadCount: Number(room.unread_count || 0),
 			updatedAt: room.updated_at,
 		},
@@ -206,6 +213,21 @@ export async function joinPublicRoom({ conversationId, userId }) {
 }
 
 /**
+ * Request access to one listed private room.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.userId
+ * @returns {Promise<object|null>}
+ */
+export function requestPrivateListedRoom({ conversationId, userId }) {
+	return ChatRoomJoinRequestsModel.createPrivateListedRoomRequest({
+		conversationId,
+		userId,
+	});
+}
+
+/**
  * Check whether one room conversation can be opened by a user.
  *
  * @param {string} conversationId
@@ -278,6 +300,7 @@ export default {
 	listPrivateRooms,
 	listPublicRooms,
 	markRoomConversationRead,
+	requestPrivateListedRoom,
 	searchRooms,
 	validateCreateRoomInput,
 };
