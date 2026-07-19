@@ -9,6 +9,8 @@
 		"contact": "Contact",
 		"chat": "Chat",
 		"weather": "Météo",
+		"notifications": "Notifications",
+		"unreadNotifications": "{{count}} notifications non lues",
 		"profile": "Profil",
 		"social": "Social",
 		"langTrigger": "Changer la langue"

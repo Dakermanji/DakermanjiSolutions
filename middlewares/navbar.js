@@ -10,6 +10,7 @@
 
 import { navbar } from '../config/navbar.js';
 import { countUnreadFriendMessages } from '../services/chat/friends.js';
+import { countUnreadNotifications } from '../services/notifications/appNotifications.js';
 
 /**
  * Extract the first URL segment from a request path.
@@ -42,8 +43,13 @@ export const navbarMiddleware = (app) => {
 
 		if (req.user && isHtmlPageRequest) {
 			try {
-				const unreadChatCount =
-					await countUnreadFriendMessages(req.user.id);
+				const [unreadChatCount, unreadNotificationCount] =
+					await Promise.all([
+						countUnreadFriendMessages(req.user.id),
+						countUnreadNotifications(req.user.id),
+					]);
+
+				res.locals.notificationUnreadCount = unreadNotificationCount;
 
 				baseUserAppsNavbar.forEach((item) => {
 					if (item.link !== '/chat') return;

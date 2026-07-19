@@ -9,6 +9,8 @@
 		"contact": "تواصل معي",
 		"chat": "الدردشة",
 		"weather": "الطقس",
+		"notifications": "الإشعارات",
+		"unreadNotifications": "{{count}} إشعارات غير مقروءة",
 		"profile": "الملف الشخصي",
 		"social": "اجتماعي",
 		"langTrigger": "تغيير اللغة"

@@ -1,9 +1,13 @@
 <!--! views/layouts/_navUser.ejs -->
 <% const keys = {
+	notifications: t('nav.notifications'),
+	notificationUnread: t('nav.unreadNotifications', { count: notificationUnreadCount || 0 }),
+	notificationUnreadTemplate: t('nav.unreadNotifications', { count: '{{count}}' }),
 	profile: t('nav.profile'),
 	social: t('nav.social'),
 	signout: t('auth:signout.title')
 }; %>
+<% const notificationBadgeCount = Number(notificationUnreadCount || 0); %>
 
 <li class="nav-item ">
 	<a
@@ -17,6 +21,32 @@
 			<i class="bi bi-person-circle" aria-hidden="true"></i>
 		</span>
 		<span class="nav-text"><%= keys.profile %></span>
+	</a>
+</li>
+
+<li class="nav-item">
+	<a
+	class="nav-link has-tooltip <%= currentRoute === '/notifications' ? 'active' : '' %>"
+	id="notifications"
+	href="/notifications"
+	aria-label="<%= keys.notifications %>"
+	data-bs-title="<%= keys.notifications %>"
+	>
+		<span class="nav-icon">
+			<i class="bi bi-bell-fill" aria-hidden="true"></i>
+			<span
+				class="nav-badge"
+				aria-label="<%= keys.notificationUnread %>"
+				data-nav-badge="notificationsUnread"
+				data-nav-badge-template="<%= keys.notificationUnreadTemplate %>"
+				<% if (notificationBadgeCount <= 0) { %>
+					hidden
+				<% } %>
+			>
+				<%= new Intl.NumberFormat(currentLang || 'en').format(notificationBadgeCount) %>
+			</span>
+		</span>
+		<span class="nav-text"><%= keys.notifications %></span>
 	</a>
 </li>
 
