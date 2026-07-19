@@ -61,6 +61,8 @@ export const navbarMiddleware = (app) => {
 		// Expose navigation items to views
 		res.locals.navbar = Array.isArray(navbar[key]) ? navbar[key] : [];
 		res.locals.userAppsNavbar = baseUserAppsNavbar;
+		res.locals.notificationUnreadCount = 0;
+		res.locals.notificationPreview = [];
 
 		const isHtmlPageRequest =
 			req.method === 'GET' && req.accepts(['html', 'json']) === 'html';

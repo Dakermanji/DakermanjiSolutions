@@ -4,6 +4,7 @@ import pool, { queryRows } from '../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_ROLES,
 	CHAT_ROOM_JOIN_POLICIES,
+	CHAT_ROOM_JOIN_REQUEST_STATUSES,
 	CHAT_ROOM_VISIBILITY,
 } from '../../constants/chat.js';
 
@@ -252,13 +253,21 @@ export async function findVisibleRoomConversationForUser(
 			AND ccm.archived_at IS NULL
 		INNER JOIN users owner
 			ON owner.id = cc.created_by_user_id
+		LEFT JOIN chat_room_join_requests pending_request
+			ON pending_request.room_id = cr.id
+			AND pending_request.requested_by_user_id = $2
+			AND pending_request.status = $3
 		WHERE cr.conversation_id = $1
 			AND cr.archived_at IS NULL
 			AND cc.archived_at IS NULL
 		LIMIT 1;
 	`;
 
-	const rows = await queryRows(q, [conversationId, userId]);
+	const rows = await queryRows(q, [
+		conversationId,
+		userId,
+		CHAT_ROOM_JOIN_REQUEST_STATUSES.PENDING,
+	]);
 	return rows[0] || null;
 }
 

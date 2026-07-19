@@ -1,14 +1,16 @@
 <!--! views/layouts/_navUser.ejs -->
+<% const safeNotificationUnreadCount = typeof notificationUnreadCount !== 'undefined' ? notificationUnreadCount : 0; %>
+<% const safeNotificationPreview = typeof notificationPreview !== 'undefined' ? notificationPreview : []; %>
 <% const keys = {
 	notifications: t('nav.notifications'),
-	notificationUnread: t('nav.unreadNotifications', { count: notificationUnreadCount || 0 }),
+	notificationUnread: t('nav.unreadNotifications', { count: safeNotificationUnreadCount || 0 }),
 	notificationUnreadTemplate: t('nav.unreadNotifications', { count: '{{count}}' }),
 	profile: t('nav.profile'),
 	social: t('nav.social'),
 	signout: t('auth:signout.title')
 }; %>
-<% const notificationBadgeCount = Number(notificationUnreadCount || 0); %>
-<% const notificationPreviewItems = Array.isArray(notificationPreview) ? notificationPreview : []; %>
+<% const notificationBadgeCount = Number(safeNotificationUnreadCount || 0); %>
+<% const notificationPreviewItems = Array.isArray(safeNotificationPreview) ? safeNotificationPreview : []; %>
 
 <li class="nav-item ">
 	<a
