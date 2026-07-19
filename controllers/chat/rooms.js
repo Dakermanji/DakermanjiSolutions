@@ -4,7 +4,7 @@ import {
 	createRoom,
 	findOpenableRoomConversation,
 	joinPublicRoom,
-	listPrivateRooms,
+	listPrivateRoomSection,
 	listPublicRooms,
 	requestPrivateListedRoom,
 	searchRooms,
@@ -186,10 +186,13 @@ export async function getPublicRooms(req, res, next) {
  */
 export async function getPrivateRooms(req, res, next) {
 	try {
-		const rooms = await listPrivateRooms(req.user.id);
+		const { rooms, pendingRequests } = await listPrivateRoomSection(
+			req.user.id,
+		);
 		return res.json({
 			ok: true,
 			rooms,
+			pendingRequests,
 		});
 	} catch (error) {
 		return next(error);

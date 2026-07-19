@@ -99,6 +99,25 @@ function formatSearchRoom(room) {
 	};
 }
 
+function formatPendingRoomRequest(request) {
+	const formatted = formatRoom(request);
+
+	return {
+		request: {
+			id: request.request_id,
+			status: request.request_status,
+			createdAt: request.request_created_at,
+			updatedAt: request.request_updated_at,
+		},
+		...formatted,
+		room: {
+			...formatted.room,
+			action: CHAT_ROOM_SEARCH_ACTIONS.PENDING,
+			pendingRequestStatus: request.request_status,
+		},
+	};
+}
+
 function formatOpenRoomConversation(room) {
 	const formatted = formatRoom(room);
 
@@ -209,6 +228,24 @@ export async function listPublicRooms(userId) {
 export async function listPrivateRooms(userId) {
 	const rooms = await ChatRoomsModel.findPrivateRoomsForUser(userId);
 	return rooms.map(formatRoom);
+}
+
+/**
+ * List private rooms and pending private room requests visible to one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<object>}
+ */
+export async function listPrivateRoomSection(userId) {
+	const [rooms, pendingRequests] = await Promise.all([
+		ChatRoomsModel.findPrivateRoomsForUser(userId),
+		ChatRoomJoinRequestsModel.findPendingRequestsForUser(userId),
+	]);
+
+	return {
+		rooms: rooms.map(formatRoom),
+		pendingRequests: pendingRequests.map(formatPendingRoomRequest),
+	};
 }
 
 /**
@@ -346,6 +383,7 @@ export default {
 	findOpenableRoomConversation,
 	getOpenRoomConversation,
 	joinPublicRoom,
+	listPrivateRoomSection,
 	listPrivateRooms,
 	listPublicRooms,
 	markRoomConversationRead,
