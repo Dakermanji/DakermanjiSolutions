@@ -59,6 +59,7 @@ function formatRoom(room) {
 			conversationId: room.conversation_id,
 			title: room.title,
 			description: room.description,
+			keywords: Array.isArray(room.keywords) ? room.keywords : [],
 			visibility: room.visibility,
 			joinPolicy: room.join_policy,
 			memberRole: room.member_role,
@@ -114,6 +115,7 @@ function formatOpenRoomConversation(room) {
  * @param {string} input.ownerUserId
  * @param {string} input.name
  * @param {string|null} input.description
+ * @param {string|Array<string>} input.keywords
  * @param {string} input.visibility
  * @returns {Promise<object>}
  */

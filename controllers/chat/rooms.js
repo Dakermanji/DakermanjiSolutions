@@ -17,6 +17,7 @@ function getRoomInput(req) {
 		ownerUserId: req.user?.id,
 		name: req.body?.name,
 		description: req.body?.description,
+		keywords: req.body?.keywords,
 		visibility: req.body?.visibility,
 	};
 }

@@ -7,7 +7,13 @@ import {
 import { validateNoProfanity } from '../profanity/index.js';
 import { normalizeText } from './common.js';
 
-const { DESCRIPTION_MAX_LENGTH, NAME_MAX_LENGTH } = CHAT_ROOM_LIMITS;
+const {
+	DESCRIPTION_MAX_LENGTH,
+	KEYWORD_MAX_COUNT,
+	KEYWORD_MAX_LENGTH,
+	KEYWORD_MIN_COUNT,
+	NAME_MAX_LENGTH,
+} = CHAT_ROOM_LIMITS;
 const VALID_ROOM_VISIBILITIES = new Set(Object.values(CHAT_ROOM_VISIBILITY));
 const PROFANITY_CHECKED_ROOM_VISIBILITIES = new Set([
 	CHAT_ROOM_VISIBILITY.PUBLIC,
@@ -27,6 +33,17 @@ function normalizeRoomVisibility(visibility) {
 	return normalizeText(visibility);
 }
 
+function normalizeRoomKeywords(keywords) {
+	const keywordValues = Array.isArray(keywords)
+		? keywords
+		: String(keywords || '').split(/[,،]/);
+	const normalizedKeywords = keywordValues
+		.map((keyword) => normalizeText(keyword).replace(/\s+/g, ' ').toLowerCase())
+		.filter(Boolean);
+
+	return [...new Set(normalizedKeywords)];
+}
+
 function shouldCheckRoomProfanity(visibility) {
 	return PROFANITY_CHECKED_ROOM_VISIBILITIES.has(visibility);
 }
@@ -38,6 +55,7 @@ function shouldCheckRoomProfanity(visibility) {
  * @param {string} input.ownerUserId
  * @param {string} input.name
  * @param {string|null} input.description
+ * @param {string|Array<string>} input.keywords
  * @param {string} input.visibility
  * @returns {object}
  */
@@ -45,10 +63,12 @@ export function validateCreateRoomInput({
 	ownerUserId,
 	name,
 	description,
+	keywords,
 	visibility,
 }) {
 	const normalizedName = normalizeRoomName(name);
 	const normalizedDescription = normalizeRoomDescription(description);
+	const normalizedKeywords = normalizeRoomKeywords(keywords);
 	const normalizedVisibility = normalizeRoomVisibility(visibility);
 	const errors = {};
 
@@ -81,6 +101,28 @@ export function validateCreateRoomInput({
 		errors.description = 'Room description contains inappropriate language.';
 	}
 
+	if (normalizedKeywords.length < KEYWORD_MIN_COUNT) {
+		errors.keywords = `Add at least ${KEYWORD_MIN_COUNT} room keyword.`;
+	} else if (normalizedKeywords.length > KEYWORD_MAX_COUNT) {
+		errors.keywords = `Use ${KEYWORD_MAX_COUNT} room keywords or less.`;
+	} else {
+		const oversizedKeyword = normalizedKeywords.find(
+			(keyword) => keyword.length > KEYWORD_MAX_LENGTH,
+		);
+		const profaneKeyword = normalizedKeywords.find(
+			(keyword) =>
+				shouldCheckRoomProfanity(normalizedVisibility) &&
+				!validateNoProfanity(keyword),
+		);
+
+		if (oversizedKeyword) {
+			errors.keywords =
+				`Each room keyword must be ${KEYWORD_MAX_LENGTH} characters or less.`;
+		} else if (profaneKeyword) {
+			errors.keywords = 'Room keywords contain inappropriate language.';
+		}
+	}
+
 	if (!VALID_ROOM_VISIBILITIES.has(normalizedVisibility)) {
 		errors.visibility = 'Room visibility is invalid.';
 	}
@@ -92,6 +134,7 @@ export function validateCreateRoomInput({
 			ownerUserId,
 			name: normalizedName,
 			description: normalizedDescription,
+			keywords: normalizedKeywords,
 			visibility: normalizedVisibility,
 		},
 	};
