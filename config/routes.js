@@ -12,6 +12,7 @@ import homeRoutes from '../routes/home.js';
 import langRoutes from '../routes/lang.js';
 import authRoutes from '../routes/auth.js';
 import chatRoutes from '../routes/chat.js';
+import notificationsRoutes from '../routes/notifications.js';
 import socialRoutes from '../routes/social.js';
 import profileRoutes from '../routes/profile.js';
 import themeRoutes from '../routes/theme.js';
@@ -31,6 +32,9 @@ router.use('/auth', authRoutes);
 
 // Chat routes
 router.use('/chat', chatRoutes);
+
+// Notification routes
+router.use('/notifications', notificationsRoutes);
 
 // Social routes
 router.use('/social', socialRoutes);

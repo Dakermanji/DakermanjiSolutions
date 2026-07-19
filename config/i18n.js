@@ -34,6 +34,7 @@ const NAME_SPACES = [
 	'home',
 	'common',
 	'chat',
+	'notifications',
 	'social',
 	'profile',
 	'weather',
