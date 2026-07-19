@@ -31,6 +31,8 @@
 		"joinError": "تعذر الانضمام إلى هذه الغرفة.",
 		"requestSuccess": "تم إرسال طلب الانضمام.",
 		"requestError": "تعذر طلب الانضمام إلى هذه الغرفة.",
+		"cancelRequestSuccess": "تم إلغاء طلب الانضمام.",
+		"cancelRequestError": "تعذر إلغاء طلب الانضمام هذا.",
 		"pendingRequests": "طلبات الانضمام قيد الانتظار",
 		"searchTitle": "البحث عن غرفة",
 		"searchLabel": "اسم الغرفة أو كلمة مفتاحية",

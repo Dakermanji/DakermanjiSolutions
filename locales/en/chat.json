@@ -31,6 +31,8 @@
 		"joinError": "Could not join this room.",
 		"requestSuccess": "Join request sent.",
 		"requestError": "Could not request access to this room.",
+		"cancelRequestSuccess": "Join request canceled.",
+		"cancelRequestError": "Could not cancel this join request.",
 		"pendingRequests": "Pending requests",
 		"searchTitle": "Search rooms",
 		"searchLabel": "Room name or keyword",

@@ -1,6 +1,7 @@
 //! controllers/chat/rooms.js
 
 import {
+	cancelPrivateRoomRequest,
 	createRoom,
 	findOpenableRoomConversation,
 	joinPublicRoom,
@@ -150,6 +151,40 @@ export async function requestPrivateRoomAccess(req, res, next) {
 		}
 
 		req.flash('success', 'chat:rooms.requestSuccess');
+		return res.redirect(CHAT_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Cancel a pending listed private room access request, then return to /chat.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function cancelPrivateRoomAccessRequest(req, res, next) {
+	const requestId = String(req.body?.requestId || '').trim();
+
+	if (!isValidUuid(requestId)) {
+		req.flash('error', 'chat:rooms.cancelRequestError');
+		return res.redirect(CHAT_REDIRECT);
+	}
+
+	try {
+		const request = await cancelPrivateRoomRequest({
+			requestId,
+			userId: req.user.id,
+		});
+
+		if (!request) {
+			req.flash('error', 'chat:rooms.cancelRequestError');
+			return res.redirect(CHAT_REDIRECT);
+		}
+
+		req.flash('success', 'chat:rooms.cancelRequestSuccess');
 		return res.redirect(CHAT_REDIRECT);
 	} catch (error) {
 		return next(error);
