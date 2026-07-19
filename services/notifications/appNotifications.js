@@ -48,6 +48,32 @@ export async function createNotification(input) {
 }
 
 /**
+ * Create one app notification unless an unresolved matching one already exists.
+ *
+ * @param {object} input
+ * @returns {Promise<object>}
+ */
+export async function createNotificationIfNotExists(input) {
+	const validation = validateCreateNotificationInput(input);
+
+	if (!validation.isValid) {
+		return {
+			errors: validation.errors,
+			notification: null,
+		};
+	}
+
+	const notification = await AppNotificationsModel.createIfNotExists(
+		validation.values,
+	);
+
+	return {
+		errors: {},
+		notification,
+	};
+}
+
+/**
  * List visible notifications for one user.
  *
  * @param {string} recipientUserId
@@ -130,6 +156,7 @@ export function respondToNotification(
 
 export default {
 	countUnreadNotifications,
+	createNotificationIfNotExists,
 	createNotification,
 	dismissNotification,
 	listNotifications,

@@ -100,6 +100,85 @@ export async function create({
 }
 
 /**
+ * Create one app notification unless an unresolved one already exists.
+ *
+ * @param {object} notification
+ * @returns {Promise<object|null>}
+ */
+export async function createIfNotExists({
+	recipientUserId,
+	actorUserId = null,
+	appKey,
+	type,
+	entityType = null,
+	entityId = null,
+	titleKey = null,
+	bodyKey = null,
+	linkUrl = null,
+	data = {},
+	priority = 'normal',
+	expiresAt = null,
+}) {
+	const q = `
+		INSERT INTO app_notifications (
+			recipient_user_id,
+			actor_user_id,
+			app_key,
+			type,
+			entity_type,
+			entity_id,
+			title_key,
+			body_key,
+			link_url,
+			data,
+			priority,
+			expires_at
+		)
+		SELECT
+			$1::uuid,
+			$2::uuid,
+			$3::varchar(32),
+			$4::varchar(80),
+			$5::varchar(80),
+			$6::uuid,
+			$7::varchar(160),
+			$8::varchar(160),
+			$9::varchar(500),
+			$10::jsonb,
+			$11::app_notification_priority,
+			$12::timestamptz
+		WHERE NOT EXISTS (
+			SELECT 1
+			FROM app_notifications existing_notification
+			WHERE existing_notification.recipient_user_id = $1::uuid
+				AND existing_notification.app_key = $3::varchar(32)
+				AND existing_notification.type = $4::varchar(80)
+				AND existing_notification.entity_type IS NOT DISTINCT FROM $5::varchar(80)
+				AND existing_notification.entity_id IS NOT DISTINCT FROM $6::uuid
+				AND existing_notification.responded_at IS NULL
+		)
+		RETURNING ${baseFieldsSQL};
+	`;
+
+	const rows = await queryRows(q, [
+		recipientUserId,
+		actorUserId,
+		appKey,
+		type,
+		entityType,
+		entityId,
+		titleKey,
+		bodyKey,
+		linkUrl,
+		data,
+		priority,
+		expiresAt,
+	]);
+
+	return rows[0] || null;
+}
+
+/**
  * Find visible notifications for one recipient.
  *
  * Dismissed notifications are hidden from the default inbox.
@@ -255,6 +334,7 @@ export async function respond(notificationId, recipientUserId, responseKey) {
 export default {
 	countUnreadByRecipient,
 	create,
+	createIfNotExists,
 	dismiss,
 	findByIdForRecipient,
 	findByRecipient,

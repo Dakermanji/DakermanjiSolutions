@@ -28,6 +28,12 @@
 		"responded": "Répondue",
 		"unread": "Non lue"
 	},
+	"types": {
+		"chatRoomJoinRequest": {
+			"title": "Demande d’accès au salon",
+			"body": "{{requesterName}} souhaite rejoindre {{roomName}}."
+		}
+	},
 	"item": {
 		"fallbackTitle": "Notification",
 		"fallbackBody": "Ouvrir pour les détails"

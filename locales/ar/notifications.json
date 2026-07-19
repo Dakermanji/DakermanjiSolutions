@@ -28,6 +28,12 @@
 		"responded": "تم الرد",
 		"unread": "غير مقروء"
 	},
+	"types": {
+		"chatRoomJoinRequest": {
+			"title": "طلب انضمام إلى غرفة",
+			"body": "{{requesterName}} يريد الانضمام إلى {{roomName}}."
+		}
+	},
 	"item": {
 		"fallbackTitle": "إشعار",
 		"fallbackBody": "افتحه للتفاصيل"

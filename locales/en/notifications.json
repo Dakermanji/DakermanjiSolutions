@@ -28,6 +28,12 @@
 		"responded": "Responded",
 		"unread": "Unread"
 	},
+	"types": {
+		"chatRoomJoinRequest": {
+			"title": "Room join request",
+			"body": "{{requesterName}} wants to join {{roomName}}."
+		}
+	},
 	"item": {
 		"fallbackTitle": "Notification",
 		"fallbackBody": "Open for details"

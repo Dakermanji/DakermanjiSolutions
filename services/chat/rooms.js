@@ -11,7 +11,14 @@ import {
 	CHAT_ROOM_LIMITS,
 	CHAT_ROOM_SEARCH_ACTIONS,
 } from '../../constants/chat.js';
+import {
+	NOTIFICATION_APP_KEYS,
+	NOTIFICATION_ENTITY_TYPES,
+	NOTIFICATION_PRIORITIES,
+	NOTIFICATION_TYPES,
+} from '../../constants/notifications.js';
 import { validateCreateRoomInput } from '../../middlewares/validators/chat.js';
+import { createNotificationIfNotExists } from '../notifications/appNotifications.js';
 
 const { SEARCH_MAX_LENGTH, SEARCH_RESULT_LIMIT } = CHAT_ROOM_LIMITS;
 
@@ -106,6 +113,40 @@ function formatOpenRoomConversation(room) {
 		room: formatted.room,
 		owner: formatted.owner,
 	};
+}
+
+function getRequesterDisplayName(recipient) {
+	return recipient.requester_username || recipient.requester_email || '';
+}
+
+async function notifyRoomJoinRequestManagers(requestId) {
+	const recipients =
+		await ChatRoomJoinRequestsModel.findPendingJoinRequestNotificationRecipients(
+			requestId,
+		);
+
+	await Promise.all(
+		recipients.map((recipient) =>
+			createNotificationIfNotExists({
+				recipientUserId: recipient.recipient_user_id,
+				actorUserId: recipient.requested_by_user_id,
+				appKey: NOTIFICATION_APP_KEYS.CHAT,
+				type: NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST,
+				entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST,
+				entityId: recipient.request_id,
+				titleKey: 'notifications:types.chatRoomJoinRequest.title',
+				bodyKey: 'notifications:types.chatRoomJoinRequest.body',
+				linkUrl: '/notifications',
+				data: {
+					conversationId: recipient.conversation_id,
+					requestId: recipient.request_id,
+					requesterName: getRequesterDisplayName(recipient),
+					roomName: recipient.room_title,
+				},
+				priority: NOTIFICATION_PRIORITIES.HIGH,
+			}),
+		),
+	);
 }
 
 /**
@@ -222,11 +263,17 @@ export async function joinPublicRoom({ conversationId, userId }) {
  * @param {string} input.userId
  * @returns {Promise<object|null>}
  */
-export function requestPrivateListedRoom({ conversationId, userId }) {
-	return ChatRoomJoinRequestsModel.createPrivateListedRoomRequest({
+export async function requestPrivateListedRoom({ conversationId, userId }) {
+	const request = await ChatRoomJoinRequestsModel.createPrivateListedRoomRequest({
 		conversationId,
 		userId,
 	});
+
+	if (request) {
+		await notifyRoomJoinRequestManagers(request.id);
+	}
+
+	return request;
 }
 
 /**

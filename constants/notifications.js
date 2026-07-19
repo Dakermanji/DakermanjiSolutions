@@ -18,6 +18,7 @@ export const NOTIFICATION_PRIORITIES = Object.freeze({
 
 export const NOTIFICATION_TYPES = Object.freeze({
 	CHAT_ROOM_INVITATION: 'chat_room_invitation',
+	CHAT_ROOM_JOIN_REQUEST: 'chat_room_join_request',
 	CHAT_ROOM_JOIN_REQUEST_APPROVED: 'chat_room_join_request_approved',
 	CHAT_ROOM_JOIN_REQUEST_REJECTED: 'chat_room_join_request_rejected',
 });
