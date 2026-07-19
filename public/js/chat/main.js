@@ -251,7 +251,8 @@ function setupRoomSearchAction(button, room) {
 		return;
 	}
 
-	button.disabled = true;
+	button.classList.add('is-disabled');
+	button.setAttribute('aria-disabled', 'true');
 }
 
 function submitRoomActionForm(conversationId, actionUrl) {

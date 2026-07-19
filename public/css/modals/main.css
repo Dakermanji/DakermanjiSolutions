@@ -383,6 +383,11 @@
 	border-radius: var(--radius-sm);
 }
 
+.chat-room-search-action.is-disabled {
+	cursor: default;
+	opacity: 0.65;
+}
+
 .modal-body .form-text {
 	color: var(--color-text-muted);
 }
