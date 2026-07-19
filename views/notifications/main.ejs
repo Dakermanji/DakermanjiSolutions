@@ -1,42 +1,108 @@
 <!--! views/notifications/main.ejs -->
+<%
+	const items = Array.isArray(notifications) ? notifications : [];
+	const unreadTotal = Number(unreadCount || 0);
+	const formatCount = (value) => new Intl.NumberFormat(currentLang || 'en').format(Number(value || 0));
+	const formatTime = (timestamp) => {
+		if (!timestamp) return '';
 
-<section class="container py-5" aria-labelledby="notifications-title">
-	<p class="text-uppercase text-primary fw-bold mb-2">
-		<%= t('notifications:kicker') %>
-	</p>
-	<h1 id="notifications-title" class="display-6 fw-bold">
-		<%= t('notifications:title') %>
-	</h1>
+		return new Intl.DateTimeFormat(currentLang || 'en', {
+			dateStyle: 'medium',
+			timeStyle: 'short',
+		}).format(new Date(timestamp));
+	};
+	const getStatusKey = (notification) => {
+		if (notification.isResponded) return 'responded';
+		if (notification.isRead) return 'read';
+		return 'unread';
+	};
+%>
 
-	<% if (!notifications || notifications.length === 0) { %>
-		<p class="text-body-secondary mb-0">
-			<%= t('notifications:empty') %>
-		</p>
+<section
+	class="notifications-page"
+	aria-labelledby="notifications-title"
+	data-notifications-page
+	data-empty-filter-label="<%= t('notifications:filters.empty') %>"
+>
+	<header class="notifications-header">
+		<div>
+			<p class="notifications-kicker"><%= t('notifications:kicker') %></p>
+			<h1 id="notifications-title"><%= t('notifications:title') %></h1>
+		</div>
+
+		<div class="notifications-summary" aria-label="<%= t('notifications:summary.unread', { count: unreadTotal }) %>">
+			<span><%= formatCount(unreadTotal) %></span>
+			<small><%= t('notifications:summary.unreadShort') %></small>
+		</div>
+	</header>
+
+	<% if (items.length === 0) { %>
+		<div class="notifications-empty">
+			<i class="bi bi-bell" aria-hidden="true"></i>
+			<p><%= t('notifications:empty') %></p>
+		</div>
 	<% } else { %>
-		<div class="list-group mt-4">
-			<% notifications.forEach((notification) => { %>
-				<a
-					class="list-group-item list-group-item-action d-flex justify-content-between gap-3 <%= notification.isRead ? '' : 'fw-semibold' %>"
-					href="<%= notification.linkUrl || '/notifications' %>"
+		<div class="notifications-toolbar" role="group" aria-label="<%= t('notifications:filters.label') %>">
+			<button
+				class="notifications-filter is-active"
+				type="button"
+				data-notifications-filter="all"
+				aria-pressed="true"
+			>
+				<i class="bi bi-inboxes-fill" aria-hidden="true"></i>
+				<span><%= t('notifications:filters.all') %></span>
+			</button>
+			<button
+				class="notifications-filter"
+				type="button"
+				data-notifications-filter="unread"
+				aria-pressed="false"
+			>
+				<i class="bi bi-envelope-fill" aria-hidden="true"></i>
+				<span><%= t('notifications:filters.unread') %></span>
+			</button>
+		</div>
+
+		<p class="notifications-filter-empty" data-notifications-filter-empty hidden>
+			<%= t('notifications:filters.empty') %>
+		</p>
+
+		<div class="notifications-list" data-notifications-list>
+			<% items.forEach((notification) => { %>
+				<%
+					const title = notification.titleKey
+						? t(notification.titleKey, notification.data)
+						: t('notifications:item.fallbackTitle');
+					const body = notification.bodyKey
+						? t(notification.bodyKey, notification.data)
+						: notification.actor.displayName || t('notifications:item.fallbackBody');
+					const statusKey = getStatusKey(notification);
+				%>
+				<article
+					class="notification-item <%= notification.isRead ? 'is-read' : 'is-unread' %> priority-<%= notification.priority %>"
+					data-notification-item
+					data-notification-read="<%= notification.isRead ? 'true' : 'false' %>"
 				>
-					<span>
-						<span class="d-block">
-							<%= notification.titleKey ? t(notification.titleKey, notification.data) : notification.type %>
+					<div class="notification-icon" aria-hidden="true">
+						<i class="bi bi-bell-fill"></i>
+					</div>
+
+					<a class="notification-content" href="<%= notification.linkUrl || '/notifications' %>">
+						<span class="notification-meta">
+							<span class="notification-chip"><%= t(`notifications:apps.${notification.appKey}`) %></span>
+							<span class="notification-status"><%= t(`notifications:status.${statusKey}`) %></span>
 						</span>
-						<% if (notification.bodyKey) { %>
-							<small class="text-body-secondary">
-								<%= t(notification.bodyKey, notification.data) %>
-							</small>
-						<% } else if (notification.actor.displayName) { %>
-							<small class="text-body-secondary">
-								<%= notification.actor.displayName %>
-							</small>
-						<% } %>
-					</span>
-					<small class="text-body-secondary">
-						<%= notification.appKey %>
-					</small>
-				</a>
+						<strong><%= title %></strong>
+						<small><%= body %></small>
+					</a>
+
+					<time
+						class="notification-time"
+						datetime="<%= notification.createdAt ? new Date(notification.createdAt).toISOString() : '' %>"
+					>
+						<%= formatTime(notification.createdAtTimestamp) %>
+					</time>
+				</article>
 			<% }) %>
 		</div>
 	<% } %>

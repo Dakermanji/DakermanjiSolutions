@@ -1,5 +1,31 @@
 {
 	"title": "Notifications",
 	"kicker": "Activity",
-	"empty": "Notifications will appear here."
+	"empty": "Notifications will appear here.",
+	"summary": {
+		"unread": "{{count}} unread notifications",
+		"unreadShort": "Unread"
+	},
+	"filters": {
+		"label": "Notification filters",
+		"all": "All",
+		"unread": "Unread",
+		"empty": "No notifications match this filter."
+	},
+	"apps": {
+		"admin": "Admin",
+		"chat": "Chat",
+		"projects": "Projects",
+		"system": "System",
+		"weather": "Weather"
+	},
+	"status": {
+		"read": "Read",
+		"responded": "Responded",
+		"unread": "Unread"
+	},
+	"item": {
+		"fallbackTitle": "Notification",
+		"fallbackBody": "Open for details"
+	}
 }

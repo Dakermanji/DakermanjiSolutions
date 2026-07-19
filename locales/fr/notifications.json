@@ -1,5 +1,31 @@
 {
 	"title": "Notifications",
 	"kicker": "Activité",
-	"empty": "Les notifications apparaîtront ici."
+	"empty": "Les notifications apparaîtront ici.",
+	"summary": {
+		"unread": "{{count}} notifications non lues",
+		"unreadShort": "Non lues"
+	},
+	"filters": {
+		"label": "Filtres de notifications",
+		"all": "Toutes",
+		"unread": "Non lues",
+		"empty": "Aucune notification ne correspond à ce filtre."
+	},
+	"apps": {
+		"admin": "Admin",
+		"chat": "Chat",
+		"projects": "Projets",
+		"system": "Système",
+		"weather": "Météo"
+	},
+	"status": {
+		"read": "Lue",
+		"responded": "Répondue",
+		"unread": "Non lue"
+	},
+	"item": {
+		"fallbackTitle": "Notification",
+		"fallbackBody": "Ouvrir pour les détails"
+	}
 }

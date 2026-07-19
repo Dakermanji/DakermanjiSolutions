@@ -10,6 +10,10 @@ function getActorDisplayName(notification) {
 }
 
 function serializeNotification(notification) {
+	const createdAt = notification.created_at
+		? new Date(notification.created_at)
+		: null;
+
 	return {
 		id: notification.id,
 		appKey: notification.app_key,
@@ -27,6 +31,7 @@ function serializeNotification(notification) {
 		responseKey: notification.response_key,
 		expiresAt: notification.expires_at,
 		createdAt: notification.created_at,
+		createdAtTimestamp: createdAt ? createdAt.getTime() : null,
 		actor: {
 			id: notification.actor_user_id,
 			username: notification.actor_username,
@@ -53,6 +58,8 @@ export async function renderNotifications(req, res, next) {
 
 		res.render('notifications/main', {
 			titleKey: 'notifications:title',
+			styles: ['notifications/main'],
+			scripts: ['notifications/main'],
 			notifications: notifications.map(serializeNotification),
 			unreadCount,
 		});
