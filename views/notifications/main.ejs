@@ -7,7 +7,37 @@
 	<h1 id="notifications-title" class="display-6 fw-bold">
 		<%= t('notifications:title') %>
 	</h1>
-	<p class="text-body-secondary mb-0">
-		<%= t('notifications:empty') %>
-	</p>
+
+	<% if (!notifications || notifications.length === 0) { %>
+		<p class="text-body-secondary mb-0">
+			<%= t('notifications:empty') %>
+		</p>
+	<% } else { %>
+		<div class="list-group mt-4">
+			<% notifications.forEach((notification) => { %>
+				<a
+					class="list-group-item list-group-item-action d-flex justify-content-between gap-3 <%= notification.isRead ? '' : 'fw-semibold' %>"
+					href="<%= notification.linkUrl || '/notifications' %>"
+				>
+					<span>
+						<span class="d-block">
+							<%= notification.titleKey ? t(notification.titleKey, notification.data) : notification.type %>
+						</span>
+						<% if (notification.bodyKey) { %>
+							<small class="text-body-secondary">
+								<%= t(notification.bodyKey, notification.data) %>
+							</small>
+						<% } else if (notification.actor.displayName) { %>
+							<small class="text-body-secondary">
+								<%= notification.actor.displayName %>
+							</small>
+						<% } %>
+					</span>
+					<small class="text-body-secondary">
+						<%= notification.appKey %>
+					</small>
+				</a>
+			<% }) %>
+		</div>
+	<% } %>
 </section>
