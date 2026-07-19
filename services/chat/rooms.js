@@ -314,6 +314,25 @@ export async function requestPrivateListedRoom({ conversationId, userId }) {
 }
 
 /**
+ * Cancel one pending private room access request.
+ *
+ * @param {object} input
+ * @param {string} input.requestId
+ * @param {string} input.userId
+ * @returns {Promise<object|null>}
+ */
+export function cancelPrivateRoomRequest({ requestId, userId }) {
+	if (!requestId || !userId) {
+		return null;
+	}
+
+	return ChatRoomJoinRequestsModel.cancelPendingRequestForUser({
+		requestId,
+		userId,
+	});
+}
+
+/**
  * Check whether one room conversation can be opened by a user.
  *
  * @param {string} conversationId
@@ -378,6 +397,7 @@ export async function countVisibleRooms(userId) {
 }
 
 export default {
+	cancelPrivateRoomRequest,
 	countVisibleRooms,
 	createRoom,
 	findOpenableRoomConversation,
