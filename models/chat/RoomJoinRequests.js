@@ -167,7 +167,44 @@ export function findPendingRequestsForUser(userId) {
 	]);
 }
 
+/**
+ * Cancel one pending room join request owned by a user.
+ *
+ * @param {object} input
+ * @param {string} input.requestId
+ * @param {string} input.userId
+ * @returns {Promise<object|null>}
+ */
+export async function cancelPendingRequestForUser({ requestId, userId }) {
+	const q = `
+		UPDATE chat_room_join_requests
+		SET
+			status = $3::chat_room_join_request_status,
+			updated_at = NOW()
+		WHERE id = $1
+			AND requested_by_user_id = $2
+			AND status = $4::chat_room_join_request_status
+		RETURNING
+			id,
+			room_id,
+			requested_by_user_id,
+			status,
+			created_at,
+			updated_at;
+	`;
+
+	const rows = await queryRows(q, [
+		requestId,
+		userId,
+		CHAT_ROOM_JOIN_REQUEST_STATUSES.CANCELED,
+		CHAT_ROOM_JOIN_REQUEST_STATUSES.PENDING,
+	]);
+
+	return rows[0] || null;
+}
+
 export default {
+	cancelPendingRequestForUser,
 	createPrivateListedRoomRequest,
 	findPendingRequestsForUser,
 	findPendingJoinRequestNotificationRecipients,
