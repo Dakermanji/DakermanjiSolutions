@@ -382,3 +382,7 @@
 	padding: 0;
 	border-radius: var(--radius-sm);
 }
+
+.modal-body .form-text {
+	color: var(--color-text-muted);
+}

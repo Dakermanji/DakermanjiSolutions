@@ -37,10 +37,6 @@
 	background-color: var(--color-primary);
 }
 
-#authModal .form-text {
-	color: var(--color-text-muted);
-}
-
 .oauth-buttons {
 	display: flex;
 	flex-direction: column;
