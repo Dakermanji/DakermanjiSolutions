@@ -32,7 +32,7 @@
 		"requestSuccess": "تم إرسال طلب الانضمام.",
 		"requestError": "تعذر طلب الانضمام إلى هذه الغرفة.",
 		"searchTitle": "البحث عن غرفة",
-		"searchLabel": "اسم الغرفة",
+		"searchLabel": "اسم الغرفة أو كلمة مفتاحية",
 		"searchSubmit": "بحث",
 		"searchPlaceholder": "ابحث في الغرف العامة والخاصة الظاهرة...",
 		"searchEmpty": "ابحث عن الغرف العامة، والغرف الخاصة الظاهرة، والغرف التي انضممت إليها.",
@@ -47,6 +47,9 @@
 		},
 		"name": "اسم الغرفة",
 		"description": "الوصف",
+		"keywords": "الكلمات المفتاحية",
+		"keywordsPlaceholder": "برمجة، مساعدة، خلفية",
+		"keywordsHelp": "أضف من 1 إلى 5 كلمات مفتاحية، وافصل بينها بفواصل.",
 		"visibility": "الظهور",
 		"visibilityOptions": {
 			"public": "عامة",

@@ -32,7 +32,7 @@
 		"requestSuccess": "Demande envoyée.",
 		"requestError": "Impossible de demander l’accès à ce salon.",
 		"searchTitle": "Rechercher un salon",
-		"searchLabel": "Nom du salon",
+		"searchLabel": "Nom du salon ou mot-clé",
 		"searchSubmit": "Rechercher",
 		"searchPlaceholder": "Rechercher des salons publics et privés listés...",
 		"searchEmpty": "Recherchez des salons publics, des salons privés listés et les salons que vous avez déjà rejoints.",
@@ -47,6 +47,9 @@
 		},
 		"name": "Nom du salon",
 		"description": "Description",
+		"keywords": "Mots-clés",
+		"keywordsPlaceholder": "backend, php, aide",
+		"keywordsHelp": "Ajoutez 1 à 5 mots-clés, séparés par des virgules.",
 		"visibility": "Visibilité",
 		"visibilityOptions": {
 			"public": "Public",

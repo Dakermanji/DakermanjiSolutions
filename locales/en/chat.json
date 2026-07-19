@@ -32,7 +32,7 @@
 		"requestSuccess": "Join request sent.",
 		"requestError": "Could not request access to this room.",
 		"searchTitle": "Search rooms",
-		"searchLabel": "Room name",
+		"searchLabel": "Room name or keyword",
 		"searchSubmit": "Search",
 		"searchPlaceholder": "Search public and listed private rooms...",
 		"searchEmpty": "Search for public rooms, listed private rooms, and rooms you already joined.",
@@ -47,6 +47,9 @@
 		},
 		"name": "Room name",
 		"description": "Description",
+		"keywords": "Keywords",
+		"keywordsPlaceholder": "backend, php, help",
+		"keywordsHelp": "Add 1 to 5 keywords, separated by commas.",
 		"visibility": "Visibility",
 		"visibilityOptions": {
 			"public": "Public",

@@ -53,6 +53,25 @@
 						></textarea>
 					</div>
 
+					<div class="mb-3">
+						<label for="chatRoomKeywords" class="form-label">
+							<%= t('chat:rooms.keywords') %>
+						</label>
+						<input
+							id="chatRoomKeywords"
+							type="text"
+							class="form-control"
+							name="keywords"
+							required
+							maxlength="140"
+							autocomplete="off"
+							placeholder="<%= t('chat:rooms.keywordsPlaceholder') %>"
+						/>
+						<div class="form-text">
+							<%= t('chat:rooms.keywordsHelp') %>
+						</div>
+					</div>
+
 					<fieldset class="mb-0">
 						<legend class="form-label">
 							<%= t('chat:rooms.visibility') %>

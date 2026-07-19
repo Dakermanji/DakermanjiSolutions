@@ -162,12 +162,14 @@ function createRoomSearchResult(item) {
 	const typeIcon = fragment.querySelector('[data-room-type-icon]');
 	const title = fragment.querySelector('[data-room-title]');
 	const description = fragment.querySelector('[data-room-description]');
+	const keywords = fragment.querySelector('[data-room-keywords]');
 	const ownerLabel = fragment.querySelector('[data-room-owner]');
 	const actionButton = fragment.querySelector('[data-room-action]');
 
 	typeIcon.appendChild(createRoomSearchTypeIcon(room));
 	title.textContent = room.title || '';
 	description.textContent = room.description || '';
+	renderRoomKeywords(keywords, room.keywords);
 	ownerLabel.textContent = ownerName
 		? (roomSearchForm.dataset.ownerLabel || '').replace('{{owner}}', ownerName)
 		: '';
@@ -176,6 +178,19 @@ function createRoomSearchResult(item) {
 	window.AppTooltips?.initIn(result);
 
 	return result;
+}
+
+function renderRoomKeywords(container, keywords) {
+	if (!container || !Array.isArray(keywords) || keywords.length === 0) {
+		return;
+	}
+
+	for (const keyword of keywords) {
+		const tag = document.createElement('span');
+		tag.className = 'chat-room-search-keyword';
+		tag.textContent = keyword;
+		container.appendChild(tag);
+	}
 }
 
 function createRoomSearchTypeIcon(room) {

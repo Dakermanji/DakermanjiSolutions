@@ -356,6 +356,26 @@
 	color: var(--color-text-muted);
 }
 
+.chat-room-search-keywords {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	min-width: 0;
+}
+
+.chat-room-search-keyword {
+	max-width: 100%;
+	padding: 0.1rem 0.4rem;
+	overflow: hidden;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-muted);
+	background: var(--bg-card-muted);
+	font-size: 0.8rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .chat-room-search-action {
 	width: 2.4rem;
 	height: 2.4rem;
