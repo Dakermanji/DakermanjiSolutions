@@ -3,6 +3,7 @@
 import { Router } from 'express';
 import {
 	closeFriendConversation,
+	cancelPrivateRoomAccessRequest,
 	createChatRoom,
 	createFriendChatMessage,
 	getFriendChats,
@@ -32,5 +33,6 @@ router.post('/rooms', createChatRoom);
 router.post('/rooms/join', joinPublicRoomConversation);
 router.post('/rooms/open', openRoomConversation);
 router.post('/rooms/request', requestPrivateRoomAccess);
+router.post('/rooms/request/cancel', cancelPrivateRoomAccessRequest);
 
 export default router;

@@ -11,6 +11,7 @@ export {
 	getOlderFriendMessages,
 } from './messages.js';
 export {
+	cancelPrivateRoomAccessRequest,
 	createChatRoom,
 	getPrivateRooms,
 	getPublicRooms,
