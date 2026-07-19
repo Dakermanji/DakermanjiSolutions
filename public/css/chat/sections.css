@@ -132,6 +132,29 @@
 	outline: none;
 }
 
+.chat-request-item {
+	cursor: default;
+}
+
+.chat-request-item:hover {
+	border-color: var(--border-soft);
+	background: var(--bg-card);
+}
+
+.chat-room-pending-group {
+	display: grid;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
+
+.chat-room-pending-title {
+	margin: 0;
+	color: var(--color-text-muted);
+	font-size: 0.85rem;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
 .chat-friend-avatar {
 	display: inline-flex;
 	align-items: center;
@@ -175,6 +198,15 @@
 }
 
 .chat-friend-open {
+	color: var(--color-text-muted);
+}
+
+.chat-request-status {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.5rem;
+	height: 1.5rem;
 	color: var(--color-text-muted);
 }
 

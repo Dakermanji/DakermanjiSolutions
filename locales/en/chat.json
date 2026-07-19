@@ -31,6 +31,7 @@
 		"joinError": "Could not join this room.",
 		"requestSuccess": "Join request sent.",
 		"requestError": "Could not request access to this room.",
+		"pendingRequests": "Pending requests",
 		"searchTitle": "Search rooms",
 		"searchLabel": "Room name or keyword",
 		"searchSubmit": "Search",

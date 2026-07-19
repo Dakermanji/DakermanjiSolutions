@@ -93,8 +93,16 @@ async function loadChatSection(sectionBody, { force = false } = {}) {
 			throw new Error('Invalid room chats payload');
 		}
 
+		if (
+			sectionId === 'privateRooms' &&
+			payload.pendingRequests &&
+			!Array.isArray(payload.pendingRequests)
+		) {
+			throw new Error('Invalid pending room requests payload');
+		}
+
 		updateSectionCount(sectionId, payload.rooms.length);
-		renderRooms(sectionBody, payload.rooms);
+		renderRooms(sectionBody, payload.rooms, payload.pendingRequests || []);
 	} catch (error) {
 		console.error('Failed to load chat section', error);
 		renderMessage(sectionBody, sectionBody.dataset.errorLabel);
@@ -309,10 +317,10 @@ function renderFriendChats(conversations) {
 	friendsBody.appendChild(list);
 }
 
-function renderRooms(sectionBody, rooms) {
+function renderRooms(sectionBody, rooms, pendingRequests = []) {
 	sectionBody.replaceChildren();
 
-	if (rooms.length === 0) {
+	if (rooms.length === 0 && pendingRequests.length === 0) {
 		renderEmptyState(
 			sectionBody,
 			sectionBody.dataset.iconClass,
@@ -321,6 +329,16 @@ function renderRooms(sectionBody, rooms) {
 		return;
 	}
 
+	if (rooms.length > 0) {
+		sectionBody.appendChild(createRoomList(rooms, sectionBody));
+	}
+
+	if (pendingRequests.length > 0) {
+		sectionBody.appendChild(createPendingRequestList(pendingRequests, sectionBody));
+	}
+}
+
+function createRoomList(rooms, sectionBody) {
 	const list = document.createElement('div');
 	list.className = 'chat-friend-list';
 
@@ -328,7 +346,78 @@ function renderRooms(sectionBody, rooms) {
 		list.appendChild(createRoomItem(item, sectionBody));
 	}
 
-	sectionBody.appendChild(list);
+	return list;
+}
+
+function createPendingRequestList(requests, sectionBody) {
+	const wrapper = document.createElement('div');
+	wrapper.className = 'chat-room-pending-group';
+
+	const title = document.createElement('h3');
+	title.className = 'chat-room-pending-title';
+	title.textContent = sectionBody.dataset.pendingRequestsTitle || '';
+
+	const list = document.createElement('div');
+	list.className = 'chat-friend-list';
+
+	for (const item of requests) {
+		list.appendChild(createPendingRoomRequestItem(item, sectionBody));
+	}
+
+	wrapper.append(title, list);
+	return wrapper;
+}
+
+function createPendingRoomRequestItem(item, sectionBody) {
+	const room = item.room || {};
+	const owner = item.owner || {};
+	const roomName = room.title || '';
+	const ownerName = owner.displayName || owner.username || owner.email || '';
+
+	const card = document.createElement('div');
+	card.className = 'chat-friend-item chat-request-item';
+
+	const avatar = document.createElement('span');
+	avatar.className = 'chat-friend-avatar';
+	avatar.textContent = roomName.slice(0, 1).toUpperCase();
+
+	const content = document.createElement('span');
+	content.className = 'chat-friend-content';
+
+	const title = document.createElement('span');
+	title.className = 'chat-friend-name';
+	title.textContent = roomName;
+
+	const meta = document.createElement('span');
+	meta.className = 'chat-friend-meta';
+	meta.textContent = ownerName;
+
+	content.append(title, meta);
+
+	const spacer = document.createElement('span');
+	spacer.className = 'chat-unread-spacer';
+	spacer.setAttribute('aria-hidden', 'true');
+
+	const status = document.createElement('span');
+	status.className = 'chat-request-status has-tooltip';
+	status.setAttribute(
+		'aria-label',
+		sectionBody.dataset.pendingRequestLabel || '',
+	);
+	status.setAttribute(
+		'data-bs-title',
+		sectionBody.dataset.pendingRequestLabel || '',
+	);
+
+	const icon = document.createElement('i');
+	icon.className = 'bi bi-hourglass-split';
+	icon.setAttribute('aria-hidden', 'true');
+	status.appendChild(icon);
+
+	card.append(avatar, content, spacer, status);
+	window.AppTooltips?.initIn(card);
+
+	return card;
 }
 
 function createRoomItem(item, sectionBody) {

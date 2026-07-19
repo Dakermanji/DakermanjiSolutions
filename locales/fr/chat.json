@@ -31,6 +31,7 @@
 		"joinError": "Impossible de rejoindre ce salon.",
 		"requestSuccess": "Demande envoyée.",
 		"requestError": "Impossible de demander l’accès à ce salon.",
+		"pendingRequests": "Demandes en attente",
 		"searchTitle": "Rechercher un salon",
 		"searchLabel": "Nom du salon ou mot-clé",
 		"searchSubmit": "Rechercher",
