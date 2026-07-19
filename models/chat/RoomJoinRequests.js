@@ -112,7 +112,63 @@ export function findPendingJoinRequestNotificationRecipients(requestId) {
 	]);
 }
 
+/**
+ * List pending room join requests created by one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<Array>}
+ */
+export function findPendingRequestsForUser(userId) {
+	const q = `
+		SELECT
+			cjr.id AS request_id,
+			cjr.status AS request_status,
+			cjr.created_at AS request_created_at,
+			cjr.updated_at AS request_updated_at,
+			cr.id AS room_id,
+			cr.conversation_id,
+			cr.description,
+			cr.keywords,
+			cr.visibility,
+			cr.join_policy,
+			cc.type AS conversation_type,
+			cc.title,
+			cc.created_by_user_id,
+			cc.created_at,
+			cc.updated_at,
+			owner.username AS owner_username,
+			owner.email AS owner_email
+		FROM chat_room_join_requests cjr
+		INNER JOIN chat_rooms cr
+			ON cr.id = cjr.room_id
+		INNER JOIN chat_conversations cc
+			ON cc.id = cr.conversation_id
+		INNER JOIN users owner
+			ON owner.id = cc.created_by_user_id
+		WHERE cjr.requested_by_user_id = $1
+			AND cjr.status = $2::chat_room_join_request_status
+			AND cr.archived_at IS NULL
+			AND cc.archived_at IS NULL
+			AND NOT EXISTS (
+				SELECT 1
+				FROM chat_conversation_members ccm
+				WHERE ccm.conversation_id = cr.conversation_id
+					AND ccm.user_id = $1
+					AND ccm.archived_at IS NULL
+			)
+		ORDER BY
+			cjr.updated_at DESC,
+			LOWER(cc.title) ASC;
+	`;
+
+	return queryRows(q, [
+		userId,
+		CHAT_ROOM_JOIN_REQUEST_STATUSES.PENDING,
+	]);
+}
+
 export default {
 	createPrivateListedRoomRequest,
+	findPendingRequestsForUser,
 	findPendingJoinRequestNotificationRecipients,
 };
