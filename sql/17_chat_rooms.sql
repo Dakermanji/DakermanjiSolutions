@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS "chat_rooms" (
 
 	-- room discovery / access
 	"description" VARCHAR(500) NULL,
+	"keywords" TEXT[] NOT NULL,
 	"visibility" chat_room_visibility NOT NULL,
 	"join_policy" chat_room_join_policy NOT NULL,
 
