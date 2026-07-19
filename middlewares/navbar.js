@@ -10,7 +10,12 @@
 
 import { navbar } from '../config/navbar.js';
 import { countUnreadFriendMessages } from '../services/chat/friends.js';
-import { countUnreadNotifications } from '../services/notifications/appNotifications.js';
+import {
+	countUnreadNotifications,
+	listNotifications,
+} from '../services/notifications/appNotifications.js';
+
+const NOTIFICATION_PREVIEW_LIMIT = 5;
 
 /**
  * Extract the first URL segment from a request path.
@@ -20,6 +25,25 @@ import { countUnreadNotifications } from '../services/notifications/appNotificat
  */
 function firstSegment(path = '/') {
 	return path.replace(/^\/+/, '').split('/')[0].toLowerCase();
+}
+
+function formatNotificationPreview(notification) {
+	return {
+		id: notification.id,
+		appKey: notification.app_key,
+		type: notification.type,
+		titleKey: notification.title_key,
+		bodyKey: notification.body_key,
+		linkUrl: notification.link_url || '/notifications',
+		data: notification.data || {},
+		isRead: Boolean(notification.read_at),
+		actor: {
+			username: notification.actor_username,
+			email: notification.actor_email,
+			displayName:
+				notification.actor_username || notification.actor_email || '',
+		},
+	};
 }
 
 export const navbarMiddleware = (app) => {
@@ -43,13 +67,23 @@ export const navbarMiddleware = (app) => {
 
 		if (req.user && isHtmlPageRequest) {
 			try {
-				const [unreadChatCount, unreadNotificationCount] =
+				const [
+					unreadChatCount,
+					unreadNotificationCount,
+					notificationPreview,
+				] =
 					await Promise.all([
 						countUnreadFriendMessages(req.user.id),
 						countUnreadNotifications(req.user.id),
+						listNotifications(req.user.id, {
+							limit: NOTIFICATION_PREVIEW_LIMIT,
+						}),
 					]);
 
 				res.locals.notificationUnreadCount = unreadNotificationCount;
+				res.locals.notificationPreview = notificationPreview.map(
+					formatNotificationPreview,
+				);
 
 				baseUserAppsNavbar.forEach((item) => {
 					if (item.link !== '/chat') return;

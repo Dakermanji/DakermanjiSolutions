@@ -33,6 +33,124 @@ nav .brand {
 	line-height: 1;
 }
 
+.nav-notifications-menu {
+	width: min(22rem, calc(100vw - 2rem));
+	padding: 0.5rem;
+	box-shadow: var(--shadow-card);
+}
+
+.nav-notifications-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 0.4rem 0.5rem 0.65rem;
+	border-bottom: 1px solid var(--border-soft);
+}
+
+.nav-notifications-header strong {
+	color: var(--color-text-heading);
+}
+
+.nav-notifications-header span {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 1.4rem;
+	height: 1.4rem;
+	padding: 0 0.4rem;
+	border-radius: var(--radius-pill);
+	color: var(--color-text-inverse);
+	background: var(--color-primary);
+	font-size: 0.8rem;
+	font-weight: 700;
+}
+
+.nav-notifications-list {
+	display: grid;
+	gap: 0.35rem;
+	padding-block: 0.5rem;
+}
+
+.nav-notifications-item {
+	display: grid;
+	grid-template-columns: 2rem minmax(0, 1fr);
+	align-items: center;
+	gap: 0.55rem;
+	padding: 0.45rem 0.5rem;
+	border-radius: var(--radius-sm);
+	color: var(--color-text-body);
+	text-decoration: none;
+}
+
+.nav-notifications-item:hover,
+.nav-notifications-item:focus-visible,
+.nav-notifications-all:hover,
+.nav-notifications-all:focus-visible {
+	background: var(--bg-pill-hover);
+	color: var(--color-text-body);
+	outline: none;
+}
+
+.nav-notifications-item.is-unread .nav-notifications-item-icon {
+	background: var(--color-primary);
+}
+
+.nav-notifications-item-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: var(--radius-sm);
+	color: var(--color-text-inverse);
+	background: var(--color-secondary);
+}
+
+.nav-notifications-item-content {
+	display: grid;
+	gap: 0.05rem;
+	min-width: 0;
+}
+
+.nav-notifications-item-content strong,
+.nav-notifications-item-content small {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.nav-notifications-item-content strong {
+	color: var(--color-text-heading);
+	font-size: 0.9rem;
+}
+
+.nav-notifications-item-content small,
+.nav-notifications-empty {
+	color: var(--color-text-muted);
+	font-size: 0.8rem;
+}
+
+.nav-notifications-empty {
+	margin: 0;
+	padding: 1rem 0.5rem;
+	text-align: center;
+}
+
+.nav-notifications-all {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.55rem 0.5rem;
+	border-top: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-body);
+}
+
+[dir='rtl'] .nav-notifications-all .bi {
+	transform: scaleX(-1);
+}
+
 .brand {
 	display: inline-flex;
 	align-items: baseline;

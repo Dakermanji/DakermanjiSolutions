@@ -2,6 +2,10 @@
 	"title": "Notifications",
 	"kicker": "Activité",
 	"empty": "Les notifications apparaîtront ici.",
+	"dropdown": {
+		"empty": "Aucune notification récente.",
+		"seeAll": "Tout voir"
+	},
 	"summary": {
 		"unread": "{{count}} notifications non lues",
 		"unreadShort": "Non lues"

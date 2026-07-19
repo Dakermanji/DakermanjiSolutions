@@ -8,6 +8,7 @@
 	signout: t('auth:signout.title')
 }; %>
 <% const notificationBadgeCount = Number(notificationUnreadCount || 0); %>
+<% const notificationPreviewItems = Array.isArray(notificationPreview) ? notificationPreview : []; %>
 
 <li class="nav-item ">
 	<a
@@ -24,7 +25,81 @@
 	</a>
 </li>
 
-<li class="nav-item">
+<li class="nav-item dropdown d-none d-lg-block">
+	<button
+	class="nav-link border-0 bg-transparent <%= currentRoute === '/notifications' ? 'active' : '' %>"
+	id="notificationsDropdown"
+	type="button"
+	aria-label="<%= keys.notifications %>"
+	aria-expanded="false"
+	data-bs-toggle="dropdown"
+	data-bs-auto-close="outside"
+	>
+		<span class="nav-icon">
+			<i class="bi bi-bell-fill" aria-hidden="true"></i>
+			<span
+				class="nav-badge"
+				aria-label="<%= keys.notificationUnread %>"
+				data-nav-badge="notificationsUnread"
+				data-nav-badge-template="<%= keys.notificationUnreadTemplate %>"
+				<% if (notificationBadgeCount <= 0) { %>
+					hidden
+				<% } %>
+			>
+				<%= new Intl.NumberFormat(currentLang || 'en').format(notificationBadgeCount) %>
+			</span>
+		</span>
+		<span class="nav-text"><%= keys.notifications %></span>
+	</button>
+
+	<div
+		class="dropdown-menu dropdown-menu-end nav-notifications-menu"
+		aria-labelledby="notificationsDropdown"
+	>
+		<div class="nav-notifications-header">
+			<strong><%= keys.notifications %></strong>
+			<span><%= new Intl.NumberFormat(currentLang || 'en').format(notificationBadgeCount) %></span>
+		</div>
+
+		<% if (notificationPreviewItems.length === 0) { %>
+			<p class="nav-notifications-empty">
+				<%= t('notifications:dropdown.empty') %>
+			</p>
+		<% } else { %>
+			<div class="nav-notifications-list">
+				<% notificationPreviewItems.forEach((notification) => { %>
+					<%
+						const title = notification.titleKey
+							? t(notification.titleKey, notification.data)
+							: t('notifications:item.fallbackTitle');
+						const body = notification.bodyKey
+							? t(notification.bodyKey, notification.data)
+							: notification.actor.displayName || t('notifications:item.fallbackBody');
+					%>
+					<a
+						class="nav-notifications-item <%= notification.isRead ? '' : 'is-unread' %>"
+						href="<%= notification.linkUrl %>"
+					>
+						<span class="nav-notifications-item-icon">
+							<i class="bi bi-bell-fill" aria-hidden="true"></i>
+						</span>
+						<span class="nav-notifications-item-content">
+							<strong><%= title %></strong>
+							<small><%= body %></small>
+						</span>
+					</a>
+				<% }) %>
+			</div>
+		<% } %>
+
+		<a class="dropdown-item nav-notifications-all" href="/notifications">
+			<i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
+			<span><%= t('notifications:dropdown.seeAll') %></span>
+		</a>
+	</div>
+</li>
+
+<li class="nav-item d-lg-none">
 	<a
 	class="nav-link has-tooltip <%= currentRoute === '/notifications' ? 'active' : '' %>"
 	id="notifications"
