@@ -108,18 +108,23 @@
 						<% if (actions.length > 0) { %>
 							<div class="notification-actions" aria-label="<%= t('notifications:actions.label') %>">
 								<% actions.forEach((action) => { %>
-									<button
-										class="notification-action notification-action--<%= action.key %> has-tooltip"
-										type="button"
-										data-notification-action="<%= action.key %>"
-										data-notification-id="<%= notification.id %>"
-										data-notification-entity-type="<%= notification.entityType %>"
-										data-notification-entity-id="<%= notification.entityId %>"
-										data-bs-title="<%= t(action.tooltipKey) %>"
-										aria-label="<%= t(action.tooltipKey) %>"
-									>
-										<i class="bi <%= action.icon %>" aria-hidden="true"></i>
-									</button>
+									<form class="notification-action-form" action="<%= action.path %>" method="post">
+										<input type="hidden" name="notificationId" value="<%= notification.id %>">
+										<input type="hidden" name="entityType" value="<%= notification.entityType %>">
+										<input type="hidden" name="entityId" value="<%= notification.entityId %>">
+										<button
+											class="notification-action notification-action--<%= action.key %> has-tooltip"
+											type="submit"
+											data-notification-action="<%= action.key %>"
+											data-notification-id="<%= notification.id %>"
+											data-notification-entity-type="<%= notification.entityType %>"
+											data-notification-entity-id="<%= notification.entityId %>"
+											data-bs-title="<%= t(action.tooltipKey) %>"
+											aria-label="<%= t(action.tooltipKey) %>"
+										>
+											<i class="bi <%= action.icon %>" aria-hidden="true"></i>
+										</button>
+									</form>
 								<% }) %>
 							</div>
 						<% } %>
