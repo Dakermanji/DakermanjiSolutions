@@ -77,6 +77,7 @@
 						? t(notification.bodyKey, notification.data)
 						: notification.actor.displayName || t('notifications:item.fallbackBody');
 					const statusKey = getStatusKey(notification);
+					const actions = Array.isArray(notification.actions) ? notification.actions : [];
 				%>
 				<article
 					class="notification-item <%= notification.isRead ? 'is-read' : 'is-unread' %> priority-<%= notification.priority %>"
@@ -96,12 +97,33 @@
 						<small><%= body %></small>
 					</a>
 
-					<time
-						class="notification-time"
-						datetime="<%= notification.createdAt ? new Date(notification.createdAt).toISOString() : '' %>"
-					>
-						<%= formatTime(notification.createdAtTimestamp) %>
-					</time>
+					<div class="notification-side">
+						<time
+							class="notification-time"
+							datetime="<%= notification.createdAt ? new Date(notification.createdAt).toISOString() : '' %>"
+						>
+							<%= formatTime(notification.createdAtTimestamp) %>
+						</time>
+
+						<% if (actions.length > 0) { %>
+							<div class="notification-actions" aria-label="<%= t('notifications:actions.label') %>">
+								<% actions.forEach((action) => { %>
+									<button
+										class="notification-action notification-action--<%= action.key %> has-tooltip"
+										type="button"
+										data-notification-action="<%= action.key %>"
+										data-notification-id="<%= notification.id %>"
+										data-notification-entity-type="<%= notification.entityType %>"
+										data-notification-entity-id="<%= notification.entityId %>"
+										data-bs-title="<%= t(action.tooltipKey) %>"
+										aria-label="<%= t(action.tooltipKey) %>"
+									>
+										<i class="bi <%= action.icon %>" aria-hidden="true"></i>
+									</button>
+								<% }) %>
+							</div>
+						<% } %>
+					</div>
 				</article>
 			<% }) %>
 		</div>

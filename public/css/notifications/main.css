@@ -175,6 +175,54 @@
 	color: var(--color-text-muted);
 }
 
+.notification-side {
+	display: grid;
+	justify-items: end;
+	gap: 0.45rem;
+}
+
+.notification-actions {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+}
+
+.notification-action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-muted);
+	background: var(--bg-card-muted);
+}
+
+.notification-action:hover,
+.notification-action:focus-visible {
+	color: var(--color-text-inverse);
+	outline: none;
+}
+
+.notification-action--approve:hover,
+.notification-action--approve:focus-visible {
+	border-color: var(--bs-success);
+	background: var(--bs-success);
+}
+
+.notification-action--reject:hover,
+.notification-action--reject:focus-visible {
+	border-color: var(--bs-danger);
+	background: var(--bs-danger);
+}
+
+.notification-action--dismiss:hover,
+.notification-action--dismiss:focus-visible {
+	border-color: var(--color-secondary);
+	background: var(--color-secondary);
+}
+
 .notification-time {
 	font-size: 0.85rem;
 	white-space: nowrap;
@@ -226,8 +274,12 @@
 		height: 2.5rem;
 	}
 
-	.notification-time {
+	.notification-side {
 		grid-column: 2;
+		justify-items: start;
+	}
+
+	.notification-time {
 		white-space: normal;
 	}
 }

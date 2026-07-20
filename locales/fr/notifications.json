@@ -28,6 +28,12 @@
 		"responded": "Répondue",
 		"unread": "Non lue"
 	},
+	"actions": {
+		"label": "Actions de notification",
+		"approve": "Approuver la demande",
+		"reject": "Refuser la demande",
+		"dismiss": "Masquer la notification"
+	},
 	"types": {
 		"chatRoomJoinRequest": {
 			"title": "Demande d’accès au salon",

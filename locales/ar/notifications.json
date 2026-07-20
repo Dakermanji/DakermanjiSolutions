@@ -28,6 +28,12 @@
 		"responded": "تم الرد",
 		"unread": "غير مقروء"
 	},
+	"actions": {
+		"label": "إجراءات الإشعار",
+		"approve": "قبول الطلب",
+		"reject": "رفض الطلب",
+		"dismiss": "إخفاء الإشعار"
+	},
 	"types": {
 		"chatRoomJoinRequest": {
 			"title": "طلب انضمام إلى غرفة",

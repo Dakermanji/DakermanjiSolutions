@@ -28,6 +28,12 @@
 		"responded": "Responded",
 		"unread": "Unread"
 	},
+	"actions": {
+		"label": "Notification actions",
+		"approve": "Approve request",
+		"reject": "Reject request",
+		"dismiss": "Dismiss notification"
+	},
 	"types": {
 		"chatRoomJoinRequest": {
 			"title": "Room join request",
