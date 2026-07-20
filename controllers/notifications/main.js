@@ -1,12 +1,43 @@
 //! controllers/notifications/main.js
 
+import { NOTIFICATION_TYPES } from '../../constants/notifications.js';
 import {
 	countUnreadNotifications,
 	listNotifications,
 } from '../../services/notifications/appNotifications.js';
 
+const CHAT_ROOM_JOIN_REQUEST_ACTIONS = Object.freeze([
+	{
+		key: 'approve',
+		icon: 'bi-check-lg',
+		tooltipKey: 'notifications:actions.approve',
+	},
+	{
+		key: 'reject',
+		icon: 'bi-x-lg',
+		tooltipKey: 'notifications:actions.reject',
+	},
+	{
+		key: 'dismiss',
+		icon: 'bi-bell-slash',
+		tooltipKey: 'notifications:actions.dismiss',
+	},
+]);
+
 function getActorDisplayName(notification) {
 	return notification.actor_username || notification.actor_email || '';
+}
+
+function getNotificationActions(notification) {
+	if (notification.responded_at) {
+		return [];
+	}
+
+	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST) {
+		return CHAT_ROOM_JOIN_REQUEST_ACTIONS;
+	}
+
+	return [];
 }
 
 function serializeNotification(notification) {
@@ -29,6 +60,7 @@ function serializeNotification(notification) {
 		isDismissed: Boolean(notification.dismissed_at),
 		isResponded: Boolean(notification.responded_at),
 		responseKey: notification.response_key,
+		actions: getNotificationActions(notification),
 		expiresAt: notification.expires_at,
 		createdAt: notification.created_at,
 		createdAtTimestamp: createdAt ? createdAt.getTime() : null,
