@@ -347,6 +347,72 @@ export async function cancelPrivateRoomRequest({ requestId, userId }) {
 }
 
 /**
+ * Approve one pending private room access request.
+ *
+ * @param {object} input
+ * @param {string} input.requestId
+ * @param {string} input.reviewerUserId
+ * @returns {Promise<object|null>}
+ */
+export async function approvePrivateRoomRequest({
+	requestId,
+	reviewerUserId,
+}) {
+	if (!requestId || !reviewerUserId) {
+		return null;
+	}
+
+	const request =
+		await ChatRoomJoinRequestsModel.approvePendingRequestByManager({
+			requestId,
+			reviewerUserId,
+		});
+
+	if (request) {
+		await respondAndDismissNotificationsByEntity({
+			entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST,
+			entityId: request.id,
+			responseKey: NOTIFICATION_RESPONSE_KEYS.APPROVED,
+		});
+	}
+
+	return request;
+}
+
+/**
+ * Reject one pending private room access request.
+ *
+ * @param {object} input
+ * @param {string} input.requestId
+ * @param {string} input.reviewerUserId
+ * @returns {Promise<object|null>}
+ */
+export async function rejectPrivateRoomRequest({
+	requestId,
+	reviewerUserId,
+}) {
+	if (!requestId || !reviewerUserId) {
+		return null;
+	}
+
+	const request =
+		await ChatRoomJoinRequestsModel.rejectPendingRequestByManager({
+			requestId,
+			reviewerUserId,
+		});
+
+	if (request) {
+		await respondAndDismissNotificationsByEntity({
+			entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST,
+			entityId: request.id,
+			responseKey: NOTIFICATION_RESPONSE_KEYS.REJECTED,
+		});
+	}
+
+	return request;
+}
+
+/**
  * Check whether one room conversation can be opened by a user.
  *
  * @param {string} conversationId
@@ -411,6 +477,7 @@ export async function countVisibleRooms(userId) {
 }
 
 export default {
+	approvePrivateRoomRequest,
 	cancelPrivateRoomRequest,
 	countVisibleRooms,
 	createRoom,
@@ -421,6 +488,7 @@ export default {
 	listPrivateRooms,
 	listPublicRooms,
 	markRoomConversationRead,
+	rejectPrivateRoomRequest,
 	requestPrivateListedRoom,
 	searchRooms,
 	validateCreateRoomInput,
