@@ -26,6 +26,7 @@ export const NOTIFICATION_TYPES = Object.freeze({
 export const NOTIFICATION_ENTITY_TYPES = Object.freeze({
 	CHAT_ROOM_INVITATION: 'chat_room_invitation',
 	CHAT_ROOM_JOIN_REQUEST: 'chat_room_join_request',
+	CHAT_ROOM_JOIN_REQUEST_RESULT: 'chat_room_join_request_result',
 });
 
 export const NOTIFICATION_RESPONSE_KEYS = Object.freeze({

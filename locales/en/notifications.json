@@ -44,6 +44,14 @@
 		"chatRoomJoinRequest": {
 			"title": "Room join request",
 			"body": "{{requesterName}} wants to join {{roomName}}."
+		},
+		"chatRoomJoinRequestApproved": {
+			"title": "Room request approved",
+			"body": "You’ve been accepted into {{roomName}}."
+		},
+		"chatRoomJoinRequestRejected": {
+			"title": "Room request not approved",
+			"body": "Your request to join {{roomName}} was not approved."
 		}
 	},
 	"item": {

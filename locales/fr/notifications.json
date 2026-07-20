@@ -44,6 +44,14 @@
 		"chatRoomJoinRequest": {
 			"title": "Demande d’accès au salon",
 			"body": "{{requesterName}} souhaite rejoindre {{roomName}}."
+		},
+		"chatRoomJoinRequestApproved": {
+			"title": "Demande de salon approuvée",
+			"body": "Vous avez été accepté dans {{roomName}}."
+		},
+		"chatRoomJoinRequestRejected": {
+			"title": "Demande de salon non approuvée",
+			"body": "Votre demande pour rejoindre {{roomName}} n’a pas été approuvée."
 		}
 	},
 	"item": {

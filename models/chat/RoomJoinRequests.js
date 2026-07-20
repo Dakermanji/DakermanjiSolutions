@@ -264,10 +264,13 @@ export async function approvePendingRequestByManager({
 				)
 				SELECT
 					reviewed_request.*,
-					cr.conversation_id
+					cr.conversation_id,
+					cc.title AS room_title
 				FROM reviewed_request
 				INNER JOIN chat_rooms cr
-					ON cr.id = reviewed_request.room_id;
+					ON cr.id = reviewed_request.room_id
+				INNER JOIN chat_conversations cc
+					ON cc.id = cr.conversation_id;
 			`,
 			[
 				requestId,
@@ -369,10 +372,13 @@ export async function rejectPendingRequestByManager({
 		)
 		SELECT
 			reviewed_request.*,
-			cr.conversation_id
+			cr.conversation_id,
+			cc.title AS room_title
 		FROM reviewed_request
 		INNER JOIN chat_rooms cr
-			ON cr.id = reviewed_request.room_id;
+			ON cr.id = reviewed_request.room_id
+		INNER JOIN chat_conversations cc
+			ON cc.id = cr.conversation_id;
 	`;
 
 	const rows = await queryRows(q, [

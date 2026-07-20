@@ -44,6 +44,14 @@
 		"chatRoomJoinRequest": {
 			"title": "طلب انضمام إلى غرفة",
 			"body": "{{requesterName}} يريد الانضمام إلى {{roomName}}."
+		},
+		"chatRoomJoinRequestApproved": {
+			"title": "تم قبول طلب الغرفة",
+			"body": "تم قبولك في غرفة {{roomName}}."
+		},
+		"chatRoomJoinRequestRejected": {
+			"title": "لم يتم قبول طلب الغرفة",
+			"body": "لم يتم قبول طلبك للانضمام إلى {{roomName}}."
 		}
 	},
 	"item": {

@@ -172,6 +172,33 @@ async function notifyRoomJoinRequestManagers(requestId) {
 	);
 }
 
+async function notifyRoomJoinRequestResult({
+	request,
+	reviewerUserId,
+	type,
+	titleKey,
+	bodyKey,
+	priority = NOTIFICATION_PRIORITIES.NORMAL,
+}) {
+	await createNotificationIfNotExists({
+		recipientUserId: request.requested_by_user_id,
+		actorUserId: reviewerUserId,
+		appKey: NOTIFICATION_APP_KEYS.CHAT,
+		type,
+		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST_RESULT,
+		entityId: request.id,
+		titleKey,
+		bodyKey,
+		linkUrl: '/chat',
+		data: {
+			conversationId: request.conversation_id,
+			requestId: request.id,
+			roomName: request.room_title,
+		},
+		priority,
+	});
+}
+
 /**
  * Create a room conversation after normalizing and validating input.
  *
@@ -374,6 +401,14 @@ export async function approvePrivateRoomRequest({
 			entityId: request.id,
 			responseKey: NOTIFICATION_RESPONSE_KEYS.APPROVED,
 		});
+		await notifyRoomJoinRequestResult({
+			request,
+			reviewerUserId,
+			type: NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_APPROVED,
+			titleKey: 'notifications:types.chatRoomJoinRequestApproved.title',
+			bodyKey: 'notifications:types.chatRoomJoinRequestApproved.body',
+			priority: NOTIFICATION_PRIORITIES.HIGH,
+		});
 	}
 
 	return request;
@@ -406,6 +441,13 @@ export async function rejectPrivateRoomRequest({
 			entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST,
 			entityId: request.id,
 			responseKey: NOTIFICATION_RESPONSE_KEYS.REJECTED,
+		});
+		await notifyRoomJoinRequestResult({
+			request,
+			reviewerUserId,
+			type: NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_REJECTED,
+			titleKey: 'notifications:types.chatRoomJoinRequestRejected.title',
+			bodyKey: 'notifications:types.chatRoomJoinRequestRejected.body',
 		});
 	}
 
