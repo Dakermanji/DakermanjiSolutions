@@ -30,6 +30,21 @@ BEGIN
 	END IF;
 END$$;
 
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_type
+		WHERE typname = 'chat_member_status'
+	) THEN
+		CREATE TYPE chat_member_status AS ENUM (
+			'active',
+			'muted',
+			'banned'
+		);
+	END IF;
+END$$;
+
 CREATE TABLE IF NOT EXISTS "chat_conversation_members" (
 	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
@@ -37,6 +52,7 @@ CREATE TABLE IF NOT EXISTS "chat_conversation_members" (
 	"conversation_id" UUID NOT NULL,
 	"user_id" UUID NOT NULL,
 	"role" chat_member_role NOT NULL DEFAULT 'member',
+	"status" chat_member_status NOT NULL DEFAULT 'active',
 
 	-- read / preference state
 	"last_read_message_id" UUID NULL,
@@ -80,6 +96,12 @@ CREATE INDEX IF NOT EXISTS "IDX_chat_conversation_members_conversation_id"
 
 CREATE INDEX IF NOT EXISTS "IDX_chat_conversation_members_user_archived_at"
 	ON "chat_conversation_members" ("user_id", "archived_at");
+
+CREATE INDEX IF NOT EXISTS "IDX_chat_conversation_members_user_status"
+	ON "chat_conversation_members" ("user_id", "status");
+
+CREATE INDEX IF NOT EXISTS "IDX_chat_conversation_members_conversation_status"
+	ON "chat_conversation_members" ("conversation_id", "status");
 
 CREATE INDEX IF NOT EXISTS "IDX_chat_conversation_members_last_read_message_id"
 	ON "chat_conversation_members" ("last_read_message_id");
