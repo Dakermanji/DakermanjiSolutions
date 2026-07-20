@@ -32,7 +32,13 @@
 		"label": "Notification actions",
 		"approve": "Approve request",
 		"reject": "Reject request",
-		"dismiss": "Dismiss notification"
+		"dismiss": "Dismiss notification",
+		"approveSuccess": "Request approved.",
+		"approveError": "Could not approve the request.",
+		"rejectSuccess": "Request rejected.",
+		"rejectError": "Could not reject the request.",
+		"dismissSuccess": "Notification dismissed.",
+		"dismissError": "Could not dismiss the notification."
 	},
 	"types": {
 		"chatRoomJoinRequest": {

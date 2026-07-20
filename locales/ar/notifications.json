@@ -32,7 +32,13 @@
 		"label": "إجراءات الإشعار",
 		"approve": "قبول الطلب",
 		"reject": "رفض الطلب",
-		"dismiss": "إخفاء الإشعار"
+		"dismiss": "إخفاء الإشعار",
+		"approveSuccess": "تم قبول الطلب.",
+		"approveError": "تعذر قبول الطلب.",
+		"rejectSuccess": "تم رفض الطلب.",
+		"rejectError": "تعذر رفض الطلب.",
+		"dismissSuccess": "تم إخفاء الإشعار.",
+		"dismissError": "تعذر إخفاء الإشعار."
 	},
 	"types": {
 		"chatRoomJoinRequest": {

@@ -1,25 +1,37 @@
 //! controllers/notifications/main.js
 
-import { NOTIFICATION_TYPES } from '../../constants/notifications.js';
+import {
+	NOTIFICATIONS_REDIRECT,
+	NOTIFICATION_TYPES,
+} from '../../constants/notifications.js';
+import {
+	approvePrivateRoomRequest,
+	rejectPrivateRoomRequest,
+} from '../../services/chat/rooms.js';
 import {
 	countUnreadNotifications,
+	dismissNotification,
 	listNotifications,
 } from '../../services/notifications/appNotifications.js';
+import { isValidUuid } from '../../middlewares/validators/common.js';
 
 const CHAT_ROOM_JOIN_REQUEST_ACTIONS = Object.freeze([
 	{
 		key: 'approve',
 		icon: 'bi-check-lg',
+		path: '/notifications/chat/room-join-request/approve',
 		tooltipKey: 'notifications:actions.approve',
 	},
 	{
 		key: 'reject',
 		icon: 'bi-x-lg',
+		path: '/notifications/chat/room-join-request/reject',
 		tooltipKey: 'notifications:actions.reject',
 	},
 	{
 		key: 'dismiss',
 		icon: 'bi-bell-slash',
+		path: '/notifications/dismiss',
 		tooltipKey: 'notifications:actions.dismiss',
 	},
 ]);
@@ -38,6 +50,18 @@ function getNotificationActions(notification) {
 	}
 
 	return [];
+}
+
+function getFirstUuidBodyValue(req, keys) {
+	for (const key of keys) {
+		const value = String(req.body?.[key] || '').trim();
+
+		if (isValidUuid(value)) {
+			return value;
+		}
+	}
+
+	return '';
 }
 
 function serializeNotification(notification) {
@@ -97,5 +121,104 @@ export async function renderNotifications(req, res, next) {
 		});
 	} catch (error) {
 		next(error);
+	}
+}
+
+/**
+ * Dismiss one notification for the signed-in user.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function dismissAppNotification(req, res, next) {
+	const notificationId = getFirstUuidBodyValue(req, ['notificationId', 'id']);
+
+	if (!notificationId) {
+		req.flash('error', 'notifications:actions.dismissError');
+		return res.redirect(NOTIFICATIONS_REDIRECT);
+	}
+
+	try {
+		const didDismiss = await dismissNotification(notificationId, req.user.id);
+
+		req.flash(
+			didDismiss ? 'success' : 'error',
+			didDismiss
+				? 'notifications:actions.dismissSuccess'
+				: 'notifications:actions.dismissError',
+		);
+		return res.redirect(NOTIFICATIONS_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Approve one chat room join request notification.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function approveChatRoomJoinRequest(req, res, next) {
+	const requestId = getFirstUuidBodyValue(req, ['requestId', 'entityId']);
+
+	if (!requestId) {
+		req.flash('error', 'notifications:actions.approveError');
+		return res.redirect(NOTIFICATIONS_REDIRECT);
+	}
+
+	try {
+		const request = await approvePrivateRoomRequest({
+			requestId,
+			reviewerUserId: req.user.id,
+		});
+
+		req.flash(
+			request ? 'success' : 'error',
+			request
+				? 'notifications:actions.approveSuccess'
+				: 'notifications:actions.approveError',
+		);
+		return res.redirect(NOTIFICATIONS_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Reject one chat room join request notification.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function rejectChatRoomJoinRequest(req, res, next) {
+	const requestId = getFirstUuidBodyValue(req, ['requestId', 'entityId']);
+
+	if (!requestId) {
+		req.flash('error', 'notifications:actions.rejectError');
+		return res.redirect(NOTIFICATIONS_REDIRECT);
+	}
+
+	try {
+		const request = await rejectPrivateRoomRequest({
+			requestId,
+			reviewerUserId: req.user.id,
+		});
+
+		req.flash(
+			request ? 'success' : 'error',
+			request
+				? 'notifications:actions.rejectSuccess'
+				: 'notifications:actions.rejectError',
+		);
+		return res.redirect(NOTIFICATIONS_REDIRECT);
+	} catch (error) {
+		return next(error);
 	}
 }

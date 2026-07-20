@@ -32,7 +32,13 @@
 		"label": "Actions de notification",
 		"approve": "Approuver la demande",
 		"reject": "Refuser la demande",
-		"dismiss": "Masquer la notification"
+		"dismiss": "Masquer la notification",
+		"approveSuccess": "Demande approuvée.",
+		"approveError": "Impossible d’approuver la demande.",
+		"rejectSuccess": "Demande refusée.",
+		"rejectError": "Impossible de refuser la demande.",
+		"dismissSuccess": "Notification masquée.",
+		"dismissError": "Impossible de masquer la notification."
 	},
 	"types": {
 		"chatRoomJoinRequest": {
