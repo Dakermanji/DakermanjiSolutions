@@ -154,6 +154,41 @@ export function respondToNotification(
 	);
 }
 
+/**
+ * Respond and dismiss unresolved notifications linked to one entity.
+ *
+ * @param {object} input
+ * @param {string} input.entityType
+ * @param {string} input.entityId
+ * @param {string} input.responseKey
+ * @returns {Promise<number|boolean>}
+ */
+export function respondAndDismissNotificationsByEntity({
+	entityType,
+	entityId,
+	responseKey,
+}) {
+	const normalizedEntityType = truncateText(
+		normalizeRequiredText(entityType),
+		NOTIFICATION_LIMITS.ENTITY_TYPE_MAX_LENGTH,
+	);
+	const normalizedEntityId = normalizeRequiredText(entityId);
+	const normalizedResponseKey = truncateText(
+		normalizeRequiredText(responseKey),
+		NOTIFICATION_LIMITS.RESPONSE_KEY_MAX_LENGTH,
+	);
+
+	if (!normalizedEntityType || !normalizedEntityId || !normalizedResponseKey) {
+		return false;
+	}
+
+	return AppNotificationsModel.respondAndDismissByEntity({
+		entityType: normalizedEntityType,
+		entityId: normalizedEntityId,
+		responseKey: normalizedResponseKey,
+	});
+}
+
 export default {
 	countUnreadNotifications,
 	createNotificationIfNotExists,
@@ -161,6 +196,7 @@ export default {
 	dismissNotification,
 	listNotifications,
 	markNotificationRead,
+	respondAndDismissNotificationsByEntity,
 	respondToNotification,
 	validateCreateNotificationInput,
 };

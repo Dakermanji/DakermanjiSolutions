@@ -43,6 +43,7 @@
 		"searchError": "Could not search rooms. Please try again.",
 		"owner": "Owner: {{owner}}",
 		"actions": {
+			"cancelRequest": "Cancel request",
 			"open": "Open room",
 			"join": "Join room",
 			"request": "Request to join",

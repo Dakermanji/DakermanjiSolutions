@@ -331,6 +331,41 @@ export async function respond(notificationId, recipientUserId, responseKey) {
 	return result.rowCount > 0;
 }
 
+/**
+ * Respond and dismiss unresolved notifications for one domain entity.
+ *
+ * @param {object} input
+ * @param {string} input.entityType
+ * @param {string} input.entityId
+ * @param {string} input.responseKey
+ * @returns {Promise<number>}
+ */
+export async function respondAndDismissByEntity({
+	entityType,
+	entityId,
+	responseKey,
+}) {
+	const q = `
+		UPDATE app_notifications
+		SET
+			read_at = COALESCE(read_at, NOW()),
+			dismissed_at = COALESCE(dismissed_at, NOW()),
+			responded_at = COALESCE(responded_at, NOW()),
+			response_key = COALESCE(response_key, $3::varchar(40)),
+			updated_at = NOW()
+		WHERE entity_type = $1::varchar(80)
+			AND entity_id = $2::uuid
+			AND responded_at IS NULL;
+	`;
+
+	const result = await query(q, [
+		entityType,
+		entityId,
+		responseKey,
+	]);
+	return result.rowCount;
+}
+
 export default {
 	countUnreadByRecipient,
 	create,
@@ -340,4 +375,5 @@ export default {
 	findByRecipient,
 	markAsRead,
 	respond,
+	respondAndDismissByEntity,
 };

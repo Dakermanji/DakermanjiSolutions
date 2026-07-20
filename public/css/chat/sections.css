@@ -134,6 +134,7 @@
 
 .chat-request-item {
 	cursor: default;
+	grid-template-columns: 3rem minmax(0, 1fr) auto auto auto;
 }
 
 .chat-request-item:hover {
@@ -208,6 +209,16 @@
 	width: 1.5rem;
 	height: 1.5rem;
 	color: var(--color-text-muted);
+}
+
+.chat-request-cancel {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	border-radius: var(--radius-sm);
 }
 
 .chat-unread-badge,

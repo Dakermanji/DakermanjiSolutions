@@ -369,12 +369,24 @@ function createPendingRequestList(requests, sectionBody) {
 }
 
 function createPendingRoomRequestItem(item, sectionBody) {
+	const request = item.request || {};
 	const room = item.room || {};
 	const owner = item.owner || {};
 	const roomName = room.title || '';
 	const ownerName = owner.displayName || owner.username || owner.email || '';
 
-	const card = document.createElement('div');
+	const form = document.createElement('form');
+	form.className = 'chat-friend-form';
+	form.method = 'POST';
+	form.action =
+		sectionBody.dataset.cancelRequestUrl || '/chat/rooms/request/cancel';
+
+	const input = document.createElement('input');
+	input.type = 'hidden';
+	input.name = 'requestId';
+	input.value = request.id || '';
+
+	const card = document.createElement('span');
 	card.className = 'chat-friend-item chat-request-item';
 
 	const avatar = document.createElement('span');
@@ -414,10 +426,28 @@ function createPendingRoomRequestItem(item, sectionBody) {
 	icon.setAttribute('aria-hidden', 'true');
 	status.appendChild(icon);
 
-	card.append(avatar, content, spacer, status);
-	window.AppTooltips?.initIn(card);
+	const cancelButton = document.createElement('button');
+	cancelButton.type = 'submit';
+	cancelButton.className = 'btn btn-action-outline chat-request-cancel has-tooltip';
+	cancelButton.setAttribute(
+		'aria-label',
+		sectionBody.dataset.cancelRequestLabel || '',
+	);
+	cancelButton.setAttribute(
+		'data-bs-title',
+		sectionBody.dataset.cancelRequestLabel || '',
+	);
 
-	return card;
+	const cancelIcon = document.createElement('i');
+	cancelIcon.className = 'bi bi-x-lg';
+	cancelIcon.setAttribute('aria-hidden', 'true');
+	cancelButton.appendChild(cancelIcon);
+
+	card.append(avatar, content, spacer, status, cancelButton);
+	form.append(input, card);
+	window.AppTooltips?.initIn(form);
+
+	return form;
 }
 
 function createRoomItem(item, sectionBody) {

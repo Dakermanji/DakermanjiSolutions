@@ -15,10 +15,14 @@ import {
 	NOTIFICATION_APP_KEYS,
 	NOTIFICATION_ENTITY_TYPES,
 	NOTIFICATION_PRIORITIES,
+	NOTIFICATION_RESPONSE_KEYS,
 	NOTIFICATION_TYPES,
 } from '../../constants/notifications.js';
 import { validateCreateRoomInput } from '../../middlewares/validators/chat.js';
-import { createNotificationIfNotExists } from '../notifications/appNotifications.js';
+import {
+	createNotificationIfNotExists,
+	respondAndDismissNotificationsByEntity,
+} from '../notifications/appNotifications.js';
 
 const { SEARCH_MAX_LENGTH, SEARCH_RESULT_LIMIT } = CHAT_ROOM_LIMITS;
 
@@ -321,15 +325,25 @@ export async function requestPrivateListedRoom({ conversationId, userId }) {
  * @param {string} input.userId
  * @returns {Promise<object|null>}
  */
-export function cancelPrivateRoomRequest({ requestId, userId }) {
+export async function cancelPrivateRoomRequest({ requestId, userId }) {
 	if (!requestId || !userId) {
 		return null;
 	}
 
-	return ChatRoomJoinRequestsModel.cancelPendingRequestForUser({
+	const request = await ChatRoomJoinRequestsModel.cancelPendingRequestForUser({
 		requestId,
 		userId,
 	});
+
+	if (request) {
+		await respondAndDismissNotificationsByEntity({
+			entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST,
+			entityId: request.id,
+			responseKey: NOTIFICATION_RESPONSE_KEYS.CANCELED,
+		});
+	}
+
+	return request;
 }
 
 /**

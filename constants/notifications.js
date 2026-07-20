@@ -31,6 +31,7 @@ export const NOTIFICATION_ENTITY_TYPES = Object.freeze({
 export const NOTIFICATION_RESPONSE_KEYS = Object.freeze({
 	ACCEPTED: 'accepted',
 	APPROVED: 'approved',
+	CANCELED: 'canceled',
 	IGNORED: 'ignored',
 	MARKED_READ: 'marked_read',
 	MUTED: 'muted',

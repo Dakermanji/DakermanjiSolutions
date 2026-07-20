@@ -180,6 +180,9 @@ export async function cancelPendingRequestForUser({ requestId, userId }) {
 		UPDATE chat_room_join_requests
 		SET
 			status = $3::chat_room_join_request_status,
+			reviewed_by_user_id = NULL,
+			reviewed_at = NULL,
+			canceled_at = NOW(),
 			updated_at = NOW()
 		WHERE id = $1
 			AND requested_by_user_id = $2
@@ -188,7 +191,10 @@ export async function cancelPendingRequestForUser({ requestId, userId }) {
 			id,
 			room_id,
 			requested_by_user_id,
+			reviewed_by_user_id,
 			status,
+			reviewed_at,
+			canceled_at,
 			created_at,
 			updated_at;
 	`;

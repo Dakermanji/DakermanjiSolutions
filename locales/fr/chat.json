@@ -43,6 +43,7 @@
 		"searchError": "Impossible de rechercher des salons. Veuillez réessayer.",
 		"owner": "Propriétaire : {{owner}}",
 		"actions": {
+			"cancelRequest": "Annuler la demande",
 			"open": "Ouvrir le salon",
 			"join": "Rejoindre le salon",
 			"request": "Demander à rejoindre",
