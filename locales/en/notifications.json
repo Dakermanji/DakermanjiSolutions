@@ -33,6 +33,7 @@
 		"approve": "Approve request",
 		"reject": "Reject request",
 		"dismiss": "Dismiss notification",
+		"openRoom": "Open room",
 		"approveSuccess": "Request approved.",
 		"approveError": "Could not approve the request.",
 		"rejectSuccess": "Request rejected.",

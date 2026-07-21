@@ -33,6 +33,7 @@
 		"approve": "قبول الطلب",
 		"reject": "رفض الطلب",
 		"dismiss": "إخفاء الإشعار",
+		"openRoom": "فتح الغرفة",
 		"approveSuccess": "تم قبول الطلب.",
 		"approveError": "تعذر قبول الطلب.",
 		"rejectSuccess": "تم رفض الطلب.",

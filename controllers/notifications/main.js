@@ -36,6 +36,26 @@ const CHAT_ROOM_JOIN_REQUEST_ACTIONS = Object.freeze([
 	},
 ]);
 
+function createApprovedRoomRequestActions(notification) {
+	const conversationId = String(notification.data?.conversationId || '').trim();
+
+	if (!isValidUuid(conversationId)) {
+		return [];
+	}
+
+	return [
+		{
+			key: 'open',
+			icon: 'bi-box-arrow-in-right',
+			path: '/chat/rooms/open',
+			tooltipKey: 'notifications:actions.openRoom',
+			fields: {
+				conversationId,
+			},
+		},
+	];
+}
+
 function getActorDisplayName(notification) {
 	return notification.actor_username || notification.actor_email || '';
 }
@@ -47,6 +67,10 @@ function getNotificationActions(notification) {
 
 	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST) {
 		return CHAT_ROOM_JOIN_REQUEST_ACTIONS;
+	}
+
+	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_APPROVED) {
+		return createApprovedRoomRequestActions(notification);
 	}
 
 	return [];

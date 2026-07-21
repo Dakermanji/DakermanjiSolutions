@@ -33,6 +33,7 @@
 		"approve": "Approuver la demande",
 		"reject": "Refuser la demande",
 		"dismiss": "Masquer la notification",
+		"openRoom": "Ouvrir le salon",
 		"approveSuccess": "Demande approuvée.",
 		"approveError": "Impossible d’approuver la demande.",
 		"rejectSuccess": "Demande refusée.",
