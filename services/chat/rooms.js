@@ -14,6 +14,7 @@ import {
 } from './rooms/lists.js';
 import {
 	findOpenableRoomConversation,
+	findWritableRoomConversation,
 	getOpenRoomConversation,
 	joinPublicRoom,
 	markRoomConversationRead,
@@ -38,6 +39,7 @@ export {
 } from './rooms/lists.js';
 export {
 	findOpenableRoomConversation,
+	findWritableRoomConversation,
 	getOpenRoomConversation,
 	joinPublicRoom,
 	markRoomConversationRead,
@@ -58,6 +60,7 @@ export default {
 	countUnreadRoomMessages,
 	createRoom,
 	findOpenableRoomConversation,
+	findWritableRoomConversation,
 	getOpenRoomConversation,
 	joinPublicRoom,
 	listPrivateRoomSection,

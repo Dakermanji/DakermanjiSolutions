@@ -6,7 +6,10 @@ import {
 	findReadableChatConversation,
 	findWritableChatConversation,
 } from './authorization.js';
-import { findOpenableRoomConversation } from './rooms.js';
+import {
+	findOpenableRoomConversation,
+	findWritableRoomConversation,
+} from './rooms.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
 
 const { BODY_MAX_LENGTH, OLDER_PAGE_SIZE, RECENT_PAGE_SIZE } =
@@ -140,7 +143,7 @@ export async function createRoomMessage({
 		return null;
 	}
 
-	const conversation = await findOpenableRoomConversation(
+	const conversation = await findWritableRoomConversation(
 		conversationId,
 		senderUserId,
 	);

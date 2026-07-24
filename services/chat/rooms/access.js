@@ -2,6 +2,7 @@
 
 import ChatRoomsModel from '../../../models/chat/Rooms.js';
 import ChatConversationMembersModel from '../../../models/chat/ConversationMembers.js';
+import { canChatMemberWrite } from '../../../constants/chat.js';
 import { formatOpenRoomConversation } from './formatters.js';
 
 /**
@@ -37,6 +38,23 @@ export function findOpenableRoomConversation(conversationId, userId) {
 		conversationId,
 		userId,
 	);
+}
+
+/**
+ * Check whether one room conversation can receive messages from a user.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export async function findWritableRoomConversation(conversationId, userId) {
+	const room = await findOpenableRoomConversation(conversationId, userId);
+
+	if (!room || !canChatMemberWrite(room.member_status)) {
+		return null;
+	}
+
+	return room;
 }
 
 /**
