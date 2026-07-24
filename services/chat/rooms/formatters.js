@@ -1,6 +1,7 @@
 //! services/chat/rooms/formatters.js
 
 import {
+	canChatMemberWrite,
 	CHAT_ROOM_JOIN_POLICIES,
 	CHAT_ROOM_JOIN_REQUEST_STATUSES,
 	CHAT_ROOM_SEARCH_ACTIONS,
@@ -36,6 +37,7 @@ export function formatRoom(room) {
 			joinPolicy: room.join_policy,
 			memberRole: room.member_role,
 			memberStatus: room.member_status,
+			canWrite: canChatMemberWrite(room.member_status),
 			lastMessageId: room.last_message_id,
 			lastMessageCreatedAt: room.last_message_created_at,
 			lastReadMessageId: room.last_read_message_id,

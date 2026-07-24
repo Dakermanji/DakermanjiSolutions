@@ -25,6 +25,7 @@
 	const messageFormAction = isRoomConversation
 		? '/chat/rooms/messages'
 		: '/chat/friends/messages';
+	const canWriteConversation = !isRoomConversation || room.canWrite !== false;
 	const formatMessageTime = (value) => {
 		if (!value) return '';
 
@@ -142,6 +143,13 @@
 		<span></span>
 	</div>
 
+	<% if (!canWriteConversation) { %>
+		<div class="chat-composer-notice" role="status">
+			<i class="bi bi-volume-mute-fill" aria-hidden="true"></i>
+			<span><%= t('chat:conversation.mutedMessageError') %></span>
+		</div>
+	<% } %>
+
 	<form
 		class="chat-composer"
 		method="POST"
@@ -157,10 +165,12 @@
 			placeholder="<%= t('chat:conversation.placeholder') %>"
 			autocomplete="off"
 			required
+			<% if (!canWriteConversation) { %>disabled<% } %>
 		/>
 		<button
 			class="btn btn-action-secondary"
 			type="submit"
+			<% if (!canWriteConversation) { %>disabled<% } %>
 		>
 			<i class="bi bi-send" aria-hidden="true"></i>
 			<span class="visually-hidden"><%= t('chat:conversation.send') %></span>

@@ -90,6 +90,22 @@ body:has(.chat-conversation-page) main.container {
 	background: var(--bg-section);
 }
 
+.chat-composer-notice {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-muted);
+	background: var(--bg-card-muted);
+	font-size: 0.95rem;
+}
+
+.chat-composer-notice i {
+	color: var(--color-secondary);
+}
+
 @media (max-width: 575.98px) {
 	.chat-conversation-header {
 		grid-template-columns: auto 3rem minmax(0, 1fr);

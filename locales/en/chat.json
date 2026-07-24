@@ -20,6 +20,7 @@
 		"placeholder": "Write a message...",
 		"send": "Send",
 		"messageError": "Could not send this message.",
+		"mutedMessageError": "You can read this room but cannot send messages.",
 		"typing": "{{user}} is typing..."
 	},
 	"rooms": {

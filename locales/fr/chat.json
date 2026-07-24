@@ -20,6 +20,7 @@
 		"placeholder": "Écrire un message...",
 		"send": "Envoyer",
 		"messageError": "Impossible d’envoyer ce message.",
+		"mutedMessageError": "Vous pouvez lire ce salon, mais vous ne pouvez pas envoyer de messages.",
 		"typing": "{{user}} écrit..."
 	},
 	"rooms": {

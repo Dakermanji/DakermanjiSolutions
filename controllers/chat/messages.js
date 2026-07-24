@@ -6,9 +6,27 @@ import {
 	listOlderFriendMessages,
 	listOlderRoomMessages,
 } from '../../services/chat/messages.js';
+import { findOpenableRoomConversation } from '../../services/chat/rooms.js';
 import { emitChatMessageCreated } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
-import { CHAT_REDIRECT } from '../../constants/chat.js';
+import {
+	canChatMemberWrite,
+	CHAT_REDIRECT,
+} from '../../constants/chat.js';
+
+async function getRoomMessageFailureKey(conversationId, userId) {
+	const room = await findOpenableRoomConversation(conversationId, userId);
+
+	if (!room) {
+		return 'chat:rooms.openError';
+	}
+
+	if (!canChatMemberWrite(room.member_status)) {
+		return 'chat:conversation.mutedMessageError';
+	}
+
+	return 'chat:conversation.messageError';
+}
 
 /**
  * Return older messages for the active friend conversation.
@@ -121,7 +139,10 @@ export async function createFriendChatMessage(req, res, next) {
 		});
 
 		if (!message) {
-			req.flash('error', 'chat:conversation.messageError');
+			req.flash(
+				'error',
+				await getRoomMessageFailureKey(activeConversationId, req.user.id),
+			);
 		} else {
 			await emitChatMessageCreated(message);
 		}
