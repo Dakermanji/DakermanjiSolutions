@@ -128,14 +128,14 @@
 		body.dir = 'auto';
 		body.textContent = message.body || '';
 
-		const footer = document.createElement('footer');
 		const time = document.createElement('time');
+		time.className = 'chat-message-time';
 		time.dateTime = new Date(message.createdAt).toISOString();
 		time.textContent = formatMessageTime(message.createdAt);
 
-		footer.appendChild(time);
-		bubble.append(body, footer);
+		bubble.appendChild(body);
 		row.appendChild(bubble);
+		row.appendChild(time);
 
 		return row;
 	}
