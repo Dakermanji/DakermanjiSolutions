@@ -1,7 +1,14 @@
 //! models/chat/rooms/unread.js
 
 import { queryRows } from '../../../config/database.js';
-import { CHAT_ROOM_VISIBILITY } from '../../../constants/chat.js';
+import {
+	CHAT_CONVERSATION_MEMBER_READ_STATUSES,
+	CHAT_ROOM_VISIBILITY,
+} from '../../../constants/chat.js';
+
+const readableMemberStatuses = CHAT_CONVERSATION_MEMBER_READ_STATUSES
+	.map((status) => `'${status}'`)
+	.join(', ');
 
 async function countUnreadRoomMessagesForUserByVisibility(
 	userId,
@@ -17,6 +24,7 @@ async function countUnreadRoomMessagesForUserByVisibility(
 			ON ccm.conversation_id = cc.id
 			AND ccm.user_id = $1
 			AND ccm.archived_at IS NULL
+			AND ccm.status IN (${readableMemberStatuses})
 		INNER JOIN chat_messages unread_messages
 			ON unread_messages.conversation_id = cc.id
 			AND unread_messages.sender_user_id <> $1
@@ -56,6 +64,7 @@ export async function countUnreadRoomMessagesForUser(userId) {
 			ON ccm.conversation_id = cc.id
 			AND ccm.user_id = $1
 			AND ccm.archived_at IS NULL
+			AND ccm.status IN (${readableMemberStatuses})
 		INNER JOIN chat_messages unread_messages
 			ON unread_messages.conversation_id = cc.id
 			AND unread_messages.sender_user_id <> $1
@@ -109,4 +118,3 @@ export function countUnreadPrivateRoomMessagesForUser(userId) {
 		],
 	);
 }
-

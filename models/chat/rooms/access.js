@@ -3,10 +3,15 @@
 import { queryRows } from '../../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_ROLES,
+	CHAT_CONVERSATION_MEMBER_READ_STATUSES,
 	CHAT_ROOM_JOIN_POLICIES,
 	CHAT_ROOM_JOIN_REQUEST_STATUSES,
 	CHAT_ROOM_VISIBILITY,
 } from '../../../constants/chat.js';
+
+const readableMemberStatuses = CHAT_CONVERSATION_MEMBER_READ_STATUSES
+	.map((status) => `'${status}'`)
+	.join(', ');
 
 /**
  * Find one visible room conversation for one user.
@@ -33,6 +38,7 @@ export async function findVisibleRoomConversationForUser(
 			cc.last_message_id,
 			cc.updated_at,
 			ccm.role AS member_role,
+			ccm.status AS member_status,
 			ccm.last_read_message_id,
 			pending_request.status AS pending_request_status,
 			owner.username AS owner_username,
@@ -44,6 +50,7 @@ export async function findVisibleRoomConversationForUser(
 			ON ccm.conversation_id = cc.id
 			AND ccm.user_id = $2
 			AND ccm.archived_at IS NULL
+			AND ccm.status IN (${readableMemberStatuses})
 		INNER JOIN users owner
 			ON owner.id = cc.created_by_user_id
 		LEFT JOIN chat_room_join_requests pending_request
@@ -118,4 +125,3 @@ export async function joinPublicRoomConversation({ conversationId, userId }) {
 
 	return rows[0] || null;
 }
-

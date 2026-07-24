@@ -35,6 +35,7 @@ export function formatRoom(room) {
 			visibility: room.visibility,
 			joinPolicy: room.join_policy,
 			memberRole: room.member_role,
+			memberStatus: room.member_status,
 			lastMessageId: room.last_message_id,
 			lastMessageCreatedAt: room.last_message_created_at,
 			lastReadMessageId: room.last_read_message_id,

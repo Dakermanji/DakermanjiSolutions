@@ -1,5 +1,11 @@
 //! models/chat/rooms/queries.js
 
+import { CHAT_CONVERSATION_MEMBER_READ_STATUSES } from '../../../constants/chat.js';
+
+const readableMemberStatuses = CHAT_CONVERSATION_MEMBER_READ_STATUSES
+	.map((status) => `'${status}'`)
+	.join(', ');
+
 export function buildVisibleRoomsQuery(visibilityCondition) {
 	return `
 		SELECT
@@ -17,6 +23,7 @@ export function buildVisibleRoomsQuery(visibilityCondition) {
 			cc.updated_at,
 			lm.created_at AS last_message_created_at,
 			ccm.role AS member_role,
+			ccm.status AS member_status,
 			ccm.last_read_message_id,
 			owner.username AS owner_username,
 			owner.email AS owner_email,
@@ -44,6 +51,7 @@ export function buildVisibleRoomsQuery(visibilityCondition) {
 			ON ccm.conversation_id = cc.id
 			AND ccm.user_id = $1
 			AND ccm.archived_at IS NULL
+			AND ccm.status IN (${readableMemberStatuses})
 		INNER JOIN users owner
 			ON owner.id = cc.created_by_user_id
 		LEFT JOIN chat_messages lm
@@ -68,9 +76,9 @@ export function buildVisibleRoomsCountQuery(visibilityCondition) {
 			ON ccm.conversation_id = cc.id
 			AND ccm.user_id = $1
 			AND ccm.archived_at IS NULL
+			AND ccm.status IN (${readableMemberStatuses})
 		WHERE ${visibilityCondition}
 			AND cr.archived_at IS NULL
 			AND cc.archived_at IS NULL;
 	`;
 }
-
