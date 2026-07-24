@@ -26,6 +26,11 @@
 		? '/chat/rooms/messages'
 		: '/chat/friends/messages';
 	const canWriteConversation = !isRoomConversation || room.canWrite !== false;
+	const getSenderName = (message) =>
+		message.sender?.displayName ||
+		message.sender?.username ||
+		message.sender?.email ||
+		t('chat:friendFallback');
 	const formatMessageTime = (value) => {
 		if (!value) return '';
 
@@ -63,6 +68,7 @@
 	aria-labelledby="chat-conversation-title"
 	data-active-conversation-id="<%= conversation.id %>"
 	data-current-user-id="<%= user.id %>"
+	data-chat-conversation-kind="<%= isRoomConversation ? 'room' : 'friend' %>"
 	data-typing-label="✍️ <%= t('chat:conversation.typing', { user: conversationName }) %>"
 	data-has-older-messages="<%= canLoadOlderMessages ? 'true' : 'false' %>"
 	data-older-messages-url="<%= olderMessagesUrl %>"
@@ -118,9 +124,30 @@
 						class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>"
 						data-chat-message-id="<%= message.id %>"
 						data-chat-message-sender-id="<%= message.sender?.id || '' %>"
+						data-chat-message-sender-name="<%= getSenderName(message) %>"
+						data-chat-message-sender-avatar="<%= message.sender?.avatar?.src || '' %>"
+						data-chat-message-sender-avatar-bg="<%= message.sender?.avatar?.background || '' %>"
 						data-chat-message-created-at="<%= new Date(message.createdAt).toISOString() %>"
 					>
+						<% if (isRoomConversation && !message.isMine) { %>
+							<span
+								class="chat-message-sender-avatar"
+								style="background-color: <%= message.sender?.avatar?.background || '' %>;"
+								aria-hidden="true"
+							>
+								<% if (message.sender?.avatar?.src) { %>
+									<img src="<%= message.sender.avatar.src %>" alt="" />
+								<% } else { %>
+									<%= getSenderName(message).slice(0, 1).toUpperCase() %>
+								<% } %>
+							</span>
+						<% } %>
 						<article class="chat-message-bubble">
+							<% if (isRoomConversation && !message.isMine) { %>
+								<header class="chat-message-sender-name">
+									<%= getSenderName(message) %>
+								</header>
+							<% } %>
 							<p class="chat-message-text" dir="auto"><%= message.body %></p>
 							<footer>
 								<time datetime="<%= new Date(message.createdAt).toISOString() %>">

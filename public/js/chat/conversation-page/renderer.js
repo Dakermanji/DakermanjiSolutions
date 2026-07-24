@@ -95,16 +95,33 @@
 		rebuildMessageGroups(list);
 	}
 
-	function createMessageRow(message, currentUserId) {
+	function createMessageRow(message, currentUserId, { showSenderDisplay = false } = {}) {
 		const row = document.createElement('li');
 		const isMine = message.sender?.id === currentUserId;
+		const senderName = getSenderName(message);
+		const shouldShowSenderDisplay = showSenderDisplay && !isMine;
 		row.className = `chat-message-row ${isMine ? 'is-mine' : 'is-theirs'}`;
 		row.dataset.chatMessageId = message.id;
 		row.dataset.chatMessageSenderId = message.sender?.id || '';
+		row.dataset.chatMessageSenderName = senderName;
+		row.dataset.chatMessageSenderAvatar = message.sender?.avatar?.src || '';
+		row.dataset.chatMessageSenderAvatarBg =
+			message.sender?.avatar?.background || '';
 		row.dataset.chatMessageCreatedAt = new Date(message.createdAt).toISOString();
+
+		if (shouldShowSenderDisplay) {
+			row.appendChild(createSenderAvatar(message, senderName));
+		}
 
 		const bubble = document.createElement('article');
 		bubble.className = 'chat-message-bubble';
+
+		if (shouldShowSenderDisplay) {
+			const senderHeader = document.createElement('header');
+			senderHeader.className = 'chat-message-sender-name';
+			senderHeader.textContent = senderName;
+			bubble.appendChild(senderHeader);
+		}
 
 		const body = document.createElement('p');
 		body.className = 'chat-message-text';
@@ -123,18 +140,45 @@
 		return row;
 	}
 
-	function appendMessage(messageSurface, message, currentUserId) {
+	function getSenderName(message) {
+		return (
+			message.sender?.displayName ||
+			message.sender?.username ||
+			message.sender?.email ||
+			''
+		);
+	}
+
+	function createSenderAvatar(message, senderName) {
+		const avatar = document.createElement('span');
+		avatar.className = 'chat-message-sender-avatar';
+		avatar.style.backgroundColor = message.sender?.avatar?.background || '';
+		avatar.setAttribute('aria-hidden', 'true');
+
+		if (message.sender?.avatar?.src) {
+			const image = document.createElement('img');
+			image.src = message.sender.avatar.src;
+			image.alt = '';
+			avatar.appendChild(image);
+		} else {
+			avatar.textContent = senderName.slice(0, 1).toUpperCase();
+		}
+
+		return avatar;
+	}
+
+	function appendMessage(messageSurface, message, currentUserId, options = {}) {
 		if (messageSurface.querySelector(`[data-chat-message-id="${message.id}"]`)) {
 			return false;
 		}
 
 		const list = getMessageList(messageSurface);
-		list.appendChild(createMessageRow(message, currentUserId));
+		list.appendChild(createMessageRow(message, currentUserId, options));
 		rebuildMessageDateSeparators(messageSurface);
 		return true;
 	}
 
-	function prependMessages(messageSurface, messages, currentUserId) {
+	function prependMessages(messageSurface, messages, currentUserId, options = {}) {
 		if (messages.length === 0) return;
 
 		const list = getMessageList(messageSurface);
@@ -148,7 +192,7 @@
 				continue;
 			}
 
-			list.prepend(createMessageRow(message, currentUserId));
+			list.prepend(createMessageRow(message, currentUserId, options));
 		}
 
 		rebuildMessageDateSeparators(messageSurface);

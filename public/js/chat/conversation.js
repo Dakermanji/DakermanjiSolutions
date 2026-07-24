@@ -11,6 +11,7 @@ let typingHideTimer = null;
 let isTyping = false;
 let isLoadingOlderMessages = false;
 let hasOlderMessages = chatPage?.dataset.hasOlderMessages === 'true';
+const isRoomConversation = chatPage?.dataset.chatConversationKind === 'room';
 
 if (chatPage && messageSurface && messageRenderer) {
 	requestAnimationFrame(() => {
@@ -125,6 +126,9 @@ function appendMessage(message, socket = null) {
 		messageSurface,
 		message,
 		chatPage.dataset.currentUserId,
+		{
+			showSenderDisplay: isRoomConversation,
+		},
 	);
 
 	if (!wasAppended) return;
@@ -191,6 +195,9 @@ async function loadOlderMessages() {
 			messageSurface,
 			payload.messages,
 			chatPage.dataset.currentUserId,
+			{
+				showSenderDisplay: isRoomConversation,
+			},
 		);
 		hasOlderMessages = Boolean(payload.hasMore);
 		chatPage.dataset.hasOlderMessages = hasOlderMessages ? 'true' : 'false';

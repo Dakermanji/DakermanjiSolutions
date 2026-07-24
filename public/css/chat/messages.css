@@ -29,6 +29,8 @@
 
 .chat-message-row {
 	display: flex;
+	align-items: flex-start;
+	gap: 0.5rem;
 }
 
 .chat-message-row.is-mine {
@@ -63,6 +65,32 @@
 	background: var(--bg-card-muted);
 }
 
+.chat-message-sender-avatar {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 2rem;
+	width: 2rem;
+	height: 2rem;
+	overflow: hidden;
+	border: 1px solid var(--border-soft);
+	border-radius: 50%;
+	color: var(--color-text-heading);
+	background: var(--bg-card-muted);
+	font-size: 0.8rem;
+	font-weight: 700;
+}
+
+.chat-message-sender-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.chat-message-row:not(.is-group-start) .chat-message-sender-avatar {
+	visibility: hidden;
+}
+
 .chat-message-bubble {
 	display: grid;
 	gap: 0.35rem;
@@ -73,6 +101,17 @@
 	background: var(--bg-card);
 	color: var(--color-text-body);
 	overflow-wrap: anywhere;
+}
+
+.chat-message-sender-name {
+	color: var(--color-text-muted);
+	font-size: 0.78rem;
+	font-weight: 700;
+	line-height: 1.1;
+}
+
+.chat-message-row:not(.is-group-start) .chat-message-sender-name {
+	display: none;
 }
 
 .chat-message-row.is-mine .chat-message-bubble {
