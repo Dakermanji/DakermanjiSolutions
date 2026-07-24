@@ -10,6 +10,7 @@
 
 import { navbar } from '../config/navbar.js';
 import { countUnreadFriendMessages } from '../services/chat/friends.js';
+import { countUnreadRoomMessages } from '../services/chat/rooms.js';
 import {
 	countUnreadNotifications,
 	listNotifications,
@@ -70,12 +71,14 @@ export const navbarMiddleware = (app) => {
 		if (req.user && isHtmlPageRequest) {
 			try {
 				const [
-					unreadChatCount,
+					unreadFriendChatCount,
+					unreadRoomChatCount,
 					unreadNotificationCount,
 					notificationPreview,
 				] =
 					await Promise.all([
 						countUnreadFriendMessages(req.user.id),
+						countUnreadRoomMessages(req.user.id),
 						countUnreadNotifications(req.user.id),
 						listNotifications(req.user.id, {
 							limit: NOTIFICATION_PREVIEW_LIMIT,
@@ -91,7 +94,7 @@ export const navbarMiddleware = (app) => {
 					if (item.link !== '/chat') return;
 
 					item.badge = {
-						count: unreadChatCount,
+						count: unreadFriendChatCount + unreadRoomChatCount,
 						label: 'chat:unreadMessages',
 						key: 'chatUnread',
 					};

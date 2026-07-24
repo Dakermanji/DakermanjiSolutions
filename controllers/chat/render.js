@@ -79,6 +79,7 @@ export async function renderChat(req, res, next) {
 					activeRoomConversation.conversation.id,
 					req.user.id,
 				);
+				await emitChatUnreadCountsChanged([req.user.id]);
 
 				return res.render('chat/conversation', {
 					titleKey: 'chat:title',

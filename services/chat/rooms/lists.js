@@ -95,3 +95,13 @@ export async function countVisibleRooms(userId) {
 		publicRooms,
 	};
 }
+
+/**
+ * Count unread room messages for one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<number>}
+ */
+export function countUnreadRoomMessages(userId) {
+	return ChatRoomsModel.countUnreadRoomMessagesForUser(userId);
+}
