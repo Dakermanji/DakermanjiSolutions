@@ -2,13 +2,17 @@
 
 import {
 	createFriendMessage,
+	createRoomMessage,
 	findOpenableFriendConversation,
 } from './messages.js';
 import {
 	countUnreadFriendMessages,
-	getOpenFriendConversation,
 	markFriendConversationRead,
 } from './friends.js';
+import {
+	findOpenableRoomConversation,
+	markRoomConversationRead,
+} from './rooms.js';
 import ChatConversationMembersModel from '../../models/chat/ConversationMembers.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 
@@ -85,6 +89,64 @@ export async function emitChatUnreadCountsForConversation(conversationId) {
 	await emitChatUnreadCountsChanged(userIds);
 }
 
+async function findOpenableConversation(conversationId, userId) {
+	const friendConversation = await findOpenableFriendConversation(
+		conversationId,
+		userId,
+	);
+
+	if (friendConversation) {
+		return {
+			kind: 'friend',
+			conversation: friendConversation,
+		};
+	}
+
+	const roomConversation = await findOpenableRoomConversation(
+		conversationId,
+		userId,
+	);
+
+	if (roomConversation) {
+		return {
+			kind: 'room',
+			conversation: roomConversation,
+		};
+	}
+
+	return null;
+}
+
+async function createChatMessageForConversation({
+	kind,
+	conversationId,
+	senderUserId,
+	body,
+}) {
+	if (kind === 'room') {
+		return createRoomMessage({
+			conversationId,
+			senderUserId,
+			body,
+		});
+	}
+
+	return createFriendMessage({
+		conversationId,
+		senderUserId,
+		body,
+	});
+}
+
+async function markConversationRead({ kind, conversationId, userId }) {
+	if (kind === 'room') {
+		await markRoomConversationRead(conversationId, userId);
+		return;
+	}
+
+	await markFriendConversationRead(conversationId, userId);
+}
+
 /**
  * Register chat-specific socket handlers.
  *
@@ -104,19 +166,23 @@ export function registerChatSocketHandlers(io, socket) {
 		}
 
 		try {
-			const conversation = await getOpenFriendConversation(
+			const openConversation = await findOpenableConversation(
 				conversationId,
 				socket.data.userId,
 			);
 
-			if (!conversation) {
+			if (!openConversation) {
 				acknowledge?.({
 					ok: false,
 				});
 				return;
 			}
 
-			socket.join(getChatConversationRoom(conversation.conversation.id));
+			socket.join(
+				getChatConversationRoom(
+					openConversation.conversation.conversation_id,
+				),
+			);
 			acknowledge?.({
 				ok: true,
 			});
@@ -138,20 +204,21 @@ export function registerChatSocketHandlers(io, socket) {
 		}
 
 		try {
-			const conversation = await findOpenableFriendConversation(
+			const openConversation = await findOpenableConversation(
 				conversationId,
 				socket.data.userId,
 			);
 
-			if (!conversation) {
+			if (!openConversation) {
 				acknowledge?.({
 					ok: false,
 				});
 				return;
 			}
 
-			const message = await createFriendMessage({
-				conversationId: conversation.conversation_id,
+			const message = await createChatMessageForConversation({
+				kind: openConversation.kind,
+				conversationId: openConversation.conversation.conversation_id,
 				senderUserId: socket.data.userId,
 				body: payload?.message,
 			});
@@ -184,23 +251,26 @@ export function registerChatSocketHandlers(io, socket) {
 		}
 
 		try {
-			const conversation = await findOpenableFriendConversation(
+			const openConversation = await findOpenableConversation(
 				conversationId,
 				socket.data.userId,
 			);
 
-			if (!conversation) {
+			if (!openConversation) {
 				return;
 			}
 
-			socket.to(getChatConversationRoom(conversation.conversation_id)).emit(
-				'chat:typing:updated',
-				{
-					conversationId: conversation.conversation_id,
+			socket
+				.to(
+					getChatConversationRoom(
+						openConversation.conversation.conversation_id,
+					),
+				)
+				.emit('chat:typing:updated', {
+					conversationId: openConversation.conversation.conversation_id,
 					userId: socket.data.userId,
 					isTyping: Boolean(payload?.isTyping),
-				},
-			);
+				});
 		} catch {
 			// Typing indicators are ephemeral; failed updates can be ignored.
 		}
@@ -214,7 +284,20 @@ export function registerChatSocketHandlers(io, socket) {
 		}
 
 		try {
-			await markFriendConversationRead(conversationId, socket.data.userId);
+			const openConversation = await findOpenableConversation(
+				conversationId,
+				socket.data.userId,
+			);
+
+			if (!openConversation) {
+				return;
+			}
+
+			await markConversationRead({
+				kind: openConversation.kind,
+				conversationId: openConversation.conversation.conversation_id,
+				userId: socket.data.userId,
+			});
 			await emitChatUnreadCountsChanged([socket.data.userId]);
 		} catch {
 			// Read receipt updates are recoverable on the next page request.

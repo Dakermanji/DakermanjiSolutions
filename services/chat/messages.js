@@ -121,6 +121,44 @@ export async function createFriendMessage({
 }
 
 /**
+ * Create a room chat message when the user can write in the room.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.senderUserId
+ * @param {string} input.body
+ * @returns {Promise<object|null>}
+ */
+export async function createRoomMessage({
+	conversationId,
+	senderUserId,
+	body,
+}) {
+	const normalizedBody = normalizeMessageBody(body);
+
+	if (!normalizedBody || normalizedBody.length > BODY_MAX_LENGTH) {
+		return null;
+	}
+
+	const conversation = await findOpenableRoomConversation(
+		conversationId,
+		senderUserId,
+	);
+
+	if (!conversation) {
+		return null;
+	}
+
+	const message = await ChatMessagesModel.createConversationMessage({
+		conversationId: conversation.conversation_id,
+		senderUserId,
+		body: normalizedBody,
+	});
+
+	return formatLiveMessage(message);
+}
+
+/**
  * Check whether a user can open one friend conversation.
  *
  * @param {string} conversationId
@@ -216,14 +254,48 @@ export async function listOlderFriendMessages({
 	return formatMessagePage(messages, viewerUserId, OLDER_PAGE_SIZE);
 }
 
+/**
+ * List older messages for an openable room conversation.
+ *
+ * @param {object} params
+ * @param {string} params.conversationId
+ * @param {string} params.viewerUserId
+ * @param {string} params.beforeId
+ * @returns {Promise<object|null>}
+ */
+export async function listOlderRoomMessages({
+	conversationId,
+	viewerUserId,
+	beforeId,
+}) {
+	const conversation = await findOpenableRoomConversation(
+		conversationId,
+		viewerUserId,
+	);
+
+	if (!conversation) {
+		return null;
+	}
+
+	const messages = await ChatMessagesModel.findOlderConversationMessages({
+		conversationId: conversation.conversation_id,
+		beforeId,
+		limit: OLDER_PAGE_SIZE + 1,
+	});
+
+	return formatMessagePage(messages, viewerUserId, OLDER_PAGE_SIZE);
+}
+
 export const MESSAGE_BODY_MAX_LENGTH = BODY_MAX_LENGTH;
 export const MESSAGE_PAGE_LIMIT = OLDER_PAGE_SIZE;
 export const RECENT_MESSAGE_LIMIT = RECENT_PAGE_SIZE;
 
 export default {
 	createFriendMessage,
+	createRoomMessage,
 	findOpenableFriendConversation,
 	listOlderFriendMessages,
+	listOlderRoomMessages,
 	listFriendMessages,
 	listRoomMessages,
 };

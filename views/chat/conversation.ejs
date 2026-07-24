@@ -18,7 +18,13 @@
 		)
 		: t('chat:sections.friends.title');
 	const chatMessages = Array.isArray(messages) ? messages : [];
-	const canLoadOlderMessages = !isRoomConversation && Boolean(hasOlderMessages);
+	const canLoadOlderMessages = Boolean(hasOlderMessages);
+	const olderMessagesUrl = isRoomConversation
+		? '/chat/rooms/messages'
+		: '/chat/friends/messages';
+	const messageFormAction = isRoomConversation
+		? '/chat/rooms/messages'
+		: '/chat/friends/messages';
 	const formatMessageTime = (value) => {
 		if (!value) return '';
 
@@ -58,7 +64,7 @@
 	data-current-user-id="<%= user.id %>"
 	data-typing-label="✍️ <%= t('chat:conversation.typing', { user: conversationName }) %>"
 	data-has-older-messages="<%= canLoadOlderMessages ? 'true' : 'false' %>"
-	data-older-messages-url="/chat/friends/messages"
+	data-older-messages-url="<%= olderMessagesUrl %>"
 >
 	<header class="chat-conversation-header">
 		<form method="POST" action="/chat/friends/close" class="chat-back-form">
@@ -136,30 +142,28 @@
 		<span></span>
 	</div>
 
-	<% if (!isRoomConversation) { %>
-		<form
-			class="chat-composer"
-			method="POST"
-			action="/chat/friends/messages"
-			aria-label="<%= t('chat:conversation.composer') %>"
-			data-chat-composer
+	<form
+		class="chat-composer"
+		method="POST"
+		action="<%= messageFormAction %>"
+		aria-label="<%= t('chat:conversation.composer') %>"
+		data-chat-composer
+	>
+		<input
+			class="form-control"
+			type="text"
+			name="message"
+			maxlength="<%= messageBodyMaxLength %>"
+			placeholder="<%= t('chat:conversation.placeholder') %>"
+			autocomplete="off"
+			required
+		/>
+		<button
+			class="btn btn-action-secondary"
+			type="submit"
 		>
-			<input
-				class="form-control"
-				type="text"
-				name="message"
-				maxlength="<%= messageBodyMaxLength %>"
-				placeholder="<%= t('chat:conversation.placeholder') %>"
-				autocomplete="off"
-				required
-			/>
-			<button
-				class="btn btn-action-secondary"
-				type="submit"
-			>
-				<i class="bi bi-send" aria-hidden="true"></i>
-				<span class="visually-hidden"><%= t('chat:conversation.send') %></span>
-			</button>
-		</form>
-	<% } %>
+			<i class="bi bi-send" aria-hidden="true"></i>
+			<span class="visually-hidden"><%= t('chat:conversation.send') %></span>
+		</button>
+	</form>
 </section>

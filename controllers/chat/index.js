@@ -8,7 +8,9 @@ export {
 } from './friends.js';
 export {
 	createFriendChatMessage,
+	createRoomChatMessage,
 	getOlderFriendMessages,
+	getOlderRoomMessages,
 } from './messages.js';
 export {
 	cancelPrivateRoomAccessRequest,
