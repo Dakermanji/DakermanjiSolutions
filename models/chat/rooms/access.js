@@ -4,6 +4,7 @@ import { queryRows } from '../../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_ROLES,
 	CHAT_CONVERSATION_MEMBER_READ_STATUSES,
+	CHAT_CONVERSATION_MEMBER_STATUSES,
 	CHAT_ROOM_JOIN_POLICIES,
 	CHAT_ROOM_JOIN_REQUEST_STATUSES,
 	CHAT_ROOM_VISIBILITY,
@@ -102,10 +103,18 @@ export async function joinPublicRoomConversation({ conversationId, userId }) {
 			AND cr.join_policy = $4
 			AND cr.archived_at IS NULL
 			AND cc.archived_at IS NULL
+			AND NOT EXISTS (
+				SELECT 1
+				FROM chat_conversation_members banned_member
+				WHERE banned_member.conversation_id = cr.conversation_id
+					AND banned_member.user_id = $2
+					AND banned_member.status = $6::chat_member_status
+			)
 		ON CONFLICT (conversation_id, user_id)
 		DO UPDATE SET
 			archived_at = NULL,
 			updated_at = NOW()
+		WHERE chat_conversation_members.status <> $6::chat_member_status
 		RETURNING
 			conversation_id,
 			user_id,
@@ -121,6 +130,7 @@ export async function joinPublicRoomConversation({ conversationId, userId }) {
 		CHAT_ROOM_VISIBILITY.PUBLIC,
 		CHAT_ROOM_JOIN_POLICIES.OPEN,
 		CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,
+		CHAT_CONVERSATION_MEMBER_STATUSES.BANNED,
 	]);
 
 	return rows[0] || null;

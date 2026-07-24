@@ -41,6 +41,14 @@ export async function createPrivateListedRoomRequest({
 			AND cc.archived_at IS NULL
 			AND NOT EXISTS (
 				SELECT 1
+				FROM chat_conversation_members banned_member
+				WHERE banned_member.conversation_id = cr.conversation_id
+					AND banned_member.user_id = $2
+					AND banned_member.status = $6::chat_member_status
+					AND banned_member.archived_at IS NULL
+			)
+			AND NOT EXISTS (
+				SELECT 1
 				FROM chat_conversation_members ccm
 				WHERE ccm.conversation_id = cr.conversation_id
 					AND ccm.user_id = $2
@@ -65,6 +73,7 @@ export async function createPrivateListedRoomRequest({
 		CHAT_ROOM_VISIBILITY.PRIVATE_LISTED,
 		CHAT_ROOM_JOIN_POLICIES.REQUEST,
 		CHAT_ROOM_JOIN_REQUEST_STATUSES.PENDING,
+		CHAT_CONVERSATION_MEMBER_STATUSES.BANNED,
 	]);
 
 	return rows[0] || null;
@@ -152,6 +161,14 @@ export function findPendingRequestsForUser(userId) {
 			AND cc.archived_at IS NULL
 			AND NOT EXISTS (
 				SELECT 1
+				FROM chat_conversation_members banned_member
+				WHERE banned_member.conversation_id = cr.conversation_id
+					AND banned_member.user_id = $1
+					AND banned_member.status = $3::chat_member_status
+					AND banned_member.archived_at IS NULL
+			)
+			AND NOT EXISTS (
+				SELECT 1
 				FROM chat_conversation_members ccm
 				WHERE ccm.conversation_id = cr.conversation_id
 					AND ccm.user_id = $1
@@ -165,6 +182,7 @@ export function findPendingRequestsForUser(userId) {
 	return queryRows(q, [
 		userId,
 		CHAT_ROOM_JOIN_REQUEST_STATUSES.PENDING,
+		CHAT_CONVERSATION_MEMBER_STATUSES.BANNED,
 	]);
 }
 
