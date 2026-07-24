@@ -13,6 +13,11 @@ function connectChatNavbarSocket() {
 
 	socket.on('chat:unread:changed', (payload) => {
 		updateChatUnreadBadge(payload?.unreadCount);
+		window.dispatchEvent(
+			new CustomEvent('app:chat-unread:changed', {
+				detail: payload || {},
+			}),
+		);
 	});
 }
 

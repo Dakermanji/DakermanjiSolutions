@@ -114,3 +114,23 @@ export async function countVisibleRooms(userId) {
 export function countUnreadRoomMessages(userId) {
 	return ChatRoomsModel.countUnreadRoomMessagesForUser(userId);
 }
+
+/**
+ * Count unread private room messages for one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<number>}
+ */
+export function countUnreadPrivateRoomMessages(userId) {
+	return ChatRoomsModel.countUnreadPrivateRoomMessagesForUser(userId);
+}
+
+/**
+ * Count unread public room messages for one user.
+ *
+ * @param {string} userId
+ * @returns {Promise<number>}
+ */
+export function countUnreadPublicRoomMessages(userId) {
+	return ChatRoomsModel.countUnreadPublicRoomMessagesForUser(userId);
+}

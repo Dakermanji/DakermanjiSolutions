@@ -4,6 +4,8 @@ import { validateCreateRoomInput } from '../../middlewares/validators/chat.js';
 import { createRoom } from './rooms/create.js';
 import {
 	countVisibleRooms,
+	countUnreadPrivateRoomMessages,
+	countUnreadPublicRoomMessages,
 	countUnreadRoomMessages,
 	listPrivateRoomSection,
 	listPrivateRooms,
@@ -26,6 +28,8 @@ import {
 export { createRoom } from './rooms/create.js';
 export {
 	countVisibleRooms,
+	countUnreadPrivateRoomMessages,
+	countUnreadPublicRoomMessages,
 	countUnreadRoomMessages,
 	listPrivateRoomSection,
 	listPrivateRooms,
@@ -49,6 +53,8 @@ export default {
 	approvePrivateRoomRequest,
 	cancelPrivateRoomRequest,
 	countVisibleRooms,
+	countUnreadPrivateRoomMessages,
+	countUnreadPublicRoomMessages,
 	countUnreadRoomMessages,
 	createRoom,
 	findOpenableRoomConversation,

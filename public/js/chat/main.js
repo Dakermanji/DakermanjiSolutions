@@ -11,6 +11,7 @@ const roomSearchResults = document.querySelector('[data-chat-room-search-results
 const roomSearchTemplate = document.querySelector(
 	'[data-chat-room-search-result-template]',
 );
+let chatSectionsRefreshTimeout = null;
 
 for (const sectionCollapse of lazySections) {
 	const sectionId = sectionCollapse.dataset.chatSectionCollapse;
@@ -51,12 +52,19 @@ if (roomSearchForm && roomSearchResults && roomSearchTemplate) {
 	});
 }
 
+window.addEventListener('app:chat-unread:changed', (event) => {
+	updateSectionUnreadCountsFromPayload(event.detail?.sections);
+	scheduleLoadedChatSectionsRefresh();
+});
+
 async function loadChatSection(sectionBody, { force = false } = {}) {
 	if (!sectionBody || (!force && sectionBody.dataset.loaded === 'true')) {
 		return;
 	}
 
-	renderLoadingState(sectionBody);
+	if (!force) {
+		renderLoadingState(sectionBody);
+	}
 
 	try {
 		const response = await fetch(sectionBody.dataset.url, {
@@ -638,6 +646,44 @@ function updateSectionUnreadCount(sectionId, count, unreadLabel) {
 		(unreadLabel || '').replace('{{count}}', formattedCount),
 	);
 	badge.classList.toggle('is-hidden', unreadCount <= 0);
+}
+
+function updateSectionUnreadCountsFromPayload(sections) {
+	if (!sections || typeof sections !== 'object') return;
+
+	for (const [sectionId, unreadCount] of Object.entries(sections)) {
+		const sectionBody = getSectionBody(sectionId);
+		updateSectionUnreadCount(
+			sectionId,
+			unreadCount,
+			sectionBody?.dataset.unreadLabel || '',
+		);
+	}
+}
+
+function scheduleLoadedChatSectionsRefresh() {
+	clearTimeout(chatSectionsRefreshTimeout);
+	chatSectionsRefreshTimeout = setTimeout(() => {
+		void refreshLoadedChatSections();
+	}, 150);
+}
+
+async function refreshLoadedChatSections() {
+	const loadedSectionBodies = document.querySelectorAll(
+		'[data-chat-section-body][data-loaded="true"]',
+	);
+
+	await Promise.all(
+		Array.from(loadedSectionBodies, (sectionBody) => (
+			loadChatSection(sectionBody, { force: true })
+		)),
+	);
+}
+
+function getSectionBody(sectionId) {
+	return document.querySelector(
+		`[data-chat-section-body="${CSS.escape(sectionId)}"]`,
+	);
 }
 
 function sumUnreadCounts(items, getCount) {

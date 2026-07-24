@@ -11,7 +11,8 @@ import {
 } from './friends.js';
 import {
 	findOpenableRoomConversation,
-	countUnreadRoomMessages,
+	countUnreadPrivateRoomMessages,
+	countUnreadPublicRoomMessages,
 	markRoomConversationRead,
 } from './rooms.js';
 import ChatConversationMembersModel from '../../models/chat/ConversationMembers.js';
@@ -65,16 +66,27 @@ export async function emitChatUnreadCountsChanged(userIds) {
 	if (!chatSocketServer) return;
 
 	for (const userId of new Set(userIds.filter(Boolean))) {
-		const [unreadFriendCount, unreadRoomCount] = await Promise.all([
+		const [
+			unreadFriendCount,
+			unreadPrivateRoomCount,
+			unreadPublicRoomCount,
+		] = await Promise.all([
 			countUnreadFriendMessages(userId),
-			countUnreadRoomMessages(userId),
+			countUnreadPrivateRoomMessages(userId),
+			countUnreadPublicRoomMessages(userId),
 		]);
+		const unreadRoomCount = unreadPrivateRoomCount + unreadPublicRoomCount;
 		const unreadCount = unreadFriendCount + unreadRoomCount;
 
 		chatSocketServer
 			.to(getChatUserRoom(userId))
 			.emit('chat:unread:changed', {
 				unreadCount,
+				sections: {
+					friends: unreadFriendCount,
+					privateRooms: unreadPrivateRoomCount,
+					publicRooms: unreadPublicRoomCount,
+				},
 			});
 	}
 }
