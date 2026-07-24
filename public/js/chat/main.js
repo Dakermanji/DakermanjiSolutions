@@ -85,6 +85,13 @@ async function loadChatSection(sectionBody, { force = false } = {}) {
 			}
 
 			updateSectionCount(sectionId, payload.conversations.length);
+			updateSectionUnreadCount(
+				sectionId,
+				sumUnreadCounts(payload.conversations, (item) => (
+					item.conversation?.unreadCount
+				)),
+				sectionBody.dataset.unreadLabel,
+			);
 			renderFriendChats(payload.conversations);
 			return;
 		}
@@ -102,6 +109,11 @@ async function loadChatSection(sectionBody, { force = false } = {}) {
 		}
 
 		updateSectionCount(sectionId, payload.rooms.length);
+		updateSectionUnreadCount(
+			sectionId,
+			sumUnreadCounts(payload.rooms, (item) => item.room?.unreadCount),
+			sectionBody.dataset.unreadLabel,
+		);
 		renderRooms(sectionBody, payload.rooms, payload.pendingRequests || []);
 	} catch (error) {
 		console.error('Failed to load chat section', error);
@@ -606,6 +618,30 @@ function updateSectionCount(sectionId, count) {
 	countElement.textContent = new Intl.NumberFormat(
 		document.documentElement.lang || 'en',
 	).format(count);
+}
+
+function updateSectionUnreadCount(sectionId, count, unreadLabel) {
+	const badge = document.querySelector(
+		`[data-chat-unread-section="${CSS.escape(sectionId)}"]`,
+	);
+
+	if (!badge) return;
+
+	const unreadCount = Number(count || 0);
+	const formattedCount = new Intl.NumberFormat(
+		document.documentElement.lang || 'en',
+	).format(unreadCount);
+
+	badge.textContent = formattedCount;
+	badge.setAttribute(
+		'aria-label',
+		(unreadLabel || '').replace('{{count}}', formattedCount),
+	);
+	badge.classList.toggle('is-hidden', unreadCount <= 0);
+}
+
+function sumUnreadCounts(items, getCount) {
+	return items.reduce((total, item) => total + Number(getCount(item) || 0), 0);
 }
 
 function renderEmptyState(sectionBody, iconClass, message) {

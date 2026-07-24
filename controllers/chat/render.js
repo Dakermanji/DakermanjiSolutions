@@ -120,6 +120,14 @@ export async function renderChat(req, res, next) {
 				privateRooms: roomCounts.privateRooms,
 				publicRooms: roomCounts.publicRooms,
 			},
+			chatSectionUnreadCounts: {
+				friends: friendConversations.reduce(
+					(total, item) => total + item.conversation.unreadCount,
+					0,
+				),
+				privateRooms: roomCounts.unreadPrivateRooms,
+				publicRooms: roomCounts.unreadPublicRooms,
+			},
 		});
 	} catch (error) {
 		return next(error);

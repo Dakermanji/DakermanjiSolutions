@@ -5,6 +5,7 @@
 			id: 'friends',
 			icon: 'bi-person-hearts',
 			count: chatSectionCounts?.friends || 0,
+			unreadCount: chatSectionUnreadCounts?.friends || 0,
 			expanded: true,
 			url: '/chat/friends',
 			canOpenSelfChat: true,
@@ -13,6 +14,7 @@
 			id: 'privateRooms',
 			icon: 'bi-shield-lock-fill',
 			count: chatSectionCounts?.privateRooms || 0,
+			unreadCount: chatSectionUnreadCounts?.privateRooms || 0,
 			expanded: false,
 			url: '/chat/rooms/private',
 			canCreateRoom: true,
@@ -22,6 +24,7 @@
 			id: 'publicRooms',
 			icon: 'bi-megaphone-fill',
 			count: chatSectionCounts?.publicRooms || 0,
+			unreadCount: chatSectionUnreadCounts?.publicRooms || 0,
 			expanded: false,
 			url: '/chat/rooms/public',
 			canCreateRoom: true,
@@ -80,7 +83,16 @@
 							<i class="bi <%= section.icon %>" aria-hidden="true"></i>
 						</span>
 						<span class="chat-section-heading">
-							<span><%= title %></span>
+							<span class="chat-section-title-row">
+								<span><%= title %></span>
+								<span
+									class="chat-section-unread-badge <%= section.unreadCount > 0 ? '' : 'is-hidden' %>"
+									data-chat-unread-section="<%= section.id %>"
+									aria-label="<%= t('chat:unreadMessages', { count: section.unreadCount }) %>"
+								>
+									<%= t('chat:count', { count: section.unreadCount }) %>
+								</span>
+							</span>
 							<small><%= description %></small>
 						</span>
 					</button>

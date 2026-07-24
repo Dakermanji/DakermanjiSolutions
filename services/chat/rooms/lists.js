@@ -85,14 +85,23 @@ export async function searchRooms(userId, query) {
  * @returns {Promise<object>}
  */
 export async function countVisibleRooms(userId) {
-	const [privateRooms, publicRooms] = await Promise.all([
+	const [
+		privateRooms,
+		publicRooms,
+		unreadPrivateRooms,
+		unreadPublicRooms,
+	] = await Promise.all([
 		ChatRoomsModel.countPrivateRoomsForUser(userId),
 		ChatRoomsModel.countPublicRoomsForUser(userId),
+		ChatRoomsModel.countUnreadPrivateRoomMessagesForUser(userId),
+		ChatRoomsModel.countUnreadPublicRoomMessagesForUser(userId),
 	]);
 
 	return {
 		privateRooms,
 		publicRooms,
+		unreadPrivateRooms,
+		unreadPublicRooms,
 	};
 }
 

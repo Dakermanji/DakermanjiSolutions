@@ -60,8 +60,41 @@
 	text-align: start;
 }
 
-.chat-section-heading span {
+.chat-section-heading > span {
 	font-weight: 700;
+}
+
+.chat-section-title-row {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	min-width: 0;
+}
+
+.chat-section-title-row > span:first-child {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.chat-section-unread-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	min-width: 1.35rem;
+	height: 1.35rem;
+	padding: 0 0.4rem;
+	border-radius: 999px;
+	color: var(--color-text-inverse);
+	background: var(--color-primary);
+	font-size: 0.75rem;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.chat-section-unread-badge.is-hidden {
+	display: none;
 }
 
 .chat-section-heading small {
