@@ -70,6 +70,35 @@ export const CHAT_CONVERSATION_MEMBER_STATUSES = Object.freeze({
 	BANNED: 'banned',
 });
 
+export const CHAT_CONVERSATION_MEMBER_READ_STATUSES = Object.freeze([
+	CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+	CHAT_CONVERSATION_MEMBER_STATUSES.MUTED,
+]);
+
+export const CHAT_CONVERSATION_MEMBER_WRITE_STATUSES = Object.freeze([
+	CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+]);
+
+export const CHAT_CONVERSATION_MEMBER_MANAGE_ROLES = Object.freeze([
+	CHAT_CONVERSATION_MEMBER_ROLES.OWNER,
+	CHAT_CONVERSATION_MEMBER_ROLES.ADMIN,
+]);
+
+export function canChatMemberRead(status) {
+	return CHAT_CONVERSATION_MEMBER_READ_STATUSES.includes(status);
+}
+
+export function canChatMemberWrite(status) {
+	return CHAT_CONVERSATION_MEMBER_WRITE_STATUSES.includes(status);
+}
+
+export function canChatMemberManage(role, status) {
+	return (
+		CHAT_CONVERSATION_MEMBER_MANAGE_ROLES.includes(role) &&
+		canChatMemberWrite(status)
+	);
+}
+
 export const CHAT_MESSAGE_LIMITS = Object.freeze({
 	BODY_MAX_LENGTH: 2000,
 	RECENT_PAGE_SIZE: 10,
