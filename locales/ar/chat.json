@@ -27,6 +27,7 @@
 		"createSubmit": "إنشاء الغرفة",
 		"createSuccess": "تم إنشاء الغرفة.",
 		"createError": "تعذر إنشاء هذه الغرفة.",
+		"openError": "هذه الغرفة غير متاحة.",
 		"joinSuccess": "تم الانضمام إلى الغرفة.",
 		"joinError": "تعذر الانضمام إلى هذه الغرفة.",
 		"requestSuccess": "تم إرسال طلب الانضمام.",

@@ -60,6 +60,7 @@ export async function openRoomConversation(req, res, next) {
 	const conversationId = String(req.body?.conversationId || '').trim();
 
 	if (!isValidUuid(conversationId)) {
+		req.flash('error', 'chat:rooms.openError');
 		return res.redirect(CHAT_REDIRECT);
 	}
 
@@ -70,6 +71,7 @@ export async function openRoomConversation(req, res, next) {
 		);
 
 		if (!conversation) {
+			req.flash('error', 'chat:rooms.openError');
 			return res.redirect(CHAT_REDIRECT);
 		}
 

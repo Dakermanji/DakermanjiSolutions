@@ -22,6 +22,10 @@ import {
  * @returns {Promise<object|null>}
  */
 export async function requestPrivateListedRoom({ conversationId, userId }) {
+	if (!conversationId || !userId) {
+		return null;
+	}
+
 	const request = await ChatRoomJoinRequestsModel.createPrivateListedRoomRequest({
 		conversationId,
 		userId,

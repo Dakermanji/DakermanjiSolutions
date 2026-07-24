@@ -14,6 +14,10 @@ import { formatOpenRoomConversation } from './formatters.js';
  * @returns {Promise<object|null>}
  */
 export async function joinPublicRoom({ conversationId, userId }) {
+	if (!conversationId || !userId) {
+		return null;
+	}
+
 	const membership = await ChatRoomsModel.joinPublicRoomConversation({
 		conversationId,
 		userId,

@@ -27,6 +27,7 @@
 		"createSubmit": "Créer le salon",
 		"createSuccess": "Salon créé.",
 		"createError": "Impossible de créer ce salon.",
+		"openError": "Ce salon n’est pas disponible.",
 		"joinSuccess": "Salon rejoint.",
 		"joinError": "Impossible de rejoindre ce salon.",
 		"requestSuccess": "Demande envoyée.",
