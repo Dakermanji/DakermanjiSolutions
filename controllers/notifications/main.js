@@ -13,6 +13,7 @@ import {
 	dismissNotification,
 	listNotifications,
 } from '../../services/notifications/appNotifications.js';
+import { getNotificationLinkUrl } from '../../services/notifications/links.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 
 const CHAT_ROOM_JOIN_REQUEST_ACTIONS = Object.freeze([
@@ -101,7 +102,7 @@ function serializeNotification(notification) {
 		entityId: notification.entity_id,
 		titleKey: notification.title_key,
 		bodyKey: notification.body_key,
-		linkUrl: notification.link_url,
+		linkUrl: getNotificationLinkUrl(notification),
 		data: notification.data || {},
 		priority: notification.priority,
 		isRead: Boolean(notification.read_at),

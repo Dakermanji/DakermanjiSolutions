@@ -8,6 +8,7 @@ import {
 	NOTIFICATION_TYPES,
 } from '../../../constants/notifications.js';
 import { createNotificationIfNotExists } from '../../notifications/appNotifications.js';
+import { getChatRoomOpenUrl } from '../../notifications/links.js';
 
 function getRequesterDisplayName(recipient) {
 	return recipient.requester_username || recipient.requester_email || '';
@@ -60,7 +61,7 @@ export async function notifyRoomJoinRequestResult({
 		entityId: request.id,
 		titleKey,
 		bodyKey,
-		linkUrl: '/chat',
+		linkUrl: getChatRoomOpenUrl(request.conversation_id),
 		data: {
 			conversationId: request.conversation_id,
 			requestId: request.id,

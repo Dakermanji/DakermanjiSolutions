@@ -15,6 +15,7 @@ import {
 	countUnreadNotifications,
 	listNotifications,
 } from '../services/notifications/appNotifications.js';
+import { getNotificationLinkUrl } from '../services/notifications/links.js';
 
 const NOTIFICATION_PREVIEW_LIMIT = 5;
 
@@ -35,7 +36,7 @@ function formatNotificationPreview(notification) {
 		type: notification.type,
 		titleKey: notification.title_key,
 		bodyKey: notification.body_key,
-		linkUrl: notification.link_url || '/notifications',
+		linkUrl: getNotificationLinkUrl(notification),
 		data: notification.data || {},
 		isRead: Boolean(notification.read_at),
 		actor: {

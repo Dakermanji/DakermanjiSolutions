@@ -57,7 +57,9 @@ export async function createChatRoom(req, res, next) {
  * @returns {Promise<void>}
  */
 export async function openRoomConversation(req, res, next) {
-	const conversationId = String(req.body?.conversationId || '').trim();
+	const conversationId = String(
+		req.body?.conversationId || req.params?.conversationId || '',
+	).trim();
 
 	if (!isValidUuid(conversationId)) {
 		req.flash('error', 'chat:rooms.openError');
