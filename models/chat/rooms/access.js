@@ -112,6 +112,8 @@ export async function joinPublicRoomConversation({ conversationId, userId }) {
 			)
 		ON CONFLICT (conversation_id, user_id)
 		DO UPDATE SET
+			role = EXCLUDED.role,
+			status = $7::chat_member_status,
 			archived_at = NULL,
 			updated_at = NOW()
 		WHERE chat_conversation_members.status <> $6::chat_member_status
@@ -131,6 +133,7 @@ export async function joinPublicRoomConversation({ conversationId, userId }) {
 		CHAT_ROOM_JOIN_POLICIES.OPEN,
 		CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,
 		CHAT_CONVERSATION_MEMBER_STATUSES.BANNED,
+		CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
 	]);
 
 	return rows[0] || null;

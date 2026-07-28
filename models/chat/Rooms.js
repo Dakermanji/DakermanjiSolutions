@@ -16,6 +16,15 @@ import {
 	findVisibleRoomConversationForUser,
 	joinPublicRoomConversation,
 } from './rooms/access.js';
+import {
+	banRoomMember,
+	deleteRoomMemberHistory,
+	demoteRoomAdminToMember,
+	muteRoomMember,
+	promoteRoomMemberToAdmin,
+	removeRoomMember,
+	unbanRoomMember,
+} from './rooms/memberManagement.js';
 import { findRoomConversationMembers } from './rooms/members.js';
 import { searchVisibleRoomsForUser } from './rooms/search.js';
 
@@ -35,6 +44,15 @@ export {
 	findVisibleRoomConversationForUser,
 	joinPublicRoomConversation,
 } from './rooms/access.js';
+export {
+	banRoomMember,
+	deleteRoomMemberHistory,
+	demoteRoomAdminToMember,
+	muteRoomMember,
+	promoteRoomMemberToAdmin,
+	removeRoomMember,
+	unbanRoomMember,
+} from './rooms/memberManagement.js';
 export { findRoomConversationMembers } from './rooms/members.js';
 export { searchVisibleRoomsForUser } from './rooms/search.js';
 
@@ -45,10 +63,17 @@ export default {
 	countUnreadPublicRoomMessagesForUser,
 	countUnreadRoomMessagesForUser,
 	createRoomConversation,
+	banRoomMember,
+	deleteRoomMemberHistory,
+	demoteRoomAdminToMember,
 	findPrivateRoomsForUser,
 	findPublicRoomsForUser,
 	findRoomConversationMembers,
 	findVisibleRoomConversationForUser,
 	joinPublicRoomConversation,
+	muteRoomMember,
+	promoteRoomMemberToAdmin,
+	removeRoomMember,
 	searchVisibleRoomsForUser,
+	unbanRoomMember,
 };

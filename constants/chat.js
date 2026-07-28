@@ -68,6 +68,7 @@ export const CHAT_CONVERSATION_MEMBER_STATUSES = Object.freeze({
 	ACTIVE: 'active',
 	MUTED: 'muted',
 	BANNED: 'banned',
+	REMOVED: 'removed',
 });
 
 export const CHAT_CONVERSATION_MEMBER_READ_STATUSES = Object.freeze([

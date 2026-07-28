@@ -44,6 +44,15 @@ function isChatRoomOwner(member) {
 	);
 }
 
+function isCurrentChatRoomMember(member) {
+	const memberAccess = normalizeChatMemberAccess(member);
+
+	return [
+		CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+		CHAT_CONVERSATION_MEMBER_STATUSES.MUTED,
+	].includes(memberAccess.status);
+}
+
 export function canManageChatRoomMember(actor, target) {
 	const actorAccess = normalizeChatMemberAccess(actor);
 	const targetAccess = normalizeChatMemberAccess(target);
@@ -71,7 +80,7 @@ export function canPromoteChatRoomMember(actor, target) {
 	return (
 		isChatRoomOwner(actor) &&
 		targetAccess.role === CHAT_CONVERSATION_MEMBER_ROLES.MEMBER &&
-		targetAccess.status !== CHAT_CONVERSATION_MEMBER_STATUSES.BANNED &&
+		isCurrentChatRoomMember(targetAccess) &&
 		canManageChatRoomMember(actor, targetAccess)
 	);
 }
@@ -82,7 +91,7 @@ export function canDemoteChatRoomMember(actor, target) {
 	return (
 		isChatRoomOwner(actor) &&
 		targetAccess.role === CHAT_CONVERSATION_MEMBER_ROLES.ADMIN &&
-		targetAccess.status !== CHAT_CONVERSATION_MEMBER_STATUSES.BANNED &&
+		isCurrentChatRoomMember(targetAccess) &&
 		canManageChatRoomMember(actor, targetAccess)
 	);
 }
@@ -91,7 +100,7 @@ export function canRemoveChatRoomMember(actor, target) {
 	const targetAccess = normalizeChatMemberAccess(target);
 
 	return (
-		targetAccess.status !== CHAT_CONVERSATION_MEMBER_STATUSES.BANNED &&
+		isCurrentChatRoomMember(targetAccess) &&
 		canManageChatRoomMember(actor, targetAccess)
 	);
 }
@@ -109,7 +118,7 @@ export function canBanChatRoomMember(actor, target) {
 	const targetAccess = normalizeChatMemberAccess(target);
 
 	return (
-		targetAccess.status !== CHAT_CONVERSATION_MEMBER_STATUSES.BANNED &&
+		isCurrentChatRoomMember(targetAccess) &&
 		canManageChatRoomMember(actor, targetAccess)
 	);
 }

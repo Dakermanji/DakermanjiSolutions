@@ -40,7 +40,8 @@ BEGIN
 		CREATE TYPE chat_member_status AS ENUM (
 			'active',
 			'muted',
-			'banned'
+			'banned',
+			'removed'
 		);
 	END IF;
 END$$;
