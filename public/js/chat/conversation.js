@@ -3,6 +3,8 @@
 const chatPage = document.querySelector('[data-active-conversation-id]');
 const composer = document.querySelector('[data-chat-composer]');
 const composerNotice = document.querySelector('[data-chat-composer-notice]');
+const managementPanel = document.querySelector('[data-chat-management-panel]');
+const managementToggle = document.querySelector('[data-chat-management-toggle]');
 const messageSurface = document.querySelector('[data-chat-message-surface]');
 const membersPanel = document.querySelector('[data-chat-members-panel]');
 const membersToggle = document.querySelector('[data-chat-members-toggle]');
@@ -33,7 +35,15 @@ if (chatPage && messageSurface && messageRenderer) {
 	});
 
 	membersToggle?.addEventListener('click', () => {
-		setMembersPanelVisible(membersPanel?.hidden !== false);
+		setActiveSidePanel(
+			membersPanel?.hidden !== false ? 'members' : null,
+		);
+	});
+
+	managementToggle?.addEventListener('click', () => {
+		setActiveSidePanel(
+			managementPanel?.hidden !== false ? 'management' : null,
+		);
 	});
 
 	const socket = composer ? connectChatSocket() : null;
@@ -279,25 +289,41 @@ function hideTypingIndicator() {
 	clearTimeout(typingHideTimer);
 }
 
-function setMembersPanelVisible(isVisible) {
-	if (!membersPanel || !membersToggle) return;
+function setActiveSidePanel(panelName) {
+	const isMembersVisible = panelName === 'members';
+	const isManagementVisible = panelName === 'management';
+	const isAnyPanelVisible = isMembersVisible || isManagementVisible;
 
-	membersPanel.hidden = !isVisible;
-	messageSurface.hidden = isVisible;
+	if (membersPanel) {
+		membersPanel.hidden = !isMembersVisible;
+	}
+	if (managementPanel) {
+		managementPanel.hidden = !isManagementVisible;
+	}
+
+	messageSurface.hidden = isAnyPanelVisible;
 	if (typingIndicator) {
 		typingIndicator.hidden = true;
 	}
 	if (composerNotice) {
-		composerNotice.hidden = isVisible;
+		composerNotice.hidden = isAnyPanelVisible;
 	}
 	if (composer) {
-		composer.hidden = isVisible;
+		composer.hidden = isAnyPanelVisible;
 	}
 
-	membersToggle.classList.toggle('is-active', isVisible);
-	membersToggle.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+	membersToggle?.classList.toggle('is-active', isMembersVisible);
+	membersToggle?.setAttribute(
+		'aria-expanded',
+		isMembersVisible ? 'true' : 'false',
+	);
+	managementToggle?.classList.toggle('is-active', isManagementVisible);
+	managementToggle?.setAttribute(
+		'aria-expanded',
+		isManagementVisible ? 'true' : 'false',
+	);
 
-	if (isVisible) {
+	if (isAnyPanelVisible) {
 		clearTimeout(typingHideTimer);
 		return;
 	}

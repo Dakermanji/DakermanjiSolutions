@@ -25,8 +25,11 @@
 	},
 	"members": {
 		"toggle": "Membres du salon",
+		"manageToggle": "Gérer le salon",
 		"kicker": "Salon",
 		"title": "Membres",
+		"manageKicker": "Salon",
+		"manageTitle": "Gestion",
 		"count": "{{count}} membres",
 		"empty": "Aucun membre à afficher.",
 		"roles": {
@@ -35,21 +38,36 @@
 			"member": "Membre"
 		},
 		"statuses": {
-			"muted": "Muet"
+			"muted": "Muet",
+			"banned": "Banni"
+		},
+		"groups": {
+			"owners": "Propriétaire",
+			"admins": "Admins",
+			"members": "Membres",
+			"muted": "Membres muets",
+			"banned": "Membres bannis"
 		},
 		"actions": {
+			"promote": "Promouvoir admin",
 			"promoteSuccess": "Membre promu admin.",
 			"promoteError": "Impossible de promouvoir ce membre.",
+			"demote": "Rétrograder en membre",
 			"demoteSuccess": "Admin rétrogradé en membre.",
 			"demoteError": "Impossible de rétrograder cet admin.",
+			"remove": "Retirer le membre",
 			"removeSuccess": "Membre retiré du salon.",
 			"removeError": "Impossible de retirer ce membre.",
+			"mute": "Mettre en sourdine",
 			"muteSuccess": "Membre mis en sourdine.",
 			"muteError": "Impossible de mettre ce membre en sourdine.",
+			"ban": "Bannir le membre",
 			"banSuccess": "Membre banni.",
 			"banError": "Impossible de bannir ce membre.",
+			"unban": "Débannir le membre",
 			"unbanSuccess": "Membre débanni.",
 			"unbanError": "Impossible de débannir ce membre.",
+			"deleteHistory": "Supprimer l’historique",
 			"deleteHistorySuccess": "Membre et historique des messages supprimés.",
 			"deleteHistoryError": "Impossible de supprimer l’historique de ce membre."
 		}

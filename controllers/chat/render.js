@@ -12,6 +12,7 @@ import {
 import {
 	countVisibleRooms,
 	getOpenRoomConversation,
+	listRoomManagementMembers,
 	listRoomMembers,
 	markRoomConversationRead,
 } from '../../services/chat/rooms.js';
@@ -73,12 +74,20 @@ export async function renderChat(req, res, next) {
 			);
 
 			if (activeRoomConversation) {
-				const [messages, roomMembers] = await Promise.all([
+				const [
+					messages,
+					roomMembers,
+					roomManagementMembers,
+				] = await Promise.all([
 					listRoomMessages(
 						activeRoomConversation.conversation.id,
 						req.user.id,
 					),
 					listRoomMembers(
+						activeRoomConversation.conversation.id,
+						req.user.id,
+					),
+					listRoomManagementMembers(
 						activeRoomConversation.conversation.id,
 						req.user.id,
 					),
@@ -100,6 +109,7 @@ export async function renderChat(req, res, next) {
 					activeConversation: activeRoomConversation,
 					messages: messages.messages,
 					roomMembers,
+					roomManagementMembers,
 					hasOlderMessages: messages.hasMore,
 					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
 				});

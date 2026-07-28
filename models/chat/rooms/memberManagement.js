@@ -33,7 +33,8 @@ async function updateManagedMember({
 		? `AND target.status = ANY($8::chat_member_status[])`
 		: '';
 	const actorRoleFilter = ownerOnly
-		? 'AND actor.role = $5::chat_member_role'
+		? `AND actor.role = $5::chat_member_role
+			AND $6::chat_member_role IS NOT NULL`
 		: 'AND actor.role IN ($5::chat_member_role, $6::chat_member_role)';
 	const targetRoleFilter = targetRole
 		? 'AND target.role = $7::chat_member_role'

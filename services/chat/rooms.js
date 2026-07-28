@@ -12,7 +12,10 @@ import {
 	listPublicRooms,
 	searchRooms,
 } from './rooms/lists.js';
-import { listRoomMembers } from './rooms/members.js';
+import {
+	listRoomManagementMembers,
+	listRoomMembers,
+} from './rooms/members.js';
 import {
 	findOpenableRoomConversation,
 	findWritableRoomConversation,
@@ -48,7 +51,10 @@ export {
 	listPublicRooms,
 	searchRooms,
 } from './rooms/lists.js';
-export { listRoomMembers } from './rooms/members.js';
+export {
+	listRoomManagementMembers,
+	listRoomMembers,
+} from './rooms/members.js';
 export {
 	findOpenableRoomConversation,
 	findWritableRoomConversation,
@@ -91,6 +97,7 @@ export default {
 	listPrivateRoomSection,
 	listPrivateRooms,
 	listPublicRooms,
+	listRoomManagementMembers,
 	listRoomMembers,
 	markRoomConversationRead,
 	muteRoomMember,

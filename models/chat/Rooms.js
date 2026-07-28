@@ -27,6 +27,7 @@ import {
 } from './rooms/memberManagement.js';
 import {
 	findRoomConversationMember,
+	findRoomConversationManagementMembers,
 	findRoomConversationMembers,
 } from './rooms/members.js';
 import { searchVisibleRoomsForUser } from './rooms/search.js';
@@ -58,6 +59,7 @@ export {
 } from './rooms/memberManagement.js';
 export {
 	findRoomConversationMember,
+	findRoomConversationManagementMembers,
 	findRoomConversationMembers,
 } from './rooms/members.js';
 export { searchVisibleRoomsForUser } from './rooms/search.js';
@@ -75,6 +77,7 @@ export default {
 	findPrivateRoomsForUser,
 	findPublicRoomsForUser,
 	findRoomConversationMember,
+	findRoomConversationManagementMembers,
 	findRoomConversationMembers,
 	findVisibleRoomConversationForUser,
 	joinPublicRoomConversation,

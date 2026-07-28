@@ -8,7 +8,19 @@
 		typeof roomMembers !== 'undefined' && Array.isArray(roomMembers)
 			? roomMembers
 			: [];
+	const safeRoomManagementMembers =
+		typeof roomManagementMembers !== 'undefined' && Array.isArray(roomManagementMembers)
+			? roomManagementMembers
+			: [];
 	const roomMemberList = isRoomConversation ? safeRoomMembers : [];
+	const roomManagementMemberList = isRoomConversation
+		? safeRoomManagementMembers
+		: [];
+	const canManageRoom =
+		isRoomConversation &&
+		room.memberStatus === 'active' &&
+		['owner', 'admin'].includes(room.memberRole);
+	const isRoomOwner = room.memberRole === 'owner';
 	const friendName =
 		friend.username ||
 		friend.email ||
@@ -36,6 +48,49 @@
 		member.username ||
 		member.email ||
 		t('chat:friendFallback');
+	const getManagementGroupKey = (member) => {
+		if (member.status === 'banned') return 'banned';
+		if (member.status === 'muted') return 'muted';
+		if (member.role === 'owner') return 'owners';
+		if (member.role === 'admin') return 'admins';
+		return 'members';
+	};
+	const canManageTarget = (member) =>
+		canManageRoom &&
+		member.id !== user.id &&
+		member.role !== 'owner' &&
+		(isRoomOwner || member.role === 'member');
+	const canPromoteTarget = (member) =>
+		isRoomOwner &&
+		member.role === 'member' &&
+		['active', 'muted'].includes(member.status);
+	const canDemoteTarget = (member) =>
+		isRoomOwner &&
+		member.role === 'admin' &&
+		['active', 'muted'].includes(member.status);
+	const canRemoveTarget = (member) =>
+		canManageTarget(member) &&
+		['active', 'muted'].includes(member.status);
+	const canMuteTarget = (member) =>
+		canManageTarget(member) &&
+		member.status === 'active';
+	const canBanTarget = (member) =>
+		canManageTarget(member) &&
+		['active', 'muted'].includes(member.status);
+	const canUnbanTarget = (member) =>
+		canManageTarget(member) &&
+		member.status === 'banned';
+	const canDeleteTarget = (member) =>
+		isRoomOwner &&
+		member.id !== user.id &&
+		member.role !== 'owner';
+	const managementGroups = [
+		{ key: 'owners', members: roomManagementMemberList.filter((member) => getManagementGroupKey(member) === 'owners') },
+		{ key: 'admins', members: roomManagementMemberList.filter((member) => getManagementGroupKey(member) === 'admins') },
+		{ key: 'members', members: roomManagementMemberList.filter((member) => getManagementGroupKey(member) === 'members') },
+		{ key: 'muted', members: roomManagementMemberList.filter((member) => getManagementGroupKey(member) === 'muted') },
+		{ key: 'banned', members: roomManagementMemberList.filter((member) => getManagementGroupKey(member) === 'banned') },
+	].filter((group) => group.members.length > 0);
 	const getSenderName = (message) =>
 		message.sender?.displayName ||
 		message.sender?.username ||
@@ -113,8 +168,21 @@
 		</div>
 
 		<% if (isRoomConversation) { %>
+			<% if (canManageRoom) { %>
+				<button
+					class="btn btn-action-outline chat-panel-toggle has-tooltip"
+					type="button"
+					data-chat-management-toggle
+					data-bs-title="<%= t('chat:members.manageToggle') %>"
+					aria-label="<%= t('chat:members.manageToggle') %>"
+					aria-controls="chat-management-panel"
+					aria-expanded="false"
+				>
+					<i class="bi bi-gear-fill" aria-hidden="true"></i>
+				</button>
+			<% } %>
 			<button
-				class="btn btn-action-outline chat-members-toggle has-tooltip"
+				class="btn btn-action-outline chat-panel-toggle has-tooltip"
 				type="button"
 				data-chat-members-toggle
 				data-bs-title="<%= t('chat:members.toggle') %>"
@@ -244,6 +312,99 @@
 			<% } else { %>
 				<div class="chat-members-empty">
 					<i class="bi bi-people" aria-hidden="true"></i>
+					<p><%= t('chat:members.empty') %></p>
+				</div>
+			<% } %>
+		</section>
+	<% } %>
+
+	<% if (isRoomConversation && canManageRoom) { %>
+		<section
+			id="chat-management-panel"
+			class="chat-members-panel chat-management-panel"
+			aria-labelledby="chat-management-title"
+			data-chat-management-panel
+			hidden
+		>
+			<header class="chat-members-header">
+				<div>
+					<p class="chat-kicker"><%= t('chat:members.manageKicker') %></p>
+					<h2 id="chat-management-title"><%= t('chat:members.manageTitle') %></h2>
+				</div>
+				<span class="chat-members-count">
+					<%= t('chat:members.count', { count: roomManagementMemberList.length }) %>
+				</span>
+			</header>
+
+			<% if (managementGroups.length > 0) { %>
+				<div class="chat-management-groups">
+					<% managementGroups.forEach((group) => { %>
+						<section class="chat-management-group">
+							<h3><%= t(`chat:members.groups.${group.key}`) %></h3>
+							<ol class="chat-members-list">
+								<% group.members.forEach((member) => { %>
+									<li class="chat-member-item chat-management-member-item">
+										<span
+											class="chat-member-avatar"
+											style="background-color: <%= member.avatar?.background || '' %>;"
+											aria-hidden="true"
+										>
+											<% if (member.avatar?.src) { %>
+												<img src="<%= member.avatar.src %>" alt="" />
+											<% } else { %>
+												<%= getMemberName(member).slice(0, 1).toUpperCase() %>
+											<% } %>
+										</span>
+
+										<div class="chat-member-body">
+											<strong><%= getMemberName(member) %></strong>
+											<div class="chat-member-badges">
+												<span class="chat-member-badge chat-member-badge--<%= member.role %>">
+													<%= t(`chat:members.roles.${member.role}`) %>
+												</span>
+												<% if (member.status !== 'active') { %>
+													<span class="chat-member-badge chat-member-badge--<%= member.status %>">
+														<%= t(`chat:members.statuses.${member.status}`) %>
+													</span>
+												<% } %>
+											</div>
+										</div>
+
+										<div class="chat-management-actions">
+											<% const memberActionForms = [
+												{ show: canPromoteTarget(member), path: '/chat/rooms/members/promote', icon: 'bi-arrow-up-circle', label: 'promote' },
+												{ show: canDemoteTarget(member), path: '/chat/rooms/members/demote', icon: 'bi-arrow-down-circle', label: 'demote' },
+												{ show: canMuteTarget(member), path: '/chat/rooms/members/mute', icon: 'bi-volume-mute', label: 'mute' },
+												{ show: canRemoveTarget(member), path: '/chat/rooms/members/remove', icon: 'bi-person-dash', label: 'remove' },
+												{ show: canBanTarget(member), path: '/chat/rooms/members/ban', icon: 'bi-slash-circle', label: 'ban' },
+												{ show: canUnbanTarget(member), path: '/chat/rooms/members/unban', icon: 'bi-unlock', label: 'unban' },
+												{ show: canDeleteTarget(member), path: '/chat/rooms/members/delete-history', icon: 'bi-trash3', label: 'deleteHistory', danger: true },
+											].filter((item) => item.show); %>
+
+											<% memberActionForms.forEach((action) => { %>
+												<form method="POST" action="<%= action.path %>">
+													<input type="hidden" name="conversationId" value="<%= conversation.id %>" />
+													<input type="hidden" name="targetUserId" value="<%= member.id %>" />
+													<button
+														class="btn btn-action-outline chat-management-action has-tooltip <%= action.danger ? 'is-danger' : '' %>"
+														type="submit"
+														data-bs-title="<%= t(`chat:members.actions.${action.label}`) %>"
+														aria-label="<%= t(`chat:members.actions.${action.label}`) %>"
+													>
+														<i class="bi <%= action.icon %>" aria-hidden="true"></i>
+													</button>
+												</form>
+											<% }) %>
+										</div>
+									</li>
+								<% }) %>
+							</ol>
+						</section>
+					<% }) %>
+				</div>
+			<% } else { %>
+				<div class="chat-members-empty">
+					<i class="bi bi-gear" aria-hidden="true"></i>
 					<p><%= t('chat:members.empty') %></p>
 				</div>
 			<% } %>

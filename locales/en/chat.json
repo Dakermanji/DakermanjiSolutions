@@ -25,8 +25,11 @@
 	},
 	"members": {
 		"toggle": "Room members",
+		"manageToggle": "Manage room",
 		"kicker": "Room",
 		"title": "Members",
+		"manageKicker": "Room",
+		"manageTitle": "Management",
 		"count": "{{count}} members",
 		"empty": "No members to show.",
 		"roles": {
@@ -35,21 +38,36 @@
 			"member": "Member"
 		},
 		"statuses": {
-			"muted": "Muted"
+			"muted": "Muted",
+			"banned": "Banned"
+		},
+		"groups": {
+			"owners": "Owner",
+			"admins": "Admins",
+			"members": "Members",
+			"muted": "Muted members",
+			"banned": "Banned members"
 		},
 		"actions": {
+			"promote": "Promote to admin",
 			"promoteSuccess": "Member promoted to admin.",
 			"promoteError": "Could not promote this member.",
+			"demote": "Demote to member",
 			"demoteSuccess": "Admin demoted to member.",
 			"demoteError": "Could not demote this admin.",
+			"remove": "Remove member",
 			"removeSuccess": "Member removed from the room.",
 			"removeError": "Could not remove this member.",
+			"mute": "Mute member",
 			"muteSuccess": "Member muted.",
 			"muteError": "Could not mute this member.",
+			"ban": "Ban member",
 			"banSuccess": "Member banned.",
 			"banError": "Could not ban this member.",
+			"unban": "Unban member",
 			"unbanSuccess": "Member unbanned.",
 			"unbanError": "Could not unban this member.",
+			"deleteHistory": "Delete member history",
 			"deleteHistorySuccess": "Member and message history deleted.",
 			"deleteHistoryError": "Could not delete this member history."
 		}

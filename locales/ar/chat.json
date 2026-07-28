@@ -25,8 +25,11 @@
 	},
 	"members": {
 		"toggle": "أعضاء الغرفة",
+		"manageToggle": "إدارة الغرفة",
 		"kicker": "الغرفة",
 		"title": "الأعضاء",
+		"manageKicker": "الغرفة",
+		"manageTitle": "الإدارة",
 		"count": "{{count}} أعضاء",
 		"empty": "لا يوجد أعضاء للعرض.",
 		"roles": {
@@ -35,21 +38,36 @@
 			"member": "عضو"
 		},
 		"statuses": {
-			"muted": "مكتوم"
+			"muted": "مكتوم",
+			"banned": "محظور"
+		},
+		"groups": {
+			"owners": "المالك",
+			"admins": "المشرفون",
+			"members": "الأعضاء",
+			"muted": "الأعضاء المكتومون",
+			"banned": "الأعضاء المحظورون"
 		},
 		"actions": {
+			"promote": "ترقية إلى مشرف",
 			"promoteSuccess": "تمت ترقية العضو إلى مشرف.",
 			"promoteError": "تعذرت ترقية هذا العضو.",
+			"demote": "تحويل إلى عضو",
 			"demoteSuccess": "تم تحويل المشرف إلى عضو.",
 			"demoteError": "تعذر تحويل هذا المشرف إلى عضو.",
+			"remove": "إزالة العضو",
 			"removeSuccess": "تمت إزالة العضو من الغرفة.",
 			"removeError": "تعذرت إزالة هذا العضو.",
+			"mute": "كتم العضو",
 			"muteSuccess": "تم كتم العضو.",
 			"muteError": "تعذر كتم هذا العضو.",
+			"ban": "حظر العضو",
 			"banSuccess": "تم حظر العضو.",
 			"banError": "تعذر حظر هذا العضو.",
+			"unban": "رفع الحظر عن العضو",
 			"unbanSuccess": "تم رفع الحظر عن العضو.",
 			"unbanError": "تعذر رفع الحظر عن هذا العضو.",
+			"deleteHistory": "حذف سجل العضو",
 			"deleteHistorySuccess": "تم حذف العضو وسجل رسائله.",
 			"deleteHistoryError": "تعذر حذف سجل هذا العضو."
 		}
