@@ -21,6 +21,40 @@ const roleSortSql = roleSortOrder
 	.join(' ');
 
 /**
+ * Find one room conversation member, including non-readable management states.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.userId
+ * @returns {Promise<object|null>}
+ */
+export async function findRoomConversationMember({
+	conversationId,
+	userId,
+}) {
+	const q = `
+		SELECT
+			conversation_id,
+			user_id,
+			role,
+			status,
+			joined_at,
+			last_read_message_id,
+			muted_until,
+			archived_at,
+			created_at,
+			updated_at
+		FROM chat_conversation_members
+		WHERE conversation_id = $1
+			AND user_id = $2
+		LIMIT 1;
+	`;
+
+	const rows = await queryRows(q, [conversationId, userId]);
+	return rows[0] || null;
+}
+
+/**
  * Find readable members for one room conversation.
  *
  * @param {string} conversationId

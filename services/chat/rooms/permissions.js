@@ -131,3 +131,13 @@ export function canUnbanChatRoomMember(actor, target) {
 		canManageChatRoomMember(actor, targetAccess)
 	);
 }
+
+export function canDeleteChatRoomMemberHistory(actor, target) {
+	const targetAccess = normalizeChatMemberAccess(target);
+
+	return (
+		isChatRoomOwner(actor) &&
+		targetAccess.role !== CHAT_CONVERSATION_MEMBER_ROLES.OWNER &&
+		getChatMemberRoleRank(targetAccess.role) > 0
+	);
+}

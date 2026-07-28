@@ -26,6 +26,16 @@ import {
 	rejectPrivateRoomRequest,
 	requestPrivateListedRoom,
 } from './rooms/requests.js';
+import {
+	banRoomMember,
+	deleteRoomMemberHistory,
+	demoteRoomAdmin,
+	muteRoomMember,
+	promoteRoomMember,
+	removeRoomMember,
+	ROOM_MEMBER_MANAGEMENT_RESULT,
+	unbanRoomMember,
+} from './rooms/memberManagement.js';
 
 export { createRoom } from './rooms/create.js';
 export {
@@ -52,15 +62,28 @@ export {
 	rejectPrivateRoomRequest,
 	requestPrivateListedRoom,
 } from './rooms/requests.js';
+export {
+	banRoomMember,
+	deleteRoomMemberHistory,
+	demoteRoomAdmin,
+	muteRoomMember,
+	promoteRoomMember,
+	removeRoomMember,
+	ROOM_MEMBER_MANAGEMENT_RESULT,
+	unbanRoomMember,
+} from './rooms/memberManagement.js';
 
 export default {
 	approvePrivateRoomRequest,
+	banRoomMember,
 	cancelPrivateRoomRequest,
 	countVisibleRooms,
 	countUnreadPrivateRoomMessages,
 	countUnreadPublicRoomMessages,
 	countUnreadRoomMessages,
 	createRoom,
+	deleteRoomMemberHistory,
+	demoteRoomAdmin,
 	findOpenableRoomConversation,
 	findWritableRoomConversation,
 	getOpenRoomConversation,
@@ -70,8 +93,13 @@ export default {
 	listPublicRooms,
 	listRoomMembers,
 	markRoomConversationRead,
+	muteRoomMember,
+	promoteRoomMember,
 	rejectPrivateRoomRequest,
+	removeRoomMember,
 	requestPrivateListedRoom,
+	ROOM_MEMBER_MANAGEMENT_RESULT,
 	searchRooms,
+	unbanRoomMember,
 	validateCreateRoomInput,
 };
