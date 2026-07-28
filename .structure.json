@@ -9,7 +9,10 @@
 				"local.js",
 				"localSecurity.js"
 			],
-			"~": ["index.js", "serializeUser.js"]
+			"~": [
+				"index.js",
+				"serializeUser.js"
+			]
 		},
 		"~": [
 			"database.js",
@@ -28,6 +31,10 @@
 			"views.js"
 		]
 	},
+	"constants": [
+		"chat.js",
+		"notifications.js"
+	],
 	"controllers": {
 		"auth": [
 			"completeLocalSignup.js",
@@ -43,6 +50,16 @@
 			"signupLocal.js",
 			"verifyEmail.js"
 		],
+		"chat": [
+			"friends.js",
+			"index.js",
+			"messages.js",
+			"render.js",
+			"rooms.js"
+		],
+		"notifications": [
+			"main.js"
+		],
 		"social": [
 			"actionContext.js",
 			"actionRunner.js",
@@ -54,43 +71,63 @@
 			"followRequest.js",
 			"notifications.js"
 		],
-		"weather": ["main.js", "searchCities.js"],
-		"~": ["avatar.js", "profile.js", "home.js", "lang.js", "theme.js"]
+		"weather": [
+			"main.js",
+			"searchCities.js"
+		],
+		"~": [
+			"avatar.js",
+			"home.js",
+			"lang.js",
+			"profile.js",
+			"theme.js"
+		]
 	},
 	"locales": {
 		"ar": [
 			"auth.json",
+			"chat.json",
 			"common.json",
 			"home.json",
 			"layout.json",
+			"notifications.json",
 			"profile.json",
 			"social.json",
 			"weather.json"
 		],
 		"en": [
 			"auth.json",
+			"chat.json",
 			"common.json",
 			"home.json",
 			"layout.json",
+			"notifications.json",
 			"profile.json",
 			"social.json",
 			"weather.json"
 		],
 		"fr": [
 			"auth.json",
+			"chat.json",
 			"common.json",
 			"home.json",
 			"layout.json",
+			"notifications.json",
 			"profile.json",
 			"social.json",
 			"weather.json"
 		]
 	},
 	"middlewares": {
-		"profanity": ["customWords.js", "index.js"],
+		"profanity": [
+			"customWords.js",
+			"index.js"
+		],
 		"validators": [
 			"auth.js",
+			"chat.js",
 			"common.js",
+			"notifications.js",
 			"social.js",
 			"token.js",
 			"weather.js"
@@ -113,19 +150,62 @@
 		]
 	},
 	"models": {
-		"user": ["auth.js", "preferences.js", "profile.js", "session.js"],
-		"~": [
-			"AuthSecurity.js",
-			"AuthSecurityEvent.js",
-			"AuthToken.js",
-			"ExternalApiRequestLog.js",
+		"apiUsage": [
+			"RequestLog.js"
+		],
+		"auth": [
+			"Security.js",
+			"SecurityEvent.js",
 			"SignupSecurity.js",
-			"User.js",
-			"UserBlocks.js",
-			"UserFollowRequests.js",
-			"UserFollows.js",
-			"UserProvider.js",
-			"UserSocialNotifications.js"
+			"Token.js"
+		],
+		"chat": {
+			"conversations": [
+				"direct.js",
+				"friends.js"
+			],
+			"roomJoinRequests": [
+				"create.js",
+				"notifications.js",
+				"pending.js",
+				"review.js"
+			],
+			"rooms": [
+				"access.js",
+				"create.js",
+				"lists.js",
+				"memberManagement.js",
+				"members.js",
+				"queries.js",
+				"search.js",
+				"unread.js"
+			],
+			"~": [
+				"ConversationMembers.js",
+				"Conversations.js",
+				"Messages.js",
+				"RoomJoinRequests.js",
+				"Rooms.js"
+			]
+		},
+		"notifications": [
+			"AppNotifications.js"
+		],
+		"social": [
+			"Blocks.js",
+			"FollowRequests.js",
+			"Follows.js",
+			"Notifications.js"
+		],
+		"user": [
+			"auth.js",
+			"preferences.js",
+			"profile.js",
+			"provider.js",
+			"session.js"
+		],
+		"~": [
+			"User.js"
 		]
 	},
 	"node_modules": [],
@@ -136,7 +216,14 @@
 	],
 	"public": {
 		"css": {
-			"profile": ["main.css"],
+			"chat": [
+				"conversation.css",
+				"main.css",
+				"messages.css",
+				"sections.css",
+				"shared.css"
+			],
+			"dashboard": [],
 			"home": [
 				"about.css",
 				"contact.css",
@@ -145,8 +232,19 @@
 				"portfolio.css",
 				"services.css"
 			],
-			"modals": ["auth-tabs.css", "main.css"],
-			"partials": ["brands.css"],
+			"modals": [
+				"auth-tabs.css",
+				"main.css"
+			],
+			"notifications": [
+				"main.css"
+			],
+			"partials": [
+				"brands.css"
+			],
+			"profile": [
+				"main.css"
+			],
 			"root": [
 				"base.css",
 				"layout.css",
@@ -154,7 +252,9 @@
 				"tokens.css",
 				"ui-bar.css"
 			],
-			"weather": ["main.css"]
+			"weather": [
+				"main.css"
+			]
 		},
 		"favicons": {
 			"dark": [
@@ -177,14 +277,10 @@
 			]
 		},
 		"images": {
-			"flags": ["ca.svg", "qc.svg", "sy.svg"],
-			"logos": [
-				"solid_dark.png",
-				"solid_light.png",
-				"transparent_dark.png",
-				"transparent_dark.svg",
-				"transparent_light.png",
-				"transparent_light.svg"
+			"flags": [
+				"ca.svg",
+				"qc.svg",
+				"sy.svg"
 			],
 			"home": {
 				"portfolio": {
@@ -193,24 +289,44 @@
 						"main_en.jpg",
 						"main_fr.jpg"
 					],
-					"chat_app": ["main_ar.jpg", "main_en.jpg", "main_fr.jpg"],
+					"chat_app": [
+						"main_ar.jpg",
+						"main_en.jpg",
+						"main_fr.jpg"
+					],
+					"under_construction": [
+						"ar.png",
+						"en.png",
+						"fr.png"
+					],
 					"visited_countries": [
 						"main_ar.jpg",
 						"main_en.jpg",
 						"main_fr.jpg"
 					],
 					"weather": [
-						"main_ar.jpg",
-						"main_en.jpg",
-						"main_fr.jpg",
 						"city_search_ar.jpg",
 						"city_search_en.jpg",
-						"city_search_fr.jpg"
-					],
-					"under_construction": ["ar.png", "en.png", "fr.png"]
+						"city_search_fr.jpg",
+						"main_ar.jpg",
+						"main_en.jpg",
+						"main_fr.jpg"
+					]
 				},
-				"~": ["canada-flag.png", "maple-coder-about.png", "overlay.png"]
+				"~": [
+					"canada-flag.png",
+					"maple-coder-about.png",
+					"overlay.png"
+				]
 			},
+			"logos": [
+				"solid_dark.png",
+				"solid_light.png",
+				"transparent_dark.png",
+				"transparent_dark.svg",
+				"transparent_light.png",
+				"transparent_light.svg"
+			],
 			"weather": [
 				"maple-coder-weather-cloudy.png",
 				"maple-coder-weather-default.png",
@@ -221,9 +337,31 @@
 			]
 		},
 		"js": {
-			"profile": ["account.js", "avatar.js"],
-			"home": ["auth.js", "mouseTrailAndFollower.js", "portfolio.js"],
+			"chat": {
+				"conversation-page": [
+					"dates.js",
+					"renderer.js"
+				],
+				"~": [
+					"conversation.js",
+					"main.js"
+				]
+			},
+			"dashboard": [],
+			"home": [
+				"auth.js",
+				"mouseTrailAndFollower.js",
+				"portfolio.js"
+			],
+			"notifications": [
+				"main.js"
+			],
+			"profile": [
+				"account.js",
+				"avatar.js"
+			],
 			"root": [
+				"chat.js",
 				"dropdownMenu.js",
 				"flash.js",
 				"modals.js",
@@ -231,21 +369,28 @@
 				"theme.js",
 				"tooltips.js"
 			],
-			"weather": ["main.js"]
+			"weather": [
+				"main.js"
+			]
 		}
 	},
 	"routes": [
 		"auth.js",
 		"avatar.js",
-		"profile.js",
+		"chat.js",
 		"home.js",
 		"lang.js",
+		"notifications.js",
+		"profile.js",
 		"social.js",
 		"theme.js",
 		"weather.js"
 	],
 	"services": {
-		"apiUsage": ["limits.js", "quota.js"],
+		"apiUsage": [
+			"limits.js",
+			"quota.js"
+		],
 		"auth": [
 			"email.js",
 			"emailContent.js",
@@ -259,14 +404,59 @@
 			"tokens.js",
 			"verifyToken.js"
 		],
-		"avatar": ["dicebear.js"],
-		"contact": ["email.js"],
-		"country": ["list.js"],
-		"profile": ["account.js", "deletion.js", "preferences.js"],
-		"http": ["requestMeta.js", "response.js"],
-		"i18n": ["locale.js"],
-		"social": ["live.js"],
-		"theme": ["preference.js"],
+		"avatar": [
+			"dicebear.js"
+		],
+		"chat": {
+			"rooms": [
+				"access.js",
+				"create.js",
+				"formatters.js",
+				"helpers.js",
+				"lists.js",
+				"memberManagement.js",
+				"members.js",
+				"notifications.js",
+				"permissions.js",
+				"requests.js"
+			],
+			"~": [
+				"authorization.js",
+				"friends.js",
+				"live.js",
+				"messages.js",
+				"rooms.js"
+			]
+		},
+		"contact": [
+			"email.js"
+		],
+		"country": [
+			"list.js"
+		],
+		"dashboard": [],
+		"http": [
+			"requestMeta.js",
+			"response.js"
+		],
+		"i18n": [
+			"locale.js"
+		],
+		"notifications": [
+			"appNotifications.js",
+			"links.js"
+		],
+		"profile": [
+			"account.js",
+			"deletion.js",
+			"preferences.js"
+		],
+		"social": [
+			"live.js"
+		],
+		"theme": [
+			"preference.js"
+		],
 		"weather": [
 			"background.js",
 			"forecast.js",
@@ -286,18 +476,27 @@
 		"09_user_follows.sql",
 		"10_user_blocks.sql",
 		"11_user_social_notifications.sql",
-		"12_external_api_request_logs.sql"
+		"12_external_api_request_logs.sql",
+		"13_chat_conversations.sql",
+		"14_chat_conversation_members.sql",
+		"15_chat_messages.sql",
+		"16_chat_direct_conversations.sql",
+		"17_chat_rooms.sql",
+		"18_chat_room_join_requests.sql",
+		"19_chat_room_invitations.sql",
+		"20_app_notifications.sql"
 	],
-	"utils": { "config": ["dotenv.js"] },
+	"utils": {
+		"config": [
+			"dotenv.js"
+		]
+	},
 	"views": {
-		"profile": [
-			"_account.ejs",
-			"_country_editor.ejs",
-			"_danger.ejs",
-			"_preferences.ejs",
-			"_security.ejs",
+		"chat": [
+			"conversation.ejs",
 			"main.ejs"
 		],
+		"dashboard": [],
 		"home": [
 			"_about.ejs",
 			"_contact.ejs",
@@ -334,12 +533,20 @@
 				"_resetPassword.ejs",
 				"_setPassword.ejs"
 			],
+			"chat": [
+				"_room_modal.ejs",
+				"_room_search_modal.ejs"
+			],
+			"dashboard": [],
 			"profile": [
 				"_avatar_modal.ejs",
 				"_delete_account_modal.ejs",
 				"_password_modal.ejs"
 			]
 		},
+		"notifications": [
+			"main.ejs"
+		],
 		"partials": [
 			"_csrf.ejs",
 			"_discord.ejs",
@@ -349,6 +556,14 @@
 			"_google.ejs",
 			"_googleLogo.ejs"
 		],
+		"profile": [
+			"_account.ejs",
+			"_country_editor.ejs",
+			"_danger.ejs",
+			"_preferences.ejs",
+			"_security.ejs",
+			"main.ejs"
+		],
 		"social": [
 			"_blocked.ejs",
 			"_follow_request.ejs",
@@ -357,8 +572,12 @@
 			"_notifications.ejs",
 			"main.ejs"
 		],
-		"weather": ["main.ejs"],
-		"~": ["error.ejs"]
+		"weather": [
+			"main.ejs"
+		],
+		"~": [
+			"error.ejs"
+		]
 	},
 	"~": [
 		".env",
