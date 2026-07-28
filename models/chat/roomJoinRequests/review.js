@@ -1,0 +1,192 @@
+//! models/chat/roomJoinRequests/review.js
+
+import pool, { queryRows } from '../../../config/database.js';
+import {
+	CHAT_CONVERSATION_MEMBER_ROLES,
+	CHAT_CONVERSATION_MEMBER_STATUSES,
+	CHAT_ROOM_JOIN_REQUEST_STATUSES,
+} from '../../../constants/chat.js';
+
+/**
+ * Approve one pending room join request as a room owner/admin.
+ *
+ * @param {object} input
+ * @param {string} input.requestId
+ * @param {string} input.reviewerUserId
+ * @returns {Promise<object|null>}
+ */
+export async function approvePendingRequestByManager({
+	requestId,
+	reviewerUserId,
+}) {
+	const client = await pool.connect();
+
+	try {
+		await client.query('BEGIN');
+
+		const reviewResult = await client.query(
+			`
+				WITH reviewed_request AS (
+					UPDATE chat_room_join_requests cjr
+					SET
+						status = $3::chat_room_join_request_status,
+						reviewed_by_user_id = $2,
+						reviewed_at = NOW(),
+						canceled_at = NULL,
+						updated_at = NOW()
+					FROM chat_rooms cr
+					INNER JOIN chat_conversations cc
+						ON cc.id = cr.conversation_id
+					INNER JOIN chat_conversation_members reviewer
+						ON reviewer.conversation_id = cr.conversation_id
+						AND reviewer.user_id = $2
+						AND reviewer.role IN ($5::chat_member_role, $6::chat_member_role)
+						AND reviewer.status = $7::chat_member_status
+						AND reviewer.archived_at IS NULL
+					WHERE cjr.id = $1
+						AND cjr.room_id = cr.id
+						AND cjr.status = $4::chat_room_join_request_status
+						AND cr.archived_at IS NULL
+						AND cc.archived_at IS NULL
+					RETURNING
+						cjr.id,
+						cjr.room_id,
+						cjr.requested_by_user_id,
+						cjr.reviewed_by_user_id,
+						cjr.status,
+						cjr.reviewed_at,
+						cjr.canceled_at,
+						cjr.created_at,
+						cjr.updated_at
+				)
+				SELECT
+					reviewed_request.*,
+					cr.conversation_id,
+					cc.title AS room_title
+				FROM reviewed_request
+				INNER JOIN chat_rooms cr
+					ON cr.id = reviewed_request.room_id
+				INNER JOIN chat_conversations cc
+					ON cc.id = cr.conversation_id;
+			`,
+			[
+				requestId,
+				reviewerUserId,
+				CHAT_ROOM_JOIN_REQUEST_STATUSES.APPROVED,
+				CHAT_ROOM_JOIN_REQUEST_STATUSES.PENDING,
+				CHAT_CONVERSATION_MEMBER_ROLES.OWNER,
+				CHAT_CONVERSATION_MEMBER_ROLES.ADMIN,
+				CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+			],
+		);
+		const request = reviewResult.rows[0];
+
+		if (!request) {
+			await client.query('ROLLBACK');
+			return null;
+		}
+
+		await client.query(
+			`
+				INSERT INTO chat_conversation_members (
+					conversation_id,
+					user_id,
+					role,
+					status,
+					archived_at
+				)
+				VALUES ($1, $2, $3, $4, NULL)
+				ON CONFLICT (conversation_id, user_id)
+				DO UPDATE SET
+					role = EXCLUDED.role,
+					status = EXCLUDED.status,
+					archived_at = NULL,
+					updated_at = NOW();
+			`,
+			[
+				request.conversation_id,
+				request.requested_by_user_id,
+				CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,
+				CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+			],
+		);
+
+		await client.query('COMMIT');
+		return request;
+	} catch (error) {
+		await client.query('ROLLBACK');
+		throw error;
+	} finally {
+		client.release();
+	}
+}
+
+/**
+ * Reject one pending room join request as a room owner/admin.
+ *
+ * @param {object} input
+ * @param {string} input.requestId
+ * @param {string} input.reviewerUserId
+ * @returns {Promise<object|null>}
+ */
+export async function rejectPendingRequestByManager({
+	requestId,
+	reviewerUserId,
+}) {
+	const q = `
+		WITH reviewed_request AS (
+			UPDATE chat_room_join_requests cjr
+			SET
+				status = $3::chat_room_join_request_status,
+				reviewed_by_user_id = $2,
+				reviewed_at = NOW(),
+				canceled_at = NULL,
+				updated_at = NOW()
+			FROM chat_rooms cr
+			INNER JOIN chat_conversations cc
+				ON cc.id = cr.conversation_id
+			INNER JOIN chat_conversation_members reviewer
+				ON reviewer.conversation_id = cr.conversation_id
+				AND reviewer.user_id = $2
+				AND reviewer.role IN ($5::chat_member_role, $6::chat_member_role)
+				AND reviewer.status = $7::chat_member_status
+				AND reviewer.archived_at IS NULL
+			WHERE cjr.id = $1
+				AND cjr.room_id = cr.id
+				AND cjr.status = $4::chat_room_join_request_status
+				AND cr.archived_at IS NULL
+				AND cc.archived_at IS NULL
+			RETURNING
+				cjr.id,
+				cjr.room_id,
+				cjr.requested_by_user_id,
+				cjr.reviewed_by_user_id,
+				cjr.status,
+				cjr.reviewed_at,
+				cjr.canceled_at,
+				cjr.created_at,
+				cjr.updated_at
+		)
+		SELECT
+			reviewed_request.*,
+			cr.conversation_id,
+			cc.title AS room_title
+		FROM reviewed_request
+		INNER JOIN chat_rooms cr
+			ON cr.id = reviewed_request.room_id
+		INNER JOIN chat_conversations cc
+			ON cc.id = cr.conversation_id;
+	`;
+
+	const rows = await queryRows(q, [
+		requestId,
+		reviewerUserId,
+		CHAT_ROOM_JOIN_REQUEST_STATUSES.REJECTED,
+		CHAT_ROOM_JOIN_REQUEST_STATUSES.PENDING,
+		CHAT_CONVERSATION_MEMBER_ROLES.OWNER,
+		CHAT_CONVERSATION_MEMBER_ROLES.ADMIN,
+		CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+	]);
+
+	return rows[0] || null;
+}
