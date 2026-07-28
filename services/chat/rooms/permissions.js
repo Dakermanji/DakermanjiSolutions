@@ -35,6 +35,15 @@ function normalizeChatMemberAccess(member = {}) {
 	};
 }
 
+function isChatRoomOwner(member) {
+	const memberAccess = normalizeChatMemberAccess(member);
+
+	return (
+		memberAccess.role === CHAT_CONVERSATION_MEMBER_ROLES.OWNER &&
+		canChatMemberWrite(memberAccess.status)
+	);
+}
+
 export function canManageChatRoomMember(actor, target) {
 	const actorAccess = normalizeChatMemberAccess(actor);
 	const targetAccess = normalizeChatMemberAccess(target);
@@ -60,6 +69,7 @@ export function canPromoteChatRoomMember(actor, target) {
 	const targetAccess = normalizeChatMemberAccess(target);
 
 	return (
+		isChatRoomOwner(actor) &&
 		targetAccess.role === CHAT_CONVERSATION_MEMBER_ROLES.MEMBER &&
 		targetAccess.status !== CHAT_CONVERSATION_MEMBER_STATUSES.BANNED &&
 		canManageChatRoomMember(actor, targetAccess)
@@ -70,6 +80,7 @@ export function canDemoteChatRoomMember(actor, target) {
 	const targetAccess = normalizeChatMemberAccess(target);
 
 	return (
+		isChatRoomOwner(actor) &&
 		targetAccess.role === CHAT_CONVERSATION_MEMBER_ROLES.ADMIN &&
 		targetAccess.status !== CHAT_CONVERSATION_MEMBER_STATUSES.BANNED &&
 		canManageChatRoomMember(actor, targetAccess)
