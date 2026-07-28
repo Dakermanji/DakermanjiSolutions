@@ -17,6 +17,13 @@ import {
 import { getNotificationLinkUrl } from '../../services/notifications/links.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 
+const DISMISS_NOTIFICATION_ACTION = Object.freeze({
+	key: 'dismiss',
+	icon: 'bi-x-lg',
+	path: '/notifications/dismiss',
+	tooltipKey: 'notifications:actions.dismiss',
+});
+
 const CHAT_ROOM_JOIN_REQUEST_ACTIONS = Object.freeze([
 	{
 		key: 'approve',
@@ -26,15 +33,9 @@ const CHAT_ROOM_JOIN_REQUEST_ACTIONS = Object.freeze([
 	},
 	{
 		key: 'reject',
-		icon: 'bi-x-lg',
+		icon: 'bi-x-circle',
 		path: '/notifications/chat/room-join-request/reject',
 		tooltipKey: 'notifications:actions.reject',
-	},
-	{
-		key: 'dismiss',
-		icon: 'bi-bell-slash',
-		path: '/notifications/dismiss',
-		tooltipKey: 'notifications:actions.dismiss',
 	},
 ]);
 
@@ -63,19 +64,22 @@ function getActorDisplayName(notification) {
 }
 
 function getNotificationActions(notification) {
-	if (notification.responded_at) {
-		return [];
-	}
+	let actions = [];
 
 	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST) {
-		return CHAT_ROOM_JOIN_REQUEST_ACTIONS;
+		actions = notification.responded_at ? [] : CHAT_ROOM_JOIN_REQUEST_ACTIONS;
 	}
 
 	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_APPROVED) {
-		return createApprovedRoomRequestActions(notification);
+		actions = notification.responded_at
+			? []
+			: createApprovedRoomRequestActions(notification);
 	}
 
-	return [];
+	return [
+		...actions,
+		DISMISS_NOTIFICATION_ACTION,
+	];
 }
 
 function getFirstUuidBodyValue(req, keys) {

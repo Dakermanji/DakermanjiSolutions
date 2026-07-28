@@ -78,6 +78,7 @@
 						: notification.actor.displayName || t('notifications:item.fallbackBody');
 					const statusKey = getStatusKey(notification);
 					const actions = Array.isArray(notification.actions) ? notification.actions : [];
+					const hasAttentionActions = actions.some((action) => action.key !== 'dismiss');
 					const getActionFields = (action) => (
 						action && typeof action.fields === 'object' && action.fields !== null
 							? Object.entries(action.fields)
@@ -85,7 +86,7 @@
 					);
 				%>
 				<article
-					class="notification-item <%= notification.isRead ? 'is-read' : 'is-unread' %> <%= actions.length > 0 ? 'has-actions' : '' %> priority-<%= notification.priority %>"
+					class="notification-item <%= notification.isRead ? 'is-read' : 'is-unread' %> <%= hasAttentionActions ? 'has-actions' : '' %> priority-<%= notification.priority %>"
 					data-notification-item
 					data-notification-read="<%= notification.isRead ? 'true' : 'false' %>"
 				>
