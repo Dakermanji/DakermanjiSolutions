@@ -36,6 +36,22 @@
 		},
 		"statuses": {
 			"muted": "Muet"
+		},
+		"actions": {
+			"promoteSuccess": "Membre promu admin.",
+			"promoteError": "Impossible de promouvoir ce membre.",
+			"demoteSuccess": "Admin rétrogradé en membre.",
+			"demoteError": "Impossible de rétrograder cet admin.",
+			"removeSuccess": "Membre retiré du salon.",
+			"removeError": "Impossible de retirer ce membre.",
+			"muteSuccess": "Membre mis en sourdine.",
+			"muteError": "Impossible de mettre ce membre en sourdine.",
+			"banSuccess": "Membre banni.",
+			"banError": "Impossible de bannir ce membre.",
+			"unbanSuccess": "Membre débanni.",
+			"unbanError": "Impossible de débannir ce membre.",
+			"deleteHistorySuccess": "Membre et historique des messages supprimés.",
+			"deleteHistoryError": "Impossible de supprimer l’historique de ce membre."
 		}
 	},
 	"rooms": {

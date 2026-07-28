@@ -36,6 +36,22 @@
 		},
 		"statuses": {
 			"muted": "مكتوم"
+		},
+		"actions": {
+			"promoteSuccess": "تمت ترقية العضو إلى مشرف.",
+			"promoteError": "تعذرت ترقية هذا العضو.",
+			"demoteSuccess": "تم تحويل المشرف إلى عضو.",
+			"demoteError": "تعذر تحويل هذا المشرف إلى عضو.",
+			"removeSuccess": "تمت إزالة العضو من الغرفة.",
+			"removeError": "تعذرت إزالة هذا العضو.",
+			"muteSuccess": "تم كتم العضو.",
+			"muteError": "تعذر كتم هذا العضو.",
+			"banSuccess": "تم حظر العضو.",
+			"banError": "تعذر حظر هذا العضو.",
+			"unbanSuccess": "تم رفع الحظر عن العضو.",
+			"unbanError": "تعذر رفع الحظر عن هذا العضو.",
+			"deleteHistorySuccess": "تم حذف العضو وسجل رسائله.",
+			"deleteHistoryError": "تعذر حذف سجل هذا العضو."
 		}
 	},
 	"rooms": {

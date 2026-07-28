@@ -55,6 +55,7 @@
 			"index.js",
 			"messages.js",
 			"render.js",
+			"roomMembers.js",
 			"rooms.js"
 		],
 		"notifications": [

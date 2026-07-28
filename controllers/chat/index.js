@@ -22,3 +22,12 @@ export {
 	requestPrivateRoomAccess,
 	searchVisibleRooms,
 } from './rooms.js';
+export {
+	banChatRoomMember,
+	deleteChatRoomMemberHistory,
+	demoteChatRoomAdmin,
+	muteChatRoomMember,
+	promoteChatRoomMember,
+	removeChatRoomMember,
+	unbanChatRoomMember,
+} from './roomMembers.js';

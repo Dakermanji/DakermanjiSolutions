@@ -36,6 +36,22 @@
 		},
 		"statuses": {
 			"muted": "Muted"
+		},
+		"actions": {
+			"promoteSuccess": "Member promoted to admin.",
+			"promoteError": "Could not promote this member.",
+			"demoteSuccess": "Admin demoted to member.",
+			"demoteError": "Could not demote this admin.",
+			"removeSuccess": "Member removed from the room.",
+			"removeError": "Could not remove this member.",
+			"muteSuccess": "Member muted.",
+			"muteError": "Could not mute this member.",
+			"banSuccess": "Member banned.",
+			"banError": "Could not ban this member.",
+			"unbanSuccess": "Member unbanned.",
+			"unbanError": "Could not unban this member.",
+			"deleteHistorySuccess": "Member and message history deleted.",
+			"deleteHistoryError": "Could not delete this member history."
 		}
 	},
 	"rooms": {
