@@ -23,6 +23,21 @@
 		"mutedMessageError": "You can read this room but cannot send messages.",
 		"typing": "{{user}} is typing..."
 	},
+	"members": {
+		"toggle": "Room members",
+		"kicker": "Room",
+		"title": "Members",
+		"count": "{{count}} members",
+		"empty": "No members to show.",
+		"roles": {
+			"owner": "Owner",
+			"admin": "Admin",
+			"member": "Member"
+		},
+		"statuses": {
+			"muted": "Muted"
+		}
+	},
 	"rooms": {
 		"createTitle": "Create room",
 		"createSubmit": "Create room",

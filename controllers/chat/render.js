@@ -12,6 +12,7 @@ import {
 import {
 	countVisibleRooms,
 	getOpenRoomConversation,
+	listRoomMembers,
 	markRoomConversationRead,
 } from '../../services/chat/rooms.js';
 import { emitChatUnreadCountsChanged } from '../../services/chat/live.js';
@@ -60,6 +61,7 @@ export async function renderChat(req, res, next) {
 					],
 					activeConversation,
 					messages: messages.messages,
+					roomMembers: [],
 					hasOlderMessages: messages.hasMore,
 					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
 				});
@@ -71,10 +73,16 @@ export async function renderChat(req, res, next) {
 			);
 
 			if (activeRoomConversation) {
-				const messages = await listRoomMessages(
-					activeRoomConversation.conversation.id,
-					req.user.id,
-				);
+				const [messages, roomMembers] = await Promise.all([
+					listRoomMessages(
+						activeRoomConversation.conversation.id,
+						req.user.id,
+					),
+					listRoomMembers(
+						activeRoomConversation.conversation.id,
+						req.user.id,
+					),
+				]);
 				await markRoomConversationRead(
 					activeRoomConversation.conversation.id,
 					req.user.id,
@@ -91,6 +99,7 @@ export async function renderChat(req, res, next) {
 					],
 					activeConversation: activeRoomConversation,
 					messages: messages.messages,
+					roomMembers,
 					hasOlderMessages: messages.hasMore,
 					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
 				});

@@ -23,6 +23,21 @@
 		"mutedMessageError": "يمكنك قراءة هذه الغرفة، لكن لا يمكنك إرسال الرسائل.",
 		"typing": "{{user}} يكتب..."
 	},
+	"members": {
+		"toggle": "أعضاء الغرفة",
+		"kicker": "الغرفة",
+		"title": "الأعضاء",
+		"count": "{{count}} أعضاء",
+		"empty": "لا يوجد أعضاء للعرض.",
+		"roles": {
+			"owner": "المالك",
+			"admin": "مشرف",
+			"member": "عضو"
+		},
+		"statuses": {
+			"muted": "مكتوم"
+		}
+	},
 	"rooms": {
 		"createTitle": "إنشاء غرفة",
 		"createSubmit": "إنشاء الغرفة",

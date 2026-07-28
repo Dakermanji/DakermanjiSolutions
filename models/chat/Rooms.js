@@ -16,6 +16,7 @@ import {
 	findVisibleRoomConversationForUser,
 	joinPublicRoomConversation,
 } from './rooms/access.js';
+import { findRoomConversationMembers } from './rooms/members.js';
 import { searchVisibleRoomsForUser } from './rooms/search.js';
 
 export { createRoomConversation } from './rooms/create.js';
@@ -34,6 +35,7 @@ export {
 	findVisibleRoomConversationForUser,
 	joinPublicRoomConversation,
 } from './rooms/access.js';
+export { findRoomConversationMembers } from './rooms/members.js';
 export { searchVisibleRoomsForUser } from './rooms/search.js';
 
 export default {
@@ -45,6 +47,7 @@ export default {
 	createRoomConversation,
 	findPrivateRoomsForUser,
 	findPublicRoomsForUser,
+	findRoomConversationMembers,
 	findVisibleRoomConversationForUser,
 	joinPublicRoomConversation,
 	searchVisibleRoomsForUser,

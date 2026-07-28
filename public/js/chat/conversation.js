@@ -2,7 +2,10 @@
 
 const chatPage = document.querySelector('[data-active-conversation-id]');
 const composer = document.querySelector('[data-chat-composer]');
+const composerNotice = document.querySelector('[data-chat-composer-notice]');
 const messageSurface = document.querySelector('[data-chat-message-surface]');
+const membersPanel = document.querySelector('[data-chat-members-panel]');
+const membersToggle = document.querySelector('[data-chat-members-toggle]');
 const typingIndicator = document.querySelector('[data-chat-typing-indicator]');
 const messageRenderer = window.ChatConversationRenderer;
 
@@ -27,6 +30,10 @@ if (chatPage && messageSurface && messageRenderer) {
 		if (messageSurface.scrollTop > 80) return;
 
 		void loadOlderMessages();
+	});
+
+	membersToggle?.addEventListener('click', () => {
+		setMembersPanelVisible(membersPanel?.hidden !== false);
 	});
 
 	const socket = composer ? connectChatSocket() : null;
@@ -270,6 +277,32 @@ function hideTypingIndicator() {
 
 	typingIndicator.hidden = true;
 	clearTimeout(typingHideTimer);
+}
+
+function setMembersPanelVisible(isVisible) {
+	if (!membersPanel || !membersToggle) return;
+
+	membersPanel.hidden = !isVisible;
+	messageSurface.hidden = isVisible;
+	if (typingIndicator) {
+		typingIndicator.hidden = true;
+	}
+	if (composerNotice) {
+		composerNotice.hidden = isVisible;
+	}
+	if (composer) {
+		composer.hidden = isVisible;
+	}
+
+	membersToggle.classList.toggle('is-active', isVisible);
+	membersToggle.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+
+	if (isVisible) {
+		clearTimeout(typingHideTimer);
+		return;
+	}
+
+	focusComposerInput();
 }
 
 function setComposerDisabled(disabled) {

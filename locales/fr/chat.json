@@ -23,6 +23,21 @@
 		"mutedMessageError": "Vous pouvez lire ce salon, mais vous ne pouvez pas envoyer de messages.",
 		"typing": "{{user}} écrit..."
 	},
+	"members": {
+		"toggle": "Membres du salon",
+		"kicker": "Salon",
+		"title": "Membres",
+		"count": "{{count}} membres",
+		"empty": "Aucun membre à afficher.",
+		"roles": {
+			"owner": "Propriétaire",
+			"admin": "Admin",
+			"member": "Membre"
+		},
+		"statuses": {
+			"muted": "Muet"
+		}
+	},
 	"rooms": {
 		"createTitle": "Créer un salon",
 		"createSubmit": "Créer le salon",

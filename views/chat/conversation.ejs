@@ -4,6 +4,11 @@
 	const room = activeConversation.room || {};
 	const conversation = activeConversation.conversation || {};
 	const isRoomConversation = activeConversation.kind === 'room' || Boolean(room.id);
+	const safeRoomMembers =
+		typeof roomMembers !== 'undefined' && Array.isArray(roomMembers)
+			? roomMembers
+			: [];
+	const roomMemberList = isRoomConversation ? safeRoomMembers : [];
 	const friendName =
 		friend.username ||
 		friend.email ||
@@ -26,6 +31,11 @@
 		? '/chat/rooms/messages'
 		: '/chat/friends/messages';
 	const canWriteConversation = !isRoomConversation || room.canWrite !== false;
+	const getMemberName = (member) =>
+		member.displayName ||
+		member.username ||
+		member.email ||
+		t('chat:friendFallback');
 	const getSenderName = (message) =>
 		message.sender?.displayName ||
 		message.sender?.username ||
@@ -101,6 +111,20 @@
 			<p class="chat-kicker"><%= conversationKicker %></p>
 			<h1 id="chat-conversation-title"><%= conversationName %></h1>
 		</div>
+
+		<% if (isRoomConversation) { %>
+			<button
+				class="btn btn-action-outline chat-members-toggle has-tooltip"
+				type="button"
+				data-chat-members-toggle
+				data-bs-title="<%= t('chat:members.toggle') %>"
+				aria-label="<%= t('chat:members.toggle') %>"
+				aria-controls="chat-members-panel"
+				aria-expanded="false"
+			>
+				<i class="bi bi-people-fill" aria-hidden="true"></i>
+			</button>
+		<% } %>
 	</header>
 
 	<div class="chat-message-surface" aria-live="polite" data-chat-message-surface>
@@ -167,12 +191,71 @@
 		<% } %>
 	</div>
 
+	<% if (isRoomConversation) { %>
+		<section
+			id="chat-members-panel"
+			class="chat-members-panel"
+			aria-labelledby="chat-members-title"
+			data-chat-members-panel
+			hidden
+		>
+			<header class="chat-members-header">
+				<div>
+					<p class="chat-kicker"><%= t('chat:members.kicker') %></p>
+					<h2 id="chat-members-title"><%= t('chat:members.title') %></h2>
+				</div>
+				<span class="chat-members-count">
+					<%= t('chat:members.count', { count: roomMemberList.length }) %>
+				</span>
+			</header>
+
+			<% if (roomMemberList.length > 0) { %>
+				<ol class="chat-members-list">
+					<% roomMemberList.forEach((member) => { %>
+						<li class="chat-member-item">
+							<span
+								class="chat-member-avatar"
+								style="background-color: <%= member.avatar?.background || '' %>;"
+								aria-hidden="true"
+							>
+								<% if (member.avatar?.src) { %>
+									<img src="<%= member.avatar.src %>" alt="" />
+								<% } else { %>
+									<%= getMemberName(member).slice(0, 1).toUpperCase() %>
+								<% } %>
+							</span>
+
+							<div class="chat-member-body">
+								<strong><%= getMemberName(member) %></strong>
+								<div class="chat-member-badges">
+									<span class="chat-member-badge chat-member-badge--<%= member.role %>">
+										<%= t(`chat:members.roles.${member.role}`) %>
+									</span>
+									<% if (member.status === 'muted') { %>
+										<span class="chat-member-badge chat-member-badge--muted">
+											<%= t('chat:members.statuses.muted') %>
+										</span>
+									<% } %>
+								</div>
+							</div>
+						</li>
+					<% }) %>
+				</ol>
+			<% } else { %>
+				<div class="chat-members-empty">
+					<i class="bi bi-people" aria-hidden="true"></i>
+					<p><%= t('chat:members.empty') %></p>
+				</div>
+			<% } %>
+		</section>
+	<% } %>
+
 	<div class="chat-typing-indicator" data-chat-typing-indicator hidden>
 		<span></span>
 	</div>
 
 	<% if (!canWriteConversation) { %>
-		<div class="chat-composer-notice" role="status">
+		<div class="chat-composer-notice" role="status" data-chat-composer-notice>
 			<i class="bi bi-volume-mute-fill" aria-hidden="true"></i>
 			<span><%= t('chat:conversation.mutedMessageError') %></span>
 		</div>
