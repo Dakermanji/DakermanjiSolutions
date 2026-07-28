@@ -85,7 +85,7 @@
 					);
 				%>
 				<article
-					class="notification-item <%= notification.isRead ? 'is-read' : 'is-unread' %> priority-<%= notification.priority %>"
+					class="notification-item <%= notification.isRead ? 'is-read' : 'is-unread' %> <%= actions.length > 0 ? 'has-actions' : '' %> priority-<%= notification.priority %>"
 					data-notification-item
 					data-notification-read="<%= notification.isRead ? 'true' : 'false' %>"
 				>

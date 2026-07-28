@@ -12,6 +12,7 @@ import {
 	countUnreadNotifications,
 	dismissNotification,
 	listNotifications,
+	markNotificationsRead,
 } from '../../services/notifications/appNotifications.js';
 import { getNotificationLinkUrl } from '../../services/notifications/links.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
@@ -132,10 +133,34 @@ function serializeNotification(notification) {
  */
 export async function renderNotifications(req, res, next) {
 	try {
-		const [notifications, unreadCount] = await Promise.all([
-			listNotifications(req.user.id),
-			countUnreadNotifications(req.user.id),
-		]);
+		const notifications = await listNotifications(req.user.id);
+		const unreadNotificationIds = notifications
+			.filter((notification) => !notification.read_at)
+			.map((notification) => notification.id);
+		const unreadNotificationIdSet = new Set(unreadNotificationIds);
+
+		if (unreadNotificationIds.length > 0) {
+			await markNotificationsRead(unreadNotificationIds, req.user.id);
+			notifications.forEach((notification) => {
+				if (unreadNotificationIdSet.has(notification.id)) {
+					notification.read_at = new Date();
+				}
+			});
+		}
+
+		const unreadCount = await countUnreadNotifications(req.user.id);
+		res.locals.notificationUnreadCount = unreadCount;
+
+		if (Array.isArray(res.locals.notificationPreview)) {
+			res.locals.notificationPreview = res.locals.notificationPreview.map(
+				(notification) => ({
+					...notification,
+					isRead: unreadNotificationIdSet.has(notification.id)
+						? true
+						: notification.isRead,
+				}),
+			);
+		}
 
 		res.render('notifications/main', {
 			titleKey: 'notifications:title',

@@ -115,6 +115,20 @@ export function markNotificationRead(notificationId, recipientUserId) {
 }
 
 /**
+ * Mark many notifications as read.
+ *
+ * @param {Array<string>} notificationIds
+ * @param {string} recipientUserId
+ * @returns {Promise<number>}
+ */
+export function markNotificationsRead(notificationIds, recipientUserId) {
+	return AppNotificationsModel.markManyAsRead(
+		notificationIds,
+		recipientUserId,
+	);
+}
+
+/**
  * Dismiss one notification.
  *
  * @param {string} notificationId
@@ -196,6 +210,7 @@ export default {
 	dismissNotification,
 	listNotifications,
 	markNotificationRead,
+	markNotificationsRead,
 	respondAndDismissNotificationsByEntity,
 	respondToNotification,
 	validateCreateNotificationInput,

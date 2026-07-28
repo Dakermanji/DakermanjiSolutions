@@ -280,6 +280,33 @@ export async function markAsRead(notificationId, recipientUserId) {
 }
 
 /**
+ * Mark visible notifications as read for one recipient.
+ *
+ * @param {Array<string>} notificationIds
+ * @param {string} recipientUserId
+ * @returns {Promise<number>}
+ */
+export async function markManyAsRead(notificationIds, recipientUserId) {
+	if (!Array.isArray(notificationIds) || notificationIds.length === 0) {
+		return 0;
+	}
+
+	const q = `
+		UPDATE app_notifications
+		SET
+			read_at = COALESCE(read_at, NOW()),
+			updated_at = NOW()
+		WHERE recipient_user_id = $1
+			AND id = ANY($2::uuid[])
+			AND read_at IS NULL
+			AND dismissed_at IS NULL;
+	`;
+
+	const result = await query(q, [recipientUserId, notificationIds]);
+	return result.rowCount;
+}
+
+/**
  * Dismiss one notification for its recipient.
  *
  * @param {string} notificationId
@@ -373,6 +400,7 @@ export default {
 	dismiss,
 	findByIdForRecipient,
 	findByRecipient,
+	markManyAsRead,
 	markAsRead,
 	respond,
 	respondAndDismissByEntity,

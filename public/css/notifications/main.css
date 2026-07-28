@@ -103,6 +103,10 @@
 	border-inline-start-color: var(--color-primary);
 }
 
+.notification-item.has-actions {
+	border-inline-start-color: var(--color-primary);
+}
+
 .notification-item.priority-high {
 	border-inline-start-color: var(--color-primary);
 }
