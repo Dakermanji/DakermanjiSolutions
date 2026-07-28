@@ -7,12 +7,10 @@ import {
 	listOlderRoomMessages,
 } from '../../services/chat/messages.js';
 import { findOpenableRoomConversation } from '../../services/chat/rooms.js';
+import { canChatMemberWrite } from '../../services/chat/rooms/permissions.js';
 import { emitChatMessageCreated } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
-import {
-	canChatMemberWrite,
-	CHAT_REDIRECT,
-} from '../../constants/chat.js';
+import { CHAT_REDIRECT } from '../../constants/chat.js';
 
 async function getRoomMessageFailureKey(conversationId, userId) {
 	const room = await findOpenableRoomConversation(conversationId, userId);

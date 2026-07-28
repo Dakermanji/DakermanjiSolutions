@@ -2,8 +2,8 @@
 
 import ChatRoomsModel from '../../../models/chat/Rooms.js';
 import ChatConversationMembersModel from '../../../models/chat/ConversationMembers.js';
-import { canChatMemberWrite } from '../../../constants/chat.js';
 import { formatOpenRoomConversation } from './formatters.js';
+import { canChatMemberWrite } from './permissions.js';
 
 /**
  * Join one public room and return its open conversation data.

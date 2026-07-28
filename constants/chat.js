@@ -84,20 +84,11 @@ export const CHAT_CONVERSATION_MEMBER_MANAGE_ROLES = Object.freeze([
 	CHAT_CONVERSATION_MEMBER_ROLES.ADMIN,
 ]);
 
-export function canChatMemberRead(status) {
-	return CHAT_CONVERSATION_MEMBER_READ_STATUSES.includes(status);
-}
-
-export function canChatMemberWrite(status) {
-	return CHAT_CONVERSATION_MEMBER_WRITE_STATUSES.includes(status);
-}
-
-export function canChatMemberManage(role, status) {
-	return (
-		CHAT_CONVERSATION_MEMBER_MANAGE_ROLES.includes(role) &&
-		canChatMemberWrite(status)
-	);
-}
+export const CHAT_CONVERSATION_MEMBER_ROLE_RANKS = Object.freeze({
+	[CHAT_CONVERSATION_MEMBER_ROLES.OWNER]: 3,
+	[CHAT_CONVERSATION_MEMBER_ROLES.ADMIN]: 2,
+	[CHAT_CONVERSATION_MEMBER_ROLES.MEMBER]: 1,
+});
 
 export const CHAT_MESSAGE_LIMITS = Object.freeze({
 	BODY_MAX_LENGTH: 2000,

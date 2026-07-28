@@ -1,11 +1,11 @@
 //! services/chat/rooms/formatters.js
 
 import {
-	canChatMemberWrite,
 	CHAT_ROOM_JOIN_POLICIES,
 	CHAT_ROOM_JOIN_REQUEST_STATUSES,
 	CHAT_ROOM_SEARCH_ACTIONS,
 } from '../../../constants/chat.js';
+import { canChatMemberWrite } from './permissions.js';
 
 function getSearchAction(room) {
 	if (room.member_role) {
