@@ -3,6 +3,7 @@
 import {
 	createFriendMessage,
 	createRoomMessage,
+	flagRoomMessage,
 	listOlderFriendMessages,
 	listOlderRoomMessages,
 } from '../../services/chat/messages.js';
@@ -177,6 +178,46 @@ export async function createRoomChatMessage(req, res, next) {
 			req.flash('error', 'chat:conversation.messageError');
 		} else {
 			await emitChatMessageCreated(message);
+		}
+
+		return res.redirect(CHAT_OPEN_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Flag a message in the active room conversation.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function flagRoomChatMessage(req, res, next) {
+	const activeConversationId = req.session.chat?.activeConversationId || null;
+	const messageId = String(req.body?.messageId || '').trim();
+
+	if (
+		!activeConversationId ||
+		!isValidUuid(activeConversationId) ||
+		!isValidUuid(messageId)
+	) {
+		req.flash('error', 'chat:conversation.flagError');
+		return res.redirect(CHAT_OPEN_REDIRECT);
+	}
+
+	try {
+		const flag = await flagRoomMessage({
+			conversationId: activeConversationId,
+			messageId,
+			flaggedByUserId: req.user.id,
+		});
+
+		if (!flag) {
+			req.flash('error', 'chat:conversation.flagError');
+		} else {
+			req.flash('success', 'chat:conversation.flagSuccess');
 		}
 
 		return res.redirect(CHAT_OPEN_REDIRECT);

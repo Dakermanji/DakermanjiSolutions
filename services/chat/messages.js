@@ -49,6 +49,8 @@ function formatMessage(message, viewerUserId) {
 		createdAt: message.created_at,
 		updatedAt: message.updated_at,
 		editedAt: message.edited_at,
+		pendingFlagCount: Number(message.pending_flag_count || 0),
+		flaggedByViewer: Boolean(message.flagged_by_viewer),
 		isMine: message.sender_user_id === viewerUserId,
 		sender: formatMessageSender(message),
 	};
@@ -62,6 +64,8 @@ function formatLiveMessage(message) {
 		createdAt: message.created_at,
 		updatedAt: message.updated_at,
 		editedAt: message.edited_at,
+		pendingFlagCount: Number(message.pending_flag_count || 0),
+		flaggedByViewer: Boolean(message.flagged_by_viewer),
 		sender: formatMessageSender(message),
 	};
 }
@@ -121,6 +125,36 @@ export async function createFriendMessage({
 	});
 
 	return formatLiveMessage(message);
+}
+
+/**
+ * Flag one room message for owner/admin review.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.messageId
+ * @param {string} input.flaggedByUserId
+ * @returns {Promise<object|null>}
+ */
+export async function flagRoomMessage({
+	conversationId,
+	messageId,
+	flaggedByUserId,
+}) {
+	const conversation = await findOpenableRoomConversation(
+		conversationId,
+		flaggedByUserId,
+	);
+
+	if (!conversation) {
+		return null;
+	}
+
+	return ChatMessagesModel.createMessageFlag({
+		conversationId: conversation.conversation_id,
+		messageId,
+		flaggedByUserId,
+	});
 }
 
 /**
@@ -195,6 +229,7 @@ export async function listFriendMessages(conversationId, viewerUserId) {
 	const messages = await ChatMessagesModel.findRecentConversationMessages(
 		conversation.conversation_id,
 		RECENT_PAGE_SIZE + 1,
+		viewerUserId,
 	);
 
 	return formatMessagePage(messages, viewerUserId, RECENT_PAGE_SIZE);
@@ -220,6 +255,7 @@ export async function listRoomMessages(conversationId, viewerUserId) {
 	const messages = await ChatMessagesModel.findRecentConversationMessages(
 		conversation.conversation_id,
 		RECENT_PAGE_SIZE + 1,
+		viewerUserId,
 	);
 
 	return formatMessagePage(messages, viewerUserId, RECENT_PAGE_SIZE);
@@ -252,6 +288,7 @@ export async function listOlderFriendMessages({
 		conversationId: conversation.conversation_id,
 		beforeId,
 		limit: OLDER_PAGE_SIZE + 1,
+		viewerUserId,
 	});
 
 	return formatMessagePage(messages, viewerUserId, OLDER_PAGE_SIZE);
@@ -284,6 +321,7 @@ export async function listOlderRoomMessages({
 		conversationId: conversation.conversation_id,
 		beforeId,
 		limit: OLDER_PAGE_SIZE + 1,
+		viewerUserId,
 	});
 
 	return formatMessagePage(messages, viewerUserId, OLDER_PAGE_SIZE);
@@ -296,6 +334,7 @@ export const RECENT_MESSAGE_LIMIT = RECENT_PAGE_SIZE;
 export default {
 	createFriendMessage,
 	createRoomMessage,
+	flagRoomMessage,
 	findOpenableFriendConversation,
 	listOlderFriendMessages,
 	listOlderRoomMessages,

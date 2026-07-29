@@ -12,6 +12,7 @@ import pool, { queryRows } from '../../config/database.js';
 export async function findRecentConversationMessages(
 	conversationId,
 	limit = 50,
+	viewerUserId = null,
 ) {
 	const q = `
 		SELECT *
@@ -24,6 +25,8 @@ export async function findRecentConversationMessages(
 				cm.edited_at,
 				cm.created_at,
 				cm.updated_at,
+				COALESCE(flag_totals.pending_flag_count, 0)::int AS pending_flag_count,
+				(viewer_flag.id IS NOT NULL) AS flagged_by_viewer,
 				u.username AS sender_username,
 				u.email AS sender_email,
 				u.avatar_seed AS sender_avatar_seed,
@@ -31,6 +34,17 @@ export async function findRecentConversationMessages(
 			FROM chat_messages cm
 			INNER JOIN users u
 				ON u.id = cm.sender_user_id
+			LEFT JOIN LATERAL (
+				SELECT COUNT(*) AS pending_flag_count
+				FROM chat_message_flags cmf
+				WHERE cmf.message_id = cm.id
+					AND cmf.status = 'pending'
+			) flag_totals
+				ON true
+			LEFT JOIN chat_message_flags viewer_flag
+				ON viewer_flag.message_id = cm.id
+				AND viewer_flag.flagged_by_user_id = $3
+				AND viewer_flag.status = 'pending'
 			WHERE cm.conversation_id = $1
 				AND cm.deleted_at IS NULL
 			ORDER BY cm.created_at DESC, cm.id DESC
@@ -39,7 +53,7 @@ export async function findRecentConversationMessages(
 		ORDER BY recent_messages.created_at ASC, recent_messages.id ASC;
 	`;
 
-	return queryRows(q, [conversationId, limit]);
+	return queryRows(q, [conversationId, limit, viewerUserId]);
 }
 
 /**
@@ -55,6 +69,7 @@ export async function findOlderConversationMessages({
 	conversationId,
 	beforeId,
 	limit = 50,
+	viewerUserId = null,
 }) {
 	const q = `
 		WITH cursor_message AS (
@@ -74,6 +89,8 @@ export async function findOlderConversationMessages({
 				cm.edited_at,
 				cm.created_at,
 				cm.updated_at,
+				COALESCE(flag_totals.pending_flag_count, 0)::int AS pending_flag_count,
+				(viewer_flag.id IS NOT NULL) AS flagged_by_viewer,
 				u.username AS sender_username,
 				u.email AS sender_email,
 				u.avatar_seed AS sender_avatar_seed,
@@ -82,6 +99,17 @@ export async function findOlderConversationMessages({
 			CROSS JOIN cursor_message cursor
 			INNER JOIN users u
 				ON u.id = cm.sender_user_id
+			LEFT JOIN LATERAL (
+				SELECT COUNT(*) AS pending_flag_count
+				FROM chat_message_flags cmf
+				WHERE cmf.message_id = cm.id
+					AND cmf.status = 'pending'
+			) flag_totals
+				ON true
+			LEFT JOIN chat_message_flags viewer_flag
+				ON viewer_flag.message_id = cm.id
+				AND viewer_flag.flagged_by_user_id = $4
+				AND viewer_flag.status = 'pending'
 			WHERE cm.conversation_id = $1
 				AND cm.deleted_at IS NULL
 				AND (
@@ -101,6 +129,7 @@ export async function findOlderConversationMessages({
 		conversationId,
 		beforeId,
 		limit,
+		viewerUserId,
 	]);
 }
 
@@ -170,6 +199,8 @@ export async function createConversationMessage({
 					cm.edited_at,
 					cm.created_at,
 					cm.updated_at,
+					0::int AS pending_flag_count,
+					false AS flagged_by_viewer,
 					u.username AS sender_username,
 					u.email AS sender_email,
 					u.avatar_seed AS sender_avatar_seed,
@@ -194,8 +225,87 @@ export async function createConversationMessage({
 	}
 }
 
+/**
+ * Flag a message for room owner/admin review.
+ *
+ * @param {object} flag
+ * @param {string} flag.conversationId
+ * @param {string} flag.messageId
+ * @param {string} flag.flaggedByUserId
+ * @returns {Promise<object|null>}
+ */
+export async function createMessageFlag({
+	conversationId,
+	messageId,
+	flaggedByUserId,
+}) {
+	const q = `
+		WITH flaggable_message AS (
+			SELECT
+				cm.id,
+				cm.conversation_id
+			FROM chat_messages cm
+			WHERE cm.id = $2
+				AND cm.conversation_id = $1
+				AND cm.sender_user_id <> $3
+				AND cm.deleted_at IS NULL
+			LIMIT 1
+		),
+		inserted_flag AS (
+			INSERT INTO chat_message_flags (
+				message_id,
+				conversation_id,
+				flagged_by_user_id
+			)
+			SELECT
+				flaggable_message.id,
+				flaggable_message.conversation_id,
+				$3
+			FROM flaggable_message
+			ON CONFLICT ("message_id", "flagged_by_user_id")
+				DO NOTHING
+			RETURNING
+				id,
+				message_id,
+				conversation_id,
+				flagged_by_user_id,
+				status,
+				created_at
+		)
+		SELECT
+			inserted_flag.*,
+			true AS created
+		FROM inserted_flag
+		UNION ALL
+		SELECT
+			cmf.id,
+			cmf.message_id,
+			cmf.conversation_id,
+			cmf.flagged_by_user_id,
+			cmf.status,
+			cmf.created_at,
+			false AS created
+		FROM chat_message_flags cmf
+		INNER JOIN flaggable_message
+			ON flaggable_message.id = cmf.message_id
+		WHERE cmf.flagged_by_user_id = $3
+			AND cmf.status = 'pending'
+			AND NOT EXISTS (SELECT 1 FROM inserted_flag)
+		LIMIT 1;
+	`;
+
+	const rows = await queryRows(q, [
+		conversationId,
+		messageId,
+		flaggedByUserId,
+	]);
+
+	return rows[0] || null;
+}
+
 export default {
 	findRecentConversationMessages,
 	findOlderConversationMessages,
 	createConversationMessage,
+	createMessageFlag,
 };

@@ -9,6 +9,7 @@ export {
 export {
 	createFriendChatMessage,
 	createRoomChatMessage,
+	flagRoomChatMessage,
 	getOlderFriendMessages,
 	getOlderRoomMessages,
 } from './messages.js';
