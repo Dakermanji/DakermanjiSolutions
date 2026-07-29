@@ -366,6 +366,7 @@
 				"dropdownMenu.js",
 				"flash.js",
 				"modals.js",
+				"notifications.js",
 				"social.js",
 				"theme.js",
 				"tooltips.js"
@@ -445,6 +446,7 @@
 		],
 		"notifications": [
 			"appNotifications.js",
+			"live.js",
 			"links.js"
 		],
 		"profile": [

@@ -11,6 +11,10 @@ import {
 	registerChatSocketHandlers,
 	setChatSocketServer,
 } from '../services/chat/live.js';
+import {
+	getNotificationUserRoom,
+	setNotificationSocketServer,
+} from '../services/notifications/live.js';
 
 /**
  * Attach Socket.IO to the HTTP server.
@@ -37,11 +41,13 @@ export default function configureSocket(server) {
 	io.on('connection', (socket) => {
 		socket.join(getSocialUserRoom(socket.data.userId));
 		socket.join(getChatUserRoom(socket.data.userId));
+		socket.join(getNotificationUserRoom(socket.data.userId));
 		registerChatSocketHandlers(io, socket);
 	});
 
 	setSocialSocketServer(io);
 	setChatSocketServer(io);
+	setNotificationSocketServer(io);
 
 	return io;
 }

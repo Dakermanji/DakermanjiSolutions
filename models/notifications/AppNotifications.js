@@ -365,7 +365,7 @@ export async function respond(notificationId, recipientUserId, responseKey) {
  * @param {string} input.entityType
  * @param {string} input.entityId
  * @param {string} input.responseKey
- * @returns {Promise<number>}
+ * @returns {Promise<Array<string>>}
  */
 export async function respondAndDismissByEntity({
 	entityType,
@@ -382,15 +382,16 @@ export async function respondAndDismissByEntity({
 			updated_at = NOW()
 		WHERE entity_type = $1::varchar(80)
 			AND entity_id = $2::uuid
-			AND responded_at IS NULL;
+			AND responded_at IS NULL
+		RETURNING recipient_user_id;
 	`;
 
-	const result = await query(q, [
+	const rows = await queryRows(q, [
 		entityType,
 		entityId,
 		responseKey,
 	]);
-	return result.rowCount;
+	return rows.map((row) => row.recipient_user_id);
 }
 
 export default {

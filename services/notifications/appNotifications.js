@@ -3,6 +3,7 @@
 import AppNotificationsModel from '../../models/notifications/AppNotifications.js';
 import { NOTIFICATION_LIMITS } from '../../constants/notifications.js';
 import { validateCreateNotificationInput } from '../../middlewares/validators/notifications.js';
+import { emitNotificationUnreadCountsChanged } from './live.js';
 
 function normalizeRequiredText(value) {
 	return String(value ?? '').normalize('NFKC').trim();
@@ -40,6 +41,9 @@ export async function createNotification(input) {
 	}
 
 	const notification = await AppNotificationsModel.create(validation.values);
+	if (notification) {
+		await emitNotificationUnreadCountsChanged([notification.recipient_user_id]);
+	}
 
 	return {
 		errors: {},
@@ -66,6 +70,9 @@ export async function createNotificationIfNotExists(input) {
 	const notification = await AppNotificationsModel.createIfNotExists(
 		validation.values,
 	);
+	if (notification) {
+		await emitNotificationUnreadCountsChanged([notification.recipient_user_id]);
+	}
 
 	return {
 		errors: {},
@@ -110,8 +117,17 @@ export function countUnreadNotifications(recipientUserId) {
  * @param {string} recipientUserId
  * @returns {Promise<boolean>}
  */
-export function markNotificationRead(notificationId, recipientUserId) {
-	return AppNotificationsModel.markAsRead(notificationId, recipientUserId);
+export async function markNotificationRead(notificationId, recipientUserId) {
+	const isUpdated = await AppNotificationsModel.markAsRead(
+		notificationId,
+		recipientUserId,
+	);
+
+	if (isUpdated) {
+		await emitNotificationUnreadCountsChanged([recipientUserId]);
+	}
+
+	return isUpdated;
 }
 
 /**
@@ -121,11 +137,17 @@ export function markNotificationRead(notificationId, recipientUserId) {
  * @param {string} recipientUserId
  * @returns {Promise<number>}
  */
-export function markNotificationsRead(notificationIds, recipientUserId) {
-	return AppNotificationsModel.markManyAsRead(
+export async function markNotificationsRead(notificationIds, recipientUserId) {
+	const updatedCount = await AppNotificationsModel.markManyAsRead(
 		notificationIds,
 		recipientUserId,
 	);
+
+	if (updatedCount > 0) {
+		await emitNotificationUnreadCountsChanged([recipientUserId]);
+	}
+
+	return updatedCount;
 }
 
 /**
@@ -135,8 +157,17 @@ export function markNotificationsRead(notificationIds, recipientUserId) {
  * @param {string} recipientUserId
  * @returns {Promise<boolean>}
  */
-export function dismissNotification(notificationId, recipientUserId) {
-	return AppNotificationsModel.dismiss(notificationId, recipientUserId);
+export async function dismissNotification(notificationId, recipientUserId) {
+	const isUpdated = await AppNotificationsModel.dismiss(
+		notificationId,
+		recipientUserId,
+	);
+
+	if (isUpdated) {
+		await emitNotificationUnreadCountsChanged([recipientUserId]);
+	}
+
+	return isUpdated;
 }
 
 /**
@@ -147,7 +178,7 @@ export function dismissNotification(notificationId, recipientUserId) {
  * @param {string} responseKey
  * @returns {Promise<boolean>}
  */
-export function respondToNotification(
+export async function respondToNotification(
 	notificationId,
 	recipientUserId,
 	responseKey,
@@ -161,11 +192,17 @@ export function respondToNotification(
 		return false;
 	}
 
-	return AppNotificationsModel.respond(
+	const isUpdated = await AppNotificationsModel.respond(
 		notificationId,
 		recipientUserId,
 		normalizedResponseKey,
 	);
+
+	if (isUpdated) {
+		await emitNotificationUnreadCountsChanged([recipientUserId]);
+	}
+
+	return isUpdated;
 }
 
 /**
@@ -177,7 +214,7 @@ export function respondToNotification(
  * @param {string} input.responseKey
  * @returns {Promise<number|boolean>}
  */
-export function respondAndDismissNotificationsByEntity({
+export async function respondAndDismissNotificationsByEntity({
 	entityType,
 	entityId,
 	responseKey,
@@ -196,11 +233,17 @@ export function respondAndDismissNotificationsByEntity({
 		return false;
 	}
 
-	return AppNotificationsModel.respondAndDismissByEntity({
+	const recipientUserIds = await AppNotificationsModel.respondAndDismissByEntity({
 		entityType: normalizedEntityType,
 		entityId: normalizedEntityId,
 		responseKey: normalizedResponseKey,
 	});
+
+	if (recipientUserIds.length > 0) {
+		await emitNotificationUnreadCountsChanged(recipientUserIds);
+	}
+
+	return recipientUserIds.length;
 }
 
 export default {
