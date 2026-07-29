@@ -15,7 +15,8 @@ export function getChatRoomOpenUrl(conversationId) {
 
 export function getNotificationLinkUrl(notification) {
 	if (
-		notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_APPROVED
+		notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_APPROVED ||
+		notification.type === NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_PROMOTED
 	) {
 		return getChatRoomOpenUrl(notification.data?.conversationId);
 	}

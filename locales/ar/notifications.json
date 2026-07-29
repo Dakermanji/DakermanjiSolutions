@@ -53,6 +53,10 @@
 		"chatRoomJoinRequestRejected": {
 			"title": "لم يتم قبول طلب الغرفة",
 			"body": "لم يتم قبول طلبك للانضمام إلى {{roomName}}."
+		},
+		"chatRoomMemberPromoted": {
+			"title": "أصبحت مشرفًا على الغرفة",
+			"body": "أصبحت الآن مشرفًا في {{roomName}}."
 		}
 	},
 	"item": {

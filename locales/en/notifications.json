@@ -53,6 +53,10 @@
 		"chatRoomJoinRequestRejected": {
 			"title": "Room request not approved",
 			"body": "Your request to join {{roomName}} was not approved."
+		},
+		"chatRoomMemberPromoted": {
+			"title": "You are now a room admin",
+			"body": "You are now an admin in {{roomName}}."
 		}
 	},
 	"item": {

@@ -53,6 +53,10 @@
 		"chatRoomJoinRequestRejected": {
 			"title": "Demande de salon non approuvée",
 			"body": "Votre demande pour rejoindre {{roomName}} n’a pas été approuvée."
+		},
+		"chatRoomMemberPromoted": {
+			"title": "Vous êtes maintenant admin du salon",
+			"body": "Vous êtes maintenant admin dans {{roomName}}."
 		}
 	},
 	"item": {

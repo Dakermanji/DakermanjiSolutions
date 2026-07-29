@@ -39,7 +39,7 @@ const CHAT_ROOM_JOIN_REQUEST_ACTIONS = Object.freeze([
 	},
 ]);
 
-function createApprovedRoomRequestActions(notification) {
+function createRoomOpenActions(notification) {
 	const conversationId = String(notification.data?.conversationId || '').trim();
 
 	if (!isValidUuid(conversationId)) {
@@ -73,7 +73,13 @@ function getNotificationActions(notification) {
 	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_APPROVED) {
 		actions = notification.responded_at
 			? []
-			: createApprovedRoomRequestActions(notification);
+			: createRoomOpenActions(notification);
+	}
+
+	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_PROMOTED) {
+		actions = notification.responded_at
+			? []
+			: createRoomOpenActions(notification);
 	}
 
 	return [

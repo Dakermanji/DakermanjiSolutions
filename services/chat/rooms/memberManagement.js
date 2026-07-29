@@ -16,6 +16,7 @@ import {
 	canUnbanChatRoomMember,
 } from './permissions.js';
 import { findOpenableRoomConversation } from './access.js';
+import { notifyRoomMemberPromoted } from './notifications.js';
 
 export const ROOM_MEMBER_MANAGEMENT_RESULT = Object.freeze({
 	OK: 'ok',
@@ -165,11 +166,21 @@ async function manageRoomMember({
 	);
 }
 
-export function promoteRoomMember(input) {
-	return manageRoomMember({
+export async function promoteRoomMember(input) {
+	const result = await manageRoomMember({
 		...input,
 		action: ROOM_MEMBER_MANAGEMENT_ACTIONS.PROMOTE,
 	});
+
+	if (result.ok) {
+		await notifyRoomMemberPromoted({
+			room: result.room,
+			member: result.member,
+			actorUserId: input.actorUserId,
+		});
+	}
+
+	return result;
 }
 
 export function demoteRoomAdmin(input) {

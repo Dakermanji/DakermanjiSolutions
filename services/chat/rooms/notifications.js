@@ -7,7 +7,10 @@ import {
 	NOTIFICATION_PRIORITIES,
 	NOTIFICATION_TYPES,
 } from '../../../constants/notifications.js';
-import { createNotificationIfNotExists } from '../../notifications/appNotifications.js';
+import {
+	createNotification,
+	createNotificationIfNotExists,
+} from '../../notifications/appNotifications.js';
 import { getChatRoomOpenUrl } from '../../notifications/links.js';
 
 function getRequesterDisplayName(recipient) {
@@ -68,5 +71,28 @@ export async function notifyRoomJoinRequestResult({
 			roomName: request.room_title,
 		},
 		priority,
+	});
+}
+
+export async function notifyRoomMemberPromoted({ room, member, actorUserId }) {
+	if (!room?.conversation_id || !member?.user_id || !actorUserId) {
+		return null;
+	}
+
+	return createNotification({
+		recipientUserId: member.user_id,
+		actorUserId,
+		appKey: NOTIFICATION_APP_KEYS.CHAT,
+		type: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_PROMOTED,
+		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_MEMBER_ROLE,
+		entityId: room.conversation_id,
+		titleKey: 'notifications:types.chatRoomMemberPromoted.title',
+		bodyKey: 'notifications:types.chatRoomMemberPromoted.body',
+		linkUrl: getChatRoomOpenUrl(room.conversation_id),
+		data: {
+			conversationId: room.conversation_id,
+			roomName: room.conversation?.title || room.title || '',
+		},
+		priority: NOTIFICATION_PRIORITIES.NORMAL,
 	});
 }
