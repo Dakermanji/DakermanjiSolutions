@@ -21,6 +21,10 @@
 		"send": "Send",
 		"messageError": "Could not send this message.",
 		"mutedMessageError": "You can read this room but cannot send messages.",
+		"flag": "Flag message",
+		"flagged": "Message flagged for review",
+		"flagSuccess": "Message flagged for review.",
+		"flagError": "Could not flag this message.",
 		"typing": "{{user}} is typing..."
 	},
 	"members": {

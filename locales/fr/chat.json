@@ -21,6 +21,10 @@
 		"send": "Envoyer",
 		"messageError": "Impossible d’envoyer ce message.",
 		"mutedMessageError": "Vous pouvez lire ce salon, mais vous ne pouvez pas envoyer de messages.",
+		"flag": "Signaler le message",
+		"flagged": "Message signalé pour examen",
+		"flagSuccess": "Message signalé pour examen.",
+		"flagError": "Impossible de signaler ce message.",
 		"typing": "{{user}} écrit..."
 	},
 	"members": {

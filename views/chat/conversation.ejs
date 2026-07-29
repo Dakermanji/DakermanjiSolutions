@@ -137,6 +137,9 @@
 	data-typing-label="✍️ <%= t('chat:conversation.typing', { user: conversationName }) %>"
 	data-has-older-messages="<%= canLoadOlderMessages ? 'true' : 'false' %>"
 	data-older-messages-url="<%= olderMessagesUrl %>"
+	data-flag-message-url="/chat/rooms/messages/flag"
+	data-flag-message-label="<%= t('chat:conversation.flag') %>"
+	data-message-flagged-label="<%= t('chat:conversation.flagged') %>"
 >
 	<header class="chat-conversation-header">
 		<form method="POST" action="/chat/friends/close" class="chat-back-form">
@@ -232,6 +235,8 @@
 						data-chat-message-sender-avatar="<%= message.sender?.avatar?.src || '' %>"
 						data-chat-message-sender-avatar-bg="<%= message.sender?.avatar?.background || '' %>"
 						data-chat-message-created-at="<%= new Date(message.createdAt).toISOString() %>"
+						data-chat-message-pending-flag-count="<%= message.pendingFlagCount || 0 %>"
+						data-chat-message-flagged-by-viewer="<%= message.flaggedByViewer ? 'true' : 'false' %>"
 					>
 						<% if (isRoomConversation && !message.isMine) { %>
 							<span
@@ -260,6 +265,25 @@
 						>
 							<%= formatMessageTime(message.createdAt) %>
 						</time>
+						<% if (isRoomConversation && !message.isMine) { %>
+							<form
+								class="chat-message-flag-form"
+								method="POST"
+								action="/chat/rooms/messages/flag"
+							>
+								<%- include('../partials/_csrf') %>
+								<input type="hidden" name="messageId" value="<%= message.id %>" />
+								<button
+									class="btn btn-action-outline chat-message-flag-button has-tooltip <%= message.flaggedByViewer ? 'is-flagged' : '' %>"
+									type="submit"
+									data-bs-title="<%= t(message.flaggedByViewer ? 'chat:conversation.flagged' : 'chat:conversation.flag') %>"
+									aria-label="<%= t(message.flaggedByViewer ? 'chat:conversation.flagged' : 'chat:conversation.flag') %>"
+									<% if (message.flaggedByViewer) { %>disabled<% } %>
+								>
+									<i class="bi <%= message.flaggedByViewer ? 'bi-flag-fill' : 'bi-flag' %>" aria-hidden="true"></i>
+								</button>
+							</form>
+						<% } %>
 					</li>
 				<% }) %>
 			</ol>

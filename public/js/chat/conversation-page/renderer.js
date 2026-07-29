@@ -95,11 +95,18 @@
 		rebuildMessageGroups(list);
 	}
 
-	function createMessageRow(message, currentUserId, { showSenderDisplay = false } = {}) {
+	function createMessageRow(message, currentUserId, {
+		canFlagMessages = false,
+		flagLabel = '',
+		flaggedLabel = '',
+		flagUrl = '',
+		showSenderDisplay = false,
+	} = {}) {
 		const row = document.createElement('li');
 		const isMine = message.sender?.id === currentUserId;
 		const senderName = getSenderName(message);
 		const shouldShowSenderDisplay = showSenderDisplay && !isMine;
+		const canFlagMessage = canFlagMessages && !isMine && flagUrl;
 		row.className = `chat-message-row ${isMine ? 'is-mine' : 'is-theirs'}`;
 		row.dataset.chatMessageId = message.id;
 		row.dataset.chatMessageSenderId = message.sender?.id || '';
@@ -108,6 +115,12 @@
 		row.dataset.chatMessageSenderAvatarBg =
 			message.sender?.avatar?.background || '';
 		row.dataset.chatMessageCreatedAt = new Date(message.createdAt).toISOString();
+		row.dataset.chatMessagePendingFlagCount = String(
+			message.pendingFlagCount || 0,
+		);
+		row.dataset.chatMessageFlaggedByViewer = message.flaggedByViewer
+			? 'true'
+			: 'false';
 
 		if (shouldShowSenderDisplay) {
 			row.appendChild(createSenderAvatar(message, senderName));
@@ -137,6 +150,13 @@
 		row.appendChild(bubble);
 		row.appendChild(time);
 
+		if (canFlagMessage) {
+			row.appendChild(createFlagForm(message, flagUrl, {
+				flagLabel,
+				flaggedLabel,
+			}));
+		}
+
 		return row;
 	}
 
@@ -165,6 +185,36 @@
 		}
 
 		return avatar;
+	}
+
+	function createFlagForm(message, flagUrl, { flagLabel = '', flaggedLabel = '' } = {}) {
+		const isFlagged = Boolean(message.flaggedByViewer);
+		const label = isFlagged ? flaggedLabel : flagLabel;
+		const form = document.createElement('form');
+		form.className = 'chat-message-flag-form';
+		form.method = 'POST';
+		form.action = flagUrl;
+
+		const input = document.createElement('input');
+		input.type = 'hidden';
+		input.name = 'messageId';
+		input.value = message.id || '';
+
+		const button = document.createElement('button');
+		button.className = `btn btn-action-outline chat-message-flag-button has-tooltip${isFlagged ? ' is-flagged' : ''}`;
+		button.type = 'submit';
+		button.dataset.bsTitle = label;
+		button.setAttribute('aria-label', label);
+		button.disabled = isFlagged;
+
+		const icon = document.createElement('i');
+		icon.className = `bi ${isFlagged ? 'bi-flag-fill' : 'bi-flag'}`;
+		icon.setAttribute('aria-hidden', 'true');
+
+		button.appendChild(icon);
+		form.append(input, button);
+		window.AppTooltips?.initIn(form);
+		return form;
 	}
 
 	function appendMessage(messageSurface, message, currentUserId, options = {}) {

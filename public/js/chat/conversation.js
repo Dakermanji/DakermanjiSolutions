@@ -144,6 +144,10 @@ function appendMessage(message, socket = null) {
 		message,
 		chatPage.dataset.currentUserId,
 		{
+			canFlagMessages: isRoomConversation,
+			flagLabel: chatPage.dataset.flagMessageLabel || '',
+			flaggedLabel: chatPage.dataset.messageFlaggedLabel || '',
+			flagUrl: chatPage.dataset.flagMessageUrl || '',
 			showSenderDisplay: isRoomConversation,
 		},
 	);
@@ -213,6 +217,10 @@ async function loadOlderMessages() {
 			payload.messages,
 			chatPage.dataset.currentUserId,
 			{
+				canFlagMessages: isRoomConversation,
+				flagLabel: chatPage.dataset.flagMessageLabel || '',
+				flaggedLabel: chatPage.dataset.messageFlaggedLabel || '',
+				flagUrl: chatPage.dataset.flagMessageUrl || '',
 				showSenderDisplay: isRoomConversation,
 			},
 		);
