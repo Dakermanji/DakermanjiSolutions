@@ -1,6 +1,6 @@
 //! controllers/chat/roomMembers.js
 
-import { CHAT_REDIRECT } from '../../constants/chat.js';
+import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
 import {
 	banRoomMember,
 	deleteRoomMemberHistory,
@@ -11,6 +11,7 @@ import {
 	unbanRoomMember,
 } from '../../services/chat/rooms.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
+import { setActiveChatConversation } from './session.js';
 
 const ROOM_MEMBER_ACTIONS = Object.freeze({
 	promote: {
@@ -82,7 +83,8 @@ function createRoomMemberActionHandler(action) {
 				result.ok ? 'success' : 'error',
 				result.ok ? action.successKey : action.errorKey,
 			);
-			return res.redirect(CHAT_REDIRECT);
+			setActiveChatConversation(req, conversationId);
+			return res.redirect(CHAT_OPEN_REDIRECT);
 		} catch (error) {
 			return next(error);
 		}

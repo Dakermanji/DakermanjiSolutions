@@ -10,8 +10,9 @@ import {
 	requestPrivateListedRoom,
 	searchRooms,
 } from '../../services/chat/rooms.js';
-import { CHAT_REDIRECT } from '../../constants/chat.js';
+import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
+import { setActiveChatConversation } from './session.js';
 
 function getRoomInput(req) {
 	return {
@@ -77,12 +78,9 @@ export async function openRoomConversation(req, res, next) {
 			return res.redirect(CHAT_REDIRECT);
 		}
 
-		req.session.chat = {
-			...(req.session.chat || {}),
-			activeConversationId: conversation.conversation_id,
-		};
+		setActiveChatConversation(req, conversation.conversation_id);
 
-		return res.redirect(CHAT_REDIRECT);
+		return res.redirect(CHAT_OPEN_REDIRECT);
 	} catch (error) {
 		return next(error);
 	}
@@ -115,13 +113,10 @@ export async function joinPublicRoomConversation(req, res, next) {
 			return res.redirect(CHAT_REDIRECT);
 		}
 
-		req.session.chat = {
-			...(req.session.chat || {}),
-			activeConversationId: roomConversation.conversation.id,
-		};
+		setActiveChatConversation(req, roomConversation.conversation.id);
 
 		req.flash('success', 'chat:rooms.joinSuccess');
-		return res.redirect(CHAT_REDIRECT);
+		return res.redirect(CHAT_OPEN_REDIRECT);
 	} catch (error) {
 		return next(error);
 	}

@@ -19,6 +19,10 @@ import {
 import { emitChatUnreadCountsChanged } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import {
+	clearActiveChatConversation,
+	consumeActiveChatConversation,
+} from './session.js';
+import {
 	CHAT_MESSAGE_LIMITS,
 	CHAT_ROOM_VISIBILITY,
 } from '../../constants/chat.js';
@@ -32,7 +36,7 @@ import {
  * @returns {Promise<void>}
  */
 export async function renderChat(req, res, next) {
-	const activeConversationId = req.session.chat?.activeConversationId || null;
+	const activeConversationId = consumeActiveChatConversation(req);
 
 	try {
 		if (activeConversationId && isValidUuid(activeConversationId)) {
@@ -117,10 +121,7 @@ export async function renderChat(req, res, next) {
 		}
 
 		if (req.session.chat?.activeConversationId) {
-			req.session.chat = {
-				...(req.session.chat || {}),
-				activeConversationId: null,
-			};
+			clearActiveChatConversation(req);
 		}
 
 		const [friendConversations, roomCounts] = await Promise.all([

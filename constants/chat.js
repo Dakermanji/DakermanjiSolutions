@@ -1,6 +1,7 @@
 //! constants/chat.js
 
 export const CHAT_REDIRECT = '/chat';
+export const CHAT_OPEN_REDIRECT = '/chat?conversation=active';
 
 export const CHAT_CONVERSATION_TYPES = Object.freeze({
 	FRIEND: 'friend',

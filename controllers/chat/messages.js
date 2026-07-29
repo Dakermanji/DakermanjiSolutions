@@ -10,7 +10,7 @@ import { findOpenableRoomConversation } from '../../services/chat/rooms.js';
 import { canChatMemberWrite } from '../../services/chat/rooms/permissions.js';
 import { emitChatMessageCreated } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
-import { CHAT_REDIRECT } from '../../constants/chat.js';
+import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
 
 async function getRoomMessageFailureKey(conversationId, userId) {
 	const room = await findOpenableRoomConversation(conversationId, userId);
@@ -145,7 +145,7 @@ export async function createFriendChatMessage(req, res, next) {
 			await emitChatMessageCreated(message);
 		}
 
-		return res.redirect(CHAT_REDIRECT);
+		return res.redirect(CHAT_OPEN_REDIRECT);
 	} catch (error) {
 		return next(error);
 	}
@@ -179,7 +179,7 @@ export async function createRoomChatMessage(req, res, next) {
 			await emitChatMessageCreated(message);
 		}
 
-		return res.redirect(CHAT_REDIRECT);
+		return res.redirect(CHAT_OPEN_REDIRECT);
 	} catch (error) {
 		return next(error);
 	}

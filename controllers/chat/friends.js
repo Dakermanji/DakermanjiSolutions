@@ -5,7 +5,11 @@ import {
 	listFriendConversations,
 } from '../../services/chat/friends.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
-import { CHAT_REDIRECT } from '../../constants/chat.js';
+import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
+import {
+	clearActiveChatConversation,
+	setActiveChatConversation,
+} from './session.js';
 
 /**
  * Return friend chat conversations for the signed-in user.
@@ -52,12 +56,9 @@ export async function openFriendConversation(req, res, next) {
 			return res.redirect(CHAT_REDIRECT);
 		}
 
-		req.session.chat = {
-			...(req.session.chat || {}),
-			activeConversationId: conversation.conversation_id,
-		};
+		setActiveChatConversation(req, conversation.conversation_id);
 
-		return res.redirect(CHAT_REDIRECT);
+		return res.redirect(CHAT_OPEN_REDIRECT);
 	} catch (error) {
 		return next(error);
 	}
@@ -71,10 +72,7 @@ export async function openFriendConversation(req, res, next) {
  * @returns {void}
  */
 export function closeFriendConversation(req, res) {
-	req.session.chat = {
-		...(req.session.chat || {}),
-		activeConversationId: null,
-	};
+	clearActiveChatConversation(req);
 
 	return res.redirect(CHAT_REDIRECT);
 }
