@@ -77,6 +77,7 @@
 		"createSubmit": "Create room",
 		"editTitle": "Room info",
 		"editSubmit": "Save changes",
+		"infoToggle": "Room info",
 		"createSuccess": "Room created.",
 		"createError": "Could not create this room.",
 		"updateSuccess": "Room info updated.",

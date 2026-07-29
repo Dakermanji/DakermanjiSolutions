@@ -77,6 +77,7 @@
 		"createSubmit": "إنشاء الغرفة",
 		"editTitle": "معلومات الغرفة",
 		"editSubmit": "حفظ التغييرات",
+		"infoToggle": "معلومات الغرفة",
 		"createSuccess": "تم إنشاء الغرفة.",
 		"createError": "تعذر إنشاء هذه الغرفة.",
 		"updateSuccess": "تم تحديث معلومات الغرفة.",

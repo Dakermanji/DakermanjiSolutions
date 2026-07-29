@@ -168,6 +168,18 @@
 		</div>
 
 		<% if (isRoomConversation) { %>
+			<% if (isRoomOwner) { %>
+				<button
+					class="btn btn-action-outline chat-panel-toggle has-tooltip"
+					type="button"
+					data-bs-toggle="modal"
+					data-bs-target="#chatRoomModal"
+					data-bs-title="<%= t('chat:rooms.infoToggle') %>"
+					aria-label="<%= t('chat:rooms.infoToggle') %>"
+				>
+					<i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+				</button>
+			<% } %>
 			<% if (canManageRoom) { %>
 				<button
 					class="btn btn-action-outline chat-panel-toggle has-tooltip"
@@ -449,3 +461,17 @@
 		</button>
 	</form>
 </section>
+
+<% if (isRoomConversation && isRoomOwner) { %>
+	<%- include('../modals/chat/_room_modal', {
+		roomVisibility,
+		roomModalMode: 'edit',
+		roomModalAction: '/chat/rooms/update',
+		roomModalValues: {
+			name: room.title,
+			description: room.description,
+			keywords: room.keywords,
+			visibility: room.visibility,
+		},
+	}) %>
+<% } %>

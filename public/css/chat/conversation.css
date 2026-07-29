@@ -24,7 +24,7 @@ body:has(.chat-conversation-page) main.container {
 
 .chat-conversation-header {
 	display: grid;
-	grid-template-columns: auto 3.5rem minmax(0, 1fr) auto auto;
+	grid-template-columns: auto 3.5rem minmax(0, 1fr) repeat(3, auto);
 	align-items: center;
 	gap: 0.75rem;
 	padding: 1rem;
@@ -310,7 +310,7 @@ body:has(.chat-conversation-page) main.container {
 
 @media (max-width: 575.98px) {
 	.chat-conversation-header {
-		grid-template-columns: auto 3rem minmax(0, 1fr) auto auto;
+		grid-template-columns: auto 3rem minmax(0, 1fr) repeat(3, auto);
 	}
 
 	.chat-conversation-avatar {
