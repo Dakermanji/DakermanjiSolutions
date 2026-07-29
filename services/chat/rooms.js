@@ -1,7 +1,11 @@
 //! services/chat/rooms.js
 
-import { validateCreateRoomInput } from '../../middlewares/validators/chat.js';
+import {
+	validateCreateRoomInput,
+	validateUpdateRoomInput,
+} from '../../middlewares/validators/chat.js';
 import { createRoom } from './rooms/create.js';
+import { updateRoom } from './rooms/update.js';
 import {
 	countVisibleRooms,
 	countUnreadPrivateRoomMessages,
@@ -41,6 +45,7 @@ import {
 } from './rooms/memberManagement.js';
 
 export { createRoom } from './rooms/create.js';
+export { updateRoom } from './rooms/update.js';
 export {
 	countVisibleRooms,
 	countUnreadPrivateRoomMessages,
@@ -109,4 +114,6 @@ export default {
 	searchRooms,
 	unbanRoomMember,
 	validateCreateRoomInput,
+	validateUpdateRoomInput,
+	updateRoom,
 };

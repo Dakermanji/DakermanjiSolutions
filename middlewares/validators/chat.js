@@ -5,7 +5,7 @@ import {
 	CHAT_ROOM_VISIBILITY,
 } from '../../constants/chat.js';
 import { validateNoProfanity } from '../profanity/index.js';
-import { normalizeText } from './common.js';
+import { isValidUuid, normalizeText } from './common.js';
 
 const {
 	DESCRIPTION_MAX_LENGTH,
@@ -49,31 +49,50 @@ function shouldCheckRoomProfanity(visibility) {
 }
 
 /**
- * Normalize and validate room creation input.
+ * Normalize and validate room create/update input.
  *
  * @param {object} input
- * @param {string} input.ownerUserId
+ * @param {string} [input.ownerUserId]
+ * @param {string} [input.actorUserId]
+ * @param {string} [input.conversationId]
  * @param {string} input.name
  * @param {string|null} input.description
  * @param {string|Array<string>} input.keywords
  * @param {string} input.visibility
+ * @param {boolean} requireOwnerUser
+ * @param {boolean} requireActorUser
+ * @param {boolean} requireConversation
  * @returns {object}
  */
-export function validateCreateRoomInput({
+function validateRoomInput({
 	ownerUserId,
+	actorUserId,
+	conversationId,
 	name,
 	description,
 	keywords,
 	visibility,
-}) {
+}, {
+	requireOwnerUser = false,
+	requireActorUser = false,
+	requireConversation = false,
+} = {}) {
 	const normalizedName = normalizeRoomName(name);
 	const normalizedDescription = normalizeRoomDescription(description);
 	const normalizedKeywords = normalizeRoomKeywords(keywords);
 	const normalizedVisibility = normalizeRoomVisibility(visibility);
 	const errors = {};
 
-	if (!ownerUserId) {
+	if (requireOwnerUser && !isValidUuid(ownerUserId)) {
 		errors.ownerUserId = 'Owner user is required.';
+	}
+
+	if (requireActorUser && !isValidUuid(actorUserId)) {
+		errors.actorUserId = 'Actor user is required.';
+	}
+
+	if (requireConversation && !isValidUuid(conversationId)) {
+		errors.conversationId = 'Conversation is required.';
 	}
 
 	if (!normalizedName) {
@@ -132,10 +151,48 @@ export function validateCreateRoomInput({
 		isValid: Object.keys(errors).length === 0,
 		values: {
 			ownerUserId,
+			actorUserId,
+			conversationId,
 			name: normalizedName,
 			description: normalizedDescription,
 			keywords: normalizedKeywords,
 			visibility: normalizedVisibility,
 		},
 	};
+}
+
+/**
+ * Normalize and validate room creation input.
+ *
+ * @param {object} input
+ * @param {string} input.ownerUserId
+ * @param {string} input.name
+ * @param {string|null} input.description
+ * @param {string|Array<string>} input.keywords
+ * @param {string} input.visibility
+ * @returns {object}
+ */
+export function validateCreateRoomInput(input) {
+	return validateRoomInput(input, {
+		requireOwnerUser: true,
+	});
+}
+
+/**
+ * Normalize and validate room update input.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.actorUserId
+ * @param {string} input.name
+ * @param {string|null} input.description
+ * @param {string|Array<string>} input.keywords
+ * @param {string} input.visibility
+ * @returns {object}
+ */
+export function validateUpdateRoomInput(input) {
+	return validateRoomInput(input, {
+		requireActorUser: true,
+		requireConversation: true,
+	});
 }

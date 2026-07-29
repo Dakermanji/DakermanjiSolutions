@@ -1,6 +1,7 @@
 //! models/chat/Rooms.js
 
 import { createRoomConversation } from './rooms/create.js';
+import { updateRoomConversation } from './rooms/update.js';
 import {
 	countPrivateRoomsForUser,
 	countPublicRoomsForUser,
@@ -33,6 +34,7 @@ import {
 import { searchVisibleRoomsForUser } from './rooms/search.js';
 
 export { createRoomConversation } from './rooms/create.js';
+export { updateRoomConversation } from './rooms/update.js';
 export {
 	countPrivateRoomsForUser,
 	countPublicRoomsForUser,
@@ -71,6 +73,7 @@ export default {
 	countUnreadPublicRoomMessagesForUser,
 	countUnreadRoomMessagesForUser,
 	createRoomConversation,
+	updateRoomConversation,
 	banRoomMember,
 	deleteRoomMemberHistory,
 	demoteRoomAdminToMember,

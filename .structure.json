@@ -180,6 +180,7 @@
 				"members.js",
 				"queries.js",
 				"search.js",
+				"update.js",
 				"unread.js"
 			],
 			"~": [
@@ -421,7 +422,8 @@
 				"members.js",
 				"notifications.js",
 				"permissions.js",
-				"requests.js"
+				"requests.js",
+				"update.js"
 			],
 			"~": [
 				"authorization.js",
