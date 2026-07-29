@@ -21,6 +21,7 @@ export {
 	openRoomConversation,
 	requestPrivateRoomAccess,
 	searchVisibleRooms,
+	updateChatRoom,
 } from './rooms.js';
 export {
 	banChatRoomMember,

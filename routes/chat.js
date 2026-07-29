@@ -25,6 +25,7 @@ import {
 	requestPrivateRoomAccess,
 	searchVisibleRooms,
 	unbanChatRoomMember,
+	updateChatRoom,
 } from '../controllers/chat/index.js';
 
 const router = Router();
@@ -42,6 +43,7 @@ router.post('/friends/close', closeFriendConversation);
 router.post('/friends/messages', createFriendChatMessage);
 router.post('/rooms/messages', createRoomChatMessage);
 router.post('/rooms', createChatRoom);
+router.post('/rooms/update', updateChatRoom);
 router.post('/rooms/join', joinPublicRoomConversation);
 router.post('/rooms/open', openRoomConversation);
 router.post('/rooms/request', requestPrivateRoomAccess);

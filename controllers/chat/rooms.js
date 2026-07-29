@@ -9,6 +9,7 @@ import {
 	listPublicRooms,
 	requestPrivateListedRoom,
 	searchRooms,
+	updateRoom,
 } from '../../services/chat/rooms.js';
 import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
@@ -17,6 +18,17 @@ import { setActiveChatConversation } from './session.js';
 function getRoomInput(req) {
 	return {
 		ownerUserId: req.user?.id,
+		name: req.body?.name,
+		description: req.body?.description,
+		keywords: req.body?.keywords,
+		visibility: req.body?.visibility,
+	};
+}
+
+function getRoomUpdateInput(req) {
+	return {
+		conversationId: req.session.chat?.activeConversationId,
+		actorUserId: req.user?.id,
 		name: req.body?.name,
 		description: req.body?.description,
 		keywords: req.body?.keywords,
@@ -44,6 +56,31 @@ export async function createChatRoom(req, res, next) {
 
 		req.flash('success', 'chat:rooms.createSuccess');
 		return res.redirect(CHAT_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Update the active room info for its owner.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function updateChatRoom(req, res, next) {
+	try {
+		const result = await updateRoom(getRoomUpdateInput(req));
+
+		if (!result.room) {
+			req.flash('error', 'chat:rooms.updateError');
+			return res.redirect(CHAT_OPEN_REDIRECT);
+		}
+
+		setActiveChatConversation(req, result.room.conversation_id);
+		req.flash('success', 'chat:rooms.updateSuccess');
+		return res.redirect(CHAT_OPEN_REDIRECT);
 	} catch (error) {
 		return next(error);
 	}

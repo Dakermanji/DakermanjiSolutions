@@ -77,6 +77,8 @@
 		"createSubmit": "Create room",
 		"createSuccess": "Room created.",
 		"createError": "Could not create this room.",
+		"updateSuccess": "Room info updated.",
+		"updateError": "Could not update this room.",
 		"openError": "This room is not available.",
 		"joinSuccess": "Joined room.",
 		"joinError": "Could not join this room.",
