@@ -1,4 +1,27 @@
 <!--! views/modals/chat/_room_modal.ejs -->
+<%
+	const safeRoomModalMode =
+		typeof roomModalMode !== 'undefined' ? roomModalMode : 'create';
+	const safeRoomModalAction =
+		typeof roomModalAction !== 'undefined' ? roomModalAction : '/chat/rooms';
+	const safeRoomModalValues =
+		typeof roomModalValues !== 'undefined' && roomModalValues
+			? roomModalValues
+			: {};
+	const isEditRoomModal = safeRoomModalMode === 'edit';
+	const modalTitleKey = isEditRoomModal
+		? 'chat:rooms.editTitle'
+		: 'chat:rooms.createTitle';
+	const modalSubmitKey = isEditRoomModal
+		? 'chat:rooms.editSubmit'
+		: 'chat:rooms.createSubmit';
+	const modalName = safeRoomModalValues.name || safeRoomModalValues.title || '';
+	const modalDescription = safeRoomModalValues.description || '';
+	const modalKeywords = Array.isArray(safeRoomModalValues.keywords)
+		? safeRoomModalValues.keywords.join(', ')
+		: safeRoomModalValues.keywords || '';
+	const modalVisibility = safeRoomModalValues.visibility || '';
+%>
 
 <div
 	class="modal fade"
@@ -11,7 +34,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="chatRoomModalLabel">
-					<%= t('chat:rooms.createTitle') %>
+					<%= t(modalTitleKey) %>
 				</h5>
 				<button
 					type="button"
@@ -21,7 +44,7 @@
 				></button>
 			</div>
 
-			<form method="POST" action="/chat/rooms">
+			<form method="POST" action="<%= safeRoomModalAction %>">
 				<%- include('../../partials/_csrf') %>
 
 				<div class="modal-body">
@@ -37,6 +60,7 @@
 							required
 							maxlength="50"
 							autocomplete="off"
+							value="<%= modalName %>"
 						/>
 					</div>
 
@@ -50,7 +74,7 @@
 							name="description"
 							rows="4"
 							maxlength="500"
-						></textarea>
+						><%= modalDescription %></textarea>
 					</div>
 
 					<div class="mb-3">
@@ -66,6 +90,7 @@
 							maxlength="140"
 							autocomplete="off"
 							placeholder="<%= t('chat:rooms.keywordsPlaceholder') %>"
+							value="<%= modalKeywords %>"
 						/>
 						<div class="form-text">
 							<%= t('chat:rooms.keywordsHelp') %>
@@ -86,6 +111,7 @@
 									value="<%= roomVisibility.PUBLIC %>"
 									data-chat-room-visibility-option="public"
 									required
+									<% if (modalVisibility === roomVisibility.PUBLIC) { %>checked<% } %>
 								/>
 								<span class="form-check-label">
 									<%= t('chat:rooms.visibilityOptions.public') %>
@@ -99,6 +125,7 @@
 									name="visibility"
 									value="<%= roomVisibility.PRIVATE_LISTED %>"
 									data-chat-room-visibility-option="private_listed"
+									<% if (modalVisibility === roomVisibility.PRIVATE_LISTED) { %>checked<% } %>
 								/>
 								<span class="form-check-label">
 									<%= t('chat:rooms.visibilityOptions.privateListed') %>
@@ -112,6 +139,7 @@
 									name="visibility"
 									value="<%= roomVisibility.PRIVATE_UNLISTED %>"
 									data-chat-room-visibility-option="private_unlisted"
+									<% if (modalVisibility === roomVisibility.PRIVATE_UNLISTED) { %>checked<% } %>
 								/>
 								<span class="form-check-label">
 									<%= t('chat:rooms.visibilityOptions.privateUnlisted') %>
@@ -126,7 +154,7 @@
 						<%= t('common:cancel') %>
 					</button>
 					<button type="submit" class="btn btn-action">
-						<%= t('chat:rooms.createSubmit') %>
+						<%= t(modalSubmitKey) %>
 					</button>
 				</div>
 			</form>

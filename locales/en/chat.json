@@ -75,6 +75,8 @@
 	"rooms": {
 		"createTitle": "Create room",
 		"createSubmit": "Create room",
+		"editTitle": "Room info",
+		"editSubmit": "Save changes",
 		"createSuccess": "Room created.",
 		"createError": "Could not create this room.",
 		"updateSuccess": "Room info updated.",

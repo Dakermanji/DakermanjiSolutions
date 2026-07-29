@@ -175,5 +175,10 @@
 	</div>
 </section>
 
-<%- include('../modals/chat/_room_modal', { roomVisibility }) %>
+<%- include('../modals/chat/_room_modal', {
+	roomVisibility,
+	roomModalMode: 'create',
+	roomModalAction: '/chat/rooms',
+	roomModalValues: {},
+}) %>
 <%- include('../modals/chat/_room_search_modal') %>

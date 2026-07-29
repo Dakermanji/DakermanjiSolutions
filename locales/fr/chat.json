@@ -75,6 +75,8 @@
 	"rooms": {
 		"createTitle": "Créer un salon",
 		"createSubmit": "Créer le salon",
+		"editTitle": "Infos du salon",
+		"editSubmit": "Enregistrer",
 		"createSuccess": "Salon créé.",
 		"createError": "Impossible de créer ce salon.",
 		"updateSuccess": "Informations du salon mises à jour.",
