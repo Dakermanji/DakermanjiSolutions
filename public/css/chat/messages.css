@@ -137,6 +137,44 @@
 	color: var(--color-text-inverse);
 }
 
+.chat-message-flag-form {
+	align-self: flex-end;
+	margin: 0 0 0.05rem;
+}
+
+.chat-message-flag-button {
+	width: 1.8rem;
+	height: 1.8rem;
+	padding: 0;
+	border-color: transparent;
+	color: var(--color-text-muted);
+	background: transparent;
+	font-size: 0.85rem;
+}
+
+.chat-message-flag-button:hover,
+.chat-message-flag-button:focus-visible {
+	border-color: var(--color-warning);
+	color: var(--color-warning);
+	background: var(--color-warning-alpha);
+}
+
+.chat-message-flag-button.is-flagged {
+	border-color: var(--color-warning);
+	color: var(--color-warning-contrast);
+	background: var(--color-warning);
+}
+
+.chat-message-flag-button:disabled {
+	opacity: 1;
+}
+
+.chat-message-flag-button.is-flagged:disabled {
+	border-color: var(--color-warning);
+	color: var(--color-warning-contrast);
+	background: var(--color-warning);
+}
+
 .chat-message-text {
 	margin: 0;
 	text-align: start;
