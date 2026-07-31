@@ -1,6 +1,7 @@
 //! services/chat/rooms/requests.js
 
 import ChatRoomJoinRequestsModel from '../../../models/chat/RoomJoinRequests.js';
+import { CHAT_ROOM_ACTIVITY_ACTIONS } from '../../../constants/chat.js';
 import {
 	NOTIFICATION_ENTITY_TYPES,
 	NOTIFICATION_PRIORITIES,
@@ -12,6 +13,23 @@ import {
 	notifyRoomJoinRequestManagers,
 	notifyRoomJoinRequestResult,
 } from './notifications.js';
+import { recordRoomActivity } from './activity.js';
+
+async function recordJoinRequestReviewActivity({ request, action }) {
+	return recordRoomActivity({
+		roomId: request.room_id,
+		conversationId: request.conversation_id,
+		actorUserId: request.reviewed_by_user_id,
+		targetUserId: request.requested_by_user_id,
+		action,
+		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST,
+		entityId: request.id,
+		metadata: {
+			roomName: request.room_title,
+			requestId: request.id,
+		},
+	});
+}
 
 /**
  * Request access to one listed private room.
@@ -90,6 +108,10 @@ export async function approvePrivateRoomRequest({
 		});
 
 	if (request) {
+		await recordJoinRequestReviewActivity({
+			request,
+			action: CHAT_ROOM_ACTIVITY_ACTIONS.JOIN_REQUEST_APPROVED,
+		});
 		await respondAndDismissNotificationsByEntity({
 			entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST,
 			entityId: request.id,
@@ -131,6 +153,10 @@ export async function rejectPrivateRoomRequest({
 		});
 
 	if (request) {
+		await recordJoinRequestReviewActivity({
+			request,
+			action: CHAT_ROOM_ACTIVITY_ACTIONS.JOIN_REQUEST_REJECTED,
+		});
 		await respondAndDismissNotificationsByEntity({
 			entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST,
 			entityId: request.id,
