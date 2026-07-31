@@ -43,6 +43,10 @@ import {
 	ROOM_MEMBER_MANAGEMENT_RESULT,
 	unbanRoomMember,
 } from './rooms/memberManagement.js';
+import {
+	listRoomActivityLogsPage,
+	recordRoomActivity,
+} from './rooms/activity.js';
 
 export { createRoom } from './rooms/create.js';
 export { updateRoom } from './rooms/update.js';
@@ -83,6 +87,10 @@ export {
 	ROOM_MEMBER_MANAGEMENT_RESULT,
 	unbanRoomMember,
 } from './rooms/memberManagement.js';
+export {
+	listRoomActivityLogsPage,
+	recordRoomActivity,
+} from './rooms/activity.js';
 
 export default {
 	approvePrivateRoomRequest,
@@ -99,6 +107,7 @@ export default {
 	findWritableRoomConversation,
 	getOpenRoomConversation,
 	joinPublicRoom,
+	listRoomActivityLogsPage,
 	listPrivateRoomSection,
 	listPrivateRooms,
 	listPublicRooms,
@@ -108,6 +117,7 @@ export default {
 	muteRoomMember,
 	promoteRoomMember,
 	rejectPrivateRoomRequest,
+	recordRoomActivity,
 	removeRoomMember,
 	requestPrivateListedRoom,
 	ROOM_MEMBER_MANAGEMENT_RESULT,

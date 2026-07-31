@@ -414,6 +414,7 @@
 		],
 		"chat": {
 			"rooms": [
+				"activity.js",
 				"access.js",
 				"create.js",
 				"formatters.js",
