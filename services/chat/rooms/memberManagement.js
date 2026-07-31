@@ -2,6 +2,7 @@
 
 import ChatRoomsModel from '../../../models/chat/Rooms.js';
 import {
+	CHAT_ROOM_ACTIVITY_ACTIONS,
 	CHAT_CONVERSATION_MEMBER_ROLES,
 	CHAT_CONVERSATION_MEMBER_STATUSES,
 } from '../../../constants/chat.js';
@@ -17,6 +18,7 @@ import {
 } from './permissions.js';
 import { findOpenableRoomConversation } from './access.js';
 import { notifyRoomMemberPromoted } from './notifications.js';
+import { recordRoomActivity } from './activity.js';
 
 export const ROOM_MEMBER_MANAGEMENT_RESULT = Object.freeze({
 	OK: 'ok',
@@ -36,6 +38,25 @@ const ROOM_MEMBER_MANAGEMENT_ACTIONS = Object.freeze({
 	BAN: 'ban',
 	UNBAN: 'unban',
 	DELETE_HISTORY: 'delete_history',
+});
+
+const CHAT_MEMBER_ACTIVITY_ENTITY_TYPE = 'chat_conversation_member';
+
+const roomMemberActivityActions = Object.freeze({
+	[ROOM_MEMBER_MANAGEMENT_ACTIONS.PROMOTE]:
+		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_PROMOTED,
+	[ROOM_MEMBER_MANAGEMENT_ACTIONS.DEMOTE]:
+		CHAT_ROOM_ACTIVITY_ACTIONS.ADMIN_DEMOTED,
+	[ROOM_MEMBER_MANAGEMENT_ACTIONS.REMOVE]:
+		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_REMOVED,
+	[ROOM_MEMBER_MANAGEMENT_ACTIONS.MUTE]:
+		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_MUTED,
+	[ROOM_MEMBER_MANAGEMENT_ACTIONS.BAN]:
+		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_BANNED,
+	[ROOM_MEMBER_MANAGEMENT_ACTIONS.UNBAN]:
+		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_UNBANNED,
+	[ROOM_MEMBER_MANAGEMENT_ACTIONS.DELETE_HISTORY]:
+		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_HISTORY_DELETED,
 });
 
 const actionHandlers = Object.freeze({
@@ -84,6 +105,40 @@ function getMemberAccess(member) {
 			status: member.status || member.member_status,
 		}
 		: null;
+}
+
+function getMemberActivityMetadata({ room, action, target, member }) {
+	return {
+		roomName: room.title,
+		managementAction: action,
+		previousRole: target.role,
+		previousStatus: target.status,
+		nextRole: member.role,
+		nextStatus: member.status,
+	};
+}
+
+async function recordRoomMemberManagementActivity({
+	room,
+	action,
+	actorUserId,
+	target,
+	member,
+}) {
+	const activityAction = roomMemberActivityActions[action];
+
+	if (!activityAction) return null;
+
+	return recordRoomActivity({
+		roomId: room.room_id,
+		conversationId: room.conversation_id,
+		actorUserId,
+		targetUserId: member.user_id,
+		action: activityAction,
+		entityType: CHAT_MEMBER_ACTIVITY_ENTITY_TYPE,
+		entityId: member.user_id,
+		metadata: getMemberActivityMetadata({ room, action, target, member }),
+	});
 }
 
 async function manageRoomMember({
@@ -159,6 +214,14 @@ async function manageRoomMember({
 			{ room, target },
 		);
 	}
+
+	await recordRoomMemberManagementActivity({
+		room,
+		action,
+		actorUserId,
+		target,
+		member,
+	});
 
 	return createRoomMemberManagementResult(
 		ROOM_MEMBER_MANAGEMENT_RESULT.OK,
