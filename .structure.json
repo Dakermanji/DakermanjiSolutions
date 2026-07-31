@@ -490,7 +490,9 @@
 		"17_chat_rooms.sql",
 		"18_chat_room_join_requests.sql",
 		"19_chat_room_invitations.sql",
-		"20_app_notifications.sql"
+		"20_app_notifications.sql",
+		"21_chat_message_flags.sql",
+		"22_chat_room_activity_logs.sql"
 	],
 	"utils": {
 		"config": [
