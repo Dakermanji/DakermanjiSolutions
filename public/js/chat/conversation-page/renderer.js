@@ -97,9 +97,14 @@
 
 	function createMessageRow(message, currentUserId, {
 		canFlagMessages = false,
+		deleteLabel = '',
+		deleteUrl = '',
+		editLabel = '',
+		editUrl = '',
 		flagLabel = '',
 		flaggedLabel = '',
 		flagUrl = '',
+		editedLabel = '',
 		showSenderDisplay = false,
 	} = {}) {
 		const row = document.createElement('li');
@@ -107,6 +112,8 @@
 		const senderName = getSenderName(message);
 		const shouldShowSenderDisplay = showSenderDisplay && !isMine;
 		const canFlagMessage = canFlagMessages && !isMine && flagUrl;
+		const canEditMessage = isMine && message.canEdit && editUrl;
+		const canDeleteMessage = isMine && message.canDelete && deleteUrl;
 		row.className = `chat-message-row ${isMine ? 'is-mine' : 'is-theirs'}`;
 		row.dataset.chatMessageId = message.id;
 		row.dataset.chatMessageSenderId = message.sender?.id || '';
@@ -121,6 +128,9 @@
 		row.dataset.chatMessageFlaggedByViewer = message.flaggedByViewer
 			? 'true'
 			: 'false';
+		row.dataset.chatMessageCanEdit = message.canEdit ? 'true' : 'false';
+		row.dataset.chatMessageCanDelete = message.canDelete ? 'true' : 'false';
+		row.dataset.chatMessageEdited = message.editedAt ? 'true' : 'false';
 
 		if (shouldShowSenderDisplay) {
 			row.appendChild(createSenderAvatar(message, senderName));
@@ -140,15 +150,31 @@
 		body.className = 'chat-message-text';
 		body.dir = 'auto';
 		body.textContent = message.body || '';
+		bubble.appendChild(body);
 
+		const meta = document.createElement('span');
+		meta.className = 'chat-message-meta';
 		const time = document.createElement('time');
 		time.className = 'chat-message-time';
 		time.dateTime = new Date(message.createdAt).toISOString();
 		time.textContent = formatMessageTime(message.createdAt);
 
-		bubble.appendChild(body);
+		if (message.editedAt && editedLabel) {
+			meta.appendChild(createEditedTime(message.editedAt, editedLabel));
+		}
+
+		meta.appendChild(time);
 		row.appendChild(bubble);
-		row.appendChild(time);
+		row.appendChild(meta);
+
+		if (canEditMessage || canDeleteMessage) {
+			row.appendChild(createMessageActions(message, {
+				deleteLabel,
+				deleteUrl,
+				editLabel,
+				editUrl,
+			}));
+		}
 
 		if (canFlagMessage) {
 			row.appendChild(createFlagForm(message, flagUrl, {
@@ -185,6 +211,85 @@
 		}
 
 		return avatar;
+	}
+
+	function createEditedTime(value, editedLabel = '') {
+		const edited = document.createElement('span');
+		edited.className = 'chat-message-edited';
+
+		const label = document.createElement('span');
+		label.textContent = editedLabel;
+
+		const time = document.createElement('time');
+		time.dateTime = new Date(value).toISOString();
+		time.textContent = formatMessageTime(value);
+
+		edited.append(label, time);
+		return edited;
+	}
+
+	function createMessageActions(message, {
+		deleteLabel = '',
+		deleteUrl = '',
+		editLabel = '',
+		editUrl = '',
+	} = {}) {
+		const actions = document.createElement('div');
+		actions.className = 'chat-message-actions';
+
+		if (message.canEdit && editUrl) {
+			actions.appendChild(createEditButton(editLabel));
+		}
+
+		if (message.canDelete && deleteUrl) {
+			actions.appendChild(createDeleteForm(message, deleteUrl, deleteLabel));
+		}
+
+		window.AppTooltips?.initIn(actions);
+		return actions;
+	}
+
+	function createEditButton(editLabel = '') {
+		const button = document.createElement('button');
+		button.className = 'btn btn-action-outline chat-message-action has-tooltip';
+		button.type = 'button';
+		button.dataset.chatMessageEdit = 'true';
+		button.dataset.bsTitle = editLabel;
+		button.setAttribute('aria-label', editLabel);
+
+		const icon = document.createElement('i');
+		icon.className = 'bi bi-pencil';
+		icon.setAttribute('aria-hidden', 'true');
+
+		button.appendChild(icon);
+		return button;
+	}
+
+	function createDeleteForm(message, deleteUrl, deleteLabel = '') {
+		const form = document.createElement('form');
+		form.className = 'chat-message-delete-form';
+		form.method = 'POST';
+		form.action = deleteUrl;
+		form.dataset.chatMessageDeleteForm = 'true';
+
+		const input = document.createElement('input');
+		input.type = 'hidden';
+		input.name = 'messageId';
+		input.value = message.id || '';
+
+		const button = document.createElement('button');
+		button.className = 'btn btn-action-outline chat-message-action is-danger has-tooltip';
+		button.type = 'submit';
+		button.dataset.bsTitle = deleteLabel;
+		button.setAttribute('aria-label', deleteLabel);
+
+		const icon = document.createElement('i');
+		icon.className = 'bi bi-trash3';
+		icon.setAttribute('aria-hidden', 'true');
+
+		button.appendChild(icon);
+		form.append(input, button);
+		return form;
 	}
 
 	function createFlagForm(message, flagUrl, { flagLabel = '', flaggedLabel = '' } = {}) {
@@ -251,9 +356,54 @@
 		messageSurface.scrollTop += nextScrollHeight - previousScrollHeight;
 	}
 
+	function updateMessage(messageSurface, message, options = {}) {
+		if (!message?.id) return false;
+
+		const row = messageSurface.querySelector(
+			`[data-chat-message-id="${message.id}"]`,
+		);
+		if (!row) return false;
+
+		const body = row.querySelector('.chat-message-text');
+		if (body) {
+			body.textContent = message.body || '';
+		}
+
+		row.dataset.chatMessageEdited = message.editedAt ? 'true' : 'false';
+		row.dataset.chatMessageCanEdit = message.canEdit ? 'true' : 'false';
+		row.dataset.chatMessageCanDelete = message.canDelete ? 'true' : 'false';
+
+		const meta = row.querySelector('.chat-message-meta');
+		meta?.querySelector('.chat-message-edited')?.remove();
+
+		if (meta && message.editedAt && options.editedLabel) {
+			meta.prepend(createEditedTime(message.editedAt, options.editedLabel));
+		}
+
+		return true;
+	}
+
+	function removeMessage(messageSurface, messageId) {
+		const row = messageSurface.querySelector(
+			`[data-chat-message-id="${messageId}"]`,
+		);
+		if (!row) return false;
+
+		const list = row.closest('[data-chat-message-list]');
+		row.remove();
+
+		if (list) {
+			rebuildMessageDateSeparators(messageSurface);
+		}
+
+		return true;
+	}
+
 	window.ChatConversationRenderer = {
 		appendMessage,
 		prependMessages,
+		removeMessage,
 		rebuildMessageDateSeparators,
+		updateMessage,
 	};
 })();

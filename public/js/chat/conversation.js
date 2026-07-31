@@ -16,7 +16,12 @@ let typingHideTimer = null;
 let isTyping = false;
 let isLoadingOlderMessages = false;
 let hasOlderMessages = chatPage?.dataset.hasOlderMessages === 'true';
+let chatSocket = null;
+const mutationExpiryTimers = new Map();
 const isRoomConversation = chatPage?.dataset.chatConversationKind === 'room';
+const messageMutationWindowMs = Number(
+	chatPage?.dataset.messageMutationWindowMs || 0,
+);
 
 if (chatPage && messageSurface && messageRenderer) {
 	requestAnimationFrame(() => {
@@ -26,6 +31,7 @@ if (chatPage && messageSurface && messageRenderer) {
 			focusComposerInput();
 		}
 		void fillScrollableHistory();
+		scheduleVisibleMessageMutationExpiries();
 	});
 
 	messageSurface.addEventListener('scroll', () => {
@@ -33,6 +39,8 @@ if (chatPage && messageSurface && messageRenderer) {
 
 		void loadOlderMessages();
 	});
+	messageSurface.addEventListener('click', handleMessageActionClick);
+	messageSurface.addEventListener('submit', handleMessageActionSubmit);
 
 	membersToggle?.addEventListener('click', () => {
 		setActiveSidePanel(
@@ -47,6 +55,7 @@ if (chatPage && messageSurface && messageRenderer) {
 	});
 
 	const socket = composer ? connectChatSocket() : null;
+	chatSocket = socket;
 
 	if (socket) {
 		socket.emit('chat:conversation:join', {
@@ -55,6 +64,12 @@ if (chatPage && messageSurface && messageRenderer) {
 
 		socket.on('chat:message:created', (payload) => {
 			appendMessage(payload?.message, socket);
+		});
+		socket.on('chat:message:edited', (payload) => {
+			updateMessage(payload?.message);
+		});
+		socket.on('chat:message:deleted', (payload) => {
+			removeMessage(payload);
 		});
 		socket.on('chat:typing:updated', (payload) => {
 			showTypingIndicator(payload);
@@ -145,6 +160,11 @@ function appendMessage(message, socket = null) {
 		chatPage.dataset.currentUserId,
 		{
 			canFlagMessages: isRoomConversation,
+			deleteLabel: chatPage.dataset.deleteMessageLabel || '',
+			deleteUrl: chatPage.dataset.deleteMessageUrl || '',
+			editLabel: chatPage.dataset.editMessageLabel || '',
+			editUrl: chatPage.dataset.editMessageUrl || '',
+			editedLabel: chatPage.dataset.messageEditedLabel || '',
 			flagLabel: chatPage.dataset.flagMessageLabel || '',
 			flaggedLabel: chatPage.dataset.messageFlaggedLabel || '',
 			flagUrl: chatPage.dataset.flagMessageUrl || '',
@@ -154,6 +174,7 @@ function appendMessage(message, socket = null) {
 
 	if (!wasAppended) return;
 
+	scheduleMessageMutationExpiryById(message.id);
 	hideTypingIndicator();
 	scrollToLatestMessage();
 
@@ -218,6 +239,11 @@ async function loadOlderMessages() {
 			chatPage.dataset.currentUserId,
 			{
 				canFlagMessages: isRoomConversation,
+				deleteLabel: chatPage.dataset.deleteMessageLabel || '',
+				deleteUrl: chatPage.dataset.deleteMessageUrl || '',
+				editLabel: chatPage.dataset.editMessageLabel || '',
+				editUrl: chatPage.dataset.editMessageUrl || '',
+				editedLabel: chatPage.dataset.messageEditedLabel || '',
 				flagLabel: chatPage.dataset.flagMessageLabel || '',
 				flaggedLabel: chatPage.dataset.messageFlaggedLabel || '',
 				flagUrl: chatPage.dataset.flagMessageUrl || '',
@@ -226,6 +252,7 @@ async function loadOlderMessages() {
 		);
 		hasOlderMessages = Boolean(payload.hasMore);
 		chatPage.dataset.hasOlderMessages = hasOlderMessages ? 'true' : 'false';
+		scheduleVisibleMessageMutationExpiries();
 	} catch (error) {
 		console.error('Failed to load older chat messages', error);
 	} finally {
@@ -242,6 +269,195 @@ async function fillScrollableHistory() {
 	) {
 		await loadOlderMessages();
 	}
+}
+
+async function handleMessageActionClick(event) {
+	const editButton = event.target.closest('[data-chat-message-edit]');
+	if (!editButton) return;
+
+	const row = editButton.closest('[data-chat-message-id]');
+	if (!row || row.dataset.chatMessageCanEdit !== 'true') return;
+
+	const currentBody = row.querySelector('.chat-message-text')?.textContent || '';
+	const nextBody = window.prompt(
+		chatPage.dataset.editMessagePrompt || '',
+		currentBody,
+	);
+
+	if (nextBody === null) return;
+
+	const normalizedBody = nextBody.trim();
+	if (!normalizedBody || normalizedBody === currentBody.trim()) return;
+
+	const fields = {
+		messageId: row.dataset.chatMessageId,
+		message: normalizedBody,
+	};
+
+	if (chatSocket) {
+		editButton.disabled = true;
+
+		try {
+			const response = await emitWithAck(chatSocket, 'chat:message:edit', {
+				conversationId: chatPage.dataset.activeConversationId,
+				...fields,
+			});
+
+			if (response?.ok) {
+				updateMessage(response.message);
+				return;
+			}
+		} catch (error) {
+			console.error('Failed to edit live chat message', error);
+		} finally {
+			editButton.disabled = false;
+		}
+	}
+
+	submitMessageMutation(chatPage.dataset.editMessageUrl, fields);
+}
+
+async function handleMessageActionSubmit(event) {
+	const deleteForm = event.target.closest('[data-chat-message-delete-form]');
+	if (!deleteForm) return;
+
+	const confirmed = window.confirm(chatPage.dataset.deleteMessageConfirm || '');
+	if (!confirmed) {
+		event.preventDefault();
+		return;
+	}
+
+	if (!chatSocket) return;
+
+	event.preventDefault();
+	const submitButton = deleteForm.querySelector('button[type="submit"]');
+	const messageId = deleteForm.elements.messageId?.value || '';
+	submitButton.disabled = true;
+
+	try {
+		const response = await emitWithAck(chatSocket, 'chat:message:delete', {
+			conversationId: chatPage.dataset.activeConversationId,
+			messageId,
+		});
+
+		if (response?.ok) {
+			removeMessage(response);
+			return;
+		}
+	} catch (error) {
+		console.error('Failed to delete live chat message', error);
+	} finally {
+		submitButton.disabled = false;
+	}
+
+	deleteForm.submit();
+}
+
+function submitMessageMutation(action, fields) {
+	if (!action) return;
+
+	const form = document.createElement('form');
+	form.method = 'POST';
+	form.action = action;
+	form.hidden = true;
+
+	for (const [name, value] of Object.entries(fields)) {
+		const input = document.createElement('input');
+		input.type = 'hidden';
+		input.name = name;
+		input.value = value;
+		form.appendChild(input);
+	}
+
+	document.body.appendChild(form);
+	form.submit();
+}
+
+function updateMessage(message) {
+	if (
+		!message?.id ||
+		message.conversationId !== chatPage.dataset.activeConversationId
+	) {
+		return;
+	}
+
+	messageRenderer.updateMessage(messageSurface, message, {
+		editedLabel: chatPage.dataset.messageEditedLabel || '',
+	});
+	scheduleMessageMutationExpiryById(message.id);
+}
+
+function removeMessage(payload) {
+	if (
+		!payload?.messageId ||
+		payload.conversationId !== chatPage.dataset.activeConversationId
+	) {
+		return;
+	}
+
+	messageRenderer.removeMessage(messageSurface, payload.messageId);
+	clearMessageMutationExpiry(payload.messageId);
+}
+
+function scheduleVisibleMessageMutationExpiries() {
+	if (!messageMutationWindowMs) return;
+
+	messageSurface
+		.querySelectorAll('[data-chat-message-id]')
+		.forEach(scheduleMessageMutationExpiry);
+}
+
+function scheduleMessageMutationExpiryById(messageId) {
+	if (!messageId || !messageMutationWindowMs) return;
+
+	const row = messageSurface.querySelector(
+		`[data-chat-message-id="${messageId}"]`,
+	);
+	if (row) {
+		scheduleMessageMutationExpiry(row);
+	}
+}
+
+function scheduleMessageMutationExpiry(row) {
+	const messageId = row?.dataset.chatMessageId;
+	if (!messageId || !row.querySelector('.chat-message-actions')) return;
+
+	clearMessageMutationExpiry(messageId);
+
+	const remainingMs = getRemainingMutationMs(row);
+	if (remainingMs <= 0) {
+		expireMessageMutationActions(row);
+		return;
+	}
+
+	mutationExpiryTimers.set(
+		messageId,
+		window.setTimeout(() => {
+			expireMessageMutationActions(row);
+			mutationExpiryTimers.delete(messageId);
+		}, remainingMs),
+	);
+}
+
+function clearMessageMutationExpiry(messageId) {
+	const timerId = mutationExpiryTimers.get(messageId);
+	if (!timerId) return;
+
+	window.clearTimeout(timerId);
+	mutationExpiryTimers.delete(messageId);
+}
+
+function getRemainingMutationMs(row) {
+	const createdAt = Date.parse(row.dataset.chatMessageCreatedAt || '');
+	if (Number.isNaN(createdAt)) return 0;
+
+	return createdAt + messageMutationWindowMs - Date.now();
+}
+
+function expireMessageMutationActions(row) {
+	row.querySelector('.chat-message-actions')?.remove();
+	row.dataset.chatMessageCanEdit = 'false';
+	row.dataset.chatMessageCanDelete = 'false';
 }
 
 function handleTypingInput(socket, input) {
