@@ -187,6 +187,7 @@
 				"ConversationMembers.js",
 				"Conversations.js",
 				"Messages.js",
+				"RoomActivityLogs.js",
 				"RoomJoinRequests.js",
 				"Rooms.js"
 			]
