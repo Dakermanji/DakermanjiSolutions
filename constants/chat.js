@@ -37,6 +37,21 @@ export const CHAT_ROOM_JOIN_REQUEST_STATUSES = Object.freeze({
 	CANCELED: 'canceled',
 });
 
+export const CHAT_ROOM_ACTIVITY_ACTIONS = Object.freeze({
+	JOIN_REQUEST_APPROVED: 'join_request_approved',
+	JOIN_REQUEST_REJECTED: 'join_request_rejected',
+	MEMBER_PROMOTED: 'member_promoted',
+	ADMIN_DEMOTED: 'admin_demoted',
+	MEMBER_MUTED: 'member_muted',
+	MEMBER_UNMUTED: 'member_unmuted',
+	MEMBER_REMOVED: 'member_removed',
+	MEMBER_BANNED: 'member_banned',
+	MEMBER_UNBANNED: 'member_unbanned',
+	MEMBER_HISTORY_DELETED: 'member_history_deleted',
+	ROOM_INFO_UPDATED: 'room_info_updated',
+	MESSAGE_DELETED_BY_ADMIN: 'message_deleted_by_admin',
+});
+
 export const CHAT_ROOM_LIMITS = Object.freeze({
 	NAME_MAX_LENGTH: 50,
 	DESCRIPTION_MAX_LENGTH: 500,
