@@ -39,6 +39,12 @@
 	const olderMessagesUrl = isRoomConversation
 		? '/chat/rooms/messages'
 		: '/chat/friends/messages';
+	const editMessageUrl = isRoomConversation
+		? '/chat/rooms/messages/edit'
+		: '/chat/friends/messages/edit';
+	const deleteMessageUrl = isRoomConversation
+		? '/chat/rooms/messages/delete'
+		: '/chat/friends/messages/delete';
 	const messageFormAction = isRoomConversation
 		? '/chat/rooms/messages'
 		: '/chat/friends/messages';
@@ -137,6 +143,14 @@
 	data-typing-label="✍️ <%= t('chat:conversation.typing', { user: conversationName }) %>"
 	data-has-older-messages="<%= canLoadOlderMessages ? 'true' : 'false' %>"
 	data-older-messages-url="<%= olderMessagesUrl %>"
+	data-message-mutation-window-ms="<%= messageMutationWindowMs || 0 %>"
+	data-edit-message-url="<%= editMessageUrl %>"
+	data-delete-message-url="<%= deleteMessageUrl %>"
+	data-edit-message-label="<%= t('chat:conversation.edit') %>"
+	data-delete-message-label="<%= t('chat:conversation.delete') %>"
+	data-edit-message-prompt="<%= t('chat:conversation.editPrompt') %>"
+	data-delete-message-confirm="<%= t('chat:conversation.deleteConfirm') %>"
+	data-message-edited-label="<%= t('chat:conversation.edited') %>"
 	data-flag-message-url="/chat/rooms/messages/flag"
 	data-flag-message-label="<%= t('chat:conversation.flag') %>"
 	data-message-flagged-label="<%= t('chat:conversation.flagged') %>"
@@ -237,6 +251,9 @@
 						data-chat-message-created-at="<%= new Date(message.createdAt).toISOString() %>"
 						data-chat-message-pending-flag-count="<%= message.pendingFlagCount || 0 %>"
 						data-chat-message-flagged-by-viewer="<%= message.flaggedByViewer ? 'true' : 'false' %>"
+						data-chat-message-can-edit="<%= message.canEdit ? 'true' : 'false' %>"
+						data-chat-message-can-delete="<%= message.canDelete ? 'true' : 'false' %>"
+						data-chat-message-edited="<%= message.editedAt ? 'true' : 'false' %>"
 					>
 						<% if (isRoomConversation && !message.isMine) { %>
 							<span
@@ -259,12 +276,56 @@
 							<% } %>
 							<p class="chat-message-text" dir="auto"><%= message.body %></p>
 						</article>
-						<time
-							class="chat-message-time"
-							datetime="<%= new Date(message.createdAt).toISOString() %>"
-						>
-							<%= formatMessageTime(message.createdAt) %>
-						</time>
+						<span class="chat-message-meta">
+							<% if (message.editedAt) { %>
+								<span class="chat-message-edited">
+									<span><%= t('chat:conversation.edited') %></span>
+									<time datetime="<%= new Date(message.editedAt).toISOString() %>">
+										<%= formatMessageTime(message.editedAt) %>
+									</time>
+								</span>
+							<% } %>
+							<time
+								class="chat-message-time"
+								datetime="<%= new Date(message.createdAt).toISOString() %>"
+							>
+								<%= formatMessageTime(message.createdAt) %>
+							</time>
+						</span>
+						<% if (message.isMine && (message.canEdit || message.canDelete)) { %>
+							<div class="chat-message-actions">
+								<% if (message.canEdit) { %>
+									<button
+										class="btn btn-action-outline chat-message-action has-tooltip"
+										type="button"
+										data-chat-message-edit
+										data-bs-title="<%= t('chat:conversation.edit') %>"
+										aria-label="<%= t('chat:conversation.edit') %>"
+									>
+										<i class="bi bi-pencil" aria-hidden="true"></i>
+									</button>
+								<% } %>
+								<% if (message.canDelete) { %>
+									<form
+										class="chat-message-delete-form"
+										method="POST"
+										action="<%= deleteMessageUrl %>"
+										data-chat-message-delete-form
+									>
+										<%- include('../partials/_csrf') %>
+										<input type="hidden" name="messageId" value="<%= message.id %>" />
+										<button
+											class="btn btn-action-outline chat-message-action is-danger has-tooltip"
+											type="submit"
+											data-bs-title="<%= t('chat:conversation.delete') %>"
+											aria-label="<%= t('chat:conversation.delete') %>"
+										>
+											<i class="bi bi-trash3" aria-hidden="true"></i>
+										</button>
+									</form>
+								<% } %>
+							</div>
+						<% } %>
 						<% if (isRoomConversation && !message.isMine) { %>
 							<form
 								class="chat-message-flag-form"
