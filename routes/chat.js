@@ -8,8 +8,12 @@ import {
 	createChatRoom,
 	createFriendChatMessage,
 	createRoomChatMessage,
+	deleteFriendChatMessage,
+	deleteRoomChatMessage,
 	deleteChatRoomMemberHistory,
 	demoteChatRoomAdmin,
+	editFriendChatMessage,
+	editRoomChatMessage,
 	flagRoomChatMessage,
 	getFriendChats,
 	getOlderFriendMessages,
@@ -42,7 +46,11 @@ router.get('/rooms/open/:conversationId', openRoomConversation);
 router.post('/friends/open', openFriendConversation);
 router.post('/friends/close', closeFriendConversation);
 router.post('/friends/messages', createFriendChatMessage);
+router.post('/friends/messages/edit', editFriendChatMessage);
+router.post('/friends/messages/delete', deleteFriendChatMessage);
 router.post('/rooms/messages', createRoomChatMessage);
+router.post('/rooms/messages/edit', editRoomChatMessage);
+router.post('/rooms/messages/delete', deleteRoomChatMessage);
 router.post('/rooms/messages/flag', flagRoomChatMessage);
 router.post('/rooms', createChatRoom);
 router.post('/rooms/update', updateChatRoom);

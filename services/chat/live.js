@@ -3,6 +3,8 @@
 import {
 	createFriendMessage,
 	createRoomMessage,
+	deleteOwnMessage,
+	editOwnMessage,
 	findOpenableFriendConversation,
 } from './messages.js';
 import {
@@ -54,6 +56,41 @@ export async function emitChatMessageCreated(message) {
 		});
 
 	await emitChatUnreadCountsForConversation(message.conversationId);
+}
+
+/**
+ * Broadcast one edited message to users currently in the conversation room.
+ *
+ * @param {object|null} message
+ * @returns {void}
+ */
+export function emitChatMessageEdited(message) {
+	if (!chatSocketServer || !message?.conversationId) return;
+
+	chatSocketServer
+		.to(getChatConversationRoom(message.conversationId))
+		.emit('chat:message:edited', {
+			message,
+		});
+}
+
+/**
+ * Broadcast one deleted message to users currently in the conversation room.
+ *
+ * @param {object|null} message
+ * @returns {Promise<void>}
+ */
+export async function emitChatMessageDeleted(message) {
+	if (!chatSocketServer || !message?.conversation_id) return;
+
+	chatSocketServer
+		.to(getChatConversationRoom(message.conversation_id))
+		.emit('chat:message:deleted', {
+			conversationId: message.conversation_id,
+			messageId: message.id,
+		});
+
+	await emitChatUnreadCountsForConversation(message.conversation_id);
 }
 
 /**
@@ -260,6 +297,110 @@ export function registerChatSocketHandlers(io, socket) {
 		}
 	});
 
+	socket.on('chat:message:edit', async (payload, acknowledge) => {
+		const conversationId = String(payload?.conversationId || '').trim();
+		const messageId = String(payload?.messageId || '').trim();
+
+		if (!isValidUuid(conversationId) || !isValidUuid(messageId)) {
+			acknowledge?.({
+				ok: false,
+			});
+			return;
+		}
+
+		try {
+			const openConversation = await findOpenableConversation(
+				conversationId,
+				socket.data.userId,
+			);
+
+			if (!openConversation) {
+				acknowledge?.({
+					ok: false,
+				});
+				return;
+			}
+
+			const message = await editOwnMessage({
+				kind: openConversation.kind,
+				conversationId: openConversation.conversation.conversation_id,
+				messageId,
+				senderUserId: socket.data.userId,
+				body: payload?.message,
+			});
+
+			if (!message) {
+				acknowledge?.({
+					ok: false,
+				});
+				return;
+			}
+
+			emitChatMessageEdited(message);
+
+			acknowledge?.({
+				ok: true,
+				message,
+			});
+		} catch {
+			acknowledge?.({
+				ok: false,
+			});
+		}
+	});
+
+	socket.on('chat:message:delete', async (payload, acknowledge) => {
+		const conversationId = String(payload?.conversationId || '').trim();
+		const messageId = String(payload?.messageId || '').trim();
+
+		if (!isValidUuid(conversationId) || !isValidUuid(messageId)) {
+			acknowledge?.({
+				ok: false,
+			});
+			return;
+		}
+
+		try {
+			const openConversation = await findOpenableConversation(
+				conversationId,
+				socket.data.userId,
+			);
+
+			if (!openConversation) {
+				acknowledge?.({
+					ok: false,
+				});
+				return;
+			}
+
+			const message = await deleteOwnMessage({
+				kind: openConversation.kind,
+				conversationId: openConversation.conversation.conversation_id,
+				messageId,
+				senderUserId: socket.data.userId,
+			});
+
+			if (!message) {
+				acknowledge?.({
+					ok: false,
+				});
+				return;
+			}
+
+			await emitChatMessageDeleted(message);
+
+			acknowledge?.({
+				ok: true,
+				conversationId: message.conversation_id,
+				messageId: message.id,
+			});
+		} catch {
+			acknowledge?.({
+				ok: false,
+			});
+		}
+	});
+
 	socket.on('chat:typing:update', async (payload) => {
 		const conversationId = String(payload?.conversationId || '').trim();
 
@@ -324,6 +465,8 @@ export function registerChatSocketHandlers(io, socket) {
 
 export default {
 	emitChatMessageCreated,
+	emitChatMessageDeleted,
+	emitChatMessageEdited,
 	emitChatUnreadCountsChanged,
 	emitChatUnreadCountsForConversation,
 	getChatConversationRoom,

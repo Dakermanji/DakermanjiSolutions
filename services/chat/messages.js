@@ -14,6 +14,10 @@ import { getUserAvatarProfile } from '../avatar/dicebear.js';
 
 const { BODY_MAX_LENGTH, OLDER_PAGE_SIZE, RECENT_PAGE_SIZE } =
 	CHAT_MESSAGE_LIMITS;
+const FRIEND_EDIT_DELETE_WINDOW_MS =
+	CHAT_MESSAGE_LIMITS.FRIEND_EDIT_DELETE_WINDOW_MS;
+const ROOM_EDIT_DELETE_WINDOW_MS =
+	CHAT_MESSAGE_LIMITS.ROOM_EDIT_DELETE_WINDOW_MS;
 
 function normalizeMessageBody(body) {
 	return String(body || '').trim();
@@ -42,6 +46,9 @@ function formatMessageSender(message) {
 }
 
 function formatMessage(message, viewerUserId) {
+	const isMine = message.sender_user_id === viewerUserId;
+	const pendingFlagCount = Number(message.pending_flag_count || 0);
+
 	return {
 		id: message.id,
 		conversationId: message.conversation_id,
@@ -49,9 +56,11 @@ function formatMessage(message, viewerUserId) {
 		createdAt: message.created_at,
 		updatedAt: message.updated_at,
 		editedAt: message.edited_at,
-		pendingFlagCount: Number(message.pending_flag_count || 0),
+		pendingFlagCount,
 		flaggedByViewer: Boolean(message.flagged_by_viewer),
-		isMine: message.sender_user_id === viewerUserId,
+		isMine,
+		canEdit: Boolean(message.can_edit ?? (isMine && pendingFlagCount === 0)),
+		canDelete: Boolean(message.can_delete ?? (isMine && pendingFlagCount === 0)),
 		sender: formatMessageSender(message),
 	};
 }
@@ -66,8 +75,40 @@ function formatLiveMessage(message) {
 		editedAt: message.edited_at,
 		pendingFlagCount: Number(message.pending_flag_count || 0),
 		flaggedByViewer: Boolean(message.flagged_by_viewer),
+		canEdit: true,
+		canDelete: true,
 		sender: formatMessageSender(message),
 	};
+}
+
+function getMutationWindowMs(kind) {
+	return kind === 'room'
+		? ROOM_EDIT_DELETE_WINDOW_MS
+		: FRIEND_EDIT_DELETE_WINDOW_MS;
+}
+
+function getMessageAgeMs(message) {
+	const createdAt = new Date(message.created_at || message.createdAt);
+	if (Number.isNaN(createdAt.getTime())) return Number.POSITIVE_INFINITY;
+
+	return Date.now() - createdAt.getTime();
+}
+
+function applyMutationPermissions(messages, viewerUserId, kind) {
+	const mutationWindowMs = getMutationWindowMs(kind);
+
+	return messages.map((message) => {
+		const isMine = message.sender_user_id === viewerUserId;
+		const pendingFlagCount = Number(message.pending_flag_count || 0);
+		const isInsideWindow = getMessageAgeMs(message) <= mutationWindowMs;
+		const canMutate = isMine && pendingFlagCount === 0 && isInsideWindow;
+
+		return {
+			...message,
+			can_edit: canMutate,
+			can_delete: canMutate,
+		};
+	});
 }
 
 function formatMessagePage(messages, viewerUserId, limit) {
@@ -157,6 +198,100 @@ export async function flagRoomMessage({
 	});
 }
 
+async function findWritableConversationForMutation({
+	kind,
+	conversationId,
+	userId,
+}) {
+	if (kind === 'room') {
+		return findWritableRoomConversation(conversationId, userId);
+	}
+
+	return findWritableChatConversation({
+		conversationId,
+		userId,
+	});
+}
+
+/**
+ * Edit one sender-owned message inside the active mutation window.
+ *
+ * @param {object} input
+ * @param {'friend'|'room'} input.kind
+ * @param {string} input.conversationId
+ * @param {string} input.messageId
+ * @param {string} input.senderUserId
+ * @param {string} input.body
+ * @returns {Promise<object|null>}
+ */
+export async function editOwnMessage({
+	kind,
+	conversationId,
+	messageId,
+	senderUserId,
+	body,
+}) {
+	const normalizedBody = normalizeMessageBody(body);
+
+	if (!normalizedBody || normalizedBody.length > BODY_MAX_LENGTH) {
+		return null;
+	}
+
+	const conversation = await findWritableConversationForMutation({
+		kind,
+		conversationId,
+		userId: senderUserId,
+	});
+
+	if (!conversation) {
+		return null;
+	}
+
+	const message = await ChatMessagesModel.updateOwnConversationMessage({
+		conversationId: conversation.conversation_id,
+		messageId,
+		senderUserId,
+		body: normalizedBody,
+		windowMs: getMutationWindowMs(kind),
+	});
+
+	return message ? formatMessage(message, senderUserId) : null;
+}
+
+/**
+ * Delete one sender-owned message inside the active mutation window.
+ *
+ * @param {object} input
+ * @param {'friend'|'room'} input.kind
+ * @param {string} input.conversationId
+ * @param {string} input.messageId
+ * @param {string} input.senderUserId
+ * @returns {Promise<object|null>}
+ */
+export async function deleteOwnMessage({
+	kind,
+	conversationId,
+	messageId,
+	senderUserId,
+}) {
+	const conversation = await findWritableConversationForMutation({
+		kind,
+		conversationId,
+		userId: senderUserId,
+	});
+
+	if (!conversation) {
+		return null;
+	}
+
+	return ChatMessagesModel.deleteOwnConversationMessage({
+		conversationId: conversation.conversation_id,
+		messageId,
+		senderUserId,
+		windowMs: getMutationWindowMs(kind),
+	});
+}
+
 /**
  * Create a room chat message when the user can write in the room.
  *
@@ -232,7 +367,11 @@ export async function listFriendMessages(conversationId, viewerUserId) {
 		viewerUserId,
 	);
 
-	return formatMessagePage(messages, viewerUserId, RECENT_PAGE_SIZE);
+	return formatMessagePage(
+		applyMutationPermissions(messages, viewerUserId, 'friend'),
+		viewerUserId,
+		RECENT_PAGE_SIZE,
+	);
 }
 
 /**
@@ -258,7 +397,11 @@ export async function listRoomMessages(conversationId, viewerUserId) {
 		viewerUserId,
 	);
 
-	return formatMessagePage(messages, viewerUserId, RECENT_PAGE_SIZE);
+	return formatMessagePage(
+		applyMutationPermissions(messages, viewerUserId, 'room'),
+		viewerUserId,
+		RECENT_PAGE_SIZE,
+	);
 }
 
 /**
@@ -291,7 +434,11 @@ export async function listOlderFriendMessages({
 		viewerUserId,
 	});
 
-	return formatMessagePage(messages, viewerUserId, OLDER_PAGE_SIZE);
+	return formatMessagePage(
+		applyMutationPermissions(messages, viewerUserId, 'friend'),
+		viewerUserId,
+		OLDER_PAGE_SIZE,
+	);
 }
 
 /**
@@ -324,7 +471,11 @@ export async function listOlderRoomMessages({
 		viewerUserId,
 	});
 
-	return formatMessagePage(messages, viewerUserId, OLDER_PAGE_SIZE);
+	return formatMessagePage(
+		applyMutationPermissions(messages, viewerUserId, 'room'),
+		viewerUserId,
+		OLDER_PAGE_SIZE,
+	);
 }
 
 export const MESSAGE_BODY_MAX_LENGTH = BODY_MAX_LENGTH;
@@ -334,6 +485,8 @@ export const RECENT_MESSAGE_LIMIT = RECENT_PAGE_SIZE;
 export default {
 	createFriendMessage,
 	createRoomMessage,
+	deleteOwnMessage,
+	editOwnMessage,
 	flagRoomMessage,
 	findOpenableFriendConversation,
 	listOlderFriendMessages,

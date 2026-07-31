@@ -9,6 +9,10 @@ export {
 export {
 	createFriendChatMessage,
 	createRoomChatMessage,
+	deleteFriendChatMessage,
+	deleteRoomChatMessage,
+	editFriendChatMessage,
+	editRoomChatMessage,
 	flagRoomChatMessage,
 	getOlderFriendMessages,
 	getOlderRoomMessages,

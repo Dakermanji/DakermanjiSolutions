@@ -303,9 +303,173 @@ export async function createMessageFlag({
 	return rows[0] || null;
 }
 
+/**
+ * Edit a message owned by one sender inside the allowed time window.
+ *
+ * @param {object} message
+ * @param {string} message.conversationId
+ * @param {string} message.messageId
+ * @param {string} message.senderUserId
+ * @param {string} message.body
+ * @param {number} message.windowMs
+ * @returns {Promise<object|null>}
+ */
+export async function updateOwnConversationMessage({
+	conversationId,
+	messageId,
+	senderUserId,
+	body,
+	windowMs,
+}) {
+	const q = `
+		WITH editable_message AS (
+			SELECT cm.id
+			FROM chat_messages cm
+			WHERE cm.id = $2
+				AND cm.conversation_id = $1
+				AND cm.sender_user_id = $3
+				AND cm.deleted_at IS NULL
+				AND cm.created_at >= NOW() - ($5::int * INTERVAL '1 millisecond')
+				AND NOT EXISTS (
+					SELECT 1
+					FROM chat_message_flags cmf
+					WHERE cmf.message_id = cm.id
+						AND cmf.status = 'pending'
+				)
+			LIMIT 1
+		)
+		UPDATE chat_messages cm
+		SET
+			body = $4,
+			edited_at = NOW(),
+			updated_at = NOW()
+		FROM editable_message, users u
+		WHERE cm.id = editable_message.id
+			AND u.id = cm.sender_user_id
+		RETURNING
+			cm.id,
+			cm.conversation_id,
+			cm.sender_user_id,
+			cm.body,
+			cm.edited_at,
+			cm.created_at,
+			cm.updated_at,
+			0::int AS pending_flag_count,
+			false AS flagged_by_viewer,
+			u.username AS sender_username,
+			u.email AS sender_email,
+			u.avatar_seed AS sender_avatar_seed,
+			u.country_code AS sender_country_code;
+	`;
+
+	const rows = await queryRows(q, [
+		conversationId,
+		messageId,
+		senderUserId,
+		body,
+		windowMs,
+	]);
+
+	return rows[0] || null;
+}
+
+/**
+ * Soft-delete a message owned by one sender inside the allowed time window.
+ *
+ * @param {object} message
+ * @param {string} message.conversationId
+ * @param {string} message.messageId
+ * @param {string} message.senderUserId
+ * @param {number} message.windowMs
+ * @returns {Promise<object|null>}
+ */
+export async function deleteOwnConversationMessage({
+	conversationId,
+	messageId,
+	senderUserId,
+	windowMs,
+}) {
+	const client = await pool.connect();
+
+	try {
+		await client.query('BEGIN');
+
+		const deletedRows = await client.query(
+			`
+				WITH deletable_message AS (
+					SELECT cm.id
+					FROM chat_messages cm
+					WHERE cm.id = $2
+						AND cm.conversation_id = $1
+						AND cm.sender_user_id = $3
+						AND cm.deleted_at IS NULL
+						AND cm.created_at >= NOW() - ($4::int * INTERVAL '1 millisecond')
+						AND NOT EXISTS (
+							SELECT 1
+							FROM chat_message_flags cmf
+							WHERE cmf.message_id = cm.id
+								AND cmf.status = 'pending'
+						)
+					LIMIT 1
+				)
+				UPDATE chat_messages cm
+				SET
+					deleted_at = NOW(),
+					updated_at = NOW()
+				FROM deletable_message
+				WHERE cm.id = deletable_message.id
+				RETURNING
+					cm.id,
+					cm.conversation_id;
+			`,
+			[
+				conversationId,
+				messageId,
+				senderUserId,
+				windowMs,
+			],
+		);
+		const deletedMessage = deletedRows.rows[0] || null;
+
+		if (!deletedMessage) {
+			await client.query('ROLLBACK');
+			return null;
+		}
+
+		await client.query(
+			`
+				UPDATE chat_conversations cc
+				SET
+					last_message_id = (
+						SELECT cm.id
+						FROM chat_messages cm
+						WHERE cm.conversation_id = cc.id
+							AND cm.deleted_at IS NULL
+						ORDER BY cm.created_at DESC, cm.id DESC
+						LIMIT 1
+					),
+					updated_at = NOW()
+				WHERE cc.id = $1
+					AND cc.last_message_id = $2;
+			`,
+			[conversationId, messageId],
+		);
+
+		await client.query('COMMIT');
+		return deletedMessage;
+	} catch (error) {
+		await client.query('ROLLBACK');
+		throw error;
+	} finally {
+		client.release();
+	}
+}
+
 export default {
 	findRecentConversationMessages,
 	findOlderConversationMessages,
 	createConversationMessage,
 	createMessageFlag,
+	updateOwnConversationMessage,
+	deleteOwnConversationMessage,
 };

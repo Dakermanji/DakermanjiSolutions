@@ -69,6 +69,8 @@ export async function renderChat(req, res, next) {
 					roomMembers: [],
 					hasOlderMessages: messages.hasMore,
 					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
+					messageMutationWindowMs:
+						CHAT_MESSAGE_LIMITS.FRIEND_EDIT_DELETE_WINDOW_MS,
 					roomVisibility: CHAT_ROOM_VISIBILITY,
 				});
 			}
@@ -117,6 +119,8 @@ export async function renderChat(req, res, next) {
 					roomManagementMembers,
 					hasOlderMessages: messages.hasMore,
 					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
+					messageMutationWindowMs:
+						CHAT_MESSAGE_LIMITS.ROOM_EDIT_DELETE_WINDOW_MS,
 					roomVisibility: CHAT_ROOM_VISIBILITY,
 				});
 			}
