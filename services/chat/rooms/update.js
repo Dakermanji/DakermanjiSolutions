@@ -1,8 +1,12 @@
 //! services/chat/rooms/update.js
 
 import ChatRoomsModel from '../../../models/chat/Rooms.js';
+import { CHAT_ROOM_ACTIVITY_ACTIONS } from '../../../constants/chat.js';
 import { validateUpdateRoomInput } from '../../../middlewares/validators/chat.js';
 import { getRoomSettings } from './helpers.js';
+import { recordRoomActivity } from './activity.js';
+
+const CHAT_ROOM_ACTIVITY_ENTITY_TYPE = 'chat_room';
 
 /**
  * Update a room conversation after normalizing and validating input.
@@ -38,6 +42,21 @@ export async function updateRoom(input) {
 		...validation.values,
 		...settings,
 	});
+
+	if (room?.changed_fields?.length > 0) {
+		await recordRoomActivity({
+			roomId: room.room_id,
+			conversationId: room.conversation_id,
+			actorUserId: validation.values.actorUserId,
+			action: CHAT_ROOM_ACTIVITY_ACTIONS.ROOM_INFO_UPDATED,
+			entityType: CHAT_ROOM_ACTIVITY_ENTITY_TYPE,
+			entityId: room.room_id,
+			metadata: {
+				roomName: room.title,
+				changedFields: room.changed_fields,
+			},
+		});
+	}
 
 	return {
 		errors: room ? {} : { room: 'Room could not be updated.' },
