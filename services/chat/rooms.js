@@ -42,6 +42,7 @@ import {
 	removeRoomMember,
 	ROOM_MEMBER_MANAGEMENT_RESULT,
 	unbanRoomMember,
+	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 import {
 	listRoomActivityLogsPage,
@@ -86,6 +87,7 @@ export {
 	removeRoomMember,
 	ROOM_MEMBER_MANAGEMENT_RESULT,
 	unbanRoomMember,
+	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 export {
 	listRoomActivityLogsPage,
@@ -123,6 +125,7 @@ export default {
 	ROOM_MEMBER_MANAGEMENT_RESULT,
 	searchRooms,
 	unbanRoomMember,
+	unmuteRoomMember,
 	validateCreateRoomInput,
 	validateUpdateRoomInput,
 	updateRoom,

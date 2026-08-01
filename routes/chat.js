@@ -30,6 +30,7 @@ import {
 	requestPrivateRoomAccess,
 	searchVisibleRooms,
 	unbanChatRoomMember,
+	unmuteChatRoomMember,
 	updateChatRoom,
 } from '../controllers/chat/index.js';
 
@@ -62,6 +63,7 @@ router.post('/rooms/members/promote', promoteChatRoomMember);
 router.post('/rooms/members/demote', demoteChatRoomAdmin);
 router.post('/rooms/members/remove', removeChatRoomMember);
 router.post('/rooms/members/mute', muteChatRoomMember);
+router.post('/rooms/members/unmute', unmuteChatRoomMember);
 router.post('/rooms/members/ban', banChatRoomMember);
 router.post('/rooms/members/unban', unbanChatRoomMember);
 router.post('/rooms/members/delete-history', deleteChatRoomMemberHistory);

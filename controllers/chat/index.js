@@ -36,4 +36,5 @@ export {
 	promoteChatRoomMember,
 	removeChatRoomMember,
 	unbanChatRoomMember,
+	unmuteChatRoomMember,
 } from './roomMembers.js';

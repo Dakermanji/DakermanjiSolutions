@@ -114,6 +114,15 @@ export function canMuteChatRoomMember(actor, target) {
 	);
 }
 
+export function canUnmuteChatRoomMember(actor, target) {
+	const targetAccess = normalizeChatMemberAccess(target);
+
+	return (
+		targetAccess.status === CHAT_CONVERSATION_MEMBER_STATUSES.MUTED &&
+		canManageChatRoomMember(actor, targetAccess)
+	);
+}
+
 export function canBanChatRoomMember(actor, target) {
 	const targetAccess = normalizeChatMemberAccess(target);
 

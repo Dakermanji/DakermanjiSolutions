@@ -25,6 +25,7 @@ import {
 	promoteRoomMemberToAdmin,
 	removeRoomMember,
 	unbanRoomMember,
+	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 import {
 	findRoomConversationMember,
@@ -58,6 +59,7 @@ export {
 	promoteRoomMemberToAdmin,
 	removeRoomMember,
 	unbanRoomMember,
+	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 export {
 	findRoomConversationMember,
@@ -89,4 +91,5 @@ export default {
 	removeRoomMember,
 	searchVisibleRoomsForUser,
 	unbanRoomMember,
+	unmuteRoomMember,
 };

@@ -9,6 +9,7 @@ import {
 	promoteRoomMember,
 	removeRoomMember,
 	unbanRoomMember,
+	unmuteRoomMember,
 } from '../../services/chat/rooms.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import { setActiveChatConversation } from './session.js';
@@ -33,6 +34,11 @@ const ROOM_MEMBER_ACTIONS = Object.freeze({
 		run: muteRoomMember,
 		successKey: 'chat:members.actions.muteSuccess',
 		errorKey: 'chat:members.actions.muteError',
+	},
+	unmute: {
+		run: unmuteRoomMember,
+		successKey: 'chat:members.actions.unmuteSuccess',
+		errorKey: 'chat:members.actions.unmuteError',
 	},
 	ban: {
 		run: banRoomMember,
@@ -102,6 +108,9 @@ export const removeChatRoomMember = createRoomMemberActionHandler(
 );
 export const muteChatRoomMember = createRoomMemberActionHandler(
 	ROOM_MEMBER_ACTIONS.mute,
+);
+export const unmuteChatRoomMember = createRoomMemberActionHandler(
+	ROOM_MEMBER_ACTIONS.unmute,
 );
 export const banChatRoomMember = createRoomMemberActionHandler(
 	ROOM_MEMBER_ACTIONS.ban,

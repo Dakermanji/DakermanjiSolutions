@@ -205,6 +205,30 @@ export function muteRoomMember({
 }
 
 /**
+ * Unmute a room member.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.actorUserId
+ * @param {string} input.targetUserId
+ * @returns {Promise<object|null>}
+ */
+export function unmuteRoomMember({
+	conversationId,
+	actorUserId,
+	targetUserId,
+}) {
+	return updateManagedMember({
+		conversationId,
+		actorUserId,
+		targetUserId,
+		nextStatus: CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+		archiveTarget: false,
+		targetStatuses: [CHAT_CONVERSATION_MEMBER_STATUSES.MUTED],
+	});
+}
+
+/**
  * Ban a room member.
  *
  * @param {object} input

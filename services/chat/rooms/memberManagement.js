@@ -15,6 +15,7 @@ import {
 	canPromoteChatRoomMember,
 	canRemoveChatRoomMember,
 	canUnbanChatRoomMember,
+	canUnmuteChatRoomMember,
 } from './permissions.js';
 import { findOpenableRoomConversation } from './access.js';
 import { notifyRoomMemberPromoted } from './notifications.js';
@@ -35,6 +36,7 @@ const ROOM_MEMBER_MANAGEMENT_ACTIONS = Object.freeze({
 	DEMOTE: 'demote',
 	REMOVE: 'remove',
 	MUTE: 'mute',
+	UNMUTE: 'unmute',
 	BAN: 'ban',
 	UNBAN: 'unban',
 	DELETE_HISTORY: 'delete_history',
@@ -51,6 +53,8 @@ const roomMemberActivityActions = Object.freeze({
 		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_REMOVED,
 	[ROOM_MEMBER_MANAGEMENT_ACTIONS.MUTE]:
 		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_MUTED,
+	[ROOM_MEMBER_MANAGEMENT_ACTIONS.UNMUTE]:
+		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_UNMUTED,
 	[ROOM_MEMBER_MANAGEMENT_ACTIONS.BAN]:
 		CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_BANNED,
 	[ROOM_MEMBER_MANAGEMENT_ACTIONS.UNBAN]:
@@ -75,6 +79,10 @@ const actionHandlers = Object.freeze({
 	[ROOM_MEMBER_MANAGEMENT_ACTIONS.MUTE]: {
 		canAct: canMuteChatRoomMember,
 		run: ChatRoomsModel.muteRoomMember,
+	},
+	[ROOM_MEMBER_MANAGEMENT_ACTIONS.UNMUTE]: {
+		canAct: canUnmuteChatRoomMember,
+		run: ChatRoomsModel.unmuteRoomMember,
 	},
 	[ROOM_MEMBER_MANAGEMENT_ACTIONS.BAN]: {
 		canAct: canBanChatRoomMember,
@@ -264,6 +272,13 @@ export function muteRoomMember(input) {
 	return manageRoomMember({
 		...input,
 		action: ROOM_MEMBER_MANAGEMENT_ACTIONS.MUTE,
+	});
+}
+
+export function unmuteRoomMember(input) {
+	return manageRoomMember({
+		...input,
+		action: ROOM_MEMBER_MANAGEMENT_ACTIONS.UNMUTE,
 	});
 }
 
