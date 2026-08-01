@@ -20,6 +20,7 @@ import {
 	getOlderRoomMessages,
 	getPrivateRooms,
 	getPublicRooms,
+	getRoomActivityLogs,
 	joinPublicRoomConversation,
 	muteChatRoomMember,
 	openFriendConversation,
@@ -43,6 +44,7 @@ router.get('/rooms/messages', getOlderRoomMessages);
 router.get('/rooms/public', getPublicRooms);
 router.get('/rooms/private', getPrivateRooms);
 router.get('/rooms/search', searchVisibleRooms);
+router.get('/rooms/activity', getRoomActivityLogs);
 router.get('/rooms/open/:conversationId', openRoomConversation);
 router.post('/friends/open', openFriendConversation);
 router.post('/friends/close', closeFriendConversation);

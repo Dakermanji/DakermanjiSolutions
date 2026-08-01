@@ -4,10 +4,12 @@ import {
 	cancelPrivateRoomRequest,
 	createRoom,
 	findOpenableRoomConversation,
+	getRoomActivityLogsPage,
 	joinPublicRoom,
 	listPrivateRoomSection,
 	listPublicRooms,
 	requestPrivateListedRoom,
+	ROOM_ACTIVITY_LOG_RESULT,
 	searchRooms,
 	updateRoom,
 } from '../../services/chat/rooms.js';
@@ -34,6 +36,23 @@ function getRoomUpdateInput(req) {
 		keywords: req.body?.keywords,
 		visibility: req.body?.visibility,
 	};
+}
+
+function getRoomActivityLogInput(req) {
+	return {
+		conversationId: String(req.query?.conversationId || '').trim(),
+		actorUserId: req.user?.id,
+		page: req.query?.page,
+		perPage: req.query?.perPage,
+		order: req.query?.order,
+	};
+}
+
+function getRoomActivityLogStatus(reason) {
+	if (reason === ROOM_ACTIVITY_LOG_RESULT.INVALID_INPUT) return 400;
+	if (reason === ROOM_ACTIVITY_LOG_RESULT.FORBIDDEN) return 403;
+	if (reason === ROOM_ACTIVITY_LOG_RESULT.ROOM_NOT_FOUND) return 404;
+	return 200;
 }
 
 /**
@@ -284,6 +303,31 @@ export async function searchVisibleRooms(req, res, next) {
 		return res.json({
 			ok: true,
 			rooms,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Return room activity logs visible to active room owner/admin users.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function getRoomActivityLogs(req, res, next) {
+	try {
+		const result = await getRoomActivityLogsPage(
+			getRoomActivityLogInput(req),
+		);
+
+		return res.status(getRoomActivityLogStatus(result.reason)).json({
+			ok: result.ok,
+			reason: result.reason,
+			room: result.room,
+			activityPage: result.activityPage,
 		});
 	} catch (error) {
 		return next(error);
