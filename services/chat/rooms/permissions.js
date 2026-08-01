@@ -24,6 +24,12 @@ export function canChatMemberManage(role, status) {
 	);
 }
 
+export function canViewRoomActivityLog(member) {
+	const memberAccess = normalizeChatMemberAccess(member);
+
+	return canChatMemberManage(memberAccess.role, memberAccess.status);
+}
+
 function getChatMemberRoleRank(role) {
 	return CHAT_CONVERSATION_MEMBER_ROLE_RANKS[role] || 0;
 }
