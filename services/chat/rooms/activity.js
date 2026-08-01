@@ -69,6 +69,19 @@ function formatActivityLogRoom(room) {
 	};
 }
 
+function formatActivityLogUser(activity, prefix) {
+	const id = activity?.[`${prefix}_user_id`] || null;
+	const username = activity?.[`${prefix}_username`] || null;
+	const email = activity?.[`${prefix}_email`] || null;
+
+	return {
+		id,
+		username,
+		email,
+		displayName: username || email || null,
+	};
+}
+
 export function isRoomActivityAction(action) {
 	return ROOM_ACTIVITY_ACTION_VALUES.has(action);
 }
@@ -97,12 +110,8 @@ export function formatRoomActivityLog(activity) {
 		roomId: activity.room_id,
 		conversationId: activity.conversation_id,
 		action: activity.action,
-		actor: {
-			id: activity.actor_user_id,
-		},
-		target: {
-			id: activity.target_user_id,
-		},
+		actor: formatActivityLogUser(activity, 'actor'),
+		target: formatActivityLogUser(activity, 'target'),
 		entity: {
 			type: activity.entity_type,
 			id: activity.entity_id,

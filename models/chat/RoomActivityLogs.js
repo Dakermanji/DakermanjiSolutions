@@ -20,6 +20,9 @@ const BASE_FIELDS = [
 ];
 
 const baseFieldsSQL = BASE_FIELDS.join(', ');
+const selectBaseFieldsSQL = BASE_FIELDS
+	.map((field) => `activity.${field}`)
+	.join(', ');
 
 const normalizePositiveInteger = (value, fallback, max = Number.MAX_SAFE_INTEGER) => {
 	const normalized = Number.parseInt(value, 10);
@@ -115,11 +118,19 @@ export async function listRoomActivityLogsPage({
 	const rows = await queryRows(
 		`
 			SELECT
-				${baseFieldsSQL},
+				${selectBaseFieldsSQL},
+				actor.username AS actor_username,
+				actor.email AS actor_email,
+				target.username AS target_username,
+				target.email AS target_email,
 				COUNT(*) OVER()::int AS total_count
-			FROM chat_room_activity_logs
-			WHERE room_id = $1
-			ORDER BY created_at ${sortDirection}, id ${sortDirection}
+			FROM chat_room_activity_logs activity
+			LEFT JOIN users actor
+				ON actor.id = activity.actor_user_id
+			LEFT JOIN users target
+				ON target.id = activity.target_user_id
+			WHERE activity.room_id = $1
+			ORDER BY activity.created_at ${sortDirection}, activity.id ${sortDirection}
 			LIMIT $2 OFFSET $3;
 		`,
 		[roomId, normalizedPerPage, offset],
