@@ -88,6 +88,30 @@
 			"deleteHistoryError": "تعذر حذف سجل هذا العضو."
 		}
 	},
+	"activity": {
+		"toggle": "سجل النشاط",
+		"kicker": "الغرفة",
+		"title": "سجل النشاط",
+		"empty": "لا يوجد نشاط للعرض.",
+		"loading": "جارٍ تحميل النشاط...",
+		"error": "تعذر تحميل النشاط.",
+		"loadMore": "تحميل المزيد",
+		"system": "النظام",
+		"actions": {
+			"joinRequestApproved": "وافق على طلب انضمام",
+			"joinRequestRejected": "رفض طلب انضمام",
+			"memberPromoted": "رقّى",
+			"adminDemoted": "حوّل إلى عضو",
+			"memberMuted": "كتم",
+			"memberUnmuted": "ألغى كتم",
+			"memberRemoved": "أزال",
+			"memberBanned": "حظر",
+			"memberUnbanned": "رفع الحظر عن",
+			"memberHistoryDeleted": "حذف سجل",
+			"roomInfoUpdated": "حدّث معلومات الغرفة",
+			"messageDeletedByAdmin": "حذف رسالة"
+		}
+	},
 	"rooms": {
 		"createTitle": "إنشاء غرفة",
 		"createSubmit": "إنشاء الغرفة",

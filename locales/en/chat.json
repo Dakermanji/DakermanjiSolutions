@@ -88,6 +88,30 @@
 			"deleteHistoryError": "Could not delete this member history."
 		}
 	},
+	"activity": {
+		"toggle": "Activity log",
+		"kicker": "Room",
+		"title": "Activity log",
+		"empty": "No activity to show.",
+		"loading": "Loading activity...",
+		"error": "Could not load activity.",
+		"loadMore": "Load more",
+		"system": "System",
+		"actions": {
+			"joinRequestApproved": "approved the join request for",
+			"joinRequestRejected": "rejected the join request for",
+			"memberPromoted": "promoted",
+			"adminDemoted": "demoted",
+			"memberMuted": "muted",
+			"memberUnmuted": "unmuted",
+			"memberRemoved": "removed",
+			"memberBanned": "banned",
+			"memberUnbanned": "unbanned",
+			"memberHistoryDeleted": "deleted history for",
+			"roomInfoUpdated": "updated room info",
+			"messageDeletedByAdmin": "deleted a message"
+		}
+	},
 	"rooms": {
 		"createTitle": "Create room",
 		"createSubmit": "Create room",

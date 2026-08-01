@@ -88,6 +88,30 @@
 			"deleteHistoryError": "Impossible de supprimer l’historique de ce membre."
 		}
 	},
+	"activity": {
+		"toggle": "Journal d’activité",
+		"kicker": "Salon",
+		"title": "Journal d’activité",
+		"empty": "Aucune activité à afficher.",
+		"loading": "Chargement de l’activité...",
+		"error": "Impossible de charger l’activité.",
+		"loadMore": "Charger plus",
+		"system": "Système",
+		"actions": {
+			"joinRequestApproved": "a approuvé la demande de",
+			"joinRequestRejected": "a refusé la demande de",
+			"memberPromoted": "a promu",
+			"adminDemoted": "a rétrogradé",
+			"memberMuted": "a mis en sourdine",
+			"memberUnmuted": "a réactivé",
+			"memberRemoved": "a retiré",
+			"memberBanned": "a banni",
+			"memberUnbanned": "a débanni",
+			"memberHistoryDeleted": "a supprimé l’historique de",
+			"roomInfoUpdated": "a mis à jour les infos du salon",
+			"messageDeletedByAdmin": "a supprimé un message"
+		}
+	},
 	"rooms": {
 		"createTitle": "Créer un salon",
 		"createSubmit": "Créer le salon",

@@ -157,6 +157,16 @@
 	data-flag-message-url="/chat/rooms/messages/flag"
 	data-flag-message-label="<%= t('chat:conversation.flag') %>"
 	data-message-flagged-label="<%= t('chat:conversation.flagged') %>"
+	data-activity-url="/chat/rooms/activity"
+	data-activity-loading-label="<%= t('chat:activity.loading') %>"
+	data-activity-error-label="<%= t('chat:activity.error') %>"
+	data-activity-empty-label="<%= t('chat:activity.empty') %>"
+	data-activity-load-more-label="<%= t('chat:activity.loadMore') %>"
+	data-activity-system-label="<%= t('chat:activity.system') %>"
+	data-activity-field-label-name="<%= t('chat:rooms.name') %>"
+	data-activity-field-label-description="<%= t('chat:rooms.description') %>"
+	data-activity-field-label-keywords="<%= t('chat:rooms.keywords') %>"
+	data-activity-field-label-visibility="<%= t('chat:rooms.visibility') %>"
 >
 	<header class="chat-conversation-header">
 		<form method="POST" action="/chat/friends/close" class="chat-back-form">
@@ -201,6 +211,17 @@
 				</button>
 			<% } %>
 			<% if (canManageRoom) { %>
+				<button
+					class="btn btn-action-outline chat-panel-toggle has-tooltip"
+					type="button"
+					data-chat-activity-toggle
+					data-bs-title="<%= t('chat:activity.toggle') %>"
+					aria-label="<%= t('chat:activity.toggle') %>"
+					aria-controls="chat-activity-panel"
+					aria-expanded="false"
+				>
+					<i class="bi bi-clock-history" aria-hidden="true"></i>
+				</button>
 				<button
 					class="btn btn-action-outline chat-panel-toggle has-tooltip"
 					type="button"
@@ -509,6 +530,59 @@
 					<p><%= t('chat:members.empty') %></p>
 				</div>
 			<% } %>
+		</section>
+	<% } %>
+
+	<% if (isRoomConversation && canManageRoom) { %>
+		<section
+			id="chat-activity-panel"
+			class="chat-members-panel chat-activity-panel"
+			aria-labelledby="chat-activity-title"
+			data-chat-activity-panel
+			hidden
+		>
+			<header class="chat-members-header">
+				<div>
+					<p class="chat-kicker"><%= t('chat:activity.kicker') %></p>
+					<h2 id="chat-activity-title"><%= t('chat:activity.title') %></h2>
+				</div>
+				<span class="chat-members-count" data-chat-activity-count>
+					<%= t('chat:count', { count: 0 }) %>
+				</span>
+			</header>
+
+			<ol class="chat-activity-list" data-chat-activity-list></ol>
+
+			<div class="chat-members-empty" data-chat-activity-state>
+				<i class="bi bi-clock-history" aria-hidden="true"></i>
+				<p><%= t('chat:activity.empty') %></p>
+			</div>
+
+			<button
+				class="btn btn-action-outline chat-activity-load-more"
+				type="button"
+				data-chat-activity-load-more
+				hidden
+			>
+				<%= t('chat:activity.loadMore') %>
+			</button>
+
+			<script type="application/json" data-chat-activity-labels>
+				<%- JSON.stringify({
+					join_request_approved: t('chat:activity.actions.joinRequestApproved'),
+					join_request_rejected: t('chat:activity.actions.joinRequestRejected'),
+					member_promoted: t('chat:activity.actions.memberPromoted'),
+					admin_demoted: t('chat:activity.actions.adminDemoted'),
+					member_muted: t('chat:activity.actions.memberMuted'),
+					member_unmuted: t('chat:activity.actions.memberUnmuted'),
+					member_removed: t('chat:activity.actions.memberRemoved'),
+					member_banned: t('chat:activity.actions.memberBanned'),
+					member_unbanned: t('chat:activity.actions.memberUnbanned'),
+					member_history_deleted: t('chat:activity.actions.memberHistoryDeleted'),
+					room_info_updated: t('chat:activity.actions.roomInfoUpdated'),
+					message_deleted_by_admin: t('chat:activity.actions.messageDeletedByAdmin'),
+				}) %>
+			</script>
 		</section>
 	<% } %>
 
