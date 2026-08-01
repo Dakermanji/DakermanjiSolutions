@@ -45,8 +45,10 @@ import {
 	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 import {
+	getRoomActivityLogsPage,
 	listRoomActivityLogsPage,
 	recordRoomActivity,
+	ROOM_ACTIVITY_LOG_RESULT,
 } from './rooms/activity.js';
 
 export { createRoom } from './rooms/create.js';
@@ -90,8 +92,10 @@ export {
 	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 export {
+	getRoomActivityLogsPage,
 	listRoomActivityLogsPage,
 	recordRoomActivity,
+	ROOM_ACTIVITY_LOG_RESULT,
 } from './rooms/activity.js';
 
 export default {
@@ -108,6 +112,7 @@ export default {
 	findOpenableRoomConversation,
 	findWritableRoomConversation,
 	getOpenRoomConversation,
+	getRoomActivityLogsPage,
 	joinPublicRoom,
 	listRoomActivityLogsPage,
 	listPrivateRoomSection,
@@ -122,6 +127,7 @@ export default {
 	recordRoomActivity,
 	removeRoomMember,
 	requestPrivateListedRoom,
+	ROOM_ACTIVITY_LOG_RESULT,
 	ROOM_MEMBER_MANAGEMENT_RESULT,
 	searchRooms,
 	unbanRoomMember,

@@ -3,6 +3,15 @@
 import { CHAT_ROOM_ACTIVITY_ACTIONS } from '../../../constants/chat.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
 import RoomActivityLogsModel from '../../../models/chat/RoomActivityLogs.js';
+import { findOpenableRoomConversation } from './access.js';
+import { canViewRoomActivityLog } from './permissions.js';
+
+export const ROOM_ACTIVITY_LOG_RESULT = Object.freeze({
+	OK: 'ok',
+	INVALID_INPUT: 'invalid_input',
+	ROOM_NOT_FOUND: 'room_not_found',
+	FORBIDDEN: 'forbidden',
+});
 
 const ROOM_ACTIVITY_ACTION_VALUES = new Set(
 	Object.values(CHAT_ROOM_ACTIVITY_ACTIONS),
@@ -36,6 +45,27 @@ function normalizeEntityReference({ entityType, entityId } = {}) {
 	return {
 		entityType: normalizedEntityType,
 		entityId: normalizedEntityId,
+	};
+}
+
+function createRoomActivityLogResult(reason, extra = {}) {
+	return {
+		ok: reason === ROOM_ACTIVITY_LOG_RESULT.OK,
+		reason,
+		...extra,
+	};
+}
+
+function formatActivityLogRoom(room) {
+	if (!room) return null;
+
+	return {
+		id: room.room_id,
+		conversationId: room.conversation_id,
+		title: room.title,
+		visibility: room.visibility,
+		memberRole: room.member_role,
+		memberStatus: room.member_status,
 	};
 }
 
@@ -135,11 +165,62 @@ export async function listRoomActivityLogsPage({
 	return formatRoomActivityLogPage(activityPage);
 }
 
+export async function getRoomActivityLogsPage({
+	conversationId,
+	actorUserId,
+	page,
+	perPage,
+	order,
+} = {}) {
+	if (!isValidUuid(conversationId) || !isValidUuid(actorUserId)) {
+		return createRoomActivityLogResult(
+			ROOM_ACTIVITY_LOG_RESULT.INVALID_INPUT,
+			{ activityPage: { ...EMPTY_ACTIVITY_LOG_PAGE }, room: null },
+		);
+	}
+
+	const room = await findOpenableRoomConversation(conversationId, actorUserId);
+
+	if (!room) {
+		return createRoomActivityLogResult(
+			ROOM_ACTIVITY_LOG_RESULT.ROOM_NOT_FOUND,
+			{ activityPage: { ...EMPTY_ACTIVITY_LOG_PAGE }, room: null },
+		);
+	}
+
+	if (!canViewRoomActivityLog(room)) {
+		return createRoomActivityLogResult(
+			ROOM_ACTIVITY_LOG_RESULT.FORBIDDEN,
+			{
+				activityPage: { ...EMPTY_ACTIVITY_LOG_PAGE },
+				room: formatActivityLogRoom(room),
+			},
+		);
+	}
+
+	const activityPage = await listRoomActivityLogsPage({
+		roomId: room.room_id,
+		page,
+		perPage,
+		order,
+	});
+
+	return createRoomActivityLogResult(
+		ROOM_ACTIVITY_LOG_RESULT.OK,
+		{
+			activityPage,
+			room: formatActivityLogRoom(room),
+		},
+	);
+}
+
 export default {
 	formatRoomActivityLog,
 	formatRoomActivityLogPage,
+	getRoomActivityLogsPage,
 	isRoomActivityAction,
 	listRoomActivityLogsPage,
 	normalizeRoomActivityMetadata,
 	recordRoomActivity,
+	ROOM_ACTIVITY_LOG_RESULT,
 };
