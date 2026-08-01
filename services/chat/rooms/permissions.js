@@ -36,8 +36,8 @@ function getChatMemberRoleRank(role) {
 
 function normalizeChatMemberAccess(member = {}) {
 	return {
-		role: member.role || member.memberRole,
-		status: member.status || member.memberStatus,
+		role: member.role || member.memberRole || member.member_role,
+		status: member.status || member.memberStatus || member.member_status,
 	};
 }
 
