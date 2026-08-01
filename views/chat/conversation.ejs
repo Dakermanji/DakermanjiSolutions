@@ -80,6 +80,9 @@
 	const canMuteTarget = (member) =>
 		canManageTarget(member) &&
 		member.status === 'active';
+	const canUnmuteTarget = (member) =>
+		canManageTarget(member) &&
+		member.status === 'muted';
 	const canBanTarget = (member) =>
 		canManageTarget(member) &&
 		['active', 'muted'].includes(member.status);
@@ -472,6 +475,7 @@
 												{ show: canPromoteTarget(member), path: '/chat/rooms/members/promote', icon: 'bi-arrow-up-circle', label: 'promote' },
 												{ show: canDemoteTarget(member), path: '/chat/rooms/members/demote', icon: 'bi-arrow-down-circle', label: 'demote' },
 												{ show: canMuteTarget(member), path: '/chat/rooms/members/mute', icon: 'bi-volume-mute', label: 'mute' },
+												{ show: canUnmuteTarget(member), path: '/chat/rooms/members/unmute', icon: 'bi-volume-up', label: 'unmute' },
 												{ show: canRemoveTarget(member), path: '/chat/rooms/members/remove', icon: 'bi-person-dash', label: 'remove' },
 												{ show: canBanTarget(member), path: '/chat/rooms/members/ban', icon: 'bi-slash-circle', label: 'ban' },
 												{ show: canUnbanTarget(member), path: '/chat/rooms/members/unban', icon: 'bi-unlock', label: 'unban' },
