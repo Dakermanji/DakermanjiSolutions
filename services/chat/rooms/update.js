@@ -54,6 +54,7 @@ export async function updateRoom(input) {
 			metadata: {
 				roomName: room.title,
 				changedFields: room.changed_fields,
+				changes: room.changes,
 			},
 		});
 	}

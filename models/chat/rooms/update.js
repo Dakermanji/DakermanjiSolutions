@@ -9,26 +9,38 @@ function areStringArraysEqual(first = [], second = []) {
 	return first.every((value, index) => value === second[index]);
 }
 
-function getChangedFields(existingRoom, updatedRoom) {
-	const changedFields = [];
+function getRoomChanges(existingRoom, updatedRoom) {
+	const changes = {};
 
 	if (existingRoom.title !== updatedRoom.title) {
-		changedFields.push('name');
+		changes.name = {
+			old: existingRoom.title,
+			new: updatedRoom.title,
+		};
 	}
 
 	if ((existingRoom.description || '') !== (updatedRoom.description || '')) {
-		changedFields.push('description');
+		changes.description = {
+			old: existingRoom.description,
+			new: updatedRoom.description,
+		};
 	}
 
 	if (!areStringArraysEqual(existingRoom.keywords || [], updatedRoom.keywords || [])) {
-		changedFields.push('keywords');
+		changes.keywords = {
+			old: existingRoom.keywords || [],
+			new: updatedRoom.keywords || [],
+		};
 	}
 
 	if (existingRoom.visibility !== updatedRoom.visibility) {
-		changedFields.push('visibility');
+		changes.visibility = {
+			old: existingRoom.visibility,
+			new: updatedRoom.visibility,
+		};
 	}
 
-	return changedFields;
+	return changes;
 }
 
 /**
@@ -148,6 +160,13 @@ export async function updateRoomConversation({
 
 		await client.query('COMMIT');
 
+		const changes = getRoomChanges(existingRoom, {
+			title: conversation.title,
+			description: room.description,
+			keywords: room.keywords,
+			visibility: room.visibility,
+		});
+
 		return {
 			...conversation,
 			room_id: room.id,
@@ -156,12 +175,8 @@ export async function updateRoomConversation({
 			keywords: room.keywords,
 			visibility: room.visibility,
 			join_policy: room.join_policy,
-			changed_fields: getChangedFields(existingRoom, {
-				title: conversation.title,
-				description: room.description,
-				keywords: room.keywords,
-				visibility: room.visibility,
-			}),
+			changed_fields: Object.keys(changes),
+			changes,
 		};
 	} catch (error) {
 		await client.query('ROLLBACK');
