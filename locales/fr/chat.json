@@ -110,6 +110,8 @@
 			"memberHistoryDeleted": "a supprimé l’historique de",
 			"roomInfoUpdated": "a mis à jour les infos du salon",
 			"messageFlagged": "a signalé un message de",
+			"messageMarkedSafe": "a marqué comme sûr un message de",
+			"flaggedMessageDeleted": "a supprimé un message signalé de",
 			"messageDeletedByAdmin": "a supprimé un message"
 		}
 	},

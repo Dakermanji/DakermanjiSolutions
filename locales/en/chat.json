@@ -110,6 +110,8 @@
 			"memberHistoryDeleted": "deleted history for",
 			"roomInfoUpdated": "updated room info",
 			"messageFlagged": "flagged a message from",
+			"messageMarkedSafe": "marked a message safe from",
+			"flaggedMessageDeleted": "deleted a flagged message from",
 			"messageDeletedByAdmin": "deleted a message"
 		}
 	},

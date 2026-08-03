@@ -110,6 +110,8 @@
 			"memberHistoryDeleted": "حذف سجل",
 			"roomInfoUpdated": "حدّث معلومات الغرفة",
 			"messageFlagged": "أبلغ عن رسالة من",
+			"messageMarkedSafe": "اعتبر الرسالة آمنة من",
+			"flaggedMessageDeleted": "حذف رسالة مبلغ عنها من",
 			"messageDeletedByAdmin": "حذف رسالة"
 		}
 	},

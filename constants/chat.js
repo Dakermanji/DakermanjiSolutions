@@ -56,6 +56,8 @@ export const CHAT_ROOM_ACTIVITY_ACTIONS = Object.freeze({
 	MEMBER_HISTORY_DELETED: 'member_history_deleted',
 	ROOM_INFO_UPDATED: 'room_info_updated',
 	MESSAGE_FLAGGED: 'message_flagged',
+	MESSAGE_MARKED_SAFE: 'message_marked_safe',
+	FLAGGED_MESSAGE_DELETED: 'flagged_message_deleted',
 	MESSAGE_DELETED_BY_ADMIN: 'message_deleted_by_admin',
 });
 
