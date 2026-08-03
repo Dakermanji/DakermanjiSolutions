@@ -116,8 +116,14 @@ export async function markMessageFlagsSafe({
 				cm.id,
 				cm.conversation_id,
 				cm.sender_user_id,
-				cm.body
+				cm.body,
+				u.username AS sender_username,
+				u.email AS sender_email,
+				u.avatar_seed AS sender_avatar_seed,
+				u.country_code AS sender_country_code
 			FROM chat_messages cm
+			INNER JOIN users u
+				ON u.id = cm.sender_user_id
 			WHERE cm.id = $2
 				AND cm.conversation_id = $1
 				AND cm.deleted_at IS NULL
@@ -146,6 +152,10 @@ export async function markMessageFlagsSafe({
 			reviewable_message.conversation_id,
 			reviewable_message.sender_user_id,
 			reviewable_message.body,
+			reviewable_message.sender_username,
+			reviewable_message.sender_email,
+			reviewable_message.sender_avatar_seed,
+			reviewable_message.sender_country_code,
 			COUNT(updated_flags.id)::int AS reviewed_flag_count
 		FROM reviewable_message
 		INNER JOIN updated_flags
@@ -154,7 +164,11 @@ export async function markMessageFlagsSafe({
 			reviewable_message.id,
 			reviewable_message.conversation_id,
 			reviewable_message.sender_user_id,
-			reviewable_message.body;
+			reviewable_message.body,
+			reviewable_message.sender_username,
+			reviewable_message.sender_email,
+			reviewable_message.sender_avatar_seed,
+			reviewable_message.sender_country_code;
 	`;
 
 	const rows = await queryRows(q, [
@@ -194,8 +208,14 @@ export async function deleteFlaggedMessage({
 						cm.id,
 						cm.conversation_id,
 						cm.sender_user_id,
-						cm.body
+						cm.body,
+						u.username AS sender_username,
+						u.email AS sender_email,
+						u.avatar_seed AS sender_avatar_seed,
+						u.country_code AS sender_country_code
 					FROM chat_messages cm
+					INNER JOIN users u
+						ON u.id = cm.sender_user_id
 					WHERE cm.id = $2
 						AND cm.conversation_id = $1
 						AND cm.deleted_at IS NULL
@@ -218,7 +238,11 @@ export async function deleteFlaggedMessage({
 						cm.id,
 						cm.conversation_id,
 						cm.sender_user_id,
-						cm.body
+						cm.body,
+						reviewable_message.sender_username,
+						reviewable_message.sender_email,
+						reviewable_message.sender_avatar_seed,
+						reviewable_message.sender_country_code
 				),
 				updated_flags AS (
 					UPDATE chat_message_flags cmf
@@ -237,6 +261,10 @@ export async function deleteFlaggedMessage({
 					updated_message.conversation_id,
 					updated_message.sender_user_id,
 					updated_message.body,
+					updated_message.sender_username,
+					updated_message.sender_email,
+					updated_message.sender_avatar_seed,
+					updated_message.sender_country_code,
 					COUNT(updated_flags.id)::int AS reviewed_flag_count
 				FROM updated_message
 				INNER JOIN updated_flags
@@ -245,7 +273,11 @@ export async function deleteFlaggedMessage({
 					updated_message.id,
 					updated_message.conversation_id,
 					updated_message.sender_user_id,
-					updated_message.body;
+					updated_message.body,
+					updated_message.sender_username,
+					updated_message.sender_email,
+					updated_message.sender_avatar_seed,
+					updated_message.sender_country_code;
 			`,
 			[
 				conversationId,

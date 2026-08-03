@@ -45,6 +45,12 @@ import {
 	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 import {
+	deleteReviewedFlaggedRoomMessage,
+	listRoomFlagReviewQueue,
+	markRoomMessageFlagsSafe,
+	ROOM_FLAG_REVIEW_RESULT,
+} from './rooms/flagReview.js';
+import {
 	getRoomActivityLogsPage,
 	listRoomActivityLogsPage,
 	recordRoomActivity,
@@ -92,6 +98,12 @@ export {
 	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 export {
+	deleteReviewedFlaggedRoomMessage,
+	listRoomFlagReviewQueue,
+	markRoomMessageFlagsSafe,
+	ROOM_FLAG_REVIEW_RESULT,
+} from './rooms/flagReview.js';
+export {
 	getRoomActivityLogsPage,
 	listRoomActivityLogsPage,
 	recordRoomActivity,
@@ -108,12 +120,14 @@ export default {
 	countUnreadRoomMessages,
 	createRoom,
 	deleteRoomMemberHistory,
+	deleteReviewedFlaggedRoomMessage,
 	demoteRoomAdmin,
 	findOpenableRoomConversation,
 	findWritableRoomConversation,
 	getOpenRoomConversation,
 	getRoomActivityLogsPage,
 	joinPublicRoom,
+	listRoomFlagReviewQueue,
 	listRoomActivityLogsPage,
 	listPrivateRoomSection,
 	listPrivateRooms,
@@ -121,6 +135,7 @@ export default {
 	listRoomManagementMembers,
 	listRoomMembers,
 	markRoomConversationRead,
+	markRoomMessageFlagsSafe,
 	muteRoomMember,
 	promoteRoomMember,
 	rejectPrivateRoomRequest,
@@ -128,6 +143,7 @@ export default {
 	removeRoomMember,
 	requestPrivateListedRoom,
 	ROOM_ACTIVITY_LOG_RESULT,
+	ROOM_FLAG_REVIEW_RESULT,
 	ROOM_MEMBER_MANAGEMENT_RESULT,
 	searchRooms,
 	unbanRoomMember,
