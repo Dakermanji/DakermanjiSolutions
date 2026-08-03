@@ -11,7 +11,8 @@
  *
  * Notes:
  * - application logic controls who can flag and who can review
- * - flagged messages remain visible until a room owner/admin evaluates them
+ * - safe flagged messages remain visible after a room owner/admin evaluates them
+ * - deleted flagged messages are hidden by the chat_messages deleted_at lifecycle
  * - sender edit/delete actions should be blocked while a pending flag exists
  */
 
@@ -24,8 +25,8 @@ BEGIN
 	) THEN
 		CREATE TYPE chat_message_flag_status AS ENUM (
 			'pending',
-			'accepted',
-			'rejected'
+			'safe',
+			'deleted'
 		);
 	END IF;
 END$$;

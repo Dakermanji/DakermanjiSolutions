@@ -37,6 +37,12 @@ export const CHAT_ROOM_JOIN_REQUEST_STATUSES = Object.freeze({
 	CANCELED: 'canceled',
 });
 
+export const CHAT_MESSAGE_FLAG_STATUSES = Object.freeze({
+	PENDING: 'pending',
+	SAFE: 'safe',
+	DELETED: 'deleted',
+});
+
 export const CHAT_ROOM_ACTIVITY_ACTIONS = Object.freeze({
 	JOIN_REQUEST_APPROVED: 'join_request_approved',
 	JOIN_REQUEST_REJECTED: 'join_request_rejected',
