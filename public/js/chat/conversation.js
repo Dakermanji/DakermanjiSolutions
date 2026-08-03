@@ -44,6 +44,7 @@ const activityIcons = Object.freeze({
 	member_removed: 'bi-person-dash',
 	member_unbanned: 'bi-unlock',
 	member_unmuted: 'bi-volume-up',
+	message_flagged: 'bi-flag',
 	message_deleted_by_admin: 'bi-trash3',
 	room_info_updated: 'bi-info-circle',
 });

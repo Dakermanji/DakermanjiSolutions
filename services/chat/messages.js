@@ -1,7 +1,10 @@
 //! services/chat/messages.js
 
 import ChatMessagesModel from '../../models/chat/Messages.js';
-import { CHAT_MESSAGE_LIMITS } from '../../constants/chat.js';
+import {
+	CHAT_MESSAGE_LIMITS,
+	CHAT_ROOM_ACTIVITY_ACTIONS,
+} from '../../constants/chat.js';
 import {
 	findReadableChatConversation,
 	findWritableChatConversation,
@@ -9,6 +12,7 @@ import {
 import {
 	findOpenableRoomConversation,
 	findWritableRoomConversation,
+	recordRoomActivity,
 } from './rooms.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
 
@@ -18,6 +22,7 @@ const FRIEND_EDIT_DELETE_WINDOW_MS =
 	CHAT_MESSAGE_LIMITS.FRIEND_EDIT_DELETE_WINDOW_MS;
 const ROOM_EDIT_DELETE_WINDOW_MS =
 	CHAT_MESSAGE_LIMITS.ROOM_EDIT_DELETE_WINDOW_MS;
+const CHAT_MESSAGE_FLAG_ACTIVITY_ENTITY_TYPE = 'chat_message_flag';
 
 function normalizeMessageBody(body) {
 	return String(body || '').trim();
@@ -191,11 +196,28 @@ export async function flagRoomMessage({
 		return null;
 	}
 
-	return ChatMessagesModel.createMessageFlag({
+	const flag = await ChatMessagesModel.createMessageFlag({
 		conversationId: conversation.conversation_id,
 		messageId,
 		flaggedByUserId,
 	});
+
+	if (flag?.created) {
+		await recordRoomActivity({
+			roomId: conversation.room_id,
+			conversationId: conversation.conversation_id,
+			actorUserId: flaggedByUserId,
+			targetUserId: flag.sender_user_id,
+			action: CHAT_ROOM_ACTIVITY_ACTIONS.MESSAGE_FLAGGED,
+			entityType: CHAT_MESSAGE_FLAG_ACTIVITY_ENTITY_TYPE,
+			entityId: flag.id,
+			metadata: {
+				messageId: flag.message_id,
+			},
+		});
+	}
+
+	return flag;
 }
 
 async function findWritableConversationForMutation({

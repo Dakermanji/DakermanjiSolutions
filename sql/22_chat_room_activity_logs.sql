@@ -34,6 +34,7 @@ BEGIN
 			'member_unbanned',
 			'member_history_deleted',
 			'room_info_updated',
+			'message_flagged',
 			'message_deleted_by_admin'
 		);
 	END IF;

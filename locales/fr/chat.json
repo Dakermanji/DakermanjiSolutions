@@ -109,6 +109,7 @@
 			"memberUnbanned": "a débanni",
 			"memberHistoryDeleted": "a supprimé l’historique de",
 			"roomInfoUpdated": "a mis à jour les infos du salon",
+			"messageFlagged": "a signalé un message de",
 			"messageDeletedByAdmin": "a supprimé un message"
 		}
 	},

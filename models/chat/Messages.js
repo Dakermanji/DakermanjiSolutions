@@ -243,7 +243,8 @@ export async function createMessageFlag({
 		WITH flaggable_message AS (
 			SELECT
 				cm.id,
-				cm.conversation_id
+				cm.conversation_id,
+				cm.sender_user_id
 			FROM chat_messages cm
 			WHERE cm.id = $2
 				AND cm.conversation_id = $1
@@ -273,14 +274,22 @@ export async function createMessageFlag({
 				created_at
 		)
 		SELECT
-			inserted_flag.*,
+			inserted_flag.id,
+			inserted_flag.message_id,
+			inserted_flag.conversation_id,
+			flaggable_message.sender_user_id,
+			inserted_flag.flagged_by_user_id,
+			inserted_flag.status,
+			inserted_flag.created_at,
 			true AS created
 		FROM inserted_flag
+		CROSS JOIN flaggable_message
 		UNION ALL
 		SELECT
 			cmf.id,
 			cmf.message_id,
 			cmf.conversation_id,
+			flaggable_message.sender_user_id,
 			cmf.flagged_by_user_id,
 			cmf.status,
 			cmf.created_at,

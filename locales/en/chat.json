@@ -109,6 +109,7 @@
 			"memberUnbanned": "unbanned",
 			"memberHistoryDeleted": "deleted history for",
 			"roomInfoUpdated": "updated room info",
+			"messageFlagged": "flagged a message from",
 			"messageDeletedByAdmin": "deleted a message"
 		}
 	},

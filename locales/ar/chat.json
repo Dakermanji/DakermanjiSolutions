@@ -109,6 +109,7 @@
 			"memberUnbanned": "رفع الحظر عن",
 			"memberHistoryDeleted": "حذف سجل",
 			"roomInfoUpdated": "حدّث معلومات الغرفة",
+			"messageFlagged": "أبلغ عن رسالة من",
 			"messageDeletedByAdmin": "حذف رسالة"
 		}
 	},
