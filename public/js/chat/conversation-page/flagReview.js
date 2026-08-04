@@ -114,14 +114,7 @@
 			const sender = document.createElement('strong');
 			sender.textContent = getUserName(message.sender);
 
-			const flagCount = document.createElement('span');
-			flagCount.className = 'chat-flag-count';
-			flagCount.textContent = formatCountLabel(
-				chatPage.dataset.flagsFlagCountLabel,
-				message.flagCount || 0,
-			);
-
-			title.append(sender, flagCount);
+			title.append(sender);
 
 			const preview = document.createElement('p');
 			preview.className = 'chat-flag-preview';
@@ -137,14 +130,10 @@
 
 			const actions = document.createElement('div');
 			actions.className = 'chat-flag-actions';
-			actions.append(
-				createFlagContextButton(message.id),
-				createFlagReviewForm({
-					action: chatPage.dataset.flagsSafeUrl,
-					icon: 'bi-shield-check',
-					label: chatPage.dataset.flagsSafeLabel,
-					messageId: message.id,
-				}),
+
+			const actionButtons = document.createElement('div');
+			actionButtons.className = 'chat-flag-action-buttons';
+			actionButtons.append(
 				createFlagReviewForm({
 					action: chatPage.dataset.flagsDeleteUrl,
 					icon: 'bi-trash3',
@@ -152,6 +141,25 @@
 					messageId: message.id,
 					isDanger: true,
 				}),
+				createFlagReviewForm({
+					action: chatPage.dataset.flagsSafeUrl,
+					icon: 'bi-shield-check',
+					label: chatPage.dataset.flagsSafeLabel,
+					messageId: message.id,
+				}),
+				createFlagContextButton(message.id),
+			);
+
+			const flagCount = document.createElement('span');
+			flagCount.className = 'chat-flag-count';
+			flagCount.textContent = formatCountLabel(
+				chatPage.dataset.flagsFlagCountLabel,
+				message.flagCount || 0,
+			);
+
+			actions.append(
+				actionButtons,
+				flagCount,
 			);
 			window.AppTooltips?.initIn(actions);
 
