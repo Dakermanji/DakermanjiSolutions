@@ -43,6 +43,11 @@
 	align-items: flex-end;
 }
 
+.chat-message-row.is-context-focused .chat-message-bubble {
+	border-color: var(--color-warning);
+	box-shadow: 0 0 0 0.2rem var(--color-warning-alpha);
+}
+
 .chat-message-row.is-group-start {
 	margin-top: 0.4rem;
 }

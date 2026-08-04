@@ -116,6 +116,21 @@
 		}
 	},
 	"flags": {
+		"toggle": "Examen des signalements",
+		"kicker": "Salon",
+		"title": "Examen des signalements",
+		"empty": "Aucun message signalé à examiner.",
+		"loading": "Chargement des messages signalés...",
+		"error": "Impossible de charger les messages signalés.",
+		"count": "{{count}} signalés",
+		"flagCount": "{{count}} signalements",
+		"contextMissing": "Ce message est plus ancien que l’historique chargé.",
+		"deleteConfirm": "Supprimer ce message signalé ?",
+		"actions": {
+			"openContext": "Ouvrir le contexte",
+			"safe": "Marquer comme sûr",
+			"delete": "Supprimer le message"
+		},
 		"safeSuccess": "Message marqué comme sûr.",
 		"safeError": "Impossible de marquer ce message comme sûr.",
 		"deleteSuccess": "Message signalé supprimé.",

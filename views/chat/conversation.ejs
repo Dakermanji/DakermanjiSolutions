@@ -157,6 +157,19 @@
 	data-flag-message-url="/chat/rooms/messages/flag"
 	data-flag-message-label="<%= t('chat:conversation.flag') %>"
 	data-message-flagged-label="<%= t('chat:conversation.flagged') %>"
+	data-flags-url="/chat/rooms/flags"
+	data-flags-safe-url="/chat/rooms/flags/safe"
+	data-flags-delete-url="/chat/rooms/flags/delete"
+	data-flags-loading-label="<%= t('chat:flags.loading') %>"
+	data-flags-error-label="<%= t('chat:flags.error') %>"
+	data-flags-empty-label="<%= t('chat:flags.empty') %>"
+	data-flags-count-label="<%= t('chat:flags.count', { count: '{{count}}' }) %>"
+	data-flags-flag-count-label="<%= t('chat:flags.flagCount', { count: '{{count}}' }) %>"
+	data-flags-open-context-label="<%= t('chat:flags.actions.openContext') %>"
+	data-flags-safe-label="<%= t('chat:flags.actions.safe') %>"
+	data-flags-delete-label="<%= t('chat:flags.actions.delete') %>"
+	data-flags-context-missing-label="<%= t('chat:flags.contextMissing') %>"
+	data-flags-delete-confirm="<%= t('chat:flags.deleteConfirm') %>"
 	data-activity-url="/chat/rooms/activity"
 	data-activity-loading-label="<%= t('chat:activity.loading') %>"
 	data-activity-error-label="<%= t('chat:activity.error') %>"
@@ -211,6 +224,17 @@
 				</button>
 			<% } %>
 			<% if (canManageRoom) { %>
+				<button
+					class="btn btn-action-outline chat-panel-toggle has-tooltip"
+					type="button"
+					data-chat-flags-toggle
+					data-bs-title="<%= t('chat:flags.toggle') %>"
+					aria-label="<%= t('chat:flags.toggle') %>"
+					aria-controls="chat-flags-panel"
+					aria-expanded="false"
+				>
+					<i class="bi bi-flag-fill" aria-hidden="true"></i>
+				</button>
 				<button
 					class="btn btn-action-outline chat-panel-toggle has-tooltip"
 					type="button"
@@ -530,6 +554,33 @@
 					<p><%= t('chat:members.empty') %></p>
 				</div>
 			<% } %>
+		</section>
+	<% } %>
+
+	<% if (isRoomConversation && canManageRoom) { %>
+		<section
+			id="chat-flags-panel"
+			class="chat-members-panel chat-flags-panel"
+			aria-labelledby="chat-flags-title"
+			data-chat-flags-panel
+			hidden
+		>
+			<header class="chat-members-header">
+				<div>
+					<p class="chat-kicker"><%= t('chat:flags.kicker') %></p>
+					<h2 id="chat-flags-title"><%= t('chat:flags.title') %></h2>
+				</div>
+				<span class="chat-members-count" data-chat-flags-count>
+					<%= t('chat:flags.count', { count: 0 }) %>
+				</span>
+			</header>
+
+			<ol class="chat-flags-list" data-chat-flags-list></ol>
+
+			<div class="chat-members-empty" data-chat-flags-state>
+				<i class="bi bi-flag" aria-hidden="true"></i>
+				<p><%= t('chat:flags.empty') %></p>
+			</div>
 		</section>
 	<% } %>
 

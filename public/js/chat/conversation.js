@@ -10,6 +10,11 @@ const activityPanel = document.querySelector('[data-chat-activity-panel]');
 const activityState = document.querySelector('[data-chat-activity-state]');
 const activityToggle = document.querySelector('[data-chat-activity-toggle]');
 const activityCount = document.querySelector('[data-chat-activity-count]');
+const flagsList = document.querySelector('[data-chat-flags-list]');
+const flagsPanel = document.querySelector('[data-chat-flags-panel]');
+const flagsState = document.querySelector('[data-chat-flags-state]');
+const flagsToggle = document.querySelector('[data-chat-flags-toggle]');
+const flagsCount = document.querySelector('[data-chat-flags-count]');
 const managementPanel = document.querySelector('[data-chat-management-panel]');
 const managementToggle = document.querySelector('[data-chat-management-toggle]');
 const messageSurface = document.querySelector('[data-chat-message-surface]');
@@ -24,6 +29,8 @@ let isTyping = false;
 let isLoadingOlderMessages = false;
 let isActivityLoaded = false;
 let isLoadingActivity = false;
+let isFlagsLoaded = false;
+let isLoadingFlags = false;
 let nextActivityPage = 1;
 let hasOlderMessages = chatPage?.dataset.hasOlderMessages === 'true';
 let chatSocket = null;
@@ -93,6 +100,17 @@ if (chatPage && messageSurface && messageRenderer) {
 	activityLoadMore?.addEventListener('click', () => {
 		void loadActivityLogs();
 	});
+
+	flagsToggle?.addEventListener('click', () => {
+		const shouldShowFlags = flagsPanel?.hidden !== false;
+		setActiveSidePanel(shouldShowFlags ? 'flags' : null);
+		if (shouldShowFlags) {
+			void loadFlagReviewQueue();
+		}
+	});
+
+	flagsList?.addEventListener('click', handleFlagReviewClick);
+	flagsList?.addEventListener('submit', handleFlagReviewSubmit);
 
 	const socket = composer ? connectChatSocket() : null;
 	chatSocket = socket;
@@ -568,8 +586,12 @@ function setActiveSidePanel(panelName) {
 	const isMembersVisible = panelName === 'members';
 	const isManagementVisible = panelName === 'management';
 	const isActivityVisible = panelName === 'activity';
+	const isFlagsVisible = panelName === 'flags';
 	const isAnyPanelVisible =
-		isMembersVisible || isManagementVisible || isActivityVisible;
+		isMembersVisible ||
+		isManagementVisible ||
+		isActivityVisible ||
+		isFlagsVisible;
 
 	if (membersPanel) {
 		membersPanel.hidden = !isMembersVisible;
@@ -579,6 +601,9 @@ function setActiveSidePanel(panelName) {
 	}
 	if (activityPanel) {
 		activityPanel.hidden = !isActivityVisible;
+	}
+	if (flagsPanel) {
+		flagsPanel.hidden = !isFlagsVisible;
 	}
 
 	messageSurface.hidden = isAnyPanelVisible;
@@ -607,6 +632,11 @@ function setActiveSidePanel(panelName) {
 		'aria-expanded',
 		isActivityVisible ? 'true' : 'false',
 	);
+	flagsToggle?.classList.toggle('is-active', isFlagsVisible);
+	flagsToggle?.setAttribute(
+		'aria-expanded',
+		isFlagsVisible ? 'true' : 'false',
+	);
 
 	if (isAnyPanelVisible) {
 		clearTimeout(typingHideTimer);
@@ -614,6 +644,244 @@ function setActiveSidePanel(panelName) {
 	}
 
 	focusComposerInput();
+}
+
+async function loadFlagReviewQueue({ force = false } = {}) {
+	if (
+		!flagsPanel ||
+		!flagsList ||
+		isLoadingFlags ||
+		(isFlagsLoaded && !force)
+	) {
+		return;
+	}
+
+	isLoadingFlags = true;
+	setFlagsState(chatPage.dataset.flagsLoadingLabel || '');
+
+	const params = new URLSearchParams({
+		conversationId: chatPage.dataset.activeConversationId,
+	});
+
+	try {
+		const response = await fetch(
+			`${chatPage.dataset.flagsUrl}?${params.toString()}`,
+			{
+				headers: {
+					Accept: 'application/json',
+				},
+				credentials: 'same-origin',
+			},
+		);
+
+		if (!response.ok) {
+			throw new Error(`Request failed with status ${response.status}`);
+		}
+
+		const payload = await response.json();
+
+		if (!payload?.ok || !Array.isArray(payload.messages)) {
+			throw new Error('Invalid flagged messages payload');
+		}
+
+		renderFlagReviewQueue(payload.messages);
+	} catch (error) {
+		console.error('Failed to load flagged room messages', error);
+		setFlagsState(chatPage.dataset.flagsErrorLabel || '');
+	} finally {
+		isLoadingFlags = false;
+	}
+}
+
+function renderFlagReviewQueue(messages) {
+	flagsList.replaceChildren(
+		...messages.map((message) => createFlagReviewItem(message)),
+	);
+	isFlagsLoaded = true;
+
+	if (flagsCount) {
+		flagsCount.textContent = formatCountLabel(
+			chatPage.dataset.flagsCountLabel,
+			messages.length,
+		);
+	}
+
+	setFlagsState(
+		messages.length > 0
+			? ''
+			: chatPage.dataset.flagsEmptyLabel || '',
+	);
+}
+
+function createFlagReviewItem(message) {
+	const item = document.createElement('li');
+	item.className = 'chat-flag-item';
+
+	const avatar = document.createElement('span');
+	avatar.className = 'chat-flag-avatar';
+	avatar.setAttribute('aria-hidden', 'true');
+	avatar.style.backgroundColor = message.sender?.avatar?.background || '';
+
+	if (message.sender?.avatar?.src) {
+		const image = document.createElement('img');
+		image.src = message.sender.avatar.src;
+		image.alt = '';
+		avatar.appendChild(image);
+	} else {
+		avatar.textContent = getActivityUserName(message.sender)
+			.slice(0, 1)
+			.toUpperCase();
+	}
+
+	const body = document.createElement('div');
+	body.className = 'chat-flag-body';
+
+	const title = document.createElement('div');
+	title.className = 'chat-flag-title';
+
+	const sender = document.createElement('strong');
+	sender.textContent = getActivityUserName(message.sender);
+
+	const flagCount = document.createElement('span');
+	flagCount.className = 'chat-flag-count';
+	flagCount.textContent = formatCountLabel(
+		chatPage.dataset.flagsFlagCountLabel,
+		message.flagCount || 0,
+	);
+
+	title.append(sender, flagCount);
+
+	const preview = document.createElement('p');
+	preview.className = 'chat-flag-preview';
+	preview.dir = 'auto';
+	preview.textContent = message.preview || message.body || '';
+
+	const latestFlag = document.createElement('time');
+	latestFlag.className = 'chat-flag-time';
+	latestFlag.dateTime = message.latestFlaggedAt || '';
+	latestFlag.textContent = formatActivityDate(message.latestFlaggedAt);
+
+	body.append(title, preview, latestFlag);
+
+	const actions = document.createElement('div');
+	actions.className = 'chat-flag-actions';
+	actions.append(
+		createFlagContextButton(message.id),
+		createFlagReviewForm({
+			action: chatPage.dataset.flagsSafeUrl,
+			icon: 'bi-shield-check',
+			label: chatPage.dataset.flagsSafeLabel,
+			messageId: message.id,
+		}),
+		createFlagReviewForm({
+			action: chatPage.dataset.flagsDeleteUrl,
+			icon: 'bi-trash3',
+			label: chatPage.dataset.flagsDeleteLabel,
+			messageId: message.id,
+			isDanger: true,
+		}),
+	);
+	window.AppTooltips?.initIn(actions);
+
+	item.append(avatar, body, actions);
+
+	return item;
+}
+
+function createFlagContextButton(messageId) {
+	const button = document.createElement('button');
+	button.className = 'btn btn-action-outline chat-flag-action has-tooltip';
+	button.type = 'button';
+	button.dataset.chatFlagOpenContext = messageId;
+	button.dataset.bsTitle = chatPage.dataset.flagsOpenContextLabel || '';
+	button.setAttribute('aria-label', chatPage.dataset.flagsOpenContextLabel || '');
+	button.innerHTML = '<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>';
+
+	return button;
+}
+
+function createFlagReviewForm({
+	action,
+	icon,
+	label,
+	messageId,
+	isDanger = false,
+}) {
+	const form = document.createElement('form');
+	form.method = 'POST';
+	form.action = action || '';
+	form.className = 'chat-flag-review-form';
+
+	if (isDanger) {
+		form.dataset.chatFlagDeleteForm = 'true';
+	}
+
+	const conversationInput = document.createElement('input');
+	conversationInput.type = 'hidden';
+	conversationInput.name = 'conversationId';
+	conversationInput.value = chatPage.dataset.activeConversationId;
+
+	const messageInput = document.createElement('input');
+	messageInput.type = 'hidden';
+	messageInput.name = 'messageId';
+	messageInput.value = messageId;
+
+	const button = document.createElement('button');
+	button.className =
+		`btn btn-action-outline chat-flag-action has-tooltip${isDanger ? ' is-danger' : ''}`;
+	button.type = 'submit';
+	button.dataset.bsTitle = label || '';
+	button.setAttribute('aria-label', label || '');
+	button.innerHTML = `<i class="bi ${icon}" aria-hidden="true"></i>`;
+
+	form.append(conversationInput, messageInput, button);
+
+	return form;
+}
+
+function handleFlagReviewClick(event) {
+	const openContextButton = event.target.closest('[data-chat-flag-open-context]');
+	if (!openContextButton) return;
+
+	const messageId = openContextButton.dataset.chatFlagOpenContext;
+	const row = messageSurface.querySelector(
+		`[data-chat-message-id="${escapeCssIdentifier(messageId)}"]`,
+	);
+
+	setActiveSidePanel(null);
+
+	if (!row) {
+		window.alert(chatPage.dataset.flagsContextMissingLabel || '');
+		return;
+	}
+
+	row.scrollIntoView({ block: 'center', behavior: 'smooth' });
+	row.classList.add('is-context-focused');
+	window.setTimeout(() => {
+		row.classList.remove('is-context-focused');
+	}, 2200);
+}
+
+function handleFlagReviewSubmit(event) {
+	const deleteForm = event.target.closest('[data-chat-flag-delete-form]');
+	if (!deleteForm) return;
+
+	const confirmed = window.confirm(chatPage.dataset.flagsDeleteConfirm || '');
+	if (!confirmed) {
+		event.preventDefault();
+	}
+}
+
+function formatCountLabel(template, count) {
+	return String(template || '{{count}}').replace('{{count}}', String(count));
+}
+
+function escapeCssIdentifier(value) {
+	if (window.CSS?.escape) {
+		return window.CSS.escape(value);
+	}
+
+	return String(value || '').replace(/["\\]/g, '\\$&');
 }
 
 async function loadActivityLogs() {

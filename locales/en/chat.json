@@ -116,6 +116,21 @@
 		}
 	},
 	"flags": {
+		"toggle": "Flag review",
+		"kicker": "Room",
+		"title": "Flag review",
+		"empty": "No flagged messages to review.",
+		"loading": "Loading flagged messages...",
+		"error": "Could not load flagged messages.",
+		"count": "{{count}} flagged",
+		"flagCount": "{{count}} flags",
+		"contextMissing": "This message is older than the loaded chat history.",
+		"deleteConfirm": "Delete this flagged message?",
+		"actions": {
+			"openContext": "Open context",
+			"safe": "Mark safe",
+			"delete": "Delete message"
+		},
 		"safeSuccess": "Message marked safe.",
 		"safeError": "Could not mark this message safe.",
 		"deleteSuccess": "Flagged message deleted.",
