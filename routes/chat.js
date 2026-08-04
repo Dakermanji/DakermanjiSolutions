@@ -9,6 +9,7 @@ import {
 	createFriendChatMessage,
 	createRoomChatMessage,
 	deleteFriendChatMessage,
+	deleteFlaggedRoomMessage,
 	deleteRoomChatMessage,
 	deleteChatRoomMemberHistory,
 	demoteChatRoomAdmin,
@@ -21,7 +22,9 @@ import {
 	getPrivateRooms,
 	getPublicRooms,
 	getRoomActivityLogs,
+	getRoomMessageFlags,
 	joinPublicRoomConversation,
+	markRoomMessageSafe,
 	muteChatRoomMember,
 	openFriendConversation,
 	openRoomConversation,
@@ -45,6 +48,7 @@ router.get('/rooms/public', getPublicRooms);
 router.get('/rooms/private', getPrivateRooms);
 router.get('/rooms/search', searchVisibleRooms);
 router.get('/rooms/activity', getRoomActivityLogs);
+router.get('/rooms/flags', getRoomMessageFlags);
 router.get('/rooms/open/:conversationId', openRoomConversation);
 router.post('/friends/open', openFriendConversation);
 router.post('/friends/close', closeFriendConversation);
@@ -55,6 +59,8 @@ router.post('/rooms/messages', createRoomChatMessage);
 router.post('/rooms/messages/edit', editRoomChatMessage);
 router.post('/rooms/messages/delete', deleteRoomChatMessage);
 router.post('/rooms/messages/flag', flagRoomChatMessage);
+router.post('/rooms/flags/safe', markRoomMessageSafe);
+router.post('/rooms/flags/delete', deleteFlaggedRoomMessage);
 router.post('/rooms', createChatRoom);
 router.post('/rooms/update', updateChatRoom);
 router.post('/rooms/join', joinPublicRoomConversation);

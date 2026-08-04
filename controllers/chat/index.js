@@ -39,3 +39,8 @@ export {
 	unbanChatRoomMember,
 	unmuteChatRoomMember,
 } from './roomMembers.js';
+export {
+	deleteFlaggedRoomMessage,
+	getRoomMessageFlags,
+	markRoomMessageSafe,
+} from './roomFlags.js';

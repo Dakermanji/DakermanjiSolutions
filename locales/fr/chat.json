@@ -115,6 +115,12 @@
 			"messageDeletedByAdmin": "a supprimé un message"
 		}
 	},
+	"flags": {
+		"safeSuccess": "Message marqué comme sûr.",
+		"safeError": "Impossible de marquer ce message comme sûr.",
+		"deleteSuccess": "Message signalé supprimé.",
+		"deleteError": "Impossible de supprimer ce message signalé."
+	},
 	"rooms": {
 		"createTitle": "Créer un salon",
 		"createSubmit": "Créer le salon",

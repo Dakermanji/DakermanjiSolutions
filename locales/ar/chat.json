@@ -115,6 +115,12 @@
 			"messageDeletedByAdmin": "حذف رسالة"
 		}
 	},
+	"flags": {
+		"safeSuccess": "تم اعتبار الرسالة آمنة.",
+		"safeError": "تعذر اعتبار هذه الرسالة آمنة.",
+		"deleteSuccess": "تم حذف الرسالة المبلغ عنها.",
+		"deleteError": "تعذر حذف هذه الرسالة المبلغ عنها."
+	},
 	"rooms": {
 		"createTitle": "إنشاء غرفة",
 		"createSubmit": "إنشاء الغرفة",
