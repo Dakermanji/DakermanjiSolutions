@@ -150,7 +150,15 @@ export async function renderChat(req, res, next) {
 		return res.render('chat/main', {
 			titleKey: 'chat:title',
 			styles: ['modals/main', 'chat/main'],
-			scripts: ['chat/main'],
+			scripts: [
+				'chat/main-page/utils',
+				'chat/main-page/badges',
+				'chat/main-page/cards',
+				'chat/main-page/sections',
+				'chat/main-page/roomSearch',
+				'chat/main-page/roomModal',
+				'chat/main',
+			],
 			activeChatConversationId: null,
 			roomVisibility: CHAT_ROOM_VISIBILITY,
 			chatSectionCounts: {
