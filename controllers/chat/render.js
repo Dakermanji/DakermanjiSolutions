@@ -64,6 +64,9 @@ export async function renderChat(req, res, next) {
 					scripts: [
 						'chat/conversation-page/dates',
 						'chat/conversation-page/utils',
+						'chat/conversation-page/renderer-actions',
+						'chat/conversation-page/renderer-rows',
+						'chat/conversation-page/renderer-list',
 						'chat/conversation-page/renderer',
 						'chat/conversation-page/socket',
 						'chat/conversation-page/panels',
@@ -120,6 +123,9 @@ export async function renderChat(req, res, next) {
 					scripts: [
 						'chat/conversation-page/dates',
 						'chat/conversation-page/utils',
+						'chat/conversation-page/renderer-actions',
+						'chat/conversation-page/renderer-rows',
+						'chat/conversation-page/renderer-list',
 						'chat/conversation-page/renderer',
 						'chat/conversation-page/socket',
 						'chat/conversation-page/panels',

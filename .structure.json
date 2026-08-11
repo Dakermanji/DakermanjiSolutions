@@ -355,6 +355,9 @@
 					"flagReview.js",
 					"messages.js",
 					"panels.js",
+					"renderer-actions.js",
+					"renderer-list.js",
+					"renderer-rows.js",
 					"renderer.js",
 					"socket.js",
 					"utils.js"
