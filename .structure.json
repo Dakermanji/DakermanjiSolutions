@@ -434,6 +434,15 @@
 			"dicebear.js"
 		],
 		"chat": {
+			"messages": [
+				"flags.js",
+				"formatters.js",
+				"mutations.js",
+				"pagination.js",
+				"reads.js",
+				"utils.js",
+				"writes.js"
+			],
 			"rooms": [
 				"activity.js",
 				"access.js",
