@@ -15,6 +15,7 @@ import {
 	recordRoomActivity,
 } from './rooms.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
+import { isValidUuid } from '../../middlewares/validators/common.js';
 
 const { BODY_MAX_LENGTH, OLDER_PAGE_SIZE, RECENT_PAGE_SIZE } =
 	CHAT_MESSAGE_LIMITS;
@@ -171,18 +172,49 @@ function emptyMessagePage() {
 	};
 }
 
+async function resolveReplyToMessageId({ conversationId, replyToMessageId }) {
+	const normalizedReplyToMessageId = String(replyToMessageId || '').trim();
+
+	if (!normalizedReplyToMessageId) {
+		return {
+			ok: true,
+			replyToMessageId: null,
+		};
+	}
+
+	if (!isValidUuid(normalizedReplyToMessageId)) {
+		return {
+			ok: false,
+			replyToMessageId: null,
+		};
+	}
+
+	const replyTarget =
+		await ChatMessagesModel.findReplyableConversationMessage({
+			conversationId,
+			messageId: normalizedReplyToMessageId,
+		});
+
+	return {
+		ok: Boolean(replyTarget),
+		replyToMessageId: replyTarget?.id || null,
+	};
+}
+
 /**
  * Create a friend chat message when the user still has write access.
  *
  * @param {object} input
  * @param {string} input.conversationId
  * @param {string} input.senderUserId
+ * @param {string|null} [input.replyToMessageId]
  * @param {string} input.body
  * @returns {Promise<object|null>}
  */
 export async function createFriendMessage({
 	conversationId,
 	senderUserId,
+	replyToMessageId = null,
 	body,
 }) {
 	const normalizedBody = normalizeMessageBody(body);
@@ -200,9 +232,19 @@ export async function createFriendMessage({
 		return null;
 	}
 
+	const reply = await resolveReplyToMessageId({
+		conversationId: conversation.conversation_id,
+		replyToMessageId,
+	});
+
+	if (!reply.ok) {
+		return null;
+	}
+
 	const message = await ChatMessagesModel.createConversationMessage({
 		conversationId: conversation.conversation_id,
 		senderUserId,
+		replyToMessageId: reply.replyToMessageId,
 		body: normalizedBody,
 	});
 
@@ -356,12 +398,14 @@ export async function deleteOwnMessage({
  * @param {object} input
  * @param {string} input.conversationId
  * @param {string} input.senderUserId
+ * @param {string|null} [input.replyToMessageId]
  * @param {string} input.body
  * @returns {Promise<object|null>}
  */
 export async function createRoomMessage({
 	conversationId,
 	senderUserId,
+	replyToMessageId = null,
 	body,
 }) {
 	const normalizedBody = normalizeMessageBody(body);
@@ -379,9 +423,19 @@ export async function createRoomMessage({
 		return null;
 	}
 
+	const reply = await resolveReplyToMessageId({
+		conversationId: conversation.conversation_id,
+		replyToMessageId,
+	});
+
+	if (!reply.ok) {
+		return null;
+	}
+
 	const message = await ChatMessagesModel.createConversationMessage({
 		conversationId: conversation.conversation_id,
 		senderUserId,
+		replyToMessageId: reply.replyToMessageId,
 		body: normalizedBody,
 	});
 

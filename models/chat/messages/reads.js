@@ -184,3 +184,31 @@ export async function findConversationMessageById({
 
 	return rows[0] || null;
 }
+
+/**
+ * Find one replyable message inside the same conversation.
+ *
+ * @param {object} params
+ * @param {string} params.conversationId
+ * @param {string} params.messageId
+ * @returns {Promise<object|null>}
+ */
+export async function findReplyableConversationMessage({
+	conversationId,
+	messageId,
+}) {
+	const q = `
+		SELECT
+			cm.id,
+			cm.conversation_id
+		FROM chat_messages cm
+		WHERE cm.conversation_id = $1
+			AND cm.id = $2
+			AND cm.deleted_at IS NULL
+		LIMIT 1;
+	`;
+
+	const rows = await queryRows(q, [conversationId, messageId]);
+
+	return rows[0] || null;
+}

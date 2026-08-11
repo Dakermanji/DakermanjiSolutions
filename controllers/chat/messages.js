@@ -164,6 +164,7 @@ export async function createFriendChatMessage(req, res, next) {
 		const message = await createFriendMessage({
 			conversationId: activeConversationId,
 			senderUserId: req.user.id,
+			replyToMessageId: req.body?.replyToMessageId,
 			body: req.body?.message,
 		});
 
@@ -201,6 +202,7 @@ export async function createRoomChatMessage(req, res, next) {
 		const message = await createRoomMessage({
 			conversationId: activeConversationId,
 			senderUserId: req.user.id,
+			replyToMessageId: req.body?.replyToMessageId,
 			body: req.body?.message,
 		});
 

@@ -8,12 +8,14 @@ import pool, { queryRows } from '../../../config/database.js';
  * @param {object} message
  * @param {string} message.conversationId
  * @param {string} message.senderUserId
+ * @param {string|null} [message.replyToMessageId]
  * @param {string} message.body
  * @returns {Promise<object>}
  */
 export async function createConversationMessage({
 	conversationId,
 	senderUserId,
+	replyToMessageId = null,
 	body,
 }) {
 	const client = await pool.connect();
@@ -26,12 +28,13 @@ export async function createConversationMessage({
 				INSERT INTO chat_messages (
 					conversation_id,
 					sender_user_id,
+					reply_to_message_id,
 					body
 				)
-				VALUES ($1, $2, $3)
+				VALUES ($1, $2, $3, $4)
 				RETURNING id;
 			`,
-			[conversationId, senderUserId, body],
+			[conversationId, senderUserId, replyToMessageId, body],
 		);
 		const messageId = messageRows.rows[0].id;
 
@@ -75,15 +78,20 @@ export async function createConversationMessage({
 					u.email AS sender_email,
 					u.avatar_seed AS sender_avatar_seed,
 					u.country_code AS sender_country_code,
-					NULL::uuid AS reply_message_id,
-					NULL::text AS reply_body,
-					NULL::timestamptz AS reply_deleted_at,
-					NULL::uuid AS reply_sender_user_id,
-					NULL::varchar AS reply_sender_username,
-					NULL::varchar AS reply_sender_email
+					reply_message.id AS reply_message_id,
+					reply_message.body AS reply_body,
+					reply_message.deleted_at AS reply_deleted_at,
+					reply_sender.id AS reply_sender_user_id,
+					reply_sender.username AS reply_sender_username,
+					reply_sender.email AS reply_sender_email
 				FROM chat_messages cm
 				INNER JOIN users u
 					ON u.id = cm.sender_user_id
+				LEFT JOIN chat_messages reply_message
+					ON reply_message.id = cm.reply_to_message_id
+					AND reply_message.conversation_id = cm.conversation_id
+				LEFT JOIN users reply_sender
+					ON reply_sender.id = reply_message.sender_user_id
 				WHERE cm.id = $1
 				LIMIT 1;
 			`,

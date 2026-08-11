@@ -175,12 +175,14 @@ async function createChatMessageForConversation({
 	kind,
 	conversationId,
 	senderUserId,
+	replyToMessageId = null,
 	body,
 }) {
 	if (kind === 'room') {
 		return createRoomMessage({
 			conversationId,
 			senderUserId,
+			replyToMessageId,
 			body,
 		});
 	}
@@ -188,6 +190,7 @@ async function createChatMessageForConversation({
 	return createFriendMessage({
 		conversationId,
 		senderUserId,
+		replyToMessageId,
 		body,
 	});
 }
@@ -274,6 +277,7 @@ export function registerChatSocketHandlers(io, socket) {
 				kind: openConversation.kind,
 				conversationId: openConversation.conversation.conversation_id,
 				senderUserId: socket.data.userId,
+				replyToMessageId: payload?.replyToMessageId,
 				body: payload?.message,
 			});
 

@@ -4,6 +4,7 @@ export {
 	findConversationMessageById,
 	findOlderConversationMessages,
 	findRecentConversationMessages,
+	findReplyableConversationMessage,
 } from './messages/reads.js';
 export {
 	createConversationMessage,
@@ -16,6 +17,7 @@ import {
 	findConversationMessageById,
 	findOlderConversationMessages,
 	findRecentConversationMessages,
+	findReplyableConversationMessage,
 } from './messages/reads.js';
 import {
 	createConversationMessage,
@@ -28,6 +30,7 @@ export default {
 	findRecentConversationMessages,
 	findOlderConversationMessages,
 	findConversationMessageById,
+	findReplyableConversationMessage,
 	createConversationMessage,
 	createMessageFlag,
 	updateOwnConversationMessage,
