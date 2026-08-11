@@ -21,6 +21,7 @@ export async function findRecentConversationMessages(
 				cm.id,
 				cm.conversation_id,
 				cm.sender_user_id,
+				cm.reply_to_message_id,
 				cm.body,
 				cm.edited_at,
 				cm.created_at,
@@ -30,10 +31,21 @@ export async function findRecentConversationMessages(
 				u.username AS sender_username,
 				u.email AS sender_email,
 				u.avatar_seed AS sender_avatar_seed,
-				u.country_code AS sender_country_code
+				u.country_code AS sender_country_code,
+				reply_message.id AS reply_message_id,
+				reply_message.body AS reply_body,
+				reply_message.deleted_at AS reply_deleted_at,
+				reply_sender.id AS reply_sender_user_id,
+				reply_sender.username AS reply_sender_username,
+				reply_sender.email AS reply_sender_email
 			FROM chat_messages cm
 			INNER JOIN users u
 				ON u.id = cm.sender_user_id
+			LEFT JOIN chat_messages reply_message
+				ON reply_message.id = cm.reply_to_message_id
+				AND reply_message.conversation_id = cm.conversation_id
+			LEFT JOIN users reply_sender
+				ON reply_sender.id = reply_message.sender_user_id
 			LEFT JOIN LATERAL (
 				SELECT COUNT(*) AS pending_flag_count
 				FROM chat_message_flags cmf
@@ -85,6 +97,7 @@ export async function findOlderConversationMessages({
 				cm.id,
 				cm.conversation_id,
 				cm.sender_user_id,
+				cm.reply_to_message_id,
 				cm.body,
 				cm.edited_at,
 				cm.created_at,
@@ -94,11 +107,22 @@ export async function findOlderConversationMessages({
 				u.username AS sender_username,
 				u.email AS sender_email,
 				u.avatar_seed AS sender_avatar_seed,
-				u.country_code AS sender_country_code
+				u.country_code AS sender_country_code,
+				reply_message.id AS reply_message_id,
+				reply_message.body AS reply_body,
+				reply_message.deleted_at AS reply_deleted_at,
+				reply_sender.id AS reply_sender_user_id,
+				reply_sender.username AS reply_sender_username,
+				reply_sender.email AS reply_sender_email
 			FROM chat_messages cm
 			CROSS JOIN cursor_message cursor
 			INNER JOIN users u
 				ON u.id = cm.sender_user_id
+			LEFT JOIN chat_messages reply_message
+				ON reply_message.id = cm.reply_to_message_id
+				AND reply_message.conversation_id = cm.conversation_id
+			LEFT JOIN users reply_sender
+				ON reply_sender.id = reply_message.sender_user_id
 			LEFT JOIN LATERAL (
 				SELECT COUNT(*) AS pending_flag_count
 				FROM chat_message_flags cmf
@@ -223,6 +247,7 @@ export async function createConversationMessage({
 					cm.id,
 					cm.conversation_id,
 					cm.sender_user_id,
+					cm.reply_to_message_id,
 					cm.body,
 					cm.edited_at,
 					cm.created_at,
@@ -232,7 +257,13 @@ export async function createConversationMessage({
 					u.username AS sender_username,
 					u.email AS sender_email,
 					u.avatar_seed AS sender_avatar_seed,
-					u.country_code AS sender_country_code
+					u.country_code AS sender_country_code,
+					NULL::uuid AS reply_message_id,
+					NULL::text AS reply_body,
+					NULL::timestamptz AS reply_deleted_at,
+					NULL::uuid AS reply_sender_user_id,
+					NULL::varchar AS reply_sender_username,
+					NULL::varchar AS reply_sender_email
 				FROM chat_messages cm
 				INNER JOIN users u
 					ON u.id = cm.sender_user_id
@@ -374,29 +405,54 @@ export async function updateOwnConversationMessage({
 						AND cmf.status = 'pending'
 				)
 			LIMIT 1
+		),
+		updated_message AS (
+			UPDATE chat_messages cm
+			SET
+				body = $4,
+				edited_at = NOW(),
+				updated_at = NOW()
+			FROM editable_message
+			WHERE cm.id = editable_message.id
+			RETURNING
+				cm.id,
+				cm.conversation_id,
+				cm.sender_user_id,
+				cm.reply_to_message_id,
+				cm.body,
+				cm.edited_at,
+				cm.created_at,
+				cm.updated_at
 		)
-		UPDATE chat_messages cm
-		SET
-			body = $4,
-			edited_at = NOW(),
-			updated_at = NOW()
-		FROM editable_message, users u
-		WHERE cm.id = editable_message.id
-			AND u.id = cm.sender_user_id
-		RETURNING
-			cm.id,
-			cm.conversation_id,
-			cm.sender_user_id,
-			cm.body,
-			cm.edited_at,
-			cm.created_at,
-			cm.updated_at,
+		SELECT
+			updated_message.id,
+			updated_message.conversation_id,
+			updated_message.sender_user_id,
+			updated_message.reply_to_message_id,
+			updated_message.body,
+			updated_message.edited_at,
+			updated_message.created_at,
+			updated_message.updated_at,
 			0::int AS pending_flag_count,
 			false AS flagged_by_viewer,
 			u.username AS sender_username,
 			u.email AS sender_email,
 			u.avatar_seed AS sender_avatar_seed,
-			u.country_code AS sender_country_code;
+			u.country_code AS sender_country_code,
+			reply_message.id AS reply_message_id,
+			reply_message.body AS reply_body,
+			reply_message.deleted_at AS reply_deleted_at,
+			reply_sender.id AS reply_sender_user_id,
+			reply_sender.username AS reply_sender_username,
+			reply_sender.email AS reply_sender_email
+		FROM updated_message
+		INNER JOIN users u
+			ON u.id = updated_message.sender_user_id
+		LEFT JOIN chat_messages reply_message
+			ON reply_message.id = updated_message.reply_to_message_id
+			AND reply_message.conversation_id = updated_message.conversation_id
+		LEFT JOIN users reply_sender
+			ON reply_sender.id = reply_message.sender_user_id;
 	`;
 
 	const rows = await queryRows(q, [

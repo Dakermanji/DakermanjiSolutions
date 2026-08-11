@@ -23,9 +23,20 @@ const FRIEND_EDIT_DELETE_WINDOW_MS =
 const ROOM_EDIT_DELETE_WINDOW_MS =
 	CHAT_MESSAGE_LIMITS.ROOM_EDIT_DELETE_WINDOW_MS;
 const CHAT_MESSAGE_FLAG_ACTIVITY_ENTITY_TYPE = 'chat_message_flag';
+const REPLY_PREVIEW_MAX_LENGTH = 120;
 
 function normalizeMessageBody(body) {
 	return String(body || '').trim();
+}
+
+function normalizeMessagePreview(body) {
+	const preview = String(body || '').replace(/\s+/g, ' ').trim();
+
+	if (preview.length <= REPLY_PREVIEW_MAX_LENGTH) {
+		return preview;
+	}
+
+	return `${preview.slice(0, REPLY_PREVIEW_MAX_LENGTH - 1)}...`;
 }
 
 function formatMessageSender(message) {
@@ -50,6 +61,29 @@ function formatMessageSender(message) {
 	};
 }
 
+function formatMessageReply(message) {
+	const replyId = message.reply_message_id || message.reply_to_message_id;
+	if (!replyId) return null;
+
+	const isDeleted = Boolean(message.reply_deleted_at || !message.reply_message_id);
+	const senderDisplayName =
+		message.reply_sender_username ||
+		message.reply_sender_email ||
+		'User';
+
+	return {
+		id: replyId,
+		isDeleted,
+		bodyPreview: isDeleted ? '' : normalizeMessagePreview(message.reply_body),
+		sender: {
+			id: message.reply_sender_user_id || null,
+			username: message.reply_sender_username || null,
+			email: message.reply_sender_email || null,
+			displayName: senderDisplayName,
+		},
+	};
+}
+
 function formatMessage(message, viewerUserId) {
 	const isMine = message.sender_user_id === viewerUserId;
 	const pendingFlagCount = Number(message.pending_flag_count || 0);
@@ -66,6 +100,7 @@ function formatMessage(message, viewerUserId) {
 		isMine,
 		canEdit: Boolean(message.can_edit ?? (isMine && pendingFlagCount === 0)),
 		canDelete: Boolean(message.can_delete ?? (isMine && pendingFlagCount === 0)),
+		replyTo: formatMessageReply(message),
 		sender: formatMessageSender(message),
 	};
 }
@@ -82,6 +117,7 @@ function formatLiveMessage(message) {
 		flaggedByViewer: Boolean(message.flagged_by_viewer),
 		canEdit: true,
 		canDelete: true,
+		replyTo: formatMessageReply(message),
 		sender: formatMessageSender(message),
 	};
 }
