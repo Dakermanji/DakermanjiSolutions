@@ -154,7 +154,6 @@
 
 		return template.replace('{{count}}', String(count));
 	};
-	let currentMessageDateKey = '';
 %>
 
 <section
@@ -204,540 +203,65 @@
 	data-activity-field-label-keywords="<%= t('chat:rooms.keywords') %>"
 	data-activity-field-label-visibility="<%= t('chat:rooms.visibility') %>"
 >
-	<header class="chat-conversation-header">
-		<form method="POST" action="/chat/friends/close" class="chat-back-form">
-			<button
-				class="btn btn-action-outline chat-back-button has-tooltip"
-				type="submit"
-				data-bs-title="<%= t('chat:backToChats') %>"
-				aria-label="<%= t('chat:backToChats') %>"
-			>
-				<i class="bi bi-arrow-left" aria-hidden="true"></i>
-			</button>
-		</form>
-
-		<span
-			class="chat-conversation-avatar"
-			style="background-color: <%= isRoomConversation ? '' : (friend.avatar?.background || '') %>;"
-			aria-hidden="true"
-		>
-			<% if (!isRoomConversation && friend.avatar?.src) { %>
-				<img src="<%= friend.avatar.src %>" alt="" />
-			<% } else { %>
-				<%= conversationName.slice(0, 1).toUpperCase() %>
-			<% } %>
-		</span>
-
-		<div class="chat-conversation-title">
-			<p class="chat-kicker"><%= conversationKicker %></p>
-			<h1 id="chat-conversation-title" dir="auto"><%= conversationName %></h1>
-		</div>
-
-		<% if (isRoomConversation) { %>
-			<div class="chat-conversation-actions">
-				<% if (isRoomOwner) { %>
-					<button
-						class="btn btn-action-outline chat-panel-toggle has-tooltip"
-						type="button"
-						data-bs-toggle="modal"
-						data-bs-target="#chatRoomModal"
-						data-bs-title="<%= t('chat:rooms.infoToggle') %>"
-						aria-label="<%= t('chat:rooms.infoToggle') %>"
-					>
-						<i class="bi bi-info-circle-fill" aria-hidden="true"></i>
-					</button>
-				<% } %>
-				<% if (canManageRoom) { %>
-					<button
-						class="btn btn-action-outline chat-panel-toggle has-tooltip"
-						type="button"
-						data-chat-flags-toggle
-						data-bs-title="<%= t('chat:flags.toggle') %>"
-						aria-label="<%= t('chat:flags.toggle') %>"
-						aria-controls="chat-flags-panel"
-						aria-expanded="false"
-					>
-						<i class="bi bi-flag-fill" aria-hidden="true"></i>
-					</button>
-					<button
-						class="btn btn-action-outline chat-panel-toggle has-tooltip"
-						type="button"
-						data-chat-activity-toggle
-						data-bs-title="<%= t('chat:activity.toggle') %>"
-						aria-label="<%= t('chat:activity.toggle') %>"
-						aria-controls="chat-activity-panel"
-						aria-expanded="false"
-					>
-						<i class="bi bi-clock-history" aria-hidden="true"></i>
-					</button>
-					<button
-						class="btn btn-action-outline chat-panel-toggle has-tooltip"
-						type="button"
-						data-chat-management-toggle
-						data-bs-title="<%= t('chat:members.manageToggle') %>"
-						aria-label="<%= t('chat:members.manageToggle') %>"
-						aria-controls="chat-management-panel"
-						aria-expanded="false"
-					>
-						<i class="bi bi-gear-fill" aria-hidden="true"></i>
-					</button>
-				<% } %>
-				<button
-					class="btn btn-action-outline chat-panel-toggle has-tooltip"
-					type="button"
-					data-chat-members-toggle
-					data-bs-title="<%= t('chat:members.toggle') %>"
-					aria-label="<%= t('chat:members.toggle') %>"
-					aria-controls="chat-members-panel"
-					aria-expanded="false"
-				>
-					<i class="bi bi-people-fill" aria-hidden="true"></i>
-				</button>
-			</div>
-		<% } %>
-	</header>
-
-	<div class="chat-message-surface" aria-live="polite" data-chat-message-surface>
-		<% if (chatMessages.length > 0) { %>
-			<ol class="chat-message-list" data-chat-message-list>
-				<% chatMessages.forEach((message) => { %>
-					<%
-						const messageDateKey = getMessageDateKey(message.createdAt);
-						const shouldShowDateSeparator =
-							messageDateKey && messageDateKey !== currentMessageDateKey;
-						currentMessageDateKey = messageDateKey || currentMessageDateKey;
-					%>
-					<% if (shouldShowDateSeparator) { %>
-						<li class="chat-date-separator" data-chat-date-separator>
-							<time datetime="<%= messageDateKey %>">
-								-- <%= formatMessageDate(message.createdAt) %> --
-							</time>
-						</li>
-					<% } %>
-					<li
-						class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>"
-						data-chat-message-id="<%= message.id %>"
-						data-chat-message-sender-id="<%= message.sender?.id || '' %>"
-						data-chat-message-sender-name="<%= getSenderName(message) %>"
-						data-chat-message-sender-avatar="<%= message.sender?.avatar?.src || '' %>"
-						data-chat-message-sender-avatar-bg="<%= message.sender?.avatar?.background || '' %>"
-						data-chat-message-created-at="<%= new Date(message.createdAt).toISOString() %>"
-						data-chat-message-pending-flag-count="<%= message.pendingFlagCount || 0 %>"
-						data-chat-message-flagged-by-viewer="<%= message.flaggedByViewer ? 'true' : 'false' %>"
-						data-chat-message-can-edit="<%= message.canEdit ? 'true' : 'false' %>"
-						data-chat-message-can-delete="<%= message.canDelete ? 'true' : 'false' %>"
-						data-chat-message-edited="<%= message.editedAt ? 'true' : 'false' %>"
-					>
-						<% if (isRoomConversation && !message.isMine) { %>
-							<span
-								class="chat-message-sender-avatar"
-								style="background-color: <%= message.sender?.avatar?.background || '' %>;"
-								aria-hidden="true"
-							>
-								<% if (message.sender?.avatar?.src) { %>
-									<img src="<%= message.sender.avatar.src %>" alt="" />
-								<% } else { %>
-									<%= getSenderName(message).slice(0, 1).toUpperCase() %>
-								<% } %>
-							</span>
-						<% } %>
-						<article class="chat-message-bubble">
-							<% if (isRoomConversation && !message.isMine) { %>
-								<header class="chat-message-sender-name">
-									<%= getSenderName(message) %>
-								</header>
-							<% } %>
-							<% if (message.replyTo) { %>
-								<blockquote
-									class="chat-message-reply"
-									dir="auto"
-									data-chat-message-reply-id="<%= message.replyTo.id %>"
-								>
-									<strong><%= getReplySenderName(message) %></strong>
-									<span>
-										<%= message.replyTo.isDeleted
-											? t('chat:conversation.replyDeleted')
-											: message.replyTo.bodyPreview %>
-									</span>
-								</blockquote>
-							<% } %>
-							<p class="chat-message-text" dir="auto"><%= message.body %></p>
-						</article>
-						<span class="chat-message-meta">
-							<% if (message.editedAt) { %>
-								<span class="chat-message-edited">
-									<span><%= t('chat:conversation.edited') %></span>
-									<time datetime="<%= new Date(message.editedAt).toISOString() %>">
-										<%= formatMessageTime(message.editedAt) %>
-									</time>
-								</span>
-							<% } %>
-							<time
-								class="chat-message-time"
-								datetime="<%= new Date(message.createdAt).toISOString() %>"
-							>
-								<%= formatMessageTime(message.createdAt) %>
-							</time>
-						</span>
-						<% if (message.isMine && (message.canEdit || message.canDelete)) { %>
-							<div class="chat-message-actions">
-								<% if (message.canEdit) { %>
-									<button
-										class="btn btn-action-outline chat-message-action has-tooltip"
-										type="button"
-										data-chat-message-edit
-										data-bs-title="<%= t('chat:conversation.edit') %>"
-										aria-label="<%= t('chat:conversation.edit') %>"
-									>
-										<i class="bi bi-pencil" aria-hidden="true"></i>
-									</button>
-								<% } %>
-								<% if (message.canDelete) { %>
-									<form
-										class="chat-message-delete-form"
-										method="POST"
-										action="<%= deleteMessageUrl %>"
-										data-chat-message-delete-form
-									>
-										<%- include('../partials/_csrf') %>
-										<input type="hidden" name="messageId" value="<%= message.id %>" />
-										<button
-											class="btn btn-action-outline chat-message-action is-danger has-tooltip"
-											type="submit"
-											data-bs-title="<%= t('chat:conversation.delete') %>"
-											aria-label="<%= t('chat:conversation.delete') %>"
-										>
-											<i class="bi bi-trash3" aria-hidden="true"></i>
-										</button>
-									</form>
-								<% } %>
-							</div>
-						<% } %>
-						<% if (isRoomConversation && !message.isMine) { %>
-							<form
-								class="chat-message-flag-form"
-								method="POST"
-								action="/chat/rooms/messages/flag"
-							>
-								<%- include('../partials/_csrf') %>
-								<input type="hidden" name="messageId" value="<%= message.id %>" />
-								<button
-									class="btn btn-action-outline chat-message-flag-button has-tooltip <%= message.flaggedByViewer ? 'is-flagged' : '' %>"
-									type="submit"
-									data-bs-title="<%= t(message.flaggedByViewer ? 'chat:conversation.flagged' : 'chat:conversation.flag') %>"
-									aria-label="<%= t(message.flaggedByViewer ? 'chat:conversation.flagged' : 'chat:conversation.flag') %>"
-									<% if (message.flaggedByViewer) { %>disabled<% } %>
-								>
-									<i class="bi <%= message.flaggedByViewer ? 'bi-flag-fill' : 'bi-flag' %>" aria-hidden="true"></i>
-								</button>
-							</form>
-						<% } %>
-					</li>
-				<% }) %>
-			</ol>
-		<% } else { %>
-			<div class="chat-empty-state" data-chat-empty-state>
-				<i class="bi bi-chat-dots" aria-hidden="true"></i>
-				<p><%= t('chat:conversation.empty') %></p>
-			</div>
-		<% } %>
-	</div>
-
-	<% if (isRoomConversation) { %>
-		<section
-			id="chat-members-panel"
-			class="chat-members-panel"
-			aria-labelledby="chat-members-title"
-			data-chat-members-panel
-			hidden
-		>
-			<header class="chat-members-header">
-				<div>
-					<p class="chat-kicker"><%= t('chat:members.kicker') %></p>
-					<h2 id="chat-members-title"><%= t('chat:members.title') %></h2>
-				</div>
-				<span class="chat-members-count">
-					<%= t('chat:members.count', { count: roomMemberList.length }) %>
-				</span>
-			</header>
-
-			<% if (roomMemberList.length > 0) { %>
-				<ol class="chat-members-list">
-					<% roomMemberList.forEach((member) => { %>
-						<li class="chat-member-item">
-							<span
-								class="chat-member-avatar"
-								style="background-color: <%= member.avatar?.background || '' %>;"
-								aria-hidden="true"
-							>
-								<% if (member.avatar?.src) { %>
-									<img src="<%= member.avatar.src %>" alt="" />
-								<% } else { %>
-									<%= getMemberName(member).slice(0, 1).toUpperCase() %>
-								<% } %>
-							</span>
-
-							<div class="chat-member-body">
-								<strong><%= getMemberName(member) %></strong>
-								<div class="chat-member-badges">
-									<span class="chat-member-badge chat-member-badge--<%= member.role %>">
-										<%= t(`chat:members.roles.${member.role}`) %>
-									</span>
-									<% if (member.status === 'muted') { %>
-										<span class="chat-member-badge chat-member-badge--muted">
-											<%= t('chat:members.statuses.muted') %>
-										</span>
-									<% } %>
-								</div>
-							</div>
-						</li>
-					<% }) %>
-				</ol>
-			<% } else { %>
-				<div class="chat-members-empty">
-					<i class="bi bi-people" aria-hidden="true"></i>
-					<p><%= t('chat:members.empty') %></p>
-				</div>
-			<% } %>
-		</section>
-	<% } %>
-
-	<% if (isRoomConversation && canManageRoom) { %>
-		<section
-			id="chat-management-panel"
-			class="chat-members-panel chat-management-panel"
-			aria-labelledby="chat-management-title"
-			data-chat-management-panel
-			hidden
-		>
-			<header class="chat-members-header">
-				<div>
-					<p class="chat-kicker"><%= t('chat:members.manageKicker') %></p>
-					<h2 id="chat-management-title"><%= t('chat:members.manageTitle') %></h2>
-				</div>
-				<span class="chat-members-count">
-					<%= t('chat:members.count', { count: roomManagementMemberList.length }) %>
-				</span>
-			</header>
-
-			<% if (managementGroups.length > 0) { %>
-				<div class="chat-management-groups">
-					<% managementGroups.forEach((group) => { %>
-						<section class="chat-management-group">
-							<h3><%= t(`chat:members.groups.${group.key}`) %></h3>
-							<ol class="chat-members-list">
-								<% group.members.forEach((member) => { %>
-									<li class="chat-member-item chat-management-member-item">
-										<span
-											class="chat-member-avatar"
-											style="background-color: <%= member.avatar?.background || '' %>;"
-											aria-hidden="true"
-										>
-											<% if (member.avatar?.src) { %>
-												<img src="<%= member.avatar.src %>" alt="" />
-											<% } else { %>
-												<%= getMemberName(member).slice(0, 1).toUpperCase() %>
-											<% } %>
-										</span>
-
-										<div class="chat-member-body">
-											<strong><%= getMemberName(member) %></strong>
-											<div class="chat-member-badges">
-												<span class="chat-member-badge chat-member-badge--<%= member.role %>">
-													<%= t(`chat:members.roles.${member.role}`) %>
-												</span>
-												<% if (member.status !== 'active') { %>
-													<span class="chat-member-badge chat-member-badge--<%= member.status %>">
-														<%= t(`chat:members.statuses.${member.status}`) %>
-													</span>
-												<% } %>
-											</div>
-										</div>
-
-										<div class="chat-management-actions">
-											<% const memberActionForms = [
-												{ show: canPromoteTarget(member), path: '/chat/rooms/members/promote', icon: 'bi-arrow-up-circle', label: 'promote' },
-												{ show: canDemoteTarget(member), path: '/chat/rooms/members/demote', icon: 'bi-arrow-down-circle', label: 'demote' },
-												{ show: canMuteTarget(member), path: '/chat/rooms/members/mute', icon: 'bi-volume-mute', label: 'mute' },
-												{ show: canUnmuteTarget(member), path: '/chat/rooms/members/unmute', icon: 'bi-volume-up', label: 'unmute' },
-												{ show: canRemoveTarget(member), path: '/chat/rooms/members/remove', icon: 'bi-person-dash', label: 'remove' },
-												{ show: canBanTarget(member), path: '/chat/rooms/members/ban', icon: 'bi-slash-circle', label: 'ban' },
-												{ show: canUnbanTarget(member), path: '/chat/rooms/members/unban', icon: 'bi-unlock', label: 'unban' },
-												{ show: canDeleteTarget(member), path: '/chat/rooms/members/delete-history', icon: 'bi-trash3', label: 'deleteHistory', danger: true },
-											].filter((item) => item.show); %>
-
-											<% memberActionForms.forEach((action) => { %>
-												<form method="POST" action="<%= action.path %>">
-													<input type="hidden" name="conversationId" value="<%= conversation.id %>" />
-													<input type="hidden" name="targetUserId" value="<%= member.id %>" />
-													<button
-														class="btn btn-action-outline chat-management-action has-tooltip <%= action.danger ? 'is-danger' : '' %>"
-														type="submit"
-														data-bs-title="<%= t(`chat:members.actions.${action.label}`) %>"
-														aria-label="<%= t(`chat:members.actions.${action.label}`) %>"
-													>
-														<i class="bi <%= action.icon %>" aria-hidden="true"></i>
-													</button>
-												</form>
-											<% }) %>
-										</div>
-									</li>
-								<% }) %>
-							</ol>
-						</section>
-					<% }) %>
-				</div>
-			<% } else { %>
-				<div class="chat-members-empty">
-					<i class="bi bi-gear" aria-hidden="true"></i>
-					<p><%= t('chat:members.empty') %></p>
-				</div>
-			<% } %>
-		</section>
-	<% } %>
-
-	<% if (isRoomConversation && canManageRoom) { %>
-		<section
-			id="chat-flags-panel"
-			class="chat-members-panel chat-flags-panel"
-			aria-labelledby="chat-flags-title"
-			data-chat-flags-panel
-			hidden
-		>
-			<header class="chat-members-header">
-				<div>
-					<p class="chat-kicker"><%= t('chat:flags.kicker') %></p>
-					<h2 id="chat-flags-title"><%= t('chat:flags.title') %></h2>
-				</div>
-				<span class="chat-members-count" data-chat-flags-count>
-					<%= formatFlagCountLabel(0) %>
-				</span>
-			</header>
-
-			<ol class="chat-flags-list" data-chat-flags-list></ol>
-
-			<div class="chat-members-empty" data-chat-flags-state>
-				<i class="bi bi-flag" aria-hidden="true"></i>
-				<p><%= t('chat:flags.empty') %></p>
-			</div>
-
-			<script type="application/json" data-chat-flag-count-labels>
-				<%- JSON.stringify(flagCountLabels) %>
-			</script>
-		</section>
-	<% } %>
-
-	<% if (isRoomConversation && canManageRoom) { %>
-		<section
-			id="chat-activity-panel"
-			class="chat-members-panel chat-activity-panel"
-			aria-labelledby="chat-activity-title"
-			data-chat-activity-panel
-			hidden
-		>
-			<header class="chat-members-header">
-				<div>
-					<p class="chat-kicker"><%= t('chat:activity.kicker') %></p>
-					<h2 id="chat-activity-title"><%= t('chat:activity.title') %></h2>
-				</div>
-				<span class="chat-members-count" data-chat-activity-count>
-					<%= t('chat:count', { count: 0 }) %>
-				</span>
-			</header>
-
-			<ol class="chat-activity-list" data-chat-activity-list></ol>
-
-			<div class="chat-members-empty" data-chat-activity-state>
-				<i class="bi bi-clock-history" aria-hidden="true"></i>
-				<p><%= t('chat:activity.empty') %></p>
-			</div>
-
-			<button
-				class="btn btn-action-outline chat-activity-load-more"
-				type="button"
-				data-chat-activity-load-more
-				hidden
-			>
-				<%= t('chat:activity.loadMore') %>
-			</button>
-
-			<script type="application/json" data-chat-activity-labels>
-				<%- JSON.stringify({
-					join_request_approved: t('chat:activity.actions.joinRequestApproved'),
-					join_request_rejected: t('chat:activity.actions.joinRequestRejected'),
-					member_promoted: t('chat:activity.actions.memberPromoted'),
-					admin_demoted: t('chat:activity.actions.adminDemoted'),
-					member_muted: t('chat:activity.actions.memberMuted'),
-					member_unmuted: t('chat:activity.actions.memberUnmuted'),
-					member_removed: t('chat:activity.actions.memberRemoved'),
-					member_banned: t('chat:activity.actions.memberBanned'),
-					member_unbanned: t('chat:activity.actions.memberUnbanned'),
-					member_history_deleted: t('chat:activity.actions.memberHistoryDeleted'),
-					room_info_updated: t('chat:activity.actions.roomInfoUpdated'),
-					message_flagged: t('chat:activity.actions.messageFlagged'),
-					message_marked_safe: t('chat:activity.actions.messageMarkedSafe'),
-					flagged_message_deleted: t('chat:activity.actions.flaggedMessageDeleted'),
-					message_deleted_by_admin: t('chat:activity.actions.messageDeletedByAdmin'),
-				}) %>
-			</script>
-		</section>
-	<% } %>
-
-	<div class="chat-typing-indicator" data-chat-typing-indicator hidden>
-		<span></span>
-	</div>
-
-	<% if (!canWriteConversation) { %>
-		<div class="chat-composer-notice" role="status" data-chat-composer-notice>
-			<i class="bi bi-volume-mute-fill" aria-hidden="true"></i>
-			<span><%= t('chat:conversation.mutedMessageError') %></span>
-		</div>
-	<% } %>
-
-	<form
-		class="chat-composer"
-		method="POST"
-		action="<%= messageFormAction %>"
-		aria-label="<%= t('chat:conversation.composer') %>"
-		data-chat-composer
-	>
-		<input
-			type="hidden"
-			name="replyToMessageId"
-			value=""
-			data-chat-reply-to-message-id
-		/>
-		<input
-			class="form-control"
-			type="text"
-			name="message"
-			maxlength="<%= messageBodyMaxLength %>"
-			placeholder="<%= t('chat:conversation.placeholder') %>"
-			autocomplete="off"
-			required
-			<% if (!canWriteConversation) { %>disabled<% } %>
-		/>
-		<button
-			class="btn btn-action-secondary"
-			type="submit"
-			<% if (!canWriteConversation) { %>disabled<% } %>
-		>
-			<i class="bi bi-send" aria-hidden="true"></i>
-			<span class="visually-hidden"><%= t('chat:conversation.send') %></span>
-		</button>
-	</form>
+	<%- include('_conversation_header', {
+		canManageRoom,
+		conversationKicker,
+		conversationName,
+		friend,
+		isRoomConversation,
+		isRoomOwner,
+	}) %>
+	<%- include('_conversation_messages', {
+		chatMessages,
+		deleteMessageUrl,
+		formatMessageDate,
+		formatMessageTime,
+		getMessageDateKey,
+		getReplySenderName,
+		getSenderName,
+		isRoomConversation,
+	}) %>
+	<%- include('_conversation_members_panel', {
+		getMemberName,
+		isRoomConversation,
+		roomMemberList,
+	}) %>
+	<%- include('_conversation_management_panel', {
+		canBanTarget,
+		canDeleteTarget,
+		canDemoteTarget,
+		canManageRoom,
+		canMuteTarget,
+		canPromoteTarget,
+		canRemoveTarget,
+		canUnbanTarget,
+		canUnmuteTarget,
+		conversation,
+		getMemberName,
+		isRoomConversation,
+		managementGroups,
+		roomManagementMemberList,
+	}) %>
+	<%- include('_conversation_flags_panel', {
+		canManageRoom,
+		flagCountLabels,
+		formatFlagCountLabel,
+		isRoomConversation,
+	}) %>
+	<%- include('_conversation_activity_panel', {
+		canManageRoom,
+		isRoomConversation,
+	}) %>
+	<%- include('_conversation_composer', {
+		canWriteConversation,
+		messageBodyMaxLength,
+		messageFormAction,
+	}) %>
 </section>
 
-<% if (isRoomConversation && isRoomOwner) { %>
-	<%- include('../modals/chat/_room_modal', {
-		roomVisibility,
-		roomModalMode: 'edit',
-		roomModalAction: '/chat/rooms/update',
-		roomModalValues: {
-			name: room.title,
-			description: room.description,
-			keywords: room.keywords,
-			visibility: room.visibility,
-		},
-	}) %>
-<% } %>
+<%- include('_conversation_room_modal', {
+	isRoomConversation,
+	isRoomOwner,
+	room,
+	roomVisibility,
+}) %>

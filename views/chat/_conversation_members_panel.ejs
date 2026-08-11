@@ -1,0 +1,59 @@
+<!--! views/chat/_conversation_members_panel.ejs -->
+<% if (isRoomConversation) { %>
+	<section
+		id="chat-members-panel"
+		class="chat-members-panel"
+		aria-labelledby="chat-members-title"
+		data-chat-members-panel
+		hidden
+	>
+		<header class="chat-members-header">
+			<div>
+				<p class="chat-kicker"><%= t('chat:members.kicker') %></p>
+				<h2 id="chat-members-title"><%= t('chat:members.title') %></h2>
+			</div>
+			<span class="chat-members-count">
+				<%= t('chat:members.count', { count: roomMemberList.length }) %>
+			</span>
+		</header>
+
+		<% if (roomMemberList.length > 0) { %>
+			<ol class="chat-members-list">
+				<% roomMemberList.forEach((member) => { %>
+					<li class="chat-member-item">
+						<span
+							class="chat-member-avatar"
+							style="background-color: <%= member.avatar?.background || '' %>;"
+							aria-hidden="true"
+						>
+							<% if (member.avatar?.src) { %>
+								<img src="<%= member.avatar.src %>" alt="" />
+							<% } else { %>
+								<%= getMemberName(member).slice(0, 1).toUpperCase() %>
+							<% } %>
+						</span>
+
+						<div class="chat-member-body">
+							<strong><%= getMemberName(member) %></strong>
+							<div class="chat-member-badges">
+								<span class="chat-member-badge chat-member-badge--<%= member.role %>">
+									<%= t(`chat:members.roles.${member.role}`) %>
+								</span>
+								<% if (member.status === 'muted') { %>
+									<span class="chat-member-badge chat-member-badge--muted">
+										<%= t('chat:members.statuses.muted') %>
+									</span>
+								<% } %>
+							</div>
+						</div>
+					</li>
+				<% }) %>
+			</ol>
+		<% } else { %>
+			<div class="chat-members-empty">
+				<i class="bi bi-people" aria-hidden="true"></i>
+				<p><%= t('chat:members.empty') %></p>
+			</div>
+		<% } %>
+	</section>
+<% } %>

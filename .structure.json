@@ -541,6 +541,14 @@
 	},
 	"views": {
 		"chat": [
+			"_conversation_activity_panel.ejs",
+			"_conversation_composer.ejs",
+			"_conversation_flags_panel.ejs",
+			"_conversation_header.ejs",
+			"_conversation_management_panel.ejs",
+			"_conversation_members_panel.ejs",
+			"_conversation_messages.ejs",
+			"_conversation_room_modal.ejs",
 			"conversation.ejs",
 			"main.ejs"
 		],

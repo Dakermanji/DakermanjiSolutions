@@ -1,0 +1,14 @@
+<!--! views/chat/_conversation_room_modal.ejs -->
+<% if (isRoomConversation && isRoomOwner) { %>
+	<%- include('../modals/chat/_room_modal', {
+		roomVisibility,
+		roomModalMode: 'edit',
+		roomModalAction: '/chat/rooms/update',
+		roomModalValues: {
+			name: room.title,
+			description: room.description,
+			keywords: room.keywords,
+			visibility: room.visibility,
+		},
+	}) %>
+<% } %>

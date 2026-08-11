@@ -1,0 +1,31 @@
+<!--! views/chat/_conversation_flags_panel.ejs -->
+<% if (isRoomConversation && canManageRoom) { %>
+	<section
+		id="chat-flags-panel"
+		class="chat-members-panel chat-flags-panel"
+		aria-labelledby="chat-flags-title"
+		data-chat-flags-panel
+		hidden
+	>
+		<header class="chat-members-header">
+			<div>
+				<p class="chat-kicker"><%= t('chat:flags.kicker') %></p>
+				<h2 id="chat-flags-title"><%= t('chat:flags.title') %></h2>
+			</div>
+			<span class="chat-members-count" data-chat-flags-count>
+				<%= formatFlagCountLabel(0) %>
+			</span>
+		</header>
+
+		<ol class="chat-flags-list" data-chat-flags-list></ol>
+
+		<div class="chat-members-empty" data-chat-flags-state>
+			<i class="bi bi-flag" aria-hidden="true"></i>
+			<p><%= t('chat:flags.empty') %></p>
+		</div>
+
+		<script type="application/json" data-chat-flag-count-labels>
+			<%- JSON.stringify(flagCountLabels) %>
+		</script>
+	</section>
+<% } %>

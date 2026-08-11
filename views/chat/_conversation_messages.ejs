@@ -1,0 +1,148 @@
+<!--! views/chat/_conversation_messages.ejs -->
+<% let currentMessageDateKey = ''; %>
+
+<div class="chat-message-surface" aria-live="polite" data-chat-message-surface>
+	<% if (chatMessages.length > 0) { %>
+		<ol class="chat-message-list" data-chat-message-list>
+			<% chatMessages.forEach((message) => { %>
+				<%
+					const messageDateKey = getMessageDateKey(message.createdAt);
+					const shouldShowDateSeparator =
+						messageDateKey && messageDateKey !== currentMessageDateKey;
+					currentMessageDateKey = messageDateKey || currentMessageDateKey;
+				%>
+				<% if (shouldShowDateSeparator) { %>
+					<li class="chat-date-separator" data-chat-date-separator>
+						<time datetime="<%= messageDateKey %>">
+							-- <%= formatMessageDate(message.createdAt) %> --
+						</time>
+					</li>
+				<% } %>
+				<li
+					class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>"
+					data-chat-message-id="<%= message.id %>"
+					data-chat-message-sender-id="<%= message.sender?.id || '' %>"
+					data-chat-message-sender-name="<%= getSenderName(message) %>"
+					data-chat-message-sender-avatar="<%= message.sender?.avatar?.src || '' %>"
+					data-chat-message-sender-avatar-bg="<%= message.sender?.avatar?.background || '' %>"
+					data-chat-message-created-at="<%= new Date(message.createdAt).toISOString() %>"
+					data-chat-message-pending-flag-count="<%= message.pendingFlagCount || 0 %>"
+					data-chat-message-flagged-by-viewer="<%= message.flaggedByViewer ? 'true' : 'false' %>"
+					data-chat-message-can-edit="<%= message.canEdit ? 'true' : 'false' %>"
+					data-chat-message-can-delete="<%= message.canDelete ? 'true' : 'false' %>"
+					data-chat-message-edited="<%= message.editedAt ? 'true' : 'false' %>"
+				>
+					<% if (isRoomConversation && !message.isMine) { %>
+						<span
+							class="chat-message-sender-avatar"
+							style="background-color: <%= message.sender?.avatar?.background || '' %>;"
+							aria-hidden="true"
+						>
+							<% if (message.sender?.avatar?.src) { %>
+								<img src="<%= message.sender.avatar.src %>" alt="" />
+							<% } else { %>
+								<%= getSenderName(message).slice(0, 1).toUpperCase() %>
+							<% } %>
+						</span>
+					<% } %>
+					<article class="chat-message-bubble">
+						<% if (isRoomConversation && !message.isMine) { %>
+							<header class="chat-message-sender-name">
+								<%= getSenderName(message) %>
+							</header>
+						<% } %>
+						<% if (message.replyTo) { %>
+							<blockquote
+								class="chat-message-reply"
+								dir="auto"
+								data-chat-message-reply-id="<%= message.replyTo.id %>"
+							>
+								<strong><%= getReplySenderName(message) %></strong>
+								<span>
+									<%= message.replyTo.isDeleted
+										? t('chat:conversation.replyDeleted')
+										: message.replyTo.bodyPreview %>
+								</span>
+							</blockquote>
+						<% } %>
+						<p class="chat-message-text" dir="auto"><%= message.body %></p>
+					</article>
+					<span class="chat-message-meta">
+						<% if (message.editedAt) { %>
+							<span class="chat-message-edited">
+								<span><%= t('chat:conversation.edited') %></span>
+								<time datetime="<%= new Date(message.editedAt).toISOString() %>">
+									<%= formatMessageTime(message.editedAt) %>
+								</time>
+							</span>
+						<% } %>
+						<time
+							class="chat-message-time"
+							datetime="<%= new Date(message.createdAt).toISOString() %>"
+						>
+							<%= formatMessageTime(message.createdAt) %>
+						</time>
+					</span>
+					<% if (message.isMine && (message.canEdit || message.canDelete)) { %>
+						<div class="chat-message-actions">
+							<% if (message.canEdit) { %>
+								<button
+									class="btn btn-action-outline chat-message-action has-tooltip"
+									type="button"
+									data-chat-message-edit
+									data-bs-title="<%= t('chat:conversation.edit') %>"
+									aria-label="<%= t('chat:conversation.edit') %>"
+								>
+									<i class="bi bi-pencil" aria-hidden="true"></i>
+								</button>
+							<% } %>
+							<% if (message.canDelete) { %>
+								<form
+									class="chat-message-delete-form"
+									method="POST"
+									action="<%= deleteMessageUrl %>"
+									data-chat-message-delete-form
+								>
+									<%- include('../partials/_csrf') %>
+									<input type="hidden" name="messageId" value="<%= message.id %>" />
+									<button
+										class="btn btn-action-outline chat-message-action is-danger has-tooltip"
+										type="submit"
+										data-bs-title="<%= t('chat:conversation.delete') %>"
+										aria-label="<%= t('chat:conversation.delete') %>"
+									>
+										<i class="bi bi-trash3" aria-hidden="true"></i>
+									</button>
+								</form>
+							<% } %>
+						</div>
+					<% } %>
+					<% if (isRoomConversation && !message.isMine) { %>
+						<form
+							class="chat-message-flag-form"
+							method="POST"
+							action="/chat/rooms/messages/flag"
+						>
+							<%- include('../partials/_csrf') %>
+							<input type="hidden" name="messageId" value="<%= message.id %>" />
+							<button
+								class="btn btn-action-outline chat-message-flag-button has-tooltip <%= message.flaggedByViewer ? 'is-flagged' : '' %>"
+								type="submit"
+								data-bs-title="<%= t(message.flaggedByViewer ? 'chat:conversation.flagged' : 'chat:conversation.flag') %>"
+								aria-label="<%= t(message.flaggedByViewer ? 'chat:conversation.flagged' : 'chat:conversation.flag') %>"
+								<% if (message.flaggedByViewer) { %>disabled<% } %>
+							>
+								<i class="bi <%= message.flaggedByViewer ? 'bi-flag-fill' : 'bi-flag' %>" aria-hidden="true"></i>
+							</button>
+						</form>
+					<% } %>
+				</li>
+			<% }) %>
+		</ol>
+	<% } else { %>
+		<div class="chat-empty-state" data-chat-empty-state>
+			<i class="bi bi-chat-dots" aria-hidden="true"></i>
+			<p><%= t('chat:conversation.empty') %></p>
+		</div>
+	<% } %>
+</div>

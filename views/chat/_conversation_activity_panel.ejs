@@ -1,0 +1,56 @@
+<!--! views/chat/_conversation_activity_panel.ejs -->
+<% if (isRoomConversation && canManageRoom) { %>
+	<section
+		id="chat-activity-panel"
+		class="chat-members-panel chat-activity-panel"
+		aria-labelledby="chat-activity-title"
+		data-chat-activity-panel
+		hidden
+	>
+		<header class="chat-members-header">
+			<div>
+				<p class="chat-kicker"><%= t('chat:activity.kicker') %></p>
+				<h2 id="chat-activity-title"><%= t('chat:activity.title') %></h2>
+			</div>
+			<span class="chat-members-count" data-chat-activity-count>
+				<%= t('chat:count', { count: 0 }) %>
+			</span>
+		</header>
+
+		<ol class="chat-activity-list" data-chat-activity-list></ol>
+
+		<div class="chat-members-empty" data-chat-activity-state>
+			<i class="bi bi-clock-history" aria-hidden="true"></i>
+			<p><%= t('chat:activity.empty') %></p>
+		</div>
+
+		<button
+			class="btn btn-action-outline chat-activity-load-more"
+			type="button"
+			data-chat-activity-load-more
+			hidden
+		>
+			<%= t('chat:activity.loadMore') %>
+		</button>
+
+		<script type="application/json" data-chat-activity-labels>
+			<%- JSON.stringify({
+				join_request_approved: t('chat:activity.actions.joinRequestApproved'),
+				join_request_rejected: t('chat:activity.actions.joinRequestRejected'),
+				member_promoted: t('chat:activity.actions.memberPromoted'),
+				admin_demoted: t('chat:activity.actions.adminDemoted'),
+				member_muted: t('chat:activity.actions.memberMuted'),
+				member_unmuted: t('chat:activity.actions.memberUnmuted'),
+				member_removed: t('chat:activity.actions.memberRemoved'),
+				member_banned: t('chat:activity.actions.memberBanned'),
+				member_unbanned: t('chat:activity.actions.memberUnbanned'),
+				member_history_deleted: t('chat:activity.actions.memberHistoryDeleted'),
+				room_info_updated: t('chat:activity.actions.roomInfoUpdated'),
+				message_flagged: t('chat:activity.actions.messageFlagged'),
+				message_marked_safe: t('chat:activity.actions.messageMarkedSafe'),
+				flagged_message_deleted: t('chat:activity.actions.flaggedMessageDeleted'),
+				message_deleted_by_admin: t('chat:activity.actions.messageDeletedByAdmin'),
+			}) %>
+		</script>
+	</section>
+<% } %>
