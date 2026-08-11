@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS "chat_messages" (
 	-- message identity
 	"conversation_id" UUID NOT NULL,
 	"sender_user_id" UUID NOT NULL,
+	"reply_to_message_id" UUID NULL,
 	"body" TEXT NOT NULL,
 
 	-- message lifecycle
@@ -41,6 +42,11 @@ CREATE TABLE IF NOT EXISTS "chat_messages" (
 		FOREIGN KEY ("sender_user_id")
 		REFERENCES "users" ("id")
 		ON DELETE CASCADE,
+
+	CONSTRAINT "chat_messages_reply_to_message_fk"
+		FOREIGN KEY ("reply_to_message_id")
+		REFERENCES "chat_messages" ("id")
+		ON DELETE SET NULL,
 
 	-- prevent empty messages
 	CONSTRAINT "chat_messages_body_check"
@@ -90,6 +96,9 @@ CREATE INDEX IF NOT EXISTS "IDX_chat_messages_conversation_created_at"
 
 CREATE INDEX IF NOT EXISTS "IDX_chat_messages_sender_user_id"
 	ON "chat_messages" ("sender_user_id");
+
+CREATE INDEX IF NOT EXISTS "IDX_chat_messages_reply_to_message_id"
+	ON "chat_messages" ("reply_to_message_id");
 
 CREATE INDEX IF NOT EXISTS "IDX_chat_messages_created_at"
 	ON "chat_messages" ("created_at");
