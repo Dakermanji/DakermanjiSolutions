@@ -434,6 +434,13 @@
 			"dicebear.js"
 		],
 		"chat": {
+			"live": [
+				"conversations.js",
+				"handlers.js",
+				"messages.js",
+				"state.js",
+				"unread.js"
+			],
 			"messages": [
 				"flags.js",
 				"formatters.js",
