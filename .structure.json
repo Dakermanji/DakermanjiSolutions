@@ -55,6 +55,7 @@
 			"index.js",
 			"messages.js",
 			"render.js",
+			"roomFlags.js",
 			"roomMembers.js",
 			"rooms.js",
 			"session.js"
@@ -166,6 +167,11 @@
 				"direct.js",
 				"friends.js"
 			],
+			"messages": [
+				"flags.js",
+				"reads.js",
+				"writes.js"
+			],
 			"roomJoinRequests": [
 				"create.js",
 				"notifications.js",
@@ -186,6 +192,7 @@
 			"~": [
 				"ConversationMembers.js",
 				"Conversations.js",
+				"MessageFlags.js",
 				"Messages.js",
 				"RoomActivityLogs.js",
 				"RoomJoinRequests.js",
@@ -343,8 +350,22 @@
 		"js": {
 			"chat": {
 				"conversation-page": [
+					"activity.js",
 					"dates.js",
-					"renderer.js"
+					"flagReview.js",
+					"messages.js",
+					"panels.js",
+					"renderer.js",
+					"socket.js",
+					"utils.js"
+				],
+				"main-page": [
+					"badges.js",
+					"cards.js",
+					"roomModal.js",
+					"roomSearch.js",
+					"sections.js",
+					"utils.js"
 				],
 				"~": [
 					"conversation.js",
@@ -417,6 +438,7 @@
 				"activity.js",
 				"access.js",
 				"create.js",
+				"flagReview.js",
 				"formatters.js",
 				"helpers.js",
 				"lists.js",
