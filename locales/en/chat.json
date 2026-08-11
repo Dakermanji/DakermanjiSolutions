@@ -122,8 +122,10 @@
 		"empty": "No flagged messages to review.",
 		"loading": "Loading flagged messages...",
 		"error": "Could not load flagged messages.",
-		"count": "{{count}} flagged",
-		"flagCount": "{{count}} flags",
+		"flagCount": {
+			"one": "{{count}} flag",
+			"other": "{{count}} flags"
+		},
 		"contextMissing": "This message is older than the loaded chat history.",
 		"deleteConfirm": "Delete this flagged message?",
 		"actions": {

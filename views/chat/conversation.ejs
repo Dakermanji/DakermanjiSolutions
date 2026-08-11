@@ -134,6 +134,21 @@
 
 		return `${year}-${month}-${day}`;
 	};
+	const flagCountLabels = isRoomConversation
+		? t('chat:flags.flagCount', { returnObjects: true })
+		: {};
+	const formatFlagCountLabel = (count) => {
+		const labels =
+			flagCountLabels &&
+			typeof flagCountLabels === 'object' &&
+			!Array.isArray(flagCountLabels)
+				? flagCountLabels
+				: { other: String(flagCountLabels || '{{count}}') };
+		const category = new Intl.PluralRules(currentLang || 'en').select(count);
+		const template = labels[category] || labels.other || labels.one || '{{count}}';
+
+		return template.replace('{{count}}', String(count));
+	};
 	let currentMessageDateKey = '';
 %>
 
@@ -163,8 +178,6 @@
 	data-flags-loading-label="<%= t('chat:flags.loading') %>"
 	data-flags-error-label="<%= t('chat:flags.error') %>"
 	data-flags-empty-label="<%= t('chat:flags.empty') %>"
-	data-flags-count-label="<%= t('chat:flags.count', { count: '{{count}}' }) %>"
-	data-flags-flag-count-label="<%= t('chat:flags.flagCount', { count: '{{count}}' }) %>"
 	data-flags-open-context-label="<%= t('chat:flags.actions.openContext') %>"
 	data-flags-safe-label="<%= t('chat:flags.actions.safe') %>"
 	data-flags-delete-label="<%= t('chat:flags.actions.delete') %>"
@@ -571,7 +584,7 @@
 					<h2 id="chat-flags-title"><%= t('chat:flags.title') %></h2>
 				</div>
 				<span class="chat-members-count" data-chat-flags-count>
-					<%= t('chat:flags.count', { count: 0 }) %>
+					<%= formatFlagCountLabel(0) %>
 				</span>
 			</header>
 
@@ -581,6 +594,10 @@
 				<i class="bi bi-flag" aria-hidden="true"></i>
 				<p><%= t('chat:flags.empty') %></p>
 			</div>
+
+			<script type="application/json" data-chat-flag-count-labels>
+				<%- JSON.stringify(flagCountLabels) %>
+			</script>
 		</section>
 	<% } %>
 

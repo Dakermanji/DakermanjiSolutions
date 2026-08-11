@@ -122,8 +122,10 @@
 		"empty": "Aucun message signalé à examiner.",
 		"loading": "Chargement des messages signalés...",
 		"error": "Impossible de charger les messages signalés.",
-		"count": "{{count}} signalés",
-		"flagCount": "{{count}} signalements",
+		"flagCount": {
+			"one": "{{count}} signalement",
+			"other": "{{count}} signalements"
+		},
 		"contextMissing": "Ce message est plus ancien que l’historique chargé.",
 		"deleteConfirm": "Supprimer ce message signalé ?",
 		"actions": {

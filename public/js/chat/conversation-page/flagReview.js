@@ -2,10 +2,12 @@
 
 (() => {
 	const {
+		createPluralFormatter,
 		escapeCssIdentifier,
 		formatCountLabel,
 		formatDateTime,
 		getUserName,
+		parseJsonScript,
 	} = window.ChatConversationUtils;
 
 	function createFlagReviewPanel({
@@ -18,6 +20,11 @@
 	}) {
 		let isLoaded = false;
 		let isLoading = false;
+		const formatFlagCount = createPluralFormatter(
+			parseJsonScript(
+				document.querySelector('[data-chat-flag-count-labels]'),
+			),
+		);
 
 		async function loadFlagReviewQueue({ force = false } = {}) {
 			if (
@@ -72,10 +79,7 @@
 			isLoaded = true;
 
 			if (count) {
-				count.textContent = formatCountLabel(
-					chatPage.dataset.flagsCountLabel,
-					messages.length,
-				);
+				count.textContent = formatFlagCount(messages.length);
 			}
 
 			setFlagsState(
@@ -152,10 +156,7 @@
 
 			const flagCount = document.createElement('span');
 			flagCount.className = 'chat-flag-count';
-			flagCount.textContent = formatCountLabel(
-				chatPage.dataset.flagsFlagCountLabel,
-				message.flagCount || 0,
-			);
+			flagCount.textContent = formatFlagCount(message.flagCount || 0);
 
 			actions.append(
 				actionButtons,

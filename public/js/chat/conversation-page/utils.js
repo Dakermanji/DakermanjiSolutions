@@ -29,6 +29,26 @@
 		return String(template || '{{count}}').replace('{{count}}', String(count));
 	}
 
+	function createPluralFormatter(labels, locale = document.documentElement.lang || 'en') {
+		const safeLabels =
+			labels && typeof labels === 'object' && !Array.isArray(labels)
+				? labels
+				: { other: String(labels || '{{count}}') };
+		const pluralRules = new Intl.PluralRules(locale);
+
+		return function formatPlural(count) {
+			const numericCount = Number(count || 0);
+			const category = pluralRules.select(numericCount);
+			const template =
+				safeLabels[category] ||
+				safeLabels.other ||
+				safeLabels.one ||
+				'{{count}}';
+
+			return formatCountLabel(template, numericCount);
+		};
+	}
+
 	function escapeCssIdentifier(value) {
 		if (window.CSS?.escape) {
 			return window.CSS.escape(value);
@@ -63,6 +83,7 @@
 
 	window.ChatConversationUtils = {
 		emitWithAck,
+		createPluralFormatter,
 		escapeCssIdentifier,
 		formatCountLabel,
 		formatDateTime,
