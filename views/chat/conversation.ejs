@@ -220,68 +220,70 @@
 
 		<div class="chat-conversation-title">
 			<p class="chat-kicker"><%= conversationKicker %></p>
-			<h1 id="chat-conversation-title"><%= conversationName %></h1>
+			<h1 id="chat-conversation-title" dir="auto"><%= conversationName %></h1>
 		</div>
 
 		<% if (isRoomConversation) { %>
-			<% if (isRoomOwner) { %>
+			<div class="chat-conversation-actions">
+				<% if (isRoomOwner) { %>
+					<button
+						class="btn btn-action-outline chat-panel-toggle has-tooltip"
+						type="button"
+						data-bs-toggle="modal"
+						data-bs-target="#chatRoomModal"
+						data-bs-title="<%= t('chat:rooms.infoToggle') %>"
+						aria-label="<%= t('chat:rooms.infoToggle') %>"
+					>
+						<i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+					</button>
+				<% } %>
+				<% if (canManageRoom) { %>
+					<button
+						class="btn btn-action-outline chat-panel-toggle has-tooltip"
+						type="button"
+						data-chat-flags-toggle
+						data-bs-title="<%= t('chat:flags.toggle') %>"
+						aria-label="<%= t('chat:flags.toggle') %>"
+						aria-controls="chat-flags-panel"
+						aria-expanded="false"
+					>
+						<i class="bi bi-flag-fill" aria-hidden="true"></i>
+					</button>
+					<button
+						class="btn btn-action-outline chat-panel-toggle has-tooltip"
+						type="button"
+						data-chat-activity-toggle
+						data-bs-title="<%= t('chat:activity.toggle') %>"
+						aria-label="<%= t('chat:activity.toggle') %>"
+						aria-controls="chat-activity-panel"
+						aria-expanded="false"
+					>
+						<i class="bi bi-clock-history" aria-hidden="true"></i>
+					</button>
+					<button
+						class="btn btn-action-outline chat-panel-toggle has-tooltip"
+						type="button"
+						data-chat-management-toggle
+						data-bs-title="<%= t('chat:members.manageToggle') %>"
+						aria-label="<%= t('chat:members.manageToggle') %>"
+						aria-controls="chat-management-panel"
+						aria-expanded="false"
+					>
+						<i class="bi bi-gear-fill" aria-hidden="true"></i>
+					</button>
+				<% } %>
 				<button
 					class="btn btn-action-outline chat-panel-toggle has-tooltip"
 					type="button"
-					data-bs-toggle="modal"
-					data-bs-target="#chatRoomModal"
-					data-bs-title="<%= t('chat:rooms.infoToggle') %>"
-					aria-label="<%= t('chat:rooms.infoToggle') %>"
-				>
-					<i class="bi bi-info-circle-fill" aria-hidden="true"></i>
-				</button>
-			<% } %>
-			<% if (canManageRoom) { %>
-				<button
-					class="btn btn-action-outline chat-panel-toggle has-tooltip"
-					type="button"
-					data-chat-flags-toggle
-					data-bs-title="<%= t('chat:flags.toggle') %>"
-					aria-label="<%= t('chat:flags.toggle') %>"
-					aria-controls="chat-flags-panel"
+					data-chat-members-toggle
+					data-bs-title="<%= t('chat:members.toggle') %>"
+					aria-label="<%= t('chat:members.toggle') %>"
+					aria-controls="chat-members-panel"
 					aria-expanded="false"
 				>
-					<i class="bi bi-flag-fill" aria-hidden="true"></i>
+					<i class="bi bi-people-fill" aria-hidden="true"></i>
 				</button>
-				<button
-					class="btn btn-action-outline chat-panel-toggle has-tooltip"
-					type="button"
-					data-chat-activity-toggle
-					data-bs-title="<%= t('chat:activity.toggle') %>"
-					aria-label="<%= t('chat:activity.toggle') %>"
-					aria-controls="chat-activity-panel"
-					aria-expanded="false"
-				>
-					<i class="bi bi-clock-history" aria-hidden="true"></i>
-				</button>
-				<button
-					class="btn btn-action-outline chat-panel-toggle has-tooltip"
-					type="button"
-					data-chat-management-toggle
-					data-bs-title="<%= t('chat:members.manageToggle') %>"
-					aria-label="<%= t('chat:members.manageToggle') %>"
-					aria-controls="chat-management-panel"
-					aria-expanded="false"
-				>
-					<i class="bi bi-gear-fill" aria-hidden="true"></i>
-				</button>
-			<% } %>
-			<button
-				class="btn btn-action-outline chat-panel-toggle has-tooltip"
-				type="button"
-				data-chat-members-toggle
-				data-bs-title="<%= t('chat:members.toggle') %>"
-				aria-label="<%= t('chat:members.toggle') %>"
-				aria-controls="chat-members-panel"
-				aria-expanded="false"
-			>
-				<i class="bi bi-people-fill" aria-hidden="true"></i>
-			</button>
+			</div>
 		<% } %>
 	</header>
 
