@@ -32,6 +32,7 @@
 		"deleteError": "Could not delete this message.",
 		"flag": "Flag message",
 		"flagged": "Message flagged for review",
+		"focusMissing": "This message is older than the loaded chat history.",
 		"flagSuccess": "Message flagged for review.",
 		"flagError": "Could not flag this message.",
 		"typing": "{{user}} is typing..."

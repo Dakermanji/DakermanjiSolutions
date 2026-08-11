@@ -19,6 +19,23 @@
 	align-content: center;
 }
 
+.chat-focus-state {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	justify-self: start;
+	width: fit-content;
+	max-width: 100%;
+	margin-bottom: 0.75rem;
+	padding: 0.45rem 0.65rem;
+	border: 1px solid var(--border-soft);
+	border-radius: 999px;
+	color: var(--color-text-muted);
+	background: var(--bg-card-muted);
+	font-size: 0.82rem;
+	font-weight: 600;
+}
+
 .chat-message-list {
 	display: grid;
 	gap: 0.25rem;

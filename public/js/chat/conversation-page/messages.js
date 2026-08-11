@@ -175,8 +175,12 @@
 				row = findMessageRow(messageId);
 			}
 
-			if (!row) return false;
+			if (!row) {
+				showFocusMessageState();
+				return false;
+			}
 
+			clearFocusMessageState();
 			row.scrollIntoView({ block: 'center', behavior: 'smooth' });
 			row.classList.add('is-context-focused');
 			window.setTimeout(() => {
@@ -190,6 +194,31 @@
 			return messageSurface.querySelector(
 				`[data-chat-message-id="${escapeCssIdentifier(messageId)}"]`,
 			);
+		}
+
+		function showFocusMessageState() {
+			clearFocusMessageState();
+
+			const message = chatPage.dataset.focusMessageMissingLabel || '';
+			if (!message) return;
+
+			const notice = document.createElement('div');
+			notice.className = 'chat-focus-state';
+			notice.dataset.chatFocusState = 'true';
+			notice.setAttribute('role', 'status');
+			notice.innerHTML = '<i class="bi bi-clock-history" aria-hidden="true"></i>';
+
+			const text = document.createElement('span');
+			text.textContent = message;
+			notice.appendChild(text);
+
+			messageSurface.prepend(notice);
+		}
+
+		function clearFocusMessageState() {
+			messageSurface
+				.querySelectorAll('[data-chat-focus-state]')
+				.forEach((notice) => notice.remove());
 		}
 
 		async function handleMessageActionClick(event) {
