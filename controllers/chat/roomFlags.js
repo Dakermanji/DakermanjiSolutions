@@ -44,6 +44,10 @@ function getRoomFlagReviewStatus(reason) {
 	return 200;
 }
 
+function wantsJson(req) {
+	return req.xhr || req.accepts(['html', 'json']) === 'json';
+}
+
 /**
  * Return pending flagged messages for one manageable room.
  *
@@ -79,12 +83,35 @@ function createRoomFlagReviewActionHandler(action) {
 			!isValidUuid(input.conversationId) ||
 			!isValidUuid(input.messageId)
 		) {
+			if (wantsJson(req)) {
+				return res.status(400).json({
+					ok: false,
+					reason: ROOM_FLAG_REVIEW_RESULT.INVALID_INPUT,
+				});
+			}
+
 			req.flash('error', action.errorKey);
 			return res.redirect(CHAT_REDIRECT);
 		}
 
 		try {
 			const result = await action.run(input);
+
+			if (wantsJson(req)) {
+				if (result.ok && action.emitDeleted) {
+					await emitChatMessageDeleted({
+						id: result.message.id,
+						conversation_id: result.message.conversationId,
+					});
+				}
+
+				return res.status(getRoomFlagReviewStatus(result.reason)).json({
+					ok: result.ok,
+					reason: result.reason,
+					conversationId: input.conversationId,
+					messageId: input.messageId,
+				});
+			}
 
 			req.flash(
 				result.ok ? 'success' : 'error',

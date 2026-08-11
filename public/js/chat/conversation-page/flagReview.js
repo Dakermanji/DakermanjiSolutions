@@ -8,6 +8,7 @@
 		formatDateTime,
 		getUserName,
 		parseJsonScript,
+		setFormControlsDisabled,
 	} = window.ChatConversationUtils;
 
 	function createFlagReviewPanel({
@@ -92,6 +93,7 @@
 		function createFlagReviewItem(message) {
 			const item = document.createElement('li');
 			item.className = 'chat-flag-item';
+			item.dataset.chatFlagMessageId = message.id;
 
 			const avatar = document.createElement('span');
 			avatar.className = 'chat-flag-avatar';
@@ -212,6 +214,7 @@
 			form.method = 'POST';
 			form.action = action || '';
 			form.className = 'chat-flag-review-form';
+			form.dataset.chatFlagReviewActionForm = 'true';
 
 			if (isDanger) {
 				form.dataset.chatFlagDeleteForm = 'true';
@@ -265,16 +268,72 @@
 			}, 2200);
 		}
 
-		function handleFlagReviewSubmit(event) {
-			const deleteForm = event.target.closest('[data-chat-flag-delete-form]');
-			if (!deleteForm) return;
+		async function handleFlagReviewSubmit(event) {
+			const form = event.target.closest('[data-chat-flag-review-action-form]');
+			if (!form) return;
 
-			const confirmed = window.confirm(
-				chatPage.dataset.flagsDeleteConfirm || '',
-			);
-			if (!confirmed) {
-				event.preventDefault();
+			event.preventDefault();
+
+			const isDeleteForm = form.matches('[data-chat-flag-delete-form]');
+			if (isDeleteForm) {
+				const confirmed = window.confirm(
+					chatPage.dataset.flagsDeleteConfirm || '',
+				);
+				if (!confirmed) return;
 			}
+
+			await submitFlagReviewForm(form);
+		}
+
+		async function submitFlagReviewForm(form) {
+			const item = form.closest('[data-chat-flag-message-id]');
+			const fields = new URLSearchParams(new FormData(form));
+
+			setFormControlsDisabled(form, true);
+
+			try {
+				const response = await fetch(form.action, {
+					method: 'POST',
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+					body: fields.toString(),
+					credentials: 'same-origin',
+				});
+				const payload = await response.json();
+
+				if (!response.ok || !payload?.ok) {
+					throw new Error(
+						payload?.reason || `Request failed with status ${response.status}`,
+					);
+				}
+
+				removeFlagReviewItem(item);
+			} catch (error) {
+				console.error('Failed to review flagged room message', error);
+				setFlagsState(chatPage.dataset.flagsErrorLabel || '');
+			} finally {
+				setFormControlsDisabled(form, false);
+			}
+		}
+
+		function removeFlagReviewItem(item) {
+			if (!item) return;
+
+			item.remove();
+			const remainingCount =
+				list?.querySelectorAll('[data-chat-flag-message-id]').length || 0;
+
+			if (count) {
+				count.textContent = formatFlagCount(remainingCount);
+			}
+
+			setFlagsState(
+				remainingCount > 0
+					? ''
+					: chatPage.dataset.flagsEmptyLabel || '',
+			);
 		}
 
 		function setFlagsState(message) {
