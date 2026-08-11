@@ -1,17 +1,19 @@
 //! services/chat/messages/formatters.js
 
 import { getUserAvatarProfile } from '../../avatar/dicebear.js';
-
-const REPLY_PREVIEW_MAX_LENGTH = 120;
+import { CHAT_MESSAGE_LIMITS } from '../../../constants/chat.js';
 
 function normalizeMessagePreview(body) {
 	const preview = String(body || '').replace(/\s+/g, ' ').trim();
 
-	if (preview.length <= REPLY_PREVIEW_MAX_LENGTH) {
+	if (preview.length <= CHAT_MESSAGE_LIMITS.REPLY_PREVIEW_MAX_LENGTH) {
 		return preview;
 	}
 
-	return `${preview.slice(0, REPLY_PREVIEW_MAX_LENGTH - 1)}...`;
+	return `${preview.slice(
+		0,
+		CHAT_MESSAGE_LIMITS.REPLY_PREVIEW_MAX_LENGTH - 1,
+	)}...`;
 }
 
 function formatMessageSender(message) {
