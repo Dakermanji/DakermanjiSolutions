@@ -48,6 +48,10 @@ function wantsJson(req) {
 	return req.xhr || req.accepts(['html', 'json']) === 'json';
 }
 
+function isStaleFlagReviewResult(result) {
+	return result.reason === ROOM_FLAG_REVIEW_RESULT.MESSAGE_NOT_FOUND;
+}
+
 /**
  * Return pending flagged messages for one manageable room.
  *
@@ -108,6 +112,7 @@ function createRoomFlagReviewActionHandler(action) {
 				return res.status(getRoomFlagReviewStatus(result.reason)).json({
 					ok: result.ok,
 					reason: result.reason,
+					stale: isStaleFlagReviewResult(result),
 					conversationId: input.conversationId,
 					messageId: input.messageId,
 				});

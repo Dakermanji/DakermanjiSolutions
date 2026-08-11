@@ -289,7 +289,7 @@
 			const item = form.closest('[data-chat-flag-message-id]');
 			const fields = new URLSearchParams(new FormData(form));
 
-			setFormControlsDisabled(form, true);
+			setFormControlsDisabled(item || form, true);
 
 			try {
 				const response = await fetch(form.action, {
@@ -303,18 +303,21 @@
 				});
 				const payload = await response.json();
 
+				if (payload?.ok || payload?.stale) {
+					removeFlagReviewItem(item);
+					return;
+				}
+
 				if (!response.ok || !payload?.ok) {
 					throw new Error(
 						payload?.reason || `Request failed with status ${response.status}`,
 					);
 				}
-
-				removeFlagReviewItem(item);
 			} catch (error) {
 				console.error('Failed to review flagged room message', error);
 				setFlagsState(chatPage.dataset.flagsErrorLabel || '');
 			} finally {
-				setFormControlsDisabled(form, false);
+				setFormControlsDisabled(item || form, false);
 			}
 		}
 
