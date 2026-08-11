@@ -39,8 +39,11 @@
 			let shouldRefocus = false;
 
 			try {
+				const replyToMessageId =
+					composer.elements.replyToMessageId?.value || '';
 				const response = await emitWithAck(socket, 'chat:message:create', {
 					conversationId: chatPage.dataset.activeConversationId,
+					replyToMessageId,
 					message,
 				});
 
@@ -51,6 +54,9 @@
 
 				appendMessage(response.message, socket);
 				input.value = '';
+				if (composer.elements.replyToMessageId) {
+					composer.elements.replyToMessageId.value = '';
+				}
 				shouldRefocus = true;
 			} catch (error) {
 				console.error('Failed to send live chat message', error);
@@ -395,6 +401,7 @@
 
 			messageRenderer.updateMessage(messageSurface, message, {
 				editedLabel: chatPage.dataset.messageEditedLabel || '',
+				replyDeletedLabel: chatPage.dataset.replyDeletedLabel || '',
 			});
 			scheduleMessageMutationExpiryById(message.id);
 		}
@@ -483,6 +490,7 @@
 				flagLabel: chatPage.dataset.flagMessageLabel || '',
 				flaggedLabel: chatPage.dataset.messageFlaggedLabel || '',
 				flagUrl: chatPage.dataset.flagMessageUrl || '',
+				replyDeletedLabel: chatPage.dataset.replyDeletedLabel || '',
 				showSenderDisplay: isRoomConversation,
 			};
 		}

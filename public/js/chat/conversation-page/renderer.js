@@ -105,6 +105,7 @@
 		flaggedLabel = '',
 		flagUrl = '',
 		editedLabel = '',
+		replyDeletedLabel = '',
 		showSenderDisplay = false,
 	} = {}) {
 		const row = document.createElement('li');
@@ -144,6 +145,12 @@
 			senderHeader.className = 'chat-message-sender-name';
 			senderHeader.textContent = senderName;
 			bubble.appendChild(senderHeader);
+		}
+
+		if (message.replyTo) {
+			bubble.appendChild(createReplyQuote(message.replyTo, {
+				replyDeletedLabel,
+			}));
 		}
 
 		const body = document.createElement('p');
@@ -211,6 +218,33 @@
 		}
 
 		return avatar;
+	}
+
+	function createReplyQuote(reply, { replyDeletedLabel = '' } = {}) {
+		const quote = document.createElement('blockquote');
+		quote.className = 'chat-message-reply';
+		quote.dir = 'auto';
+		quote.dataset.chatMessageReplyId = reply.id || '';
+
+		const sender = document.createElement('strong');
+		sender.textContent = getReplySenderName(reply);
+
+		const preview = document.createElement('span');
+		preview.textContent = reply.isDeleted
+			? replyDeletedLabel
+			: reply.bodyPreview || '';
+
+		quote.append(sender, preview);
+		return quote;
+	}
+
+	function getReplySenderName(reply) {
+		return (
+			reply.sender?.displayName ||
+			reply.sender?.username ||
+			reply.sender?.email ||
+			''
+		);
 	}
 
 	function createEditedTime(value, editedLabel = '') {
@@ -367,6 +401,20 @@
 		const body = row.querySelector('.chat-message-text');
 		if (body) {
 			body.textContent = message.body || '';
+		}
+
+		const existingReply = row.querySelector('.chat-message-reply');
+		if (message.replyTo) {
+			const nextReply = createReplyQuote(message.replyTo, {
+				replyDeletedLabel: options.replyDeletedLabel || '',
+			});
+			if (existingReply) {
+				existingReply.replaceWith(nextReply);
+			} else {
+				body?.before(nextReply);
+			}
+		} else {
+			existingReply?.remove();
 		}
 
 		row.dataset.chatMessageEdited = message.editedAt ? 'true' : 'false';

@@ -105,6 +105,11 @@
 		message.sender?.username ||
 		message.sender?.email ||
 		t('chat:friendFallback');
+	const getReplySenderName = (message) =>
+		message.replyTo?.sender?.displayName ||
+		message.replyTo?.sender?.username ||
+		message.replyTo?.sender?.email ||
+		t('chat:friendFallback');
 	const formatMessageTime = (value) => {
 		if (!value) return '';
 
@@ -170,6 +175,7 @@
 	data-edit-message-prompt="<%= t('chat:conversation.editPrompt') %>"
 	data-delete-message-confirm="<%= t('chat:conversation.deleteConfirm') %>"
 	data-message-edited-label="<%= t('chat:conversation.edited') %>"
+	data-reply-deleted-label="<%= t('chat:conversation.replyDeleted') %>"
 	data-focus-message-missing-label="<%= t('chat:conversation.focusMissing') %>"
 	data-open-message-url="/chat/rooms/messages/open"
 	data-flag-message-url="/chat/rooms/messages/flag"
@@ -340,6 +346,20 @@
 								<header class="chat-message-sender-name">
 									<%= getSenderName(message) %>
 								</header>
+							<% } %>
+							<% if (message.replyTo) { %>
+								<blockquote
+									class="chat-message-reply"
+									dir="auto"
+									data-chat-message-reply-id="<%= message.replyTo.id %>"
+								>
+									<strong><%= getReplySenderName(message) %></strong>
+									<span>
+										<%= message.replyTo.isDeleted
+											? t('chat:conversation.replyDeleted')
+											: message.replyTo.bodyPreview %>
+									</span>
+								</blockquote>
 							<% } %>
 							<p class="chat-message-text" dir="auto"><%= message.body %></p>
 						</article>
@@ -681,6 +701,12 @@
 		aria-label="<%= t('chat:conversation.composer') %>"
 		data-chat-composer
 	>
+		<input
+			type="hidden"
+			name="replyToMessageId"
+			value=""
+			data-chat-reply-to-message-id
+		/>
 		<input
 			class="form-control"
 			type="text"

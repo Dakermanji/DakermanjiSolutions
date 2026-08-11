@@ -139,6 +139,35 @@
 	display: none;
 }
 
+.chat-message-reply {
+	display: grid;
+	gap: 0.12rem;
+	max-width: 100%;
+	margin: 0;
+	padding: 0.35rem 0.5rem;
+	border-inline-start: 3px solid var(--color-secondary);
+	border-radius: calc(var(--radius-sm) * 0.75);
+	color: var(--color-text-muted);
+	background: var(--bg-card-muted);
+	font-size: 0.76rem;
+	line-height: 1.25;
+	text-align: start;
+	unicode-bidi: plaintext;
+}
+
+.chat-message-reply strong,
+.chat-message-reply span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.chat-message-row.is-mine .chat-message-reply {
+	border-inline-start-color: var(--color-text-inverse);
+	color: var(--color-text-inverse);
+	background: rgba(255, 255, 255, 0.18);
+}
+
 .chat-message-meta {
 	display: inline-flex;
 	flex: 0 0 auto;

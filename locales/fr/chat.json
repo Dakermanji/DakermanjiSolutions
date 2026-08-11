@@ -30,6 +30,7 @@
 		"editError": "Impossible de modifier ce message.",
 		"deleteSuccess": "Message supprimé.",
 		"deleteError": "Impossible de supprimer ce message.",
+		"replyDeleted": "Message d’origine supprimé",
 		"flag": "Signaler le message",
 		"flagged": "Message signalé pour examen",
 		"focusMissing": "Ce message est plus ancien que l’historique chargé.",
