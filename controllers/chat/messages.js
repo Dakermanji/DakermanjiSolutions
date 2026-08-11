@@ -53,6 +53,10 @@ async function getRoomMessageFailureKey(conversationId, userId) {
 	return 'chat:conversation.messageError';
 }
 
+function wantsJson(req) {
+	return req.xhr || req.accepts(['html', 'json']) === 'json';
+}
+
 /**
  * Return older messages for the active friend conversation.
  *
@@ -229,6 +233,12 @@ export async function flagRoomChatMessage(req, res, next) {
 		!isValidUuid(activeConversationId) ||
 		!isValidUuid(messageId)
 	) {
+		if (wantsJson(req)) {
+			return res.status(400).json({
+				ok: false,
+			});
+		}
+
 		req.flash('error', 'chat:conversation.flagError');
 		return res.redirect(CHAT_OPEN_REDIRECT);
 	}
@@ -239,6 +249,14 @@ export async function flagRoomChatMessage(req, res, next) {
 			messageId,
 			flaggedByUserId: req.user.id,
 		});
+
+		if (wantsJson(req)) {
+			return res.status(flag ? 200 : 400).json({
+				ok: Boolean(flag),
+				messageId,
+				flagged: Boolean(flag),
+			});
+		}
 
 		if (!flag) {
 			req.flash('error', 'chat:conversation.flagError');

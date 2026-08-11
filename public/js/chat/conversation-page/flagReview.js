@@ -9,6 +9,7 @@
 		getUserName,
 		parseJsonScript,
 		setFormControlsDisabled,
+		showFlashMessage,
 	} = window.ChatConversationUtils;
 
 	function createFlagReviewPanel({
@@ -257,7 +258,7 @@
 			setActiveSidePanel(null);
 
 			if (!row) {
-				window.alert(chatPage.dataset.flagsContextMissingLabel || '');
+				showFlashMessage(chatPage.dataset.flagsContextMissingLabel || '');
 				return;
 			}
 

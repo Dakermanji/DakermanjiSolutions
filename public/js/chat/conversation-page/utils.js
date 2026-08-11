@@ -81,6 +81,30 @@
 			});
 	}
 
+	function showFlashMessage(message, type = 'danger') {
+		if (!message) return;
+
+		const flash = document.createElement('div');
+		flash.className = `flash-message alert alert-${type} fade show mb-0`;
+		flash.setAttribute('role', 'alert');
+		flash.textContent = message;
+		document.body.appendChild(flash);
+
+		window.setTimeout(() => {
+			flash.classList.remove('show');
+			flash.addEventListener(
+				'transitionend',
+				() => {
+					flash.remove();
+				},
+				{ once: true },
+			);
+			window.setTimeout(() => {
+				flash.remove();
+			}, 1000);
+		}, 3000);
+	}
+
 	window.ChatConversationUtils = {
 		emitWithAck,
 		createPluralFormatter,
@@ -90,5 +114,6 @@
 		getUserName,
 		parseJsonScript,
 		setFormControlsDisabled,
+		showFlashMessage,
 	};
 })();
