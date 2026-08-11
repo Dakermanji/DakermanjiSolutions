@@ -3,6 +3,7 @@
 (() => {
 	const {
 		emitWithAck,
+		escapeCssIdentifier,
 		setFormControlsDisabled,
 	} = window.ChatConversationUtils;
 
@@ -94,14 +95,14 @@
 		}
 
 		async function loadOlderMessages() {
-			if (isLoadingOlderMessages || !hasOlderMessages) return;
+			if (isLoadingOlderMessages || !hasOlderMessages) return false;
 
 			const oldestMessage = messageSurface.querySelector(
 				'[data-chat-message-id]',
 			);
 			if (!oldestMessage) {
 				hasOlderMessages = false;
-				return;
+				return false;
 			}
 
 			const params = new URLSearchParams({
@@ -143,8 +144,10 @@
 					? 'true'
 					: 'false';
 				scheduleVisibleMessageMutationExpiries();
+				return true;
 			} catch (error) {
 				console.error('Failed to load older chat messages', error);
+				return false;
 			} finally {
 				isLoadingOlderMessages = false;
 				messageSurface.classList.remove('is-loading-older');
@@ -159,6 +162,34 @@
 			) {
 				await loadOlderMessages();
 			}
+		}
+
+		async function focusMessageById(messageId) {
+			if (!messageId) return false;
+
+			let row = findMessageRow(messageId);
+
+			while (!row && hasOlderMessages) {
+				const loadedOlderMessages = await loadOlderMessages();
+				if (!loadedOlderMessages) break;
+				row = findMessageRow(messageId);
+			}
+
+			if (!row) return false;
+
+			row.scrollIntoView({ block: 'center', behavior: 'smooth' });
+			row.classList.add('is-context-focused');
+			window.setTimeout(() => {
+				row.classList.remove('is-context-focused');
+			}, 2200);
+
+			return true;
+		}
+
+		function findMessageRow(messageId) {
+			return messageSurface.querySelector(
+				`[data-chat-message-id="${escapeCssIdentifier(messageId)}"]`,
+			);
 		}
 
 		async function handleMessageActionClick(event) {
@@ -375,6 +406,7 @@
 		return {
 			appendMessage,
 			fillScrollableHistory,
+			focusMessageById,
 			handleMessageActionClick,
 			handleMessageActionSubmit,
 			loadOlderMessages,

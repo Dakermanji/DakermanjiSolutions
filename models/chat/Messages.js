@@ -134,6 +134,34 @@ export async function findOlderConversationMessages({
 }
 
 /**
+ * Find one visible message in a conversation.
+ *
+ * @param {object} params
+ * @param {string} params.conversationId
+ * @param {string} params.messageId
+ * @returns {Promise<object|null>}
+ */
+export async function findConversationMessageById({
+	conversationId,
+	messageId,
+}) {
+	const q = `
+		SELECT
+			cm.id,
+			cm.conversation_id
+		FROM chat_messages cm
+		WHERE cm.conversation_id = $1
+			AND cm.id = $2
+			AND cm.deleted_at IS NULL
+		LIMIT 1;
+	`;
+
+	const rows = await queryRows(q, [conversationId, messageId]);
+
+	return rows[0] || null;
+}
+
+/**
  * Create a chat message and update the conversation's last message pointer.
  *
  * @param {object} message
@@ -477,6 +505,7 @@ export async function deleteOwnConversationMessage({
 export default {
 	findRecentConversationMessages,
 	findOlderConversationMessages,
+	findConversationMessageById,
 	createConversationMessage,
 	createMessageFlag,
 	updateOwnConversationMessage,

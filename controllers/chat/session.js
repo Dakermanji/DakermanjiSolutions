@@ -7,10 +7,18 @@ export function setActiveChatConversation(req, conversationId) {
 	};
 }
 
+export function setFocusedChatMessage(req, messageId) {
+	req.session.chat = {
+		...(req.session.chat || {}),
+		focusMessageId: messageId,
+	};
+}
+
 export function clearActiveChatConversation(req) {
 	req.session.chat = {
 		...(req.session.chat || {}),
 		activeConversationId: null,
+		focusMessageId: null,
 	};
 }
 
@@ -24,4 +32,15 @@ export function consumeActiveChatConversation(req) {
 	}
 
 	return activeConversationId;
+}
+
+export function consumeFocusedChatMessage(req) {
+	const focusMessageId = req.session.chat?.focusMessageId || null;
+
+	req.session.chat = {
+		...(req.session.chat || {}),
+		focusMessageId: null,
+	};
+
+	return focusMessageId;
 }

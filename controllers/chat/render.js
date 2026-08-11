@@ -21,6 +21,7 @@ import { isValidUuid } from '../../middlewares/validators/common.js';
 import {
 	clearActiveChatConversation,
 	consumeActiveChatConversation,
+	consumeFocusedChatMessage,
 } from './session.js';
 import {
 	CHAT_MESSAGE_LIMITS,
@@ -37,6 +38,7 @@ import {
  */
 export async function renderChat(req, res, next) {
 	const activeConversationId = consumeActiveChatConversation(req);
+	const focusMessageId = consumeFocusedChatMessage(req);
 
 	try {
 		if (activeConversationId && isValidUuid(activeConversationId)) {
@@ -71,6 +73,7 @@ export async function renderChat(req, res, next) {
 						'chat/conversation',
 					],
 					activeConversation,
+					focusMessageId,
 					messages: messages.messages,
 					roomMembers: [],
 					hasOlderMessages: messages.hasMore,
@@ -126,6 +129,7 @@ export async function renderChat(req, res, next) {
 						'chat/conversation',
 					],
 					activeConversation: activeRoomConversation,
+					focusMessageId,
 					messages: messages.messages,
 					roomMembers,
 					roomManagementMembers,

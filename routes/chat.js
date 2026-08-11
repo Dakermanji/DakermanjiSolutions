@@ -27,6 +27,7 @@ import {
 	markRoomMessageSafe,
 	muteChatRoomMember,
 	openFriendConversation,
+	openRoomChatMessage,
 	openRoomConversation,
 	promoteChatRoomMember,
 	renderChat,
@@ -59,6 +60,7 @@ router.post('/rooms/messages', createRoomChatMessage);
 router.post('/rooms/messages/edit', editRoomChatMessage);
 router.post('/rooms/messages/delete', deleteRoomChatMessage);
 router.post('/rooms/messages/flag', flagRoomChatMessage);
+router.post('/rooms/messages/open', openRoomChatMessage);
 router.post('/rooms/flags/safe', markRoomMessageSafe);
 router.post('/rooms/flags/delete', deleteFlaggedRoomMessage);
 router.post('/rooms', createChatRoom);

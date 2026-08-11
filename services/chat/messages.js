@@ -500,6 +500,35 @@ export async function listOlderRoomMessages({
 	);
 }
 
+/**
+ * Check whether a room message can be opened by one user.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.messageId
+ * @param {string} input.viewerUserId
+ * @returns {Promise<object|null>}
+ */
+export async function findOpenableRoomMessageContext({
+	conversationId,
+	messageId,
+	viewerUserId,
+}) {
+	const conversation = await findOpenableRoomConversation(
+		conversationId,
+		viewerUserId,
+	);
+
+	if (!conversation) {
+		return null;
+	}
+
+	return ChatMessagesModel.findConversationMessageById({
+		conversationId: conversation.conversation_id,
+		messageId,
+	});
+}
+
 export const MESSAGE_BODY_MAX_LENGTH = BODY_MAX_LENGTH;
 export const MESSAGE_PAGE_LIMIT = OLDER_PAGE_SIZE;
 export const RECENT_MESSAGE_LIMIT = RECENT_PAGE_SIZE;
@@ -513,6 +542,7 @@ export default {
 	findOpenableFriendConversation,
 	listOlderFriendMessages,
 	listOlderRoomMessages,
+	findOpenableRoomMessageContext,
 	listFriendMessages,
 	listRoomMessages,
 };

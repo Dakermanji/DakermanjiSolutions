@@ -16,6 +16,7 @@ export {
 	flagRoomChatMessage,
 	getOlderFriendMessages,
 	getOlderRoomMessages,
+	openRoomChatMessage,
 } from './messages.js';
 export {
 	cancelPrivateRoomAccessRequest,

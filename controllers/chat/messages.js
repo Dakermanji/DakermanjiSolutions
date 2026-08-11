@@ -6,6 +6,7 @@ import {
 	deleteOwnMessage,
 	editOwnMessage,
 	flagRoomMessage,
+	findOpenableRoomMessageContext,
 	listOlderFriendMessages,
 	listOlderRoomMessages,
 } from '../../services/chat/messages.js';
@@ -18,6 +19,10 @@ import {
 } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
+import {
+	setActiveChatConversation,
+	setFocusedChatMessage,
+} from './session.js';
 
 const MESSAGE_MUTATION_HANDLERS = {
 	friend: {
@@ -240,6 +245,44 @@ export async function flagRoomChatMessage(req, res, next) {
 		} else {
 			req.flash('success', 'chat:conversation.flagSuccess');
 		}
+
+		return res.redirect(CHAT_OPEN_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Open a room conversation and focus one message after redirect.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function openRoomChatMessage(req, res, next) {
+	const conversationId = String(req.body?.conversationId || '').trim();
+	const messageId = String(req.body?.messageId || '').trim();
+
+	if (!isValidUuid(conversationId) || !isValidUuid(messageId)) {
+		req.flash('error', 'chat:rooms.openError');
+		return res.redirect(CHAT_REDIRECT);
+	}
+
+	try {
+		const message = await findOpenableRoomMessageContext({
+			conversationId,
+			messageId,
+			viewerUserId: req.user.id,
+		});
+
+		if (!message) {
+			req.flash('error', 'chat:rooms.openError');
+			return res.redirect(CHAT_REDIRECT);
+		}
+
+		setActiveChatConversation(req, conversationId);
+		setFocusedChatMessage(req, messageId);
 
 		return res.redirect(CHAT_OPEN_REDIRECT);
 	} catch (error) {

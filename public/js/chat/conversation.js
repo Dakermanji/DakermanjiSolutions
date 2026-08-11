@@ -64,13 +64,17 @@
 		getChatSocket: () => chatSocket,
 	});
 
-	requestAnimationFrame(() => {
+	requestAnimationFrame(async () => {
 		messageRenderer.rebuildMessageDateSeparators(messageSurface);
 		messages.scrollToLatestMessage();
 		if (composer) {
 			focusComposerInput();
 		}
-		void messages.fillScrollableHistory();
+		await messages.fillScrollableHistory();
+		if (chatPage.dataset.focusMessageId) {
+			await messages.focusMessageById(chatPage.dataset.focusMessageId);
+			chatPage.dataset.focusMessageId = '';
+		}
 		messages.scheduleVisibleMessageMutationExpiries();
 	});
 

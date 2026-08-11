@@ -138,6 +138,7 @@
 			const actionButtons = document.createElement('div');
 			actionButtons.className = 'chat-flag-action-buttons';
 			actionButtons.append(
+				createFlagContextForm(message.id),
 				createFlagReviewForm({
 					action: chatPage.dataset.flagsDeleteUrl,
 					icon: 'bi-trash3',
@@ -151,7 +152,6 @@
 					label: chatPage.dataset.flagsSafeLabel,
 					messageId: message.id,
 				}),
-				createFlagContextButton(message.id),
 			);
 
 			const flagCount = document.createElement('span');
@@ -169,11 +169,25 @@
 			return item;
 		}
 
-		function createFlagContextButton(messageId) {
+		function createFlagContextForm(messageId) {
+			const form = document.createElement('form');
+			form.method = 'POST';
+			form.action = chatPage.dataset.openMessageUrl || '';
+			form.className = 'chat-flag-review-form';
+
+			const conversationInput = document.createElement('input');
+			conversationInput.type = 'hidden';
+			conversationInput.name = 'conversationId';
+			conversationInput.value = chatPage.dataset.activeConversationId;
+
+			const messageInput = document.createElement('input');
+			messageInput.type = 'hidden';
+			messageInput.name = 'messageId';
+			messageInput.value = messageId;
+
 			const button = document.createElement('button');
 			button.className = 'btn btn-action-outline chat-flag-action has-tooltip';
-			button.type = 'button';
-			button.dataset.chatFlagOpenContext = messageId;
+			button.type = 'submit';
 			button.dataset.bsTitle = chatPage.dataset.flagsOpenContextLabel || '';
 			button.setAttribute(
 				'aria-label',
@@ -182,7 +196,9 @@
 			button.innerHTML =
 				'<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>';
 
-			return button;
+			form.append(conversationInput, messageInput, button);
+
+			return form;
 		}
 
 		function createFlagReviewForm({
