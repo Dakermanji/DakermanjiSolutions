@@ -43,6 +43,32 @@ export const CHAT_MESSAGE_FLAG_STATUSES = Object.freeze({
 	DELETED: 'deleted',
 });
 
+export const CHAT_MESSAGE_QUICK_REACTIONS = Object.freeze({
+	'👍': 'Thumbs up',
+	'❤️': 'Heart',
+	'😂': 'Face with tears of joy',
+	'😮': 'Surprised face',
+	'😢': 'Crying face',
+});
+
+export const CHAT_MESSAGE_EXTRA_REACTIONS = Object.freeze({
+	'👏': 'Clapping hands',
+	'🔥': 'Fire',
+	'🙏': 'Folded hands',
+	'🎉': 'Party popper',
+	'🤔': 'Thinking face',
+});
+
+export const CHAT_MESSAGE_REACTIONS = Object.freeze([
+	...Object.keys(CHAT_MESSAGE_QUICK_REACTIONS),
+	...Object.keys(CHAT_MESSAGE_EXTRA_REACTIONS),
+]);
+
+export const CHAT_MESSAGE_REACTION_LABELS = Object.freeze({
+	...CHAT_MESSAGE_QUICK_REACTIONS,
+	...CHAT_MESSAGE_EXTRA_REACTIONS,
+});
+
 export const CHAT_ROOM_ACTIVITY_ACTIONS = Object.freeze({
 	JOIN_REQUEST_APPROVED: 'join_request_approved',
 	JOIN_REQUEST_REJECTED: 'join_request_rejected',
@@ -74,13 +100,15 @@ export const CHAT_ROOM_LIMITS = Object.freeze({
 export const CHAT_ROOM_VISIBILITY_JOIN_POLICIES = Object.freeze({
 	[CHAT_ROOM_VISIBILITY.PUBLIC]: CHAT_ROOM_JOIN_POLICIES.OPEN,
 	[CHAT_ROOM_VISIBILITY.PRIVATE_LISTED]: CHAT_ROOM_JOIN_POLICIES.REQUEST,
-	[CHAT_ROOM_VISIBILITY.PRIVATE_UNLISTED]: CHAT_ROOM_JOIN_POLICIES.INVITE_ONLY,
+	[CHAT_ROOM_VISIBILITY.PRIVATE_UNLISTED]:
+		CHAT_ROOM_JOIN_POLICIES.INVITE_ONLY,
 });
 
 export const CHAT_ROOM_VISIBILITY_CONVERSATION_TYPES = Object.freeze({
 	[CHAT_ROOM_VISIBILITY.PUBLIC]: CHAT_CONVERSATION_TYPES.PUBLIC_ROOM,
 	[CHAT_ROOM_VISIBILITY.PRIVATE_LISTED]: CHAT_CONVERSATION_TYPES.PRIVATE_ROOM,
-	[CHAT_ROOM_VISIBILITY.PRIVATE_UNLISTED]: CHAT_CONVERSATION_TYPES.PRIVATE_ROOM,
+	[CHAT_ROOM_VISIBILITY.PRIVATE_UNLISTED]:
+		CHAT_CONVERSATION_TYPES.PRIVATE_ROOM,
 });
 
 export const CHAT_CONVERSATION_MEMBER_ROLES = Object.freeze({
