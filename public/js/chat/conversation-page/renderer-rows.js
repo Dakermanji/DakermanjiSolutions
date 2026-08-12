@@ -2,7 +2,7 @@
 
 (() => {
 	const { formatMessageTime } = window.ChatConversationDates;
-	const { createFlagForm, createMessageActions } =
+	const { createFlagForm, createMessageActions, createReplyButton } =
 		window.ChatConversationRendererActions;
 
 	function createMessageRow(message, currentUserId, {
@@ -15,6 +15,7 @@
 		flaggedLabel = '',
 		flagUrl = '',
 		editedLabel = '',
+		replyLabel = '',
 		replyDeletedLabel = '',
 		showSenderDisplay = false,
 	} = {}) {
@@ -29,8 +30,12 @@
 		row.className = `chat-message-row ${isMine ? 'is-mine' : 'is-theirs'}`;
 		setMessageRowDataset(row, message, senderName);
 
-		if (shouldShowSenderDisplay) {
-			row.appendChild(createSenderAvatar(message, senderName));
+		if (!isMine) {
+			row.appendChild(createSenderStack(message, {
+				replyLabel,
+				senderName,
+				showAvatar: shouldShowSenderDisplay,
+			}));
 		}
 
 		const bubble = createMessageBubble(message, {
@@ -38,17 +43,30 @@
 			senderName,
 			shouldShowSenderDisplay,
 		});
-		const meta = createMessageMeta(message, editedLabel);
+		const meta = createMessageMeta(message, {
+			editedLabel,
+			isMine,
+			replyLabel,
+		});
 
 		row.append(bubble, meta);
 
 		if (canEditMessage || canDeleteMessage) {
-			row.appendChild(createMessageActions(message, {
-				deleteLabel,
-				deleteUrl,
-				editLabel,
-				editUrl,
-			}));
+			row.appendChild(createMessageActions(
+				{
+					...message,
+					canEdit: canEditMessage,
+					canDelete: canDeleteMessage,
+				},
+				{
+					deleteLabel,
+					deleteUrl,
+					editLabel,
+					editUrl,
+					replyLabel,
+					showReply: false,
+				},
+			));
 		}
 
 		if (canFlagMessage) {
@@ -137,6 +155,22 @@
 		return avatar;
 	}
 
+	function createSenderStack(message, {
+		replyLabel = '',
+		senderName = '',
+		showAvatar = false,
+	} = {}) {
+		const stack = document.createElement('div');
+		stack.className = 'chat-message-sender-stack';
+
+		if (showAvatar) {
+			stack.appendChild(createSenderAvatar(message, senderName));
+		}
+
+		stack.appendChild(createReplyButton(replyLabel, 'chat-message-reply-side'));
+		return stack;
+	}
+
 	function createReplyQuote(reply, { replyDeletedLabel = '' } = {}) {
 		const quote = document.createElement('blockquote');
 		quote.className = 'chat-message-reply';
@@ -164,9 +198,15 @@
 		);
 	}
 
-	function createMessageMeta(message, editedLabel = '') {
+	function createMessageMeta(message, {
+		editedLabel = '',
+		isMine = false,
+		replyLabel = '',
+	} = {}) {
 		const meta = document.createElement('span');
 		meta.className = 'chat-message-meta';
+		const timeActions = document.createElement('span');
+		timeActions.className = 'chat-message-time-actions';
 		const time = document.createElement('time');
 		time.className = 'chat-message-time';
 		time.dateTime = new Date(message.createdAt).toISOString();
@@ -176,7 +216,14 @@
 			meta.appendChild(createEditedTime(message.editedAt, editedLabel));
 		}
 
-		meta.appendChild(time);
+		timeActions.appendChild(time);
+		if (isMine) {
+			timeActions.appendChild(
+				createReplyButton(replyLabel, 'chat-message-reply-inline'),
+			);
+		}
+
+		meta.appendChild(timeActions);
 		return meta;
 	}
 

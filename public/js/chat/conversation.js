@@ -124,6 +124,12 @@
 	if (composer) {
 		chatSocket = window.ChatConversationSocket.connectChatSocket();
 		bindChatSocket(chatSocket);
+		composer
+			.querySelector('[data-chat-reply-clear]')
+			?.addEventListener('click', () => {
+				messages.clearReplyTarget();
+				focusComposerInput();
+			});
 	}
 
 	function bindPanelToggle({ toggle, panel, panelName, onOpen = null }) {

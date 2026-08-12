@@ -17,6 +17,26 @@
 	aria-label="<%= t('chat:conversation.composer') %>"
 	data-chat-composer
 >
+	<div
+		class="chat-composer-reply"
+		data-chat-reply-preview
+		hidden
+	>
+		<i class="bi bi-reply" aria-hidden="true"></i>
+		<div class="chat-composer-reply-body">
+			<strong data-chat-reply-preview-user></strong>
+			<span dir="auto" data-chat-reply-preview-text></span>
+		</div>
+		<button
+			class="btn btn-action-outline chat-composer-reply-clear has-tooltip"
+			type="button"
+			data-chat-reply-clear
+			data-bs-title="<%= t('chat:conversation.replyCancel') %>"
+			aria-label="<%= t('chat:conversation.replyCancel') %>"
+		>
+			<i class="bi bi-x-lg" aria-hidden="true"></i>
+		</button>
+	</div>
 	<input
 		type="hidden"
 		name="replyToMessageId"

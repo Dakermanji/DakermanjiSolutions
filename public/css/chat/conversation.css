@@ -482,6 +482,56 @@ body:has(.chat-conversation-page) main.container {
 	background: var(--bg-section);
 }
 
+.chat-composer-reply {
+	grid-column: 1 / -1;
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.55rem 0.7rem;
+	border: 1px solid var(--border-soft);
+	border-inline-start: 3px solid var(--color-secondary);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-muted);
+	background: var(--bg-card-muted);
+}
+
+.chat-composer-reply[hidden] {
+	display: none;
+}
+
+.chat-composer-reply > i {
+	color: var(--color-secondary);
+}
+
+.chat-composer-reply-body {
+	display: grid;
+	min-width: 0;
+	gap: 0.1rem;
+}
+
+.chat-composer-reply-body strong,
+.chat-composer-reply-body span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.chat-composer-reply-body strong {
+	color: var(--color-text-heading);
+	font-size: 0.82rem;
+}
+
+.chat-composer-reply-body span {
+	font-size: 0.78rem;
+}
+
+.chat-composer-reply-clear {
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+}
+
 .chat-composer-notice {
 	display: flex;
 	align-items: center;

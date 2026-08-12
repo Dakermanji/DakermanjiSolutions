@@ -6,9 +6,15 @@
 		deleteUrl = '',
 		editLabel = '',
 		editUrl = '',
+		replyLabel = '',
+		showReply = true,
 	} = {}) {
 		const actions = document.createElement('div');
 		actions.className = 'chat-message-actions';
+
+		if (showReply) {
+			actions.appendChild(createReplyButton(replyLabel));
+		}
 
 		if (message.canEdit && editUrl) {
 			actions.appendChild(createEditButton(editLabel));
@@ -20,6 +26,22 @@
 
 		window.AppTooltips?.initIn(actions);
 		return actions;
+	}
+
+	function createReplyButton(replyLabel = '', extraClassName = '') {
+		const button = document.createElement('button');
+		button.className = `btn btn-action-outline chat-message-action has-tooltip${extraClassName ? ` ${extraClassName}` : ''}`;
+		button.type = 'button';
+		button.dataset.chatMessageReply = 'true';
+		button.dataset.bsTitle = replyLabel;
+		button.setAttribute('aria-label', replyLabel);
+
+		const icon = document.createElement('i');
+		icon.className = 'bi bi-reply';
+		icon.setAttribute('aria-hidden', 'true');
+
+		button.appendChild(icon);
+		return button;
 	}
 
 	function createEditButton(editLabel = '') {
@@ -101,5 +123,6 @@
 	window.ChatConversationRendererActions = {
 		createFlagForm,
 		createMessageActions,
+		createReplyButton,
 	};
 })();

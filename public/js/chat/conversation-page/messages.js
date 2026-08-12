@@ -48,25 +48,30 @@
 				});
 
 				if (!response?.ok) {
-					composer.submit();
+					submitComposerFallback();
 					return;
 				}
 
 				appendMessage(response.message, socket);
 				input.value = '';
 				if (composer.elements.replyToMessageId) {
-					composer.elements.replyToMessageId.value = '';
+					clearReplyTarget();
 				}
 				shouldRefocus = true;
 			} catch (error) {
 				console.error('Failed to send live chat message', error);
-				composer.submit();
+				submitComposerFallback();
 			} finally {
 				setFormControlsDisabled(composer, false);
 				if (shouldRefocus) {
 					focusComposerInput();
 				}
 			}
+		}
+
+		function submitComposerFallback() {
+			setFormControlsDisabled(composer, false);
+			composer.submit();
 		}
 
 		function appendMessage(message, socket = null) {
@@ -229,6 +234,13 @@
 		}
 
 		async function handleMessageActionClick(event) {
+			const replyButton = event.target.closest('[data-chat-message-reply]');
+			if (replyButton) {
+				const row = replyButton.closest('[data-chat-message-id]');
+				setReplyTarget(row);
+				return;
+			}
+
 			const editButton = event.target.closest('[data-chat-message-edit]');
 			if (!editButton) return;
 
@@ -391,6 +403,55 @@
 			form.submit();
 		}
 
+		function setReplyTarget(row) {
+			if (!row || !composer?.elements.replyToMessageId) return;
+
+			const messageId = row.dataset.chatMessageId || '';
+			const senderName = row.dataset.chatMessageSenderName || '';
+			const preview =
+				row.querySelector('.chat-message-text')?.textContent?.replace(/\s+/g, ' ').trim() || '';
+
+			if (!messageId) return;
+
+			composer.elements.replyToMessageId.value = messageId;
+			updateReplyPreview({
+				preview,
+				senderName,
+			});
+			focusComposerInput();
+		}
+
+		function updateReplyPreview({ preview = '', senderName = '' } = {}) {
+			const previewShell = composer?.querySelector('[data-chat-reply-preview]');
+			if (!previewShell) return;
+
+			const userLabel = previewShell.querySelector('[data-chat-reply-preview-user]');
+			const previewText = previewShell.querySelector('[data-chat-reply-preview-text]');
+			const labelTemplate = chatPage.dataset.replyingToLabel || '';
+			const label = labelTemplate.replace('{{user}}', senderName);
+
+			if (userLabel) {
+				userLabel.textContent = label;
+			}
+			if (previewText) {
+				previewText.textContent = preview;
+			}
+
+			previewShell.hidden = false;
+			window.AppTooltips?.initIn(previewShell);
+		}
+
+		function clearReplyTarget() {
+			if (composer?.elements.replyToMessageId) {
+				composer.elements.replyToMessageId.value = '';
+			}
+
+			const previewShell = composer?.querySelector('[data-chat-reply-preview]');
+			if (previewShell) {
+				previewShell.hidden = true;
+			}
+		}
+
 		function updateMessage(message) {
 			if (
 				!message?.id ||
@@ -439,7 +500,10 @@
 
 		function scheduleMessageMutationExpiry(row) {
 			const messageId = row?.dataset.chatMessageId;
-			if (!messageId || !row.querySelector('.chat-message-actions')) return;
+			const canEditOrDelete =
+				row?.dataset.chatMessageCanEdit === 'true' ||
+				row?.dataset.chatMessageCanDelete === 'true';
+			if (!messageId || !canEditOrDelete) return;
 
 			clearMessageMutationExpiry(messageId);
 
@@ -474,7 +538,8 @@
 		}
 
 		function expireMessageMutationActions(row) {
-			row.querySelector('.chat-message-actions')?.remove();
+			row.querySelector('[data-chat-message-edit]')?.remove();
+			row.querySelector('[data-chat-message-delete-form]')?.remove();
 			row.dataset.chatMessageCanEdit = 'false';
 			row.dataset.chatMessageCanDelete = 'false';
 		}
@@ -490,6 +555,7 @@
 				flagLabel: chatPage.dataset.flagMessageLabel || '',
 				flaggedLabel: chatPage.dataset.messageFlaggedLabel || '',
 				flagUrl: chatPage.dataset.flagMessageUrl || '',
+				replyLabel: chatPage.dataset.replyMessageLabel || '',
 				replyDeletedLabel: chatPage.dataset.replyDeletedLabel || '',
 				showSenderDisplay: isRoomConversation,
 			};
@@ -507,6 +573,7 @@
 			scrollToLatestMessage,
 			submitLiveMessage,
 			updateMessage,
+			clearReplyTarget,
 		};
 	}
 

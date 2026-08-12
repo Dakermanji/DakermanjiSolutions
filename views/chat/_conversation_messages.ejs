@@ -32,18 +32,31 @@
 					data-chat-message-can-delete="<%= message.canDelete ? 'true' : 'false' %>"
 					data-chat-message-edited="<%= message.editedAt ? 'true' : 'false' %>"
 				>
-					<% if (isRoomConversation && !message.isMine) { %>
-						<span
-							class="chat-message-sender-avatar"
-							style="background-color: <%= message.sender?.avatar?.background || '' %>;"
-							aria-hidden="true"
-						>
-							<% if (message.sender?.avatar?.src) { %>
-								<img src="<%= message.sender.avatar.src %>" alt="" />
-							<% } else { %>
-								<%= getSenderName(message).slice(0, 1).toUpperCase() %>
+					<% if (!message.isMine) { %>
+						<div class="chat-message-sender-stack">
+							<% if (isRoomConversation) { %>
+								<span
+									class="chat-message-sender-avatar"
+									style="background-color: <%= message.sender?.avatar?.background || '' %>;"
+									aria-hidden="true"
+								>
+									<% if (message.sender?.avatar?.src) { %>
+										<img src="<%= message.sender.avatar.src %>" alt="" />
+									<% } else { %>
+										<%= getSenderName(message).slice(0, 1).toUpperCase() %>
+									<% } %>
+								</span>
 							<% } %>
-						</span>
+							<button
+								class="btn btn-action-outline chat-message-action chat-message-reply-side has-tooltip"
+								type="button"
+								data-chat-message-reply
+								data-bs-title="<%= t('chat:conversation.reply') %>"
+								aria-label="<%= t('chat:conversation.reply') %>"
+							>
+								<i class="bi bi-reply" aria-hidden="true"></i>
+							</button>
+						</div>
 					<% } %>
 					<article class="chat-message-bubble">
 						<% if (isRoomConversation && !message.isMine) { %>
@@ -76,16 +89,29 @@
 								</time>
 							</span>
 						<% } %>
-						<time
-							class="chat-message-time"
-							datetime="<%= new Date(message.createdAt).toISOString() %>"
-						>
-							<%= formatMessageTime(message.createdAt) %>
-						</time>
+						<span class="chat-message-time-actions">
+							<time
+								class="chat-message-time"
+								datetime="<%= new Date(message.createdAt).toISOString() %>"
+							>
+								<%= formatMessageTime(message.createdAt) %>
+							</time>
+							<% if (message.isMine) { %>
+								<button
+									class="btn btn-action-outline chat-message-action chat-message-reply-inline has-tooltip"
+									type="button"
+									data-chat-message-reply
+									data-bs-title="<%= t('chat:conversation.reply') %>"
+									aria-label="<%= t('chat:conversation.reply') %>"
+								>
+									<i class="bi bi-reply" aria-hidden="true"></i>
+								</button>
+							<% } %>
+						</span>
 					</span>
 					<% if (message.isMine && (message.canEdit || message.canDelete)) { %>
 						<div class="chat-message-actions">
-							<% if (message.canEdit) { %>
+							<% if (message.isMine && message.canEdit) { %>
 								<button
 									class="btn btn-action-outline chat-message-action has-tooltip"
 									type="button"
@@ -96,7 +122,7 @@
 									<i class="bi bi-pencil" aria-hidden="true"></i>
 								</button>
 							<% } %>
-							<% if (message.canDelete) { %>
+							<% if (message.isMine && message.canDelete) { %>
 								<form
 									class="chat-message-delete-form"
 									method="POST"
