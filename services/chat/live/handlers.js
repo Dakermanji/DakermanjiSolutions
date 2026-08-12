@@ -219,6 +219,7 @@ export function registerChatSocketHandlers(io, socket) {
 				.emit('chat:typing:updated', {
 					conversationId: openConversation.conversation.conversation_id,
 					userId: socket.data.userId,
+					userName: socket.data.userDisplayName || '',
 					isTyping: Boolean(payload?.isTyping),
 				});
 		} catch {

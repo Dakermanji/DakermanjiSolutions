@@ -15,6 +15,7 @@ import {
 	getNotificationUserRoom,
 	setNotificationSocketServer,
 } from '../services/notifications/live.js';
+import UserModel from '../models/User.js';
 
 /**
  * Attach Socket.IO to the HTTP server.
@@ -27,15 +28,26 @@ export default function configureSocket(server) {
 
 	io.engine.use(sessionMiddleware);
 
-	io.use((socket, next) => {
+	io.use(async (socket, next) => {
 		const userId = socket.request.session?.passport?.user;
 
 		if (!userId) {
 			return next(new Error('Unauthorized'));
 		}
 
-		socket.data.userId = userId;
-		return next();
+		try {
+			const user = await UserModel.findByIdForSession(userId);
+
+			if (!user) {
+				return next(new Error('Unauthorized'));
+			}
+
+			socket.data.userId = user.id;
+			socket.data.userDisplayName = user.username || user.email || '';
+			return next();
+		} catch (error) {
+			return next(error);
+		}
 	});
 
 	io.on('connection', (socket) => {

@@ -39,7 +39,11 @@
 		"focusMissing": "Ce message est plus ancien que l’historique chargé.",
 		"flagSuccess": "Message signalé pour examen.",
 		"flagError": "Impossible de signaler ce message.",
-		"typing": "{{user}} écrit..."
+		"typingOne": "{{user}} écrit...",
+		"typingTwo": "{{users}} écrivent...",
+		"typingMany": "Plusieurs utilisateurs écrivent...",
+		"typingJoiner": " et ",
+		"typingUnknown": "Quelqu’un"
 	},
 	"members": {
 		"toggle": "Membres du salon",

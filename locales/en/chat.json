@@ -39,7 +39,11 @@
 		"focusMissing": "This message is older than the loaded chat history.",
 		"flagSuccess": "Message flagged for review.",
 		"flagError": "Could not flag this message.",
-		"typing": "{{user}} is typing..."
+		"typingOne": "{{user}} is writing...",
+		"typingTwo": "{{users}} are writing...",
+		"typingMany": "Many users are writing...",
+		"typingJoiner": " and ",
+		"typingUnknown": "Someone"
 	},
 	"members": {
 		"toggle": "Room members",

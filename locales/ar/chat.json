@@ -39,7 +39,11 @@
 		"focusMissing": "هذه الرسالة أقدم من سجل الدردشة المحمّل.",
 		"flagSuccess": "تم الإبلاغ عن الرسالة للمراجعة.",
 		"flagError": "تعذر الإبلاغ عن هذه الرسالة.",
-		"typing": "{{user}} يكتب..."
+		"typingOne": "{{user}} يكتب...",
+		"typingTwo": "{{users}} يكتبان...",
+		"typingMany": "عدة مستخدمين يكتبون...",
+		"typingJoiner": " و ",
+		"typingUnknown": "مستخدم"
 	},
 	"members": {
 		"toggle": "أعضاء الغرفة",
