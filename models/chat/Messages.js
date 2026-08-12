@@ -12,6 +12,12 @@ export {
 	updateOwnConversationMessage,
 } from './messages/writes.js';
 export { createMessageFlag } from './messages/flags.js';
+export {
+	addMessageReaction,
+	listMessageReactions,
+	removeMessageReaction,
+	toggleMessageReaction,
+} from './messages/reactions.js';
 
 import {
 	findConversationMessageById,
@@ -25,6 +31,12 @@ import {
 	updateOwnConversationMessage,
 } from './messages/writes.js';
 import { createMessageFlag } from './messages/flags.js';
+import {
+	addMessageReaction,
+	listMessageReactions,
+	removeMessageReaction,
+	toggleMessageReaction,
+} from './messages/reactions.js';
 
 export default {
 	findRecentConversationMessages,
@@ -33,6 +45,10 @@ export default {
 	findReplyableConversationMessage,
 	createConversationMessage,
 	createMessageFlag,
+	addMessageReaction,
+	removeMessageReaction,
+	listMessageReactions,
+	toggleMessageReaction,
 	updateOwnConversationMessage,
 	deleteOwnConversationMessage,
 };

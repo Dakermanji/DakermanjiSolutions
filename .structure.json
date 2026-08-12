@@ -170,6 +170,7 @@
 			"messages": [
 				"flags.js",
 				"reads.js",
+				"reactions.js",
 				"writes.js"
 			],
 			"roomJoinRequests": [
