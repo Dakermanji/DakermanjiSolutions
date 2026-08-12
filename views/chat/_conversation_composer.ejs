@@ -50,6 +50,8 @@
 		maxlength="<%= messageBodyMaxLength %>"
 		placeholder="<%= t('chat:conversation.placeholder') %>"
 		autocomplete="off"
+		dir="auto"
+		data-chat-message-input
 		required
 		<% if (!canWriteConversation) { %>disabled<% } %>
 	/>

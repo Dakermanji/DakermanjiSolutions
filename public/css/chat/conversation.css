@@ -482,6 +482,10 @@ body:has(.chat-conversation-page) main.container {
 	background: var(--bg-section);
 }
 
+.chat-composer input[name='message'] {
+	text-align: start;
+}
+
 .chat-composer-reply {
 	grid-column: 1 / -1;
 	display: grid;

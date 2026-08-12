@@ -124,6 +124,7 @@
 	if (composer) {
 		chatSocket = window.ChatConversationSocket.connectChatSocket();
 		bindChatSocket(chatSocket);
+		syncComposerInputDirection();
 		composer
 			.querySelector('[data-chat-reply-clear]')
 			?.addEventListener('click', () => {
@@ -170,6 +171,7 @@
 
 		const input = composer.elements.message;
 		input?.addEventListener('input', () => {
+			syncComposerInputDirection();
 			typingController.handleTypingInput(socket, input);
 		});
 		input?.addEventListener('blur', () => {
@@ -182,5 +184,25 @@
 		if (!input || input.disabled) return;
 
 		input.focus({ preventScroll: true });
+	}
+
+	function syncComposerInputDirection() {
+		const input = composer?.elements.message;
+		if (!input) return;
+
+		input.dir = getTextDirection(input.value);
+	}
+
+	function getTextDirection(value) {
+		for (const character of String(value || '')) {
+			if (/[\u0590-\u08ff\ufb1d-\ufdff\ufe70-\ufefc]/.test(character)) {
+				return 'rtl';
+			}
+			if (/[A-Za-z]/.test(character)) {
+				return 'ltr';
+			}
+		}
+
+		return 'auto';
 	}
 })();

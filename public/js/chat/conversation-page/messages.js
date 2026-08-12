@@ -54,6 +54,7 @@
 
 				appendMessage(response.message, socket);
 				input.value = '';
+				input.dir = 'auto';
 				if (composer.elements.replyToMessageId) {
 					clearReplyTarget();
 				}
