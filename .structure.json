@@ -546,7 +546,8 @@
 		"19_chat_room_invitations.sql",
 		"20_app_notifications.sql",
 		"21_chat_message_flags.sql",
-		"22_chat_room_activity_logs.sql"
+		"22_chat_room_activity_logs.sql",
+		"23_chat_message_reactions.sql"
 	],
 	"utils": {
 		"config": [
