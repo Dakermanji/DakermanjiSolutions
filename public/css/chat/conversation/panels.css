@@ -1,0 +1,39 @@
+/*! public/css/chat/conversation/panels.css */
+
+.chat-members-panel {
+	min-height: 0;
+	overflow-y: auto;
+	padding: 1rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	background: var(--bg-section);
+}
+
+.chat-members-panel[hidden] {
+	display: none;
+}
+
+.chat-members-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.chat-members-header h2 {
+	margin: 0;
+	color: var(--color-text-heading);
+	font-size: 1.35rem;
+}
+
+.chat-members-count {
+	flex: 0 0 auto;
+	padding: 0.25rem 0.6rem;
+	border: 1px solid var(--border-soft);
+	border-radius: 999px;
+	color: var(--color-text-muted);
+	background: var(--bg-card-muted);
+	font-size: 0.8rem;
+	font-weight: 700;
+}

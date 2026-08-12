@@ -1,0 +1,36 @@
+/*! public/css/chat/conversation/shell.css */
+
+body:has(.chat-conversation-page) {
+	--chat-shell-top-offset: 4.75rem;
+	--chat-shell-bottom-offset: 2.75rem;
+	overflow: hidden;
+}
+
+body:has(.chat-conversation-page) main.container {
+	height: calc(
+		100dvh - var(--chat-shell-top-offset) - var(--chat-shell-bottom-offset)
+	);
+	margin-top: var(--chat-shell-top-offset);
+	overflow: hidden;
+	padding-block: 0;
+}
+
+.chat-conversation-page {
+	display: grid;
+	grid-template-rows: auto minmax(0, 1fr) auto auto;
+	gap: 1rem;
+	height: 100%;
+	min-height: 0;
+	padding-block: 0;
+}
+
+@media (max-width: 575.98px) {
+	body:has(.chat-conversation-page) {
+		--chat-shell-top-offset: 4rem;
+		--chat-shell-bottom-offset: 2.5rem;
+	}
+
+	body:has(.chat-conversation-page) main.container {
+		padding-inline: 1rem;
+	}
+}

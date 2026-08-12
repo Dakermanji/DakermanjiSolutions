@@ -227,13 +227,24 @@
 	],
 	"public": {
 		"css": {
-			"chat": [
-				"conversation.css",
-				"main.css",
-				"messages.css",
-				"sections.css",
-				"shared.css"
-			],
+			"chat": {
+				"conversation": [
+					"activity.css",
+					"composer.css",
+					"flags.css",
+					"header.css",
+					"members.css",
+					"panels.css",
+					"shell.css"
+				],
+				"~": [
+					"conversation.css",
+					"main.css",
+					"messages.css",
+					"sections.css",
+					"shared.css"
+				]
+			},
 			"dashboard": [],
 			"home": [
 				"about.css",
