@@ -50,16 +50,27 @@
 			"signupLocal.js",
 			"verifyEmail.js"
 		],
-		"chat": [
-			"friends.js",
-			"index.js",
-			"messages.js",
-			"render.js",
-			"roomFlags.js",
-			"roomMembers.js",
-			"rooms.js",
-			"session.js"
-		],
+		"chat": {
+			"messages": [
+				"flags.js",
+				"mutations.js",
+				"open.js",
+				"pagination.js",
+				"reactions.js",
+				"utils.js",
+				"writes.js"
+			],
+			"~": [
+				"friends.js",
+				"index.js",
+				"messages.js",
+				"render.js",
+				"roomFlags.js",
+				"roomMembers.js",
+				"rooms.js",
+				"session.js"
+			]
+		},
 		"notifications": [
 			"main.js"
 		],
