@@ -45,9 +45,31 @@
 	const deleteMessageUrl = isRoomConversation
 		? '/chat/rooms/messages/delete'
 		: '/chat/friends/messages/delete';
+	const reactionMessageUrl = isRoomConversation
+		? '/chat/rooms/messages/react'
+		: '/chat/friends/messages/react';
 	const messageFormAction = isRoomConversation
 		? '/chat/rooms/messages'
 		: '/chat/friends/messages';
+	const normalizeReactionOptions = (reactions) => {
+		if (Array.isArray(reactions)) {
+			return reactions.map((reaction) => ({
+				reaction: reaction.icon || reaction.reaction || '',
+				label: reaction.title || reaction.label || reaction.icon || '',
+				keywords: Array.isArray(reaction.keywords)
+					? reaction.keywords
+					: [],
+			})).filter((reaction) => reaction.reaction);
+		}
+
+		return Object.entries(reactions || {}).map(([reaction, label]) => ({
+			reaction,
+			label,
+			keywords: [],
+		}));
+	};
+	const chatQuickReactions = normalizeReactionOptions(quickReactions);
+	const chatExtraReactions = normalizeReactionOptions(extraReactions);
 	const canWriteConversation = !isRoomConversation || room.canWrite !== false;
 	const getMemberName = (member) =>
 		member.displayName ||
@@ -173,6 +195,9 @@
 	data-message-mutation-window-ms="<%= messageMutationWindowMs || 0 %>"
 	data-edit-message-url="<%= editMessageUrl %>"
 	data-delete-message-url="<%= deleteMessageUrl %>"
+	data-react-message-url="<%= reactionMessageUrl %>"
+	data-quick-reactions="<%= JSON.stringify(chatQuickReactions) %>"
+	data-extra-reactions="<%= JSON.stringify(chatExtraReactions) %>"
 	data-edit-message-label="<%= t('chat:conversation.edit') %>"
 	data-delete-message-label="<%= t('chat:conversation.delete') %>"
 	data-edit-message-prompt="<%= t('chat:conversation.editPrompt') %>"
@@ -226,7 +251,10 @@
 		getMessageDateKey,
 		getReplySenderName,
 		getSenderName,
+		extraReactions: chatExtraReactions,
 		isRoomConversation,
+		quickReactions: chatQuickReactions,
+		reactionMessageUrl,
 	}) %>
 	<%- include('_conversation_members_panel', {
 		getMemberName,

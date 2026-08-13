@@ -3,7 +3,7 @@
 (() => {
 	const { getMessageList, rebuildMessageDateSeparators } =
 		window.ChatConversationRendererList;
-	const { createMessageRow, updateMessageRow } =
+	const { createMessageRow, updateMessageReactions, updateMessageRow } =
 		window.ChatConversationRendererRows;
 
 	function appendMessage(messageSurface, message, currentUserId, options = {}) {
@@ -51,6 +51,22 @@
 		return updateMessageRow(row, message, options);
 	}
 
+	function updateMessageReactionList(
+		messageSurface,
+		messageId,
+		reactions,
+		options = {},
+	) {
+		if (!messageId) return false;
+
+		const row = messageSurface.querySelector(
+			`[data-chat-message-id="${messageId}"]`,
+		);
+		if (!row) return false;
+
+		return updateMessageReactions(row, reactions, options);
+	}
+
 	function removeMessage(messageSurface, messageId) {
 		const row = messageSurface.querySelector(
 			`[data-chat-message-id="${messageId}"]`,
@@ -73,5 +89,6 @@
 		removeMessage,
 		rebuildMessageDateSeparators,
 		updateMessage,
+		updateMessageReactionList,
 	};
 })();

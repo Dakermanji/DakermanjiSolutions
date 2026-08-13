@@ -84,6 +84,7 @@
 		void messages.loadOlderMessages();
 	});
 	messageSurface.addEventListener('click', messages.handleMessageActionClick);
+	messageSurface.addEventListener('input', messages.handleMessageActionInput);
 	messageSurface.addEventListener('submit', messages.handleMessageActionSubmit);
 
 	bindPanelToggle({

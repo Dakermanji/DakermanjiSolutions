@@ -80,7 +80,7 @@
 						<% } %>
 						<p class="chat-message-text" dir="auto"><%= message.body %></p>
 					</article>
-					<span class="chat-message-meta">
+					<div class="chat-message-meta">
 						<% if (message.editedAt) { %>
 							<span class="chat-message-edited">
 								<span><%= t('chat:conversation.edited') %></span>
@@ -89,7 +89,130 @@
 								</time>
 							</span>
 						<% } %>
-						<span class="chat-message-time-actions">
+						<div class="chat-message-time-actions">
+							<% if (quickReactions?.length > 0) { %>
+								<span class="chat-message-reaction-picker" data-chat-message-reactions>
+									<button
+										class="btn btn-action-outline chat-message-action chat-message-reaction-toggle"
+										type="button"
+										data-chat-message-reaction-toggle
+										aria-label="React"
+										aria-expanded="false"
+									>
+										<i class="bi bi-emoji-smile" aria-hidden="true"></i>
+										<i class="bi bi-plus chat-message-reaction-plus" aria-hidden="true"></i>
+									</button>
+									<span class="chat-message-reaction-menu" data-chat-message-reaction-menu hidden>
+										<span class="chat-message-reaction-search" data-chat-message-reaction-search hidden>
+											<i class="bi bi-search" aria-hidden="true"></i>
+											<input
+												type="search"
+												data-chat-message-reaction-search-input
+												aria-label="Search reactions"
+												placeholder="Search..."
+											/>
+										</span>
+										<span class="chat-message-reaction-group">
+											<% quickReactions.forEach((quickReaction) => { %>
+												<%
+													const currentReaction = message.reactions?.find(
+														(item) => item.reaction === quickReaction.reaction,
+													);
+													const reactionCount = currentReaction?.count || 0;
+													const reactedByViewer = Boolean(currentReaction?.reactedByViewer);
+													const reactionSearch = [
+														quickReaction.reaction,
+														quickReaction.label,
+														...(quickReaction.keywords || []),
+													].join(' ');
+												%>
+												<form
+													class="chat-message-reaction-form"
+													method="POST"
+													action="<%= reactionMessageUrl %>"
+													data-chat-message-reaction-form
+													data-chat-message-reaction-search-text="<%= reactionSearch %>"
+												>
+													<%- include('../partials/_csrf') %>
+													<input type="hidden" name="messageId" value="<%= message.id %>" />
+													<input type="hidden" name="reaction" value="<%= quickReaction.reaction %>" />
+													<button
+														class="chat-message-reaction has-tooltip has-title <%= reactedByViewer ? 'is-active' : '' %>"
+														type="submit"
+														data-bs-title="<%= quickReaction.label %>"
+														aria-label="<%= `${quickReaction.label}: ${reactionCount}` %>"
+													>
+														<span aria-hidden="true"><%= quickReaction.reaction %></span>
+														<% if (reactionCount > 0) { %>
+															<span><%= reactionCount %></span>
+														<% } %>
+													</button>
+												</form>
+											<% }) %>
+											<% if (extraReactions?.length > 0) { %>
+												<button
+													class="chat-message-reaction chat-message-reaction-search-toggle"
+													type="button"
+													data-chat-message-reaction-search-toggle
+													aria-label="Search reactions"
+													aria-expanded="false"
+												>
+													<i class="bi bi-search" aria-hidden="true"></i>
+												</button>
+												<button
+													class="chat-message-reaction chat-message-reaction-more"
+													type="button"
+													data-chat-message-reaction-more
+													aria-label="More reactions"
+													aria-expanded="false"
+												>
+													<i class="bi bi-plus-lg" aria-hidden="true"></i>
+												</button>
+											<% } %>
+										</span>
+										<% if (extraReactions?.length > 0) { %>
+											<span class="chat-message-reaction-group is-extra" data-chat-message-reaction-extra hidden>
+												<% extraReactions.forEach((extraReaction) => { %>
+													<%
+													const currentReaction = message.reactions?.find(
+														(item) => item.reaction === extraReaction.reaction,
+													);
+													const reactionCount = currentReaction?.count || 0;
+													const reactedByViewer = Boolean(currentReaction?.reactedByViewer);
+													const reactionSearch = [
+														extraReaction.reaction,
+														extraReaction.label,
+														...(extraReaction.keywords || []),
+													].join(' ');
+												%>
+												<form
+													class="chat-message-reaction-form"
+													method="POST"
+													action="<%= reactionMessageUrl %>"
+													data-chat-message-reaction-form
+													data-chat-message-reaction-search-text="<%= reactionSearch %>"
+												>
+														<%- include('../partials/_csrf') %>
+														<input type="hidden" name="messageId" value="<%= message.id %>" />
+														<input type="hidden" name="reaction" value="<%= extraReaction.reaction %>" />
+														<button
+															class="chat-message-reaction has-tooltip has-title <%= reactedByViewer ? 'is-active' : '' %>"
+															type="submit"
+															data-bs-title="<%= extraReaction.label %>"
+															aria-label="<%= `${extraReaction.label}: ${reactionCount}` %>"
+														>
+															<span aria-hidden="true"><%= extraReaction.reaction %></span>
+															<% if (reactionCount > 0) { %>
+																<span><%= reactionCount %></span>
+															<% } %>
+														</button>
+													</form>
+												<% }) %>
+											</span>
+										<% } %>
+									</span>
+								</span>
+							<% } %>
 							<time
 								class="chat-message-time"
 								datetime="<%= new Date(message.createdAt).toISOString() %>"
@@ -107,8 +230,8 @@
 									<i class="bi bi-reply" aria-hidden="true"></i>
 								</button>
 							<% } %>
-						</span>
-					</span>
+						</div>
+					</div>
 					<% if (message.isMine && (message.canEdit || message.canDelete)) { %>
 						<div class="chat-message-actions">
 							<% if (message.isMine && message.canEdit) { %>

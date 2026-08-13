@@ -25,6 +25,8 @@ import {
 } from './session.js';
 import {
 	CHAT_MESSAGE_LIMITS,
+	CHAT_MESSAGE_EXTRA_REACTIONS,
+	CHAT_MESSAGE_QUICK_REACTIONS,
 	CHAT_ROOM_VISIBILITY,
 } from '../../constants/chat.js';
 
@@ -83,6 +85,8 @@ export async function renderChat(req, res, next) {
 					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
 					messageMutationWindowMs:
 						CHAT_MESSAGE_LIMITS.FRIEND_EDIT_DELETE_WINDOW_MS,
+					extraReactions: CHAT_MESSAGE_EXTRA_REACTIONS,
+					quickReactions: CHAT_MESSAGE_QUICK_REACTIONS,
 					roomVisibility: CHAT_ROOM_VISIBILITY,
 				});
 			}
@@ -143,6 +147,8 @@ export async function renderChat(req, res, next) {
 					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
 					messageMutationWindowMs:
 						CHAT_MESSAGE_LIMITS.ROOM_EDIT_DELETE_WINDOW_MS,
+					extraReactions: CHAT_MESSAGE_EXTRA_REACTIONS,
+					quickReactions: CHAT_MESSAGE_QUICK_REACTIONS,
 					roomVisibility: CHAT_ROOM_VISIBILITY,
 				});
 			}

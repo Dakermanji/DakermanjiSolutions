@@ -25,6 +25,12 @@
 		const messageMutationWindowMs = Number(
 			chatPage?.dataset.messageMutationWindowMs || 0,
 		);
+		const quickReactions = parseQuickReactions(
+			chatPage?.dataset.quickReactions,
+		);
+		const extraReactions = parseQuickReactions(
+			chatPage?.dataset.extraReactions,
+		);
 
 		async function submitLiveMessage(socket) {
 			const input = composer.elements.message;
@@ -235,6 +241,30 @@
 		}
 
 		async function handleMessageActionClick(event) {
+			const reactionToggle = event.target.closest(
+				'[data-chat-message-reaction-toggle]',
+			);
+			if (reactionToggle) {
+				toggleReactionMenu(reactionToggle);
+				return;
+			}
+
+			const reactionMore = event.target.closest(
+				'[data-chat-message-reaction-more]',
+			);
+			if (reactionMore) {
+				toggleExtraReactions(reactionMore);
+				return;
+			}
+
+			const reactionSearchToggle = event.target.closest(
+				'[data-chat-message-reaction-search-toggle]',
+			);
+			if (reactionSearchToggle) {
+				toggleReactionSearch(reactionSearchToggle);
+				return;
+			}
+
 			const replyButton = event.target.closest('[data-chat-message-reply]');
 			if (replyButton) {
 				const row = replyButton.closest('[data-chat-message-id]');
@@ -290,6 +320,15 @@
 		}
 
 		async function handleMessageActionSubmit(event) {
+			const reactionForm = event.target.closest(
+				'[data-chat-message-reaction-form]',
+			);
+			if (reactionForm) {
+				event.preventDefault();
+				await submitMessageReaction(reactionForm);
+				return;
+			}
+
 			const flagForm = event.target.closest('.chat-message-flag-form');
 			if (flagForm) {
 				event.preventDefault();
@@ -337,6 +376,15 @@
 			deleteForm.submit();
 		}
 
+		function handleMessageActionInput(event) {
+			const input = event.target.closest(
+				'[data-chat-message-reaction-search-input]',
+			);
+			if (!input) return;
+
+			filterReactionMenu(input);
+		}
+
 		async function submitMessageFlag(form) {
 			const row = form.closest('[data-chat-message-id]');
 			const button = form.querySelector('button[type="submit"]');
@@ -380,6 +428,40 @@
 			} catch (error) {
 				console.error('Failed to flag chat message', error);
 				showFlashMessage(chatPage.dataset.flagMessageErrorLabel || '');
+				setFormControlsDisabled(form, false);
+			}
+		}
+
+		async function submitMessageReaction(form) {
+			const row = form.closest('[data-chat-message-id]');
+			const button = form.querySelector('button[type="submit"]');
+			if (!row || !button || button.disabled) return;
+
+			const fields = new URLSearchParams(new FormData(form));
+			setFormControlsDisabled(form, true);
+
+			try {
+				const response = await fetch(form.action, {
+					method: 'POST',
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+					body: fields.toString(),
+					credentials: 'same-origin',
+				});
+				const payload = await response.json();
+
+				if (!response.ok || !payload?.ok) {
+					throw new Error(`Request failed with status ${response.status}`);
+				}
+
+				updateMessageReactions(row, payload.reactions || []);
+				closeReactionMenus();
+			} catch (error) {
+				console.error('Failed to react to chat message', error);
+				showFlashMessage(chatPage.dataset.flagMessageErrorLabel || '');
+			} finally {
 				setFormControlsDisabled(form, false);
 			}
 		}
@@ -466,6 +548,112 @@
 				replyDeletedLabel: chatPage.dataset.replyDeletedLabel || '',
 			});
 			scheduleMessageMutationExpiryById(message.id);
+		}
+
+		function updateMessageReactions(row, reactions) {
+			if (!row) return;
+
+			messageRenderer.updateMessageReactionList(messageSurface, row.dataset.chatMessageId, reactions, {
+				extraReactions,
+				quickReactions,
+				reactionUrl: chatPage.dataset.reactMessageUrl || '',
+			});
+		}
+
+		function toggleReactionMenu(button) {
+			const picker = button.closest('[data-chat-message-reactions]');
+			const menu = picker?.querySelector('[data-chat-message-reaction-menu]');
+			if (!picker || !menu) return;
+
+			const shouldOpen = menu.hidden;
+			closeReactionMenus(picker);
+			menu.hidden = !shouldOpen;
+			button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+		}
+
+		function toggleExtraReactions(button) {
+			const picker = button.closest('[data-chat-message-reactions]');
+			const extra = picker?.querySelector('[data-chat-message-reaction-extra]');
+			if (!extra) return;
+
+			const shouldOpen = extra.hidden;
+			extra.hidden = !shouldOpen;
+			button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+			setReactionMoreIcon(button, shouldOpen);
+		}
+
+		function toggleReactionSearch(button) {
+			const picker = button.closest('[data-chat-message-reactions]');
+			const search = picker?.querySelector('[data-chat-message-reaction-search]');
+			const input = picker?.querySelector('[data-chat-message-reaction-search-input]');
+			if (!search || !input) return;
+
+			const shouldOpen = search.hidden;
+			search.hidden = !shouldOpen;
+			button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+
+			if (shouldOpen) {
+				input.focus();
+				return;
+			}
+
+			input.value = '';
+			filterReactionMenu(input);
+		}
+
+		function filterReactionMenu(input) {
+			const picker = input.closest('[data-chat-message-reactions]');
+			const query = String(input.value || '').trim().toLowerCase();
+			const forms = picker?.querySelectorAll('[data-chat-message-reaction-form]') || [];
+
+			forms.forEach((form) => {
+				const text = String(
+					form.dataset.chatMessageReactionSearchText || '',
+				).toLowerCase();
+
+				form.hidden = Boolean(query) && !text.includes(query);
+			});
+		}
+
+		function setReactionMoreIcon(button, isExpanded) {
+			const icon = button.querySelector('i');
+			if (!icon) return;
+
+			icon.className = `bi ${isExpanded ? 'bi-dash-lg' : 'bi-plus-lg'}`;
+		}
+
+		function closeReactionMenus(exceptPicker = null) {
+			messageSurface
+				.querySelectorAll('[data-chat-message-reactions]')
+				.forEach((picker) => {
+					if (picker === exceptPicker) return;
+
+					const menu = picker.querySelector('[data-chat-message-reaction-menu]');
+					const extra = picker.querySelector('[data-chat-message-reaction-extra]');
+					const toggle = picker.querySelector('[data-chat-message-reaction-toggle]');
+					const more = picker.querySelector('[data-chat-message-reaction-more]');
+
+					if (menu) menu.hidden = true;
+					if (extra) extra.hidden = true;
+					picker
+						.querySelectorAll('[data-chat-message-reaction-form]')
+						.forEach((form) => {
+							form.hidden = false;
+						});
+					const search = picker.querySelector('[data-chat-message-reaction-search]');
+					const searchInput = picker.querySelector(
+						'[data-chat-message-reaction-search-input]',
+					);
+					const searchToggle = picker.querySelector(
+						'[data-chat-message-reaction-search-toggle]',
+					);
+					if (search) search.hidden = true;
+					if (searchInput) searchInput.value = '';
+					toggle?.setAttribute('aria-expanded', 'false');
+					more?.setAttribute('aria-expanded', 'false');
+					searchToggle?.setAttribute('aria-expanded', 'false');
+					if (more) setReactionMoreIcon(more, false);
+				});
 		}
 
 		function removeMessage(payload) {
@@ -556,6 +744,9 @@
 				flagLabel: chatPage.dataset.flagMessageLabel || '',
 				flaggedLabel: chatPage.dataset.messageFlaggedLabel || '',
 				flagUrl: chatPage.dataset.flagMessageUrl || '',
+				extraReactions,
+				quickReactions,
+				reactionUrl: chatPage.dataset.reactMessageUrl || '',
 				replyLabel: chatPage.dataset.replyMessageLabel || '',
 				replyDeletedLabel: chatPage.dataset.replyDeletedLabel || '',
 				showSenderDisplay: isRoomConversation,
@@ -567,6 +758,7 @@
 			fillScrollableHistory,
 			focusMessageById,
 			handleMessageActionClick,
+			handleMessageActionInput,
 			handleMessageActionSubmit,
 			loadOlderMessages,
 			removeMessage,
@@ -576,6 +768,15 @@
 			updateMessage,
 			clearReplyTarget,
 		};
+	}
+
+	function parseQuickReactions(value) {
+		try {
+			const reactions = JSON.parse(value || '[]');
+			return Array.isArray(reactions) ? reactions : [];
+		} catch (error) {
+			return [];
+		}
 	}
 
 	window.ChatConversationMessages = {

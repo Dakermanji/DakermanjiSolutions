@@ -43,31 +43,73 @@ export const CHAT_MESSAGE_FLAG_STATUSES = Object.freeze({
 	DELETED: 'deleted',
 });
 
-export const CHAT_MESSAGE_QUICK_REACTIONS = Object.freeze({
-	'👍': 'Thumbs up',
-	'❤️': 'Heart',
-	'😂': 'Face with tears of joy',
-	'😮': 'Surprised face',
-	'😢': 'Crying face',
-});
-
-export const CHAT_MESSAGE_EXTRA_REACTIONS = Object.freeze({
-	'👏': 'Clapping hands',
-	'🔥': 'Fire',
-	'🙏': 'Folded hands',
-	'🎉': 'Party popper',
-	'🤔': 'Thinking face',
-});
-
-export const CHAT_MESSAGE_REACTIONS = Object.freeze([
-	...Object.keys(CHAT_MESSAGE_QUICK_REACTIONS),
-	...Object.keys(CHAT_MESSAGE_EXTRA_REACTIONS),
+export const CHAT_MESSAGE_QUICK_REACTIONS = Object.freeze([
+	Object.freeze({
+		icon: '👍',
+		title: 'Thumbs up',
+		keywords: Object.freeze(['like', 'yes', 'agree', 'good']),
+	}),
+	Object.freeze({
+		icon: '❤️',
+		title: 'Heart',
+		keywords: Object.freeze(['love', 'care', 'support']),
+	}),
+	Object.freeze({
+		icon: '😂',
+		title: 'Face with tears of joy',
+		keywords: Object.freeze(['laugh', 'funny', 'lol', 'haha']),
+	}),
+	Object.freeze({
+		icon: '😮',
+		title: 'Surprised face',
+		keywords: Object.freeze(['wow', 'surprised', 'shock']),
+	}),
+	Object.freeze({
+		icon: '😢',
+		title: 'Crying face',
+		keywords: Object.freeze(['sad', 'cry', 'tears']),
+	}),
 ]);
 
-export const CHAT_MESSAGE_REACTION_LABELS = Object.freeze({
-	...CHAT_MESSAGE_QUICK_REACTIONS,
-	...CHAT_MESSAGE_EXTRA_REACTIONS,
-});
+export const CHAT_MESSAGE_EXTRA_REACTIONS = Object.freeze([
+	Object.freeze({
+		icon: '👏',
+		title: 'Clapping hands',
+		keywords: Object.freeze(['clap', 'bravo', 'applause']),
+	}),
+	Object.freeze({
+		icon: '🔥',
+		title: 'Fire',
+		keywords: Object.freeze(['hot', 'lit', 'great']),
+	}),
+	Object.freeze({
+		icon: '🙏',
+		title: 'Folded hands',
+		keywords: Object.freeze(['please', 'thanks', 'pray']),
+	}),
+	Object.freeze({
+		icon: '🎉',
+		title: 'Party popper',
+		keywords: Object.freeze(['party', 'celebrate', 'congrats']),
+	}),
+	Object.freeze({
+		icon: '🤔',
+		title: 'Thinking face',
+		keywords: Object.freeze(['think', 'hmm', 'question']),
+	}),
+]);
+
+export const CHAT_MESSAGE_REACTIONS = Object.freeze([
+	...CHAT_MESSAGE_QUICK_REACTIONS.map((reaction) => reaction.icon),
+	...CHAT_MESSAGE_EXTRA_REACTIONS.map((reaction) => reaction.icon),
+]);
+
+export const CHAT_MESSAGE_REACTION_LABELS = Object.freeze(
+	Object.fromEntries([
+		...CHAT_MESSAGE_QUICK_REACTIONS,
+		...CHAT_MESSAGE_EXTRA_REACTIONS,
+	].map((reaction) => [reaction.icon, reaction.title])),
+);
 
 export const CHAT_ROOM_ACTIVITY_ACTIONS = Object.freeze({
 	JOIN_REQUEST_APPROVED: 'join_request_approved',

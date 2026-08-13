@@ -82,6 +82,7 @@ export function formatMessage(message, viewerUserId) {
 		canEdit: Boolean(message.can_edit ?? (isMine && pendingFlagCount === 0)),
 		canDelete: Boolean(message.can_delete ?? (isMine && pendingFlagCount === 0)),
 		replyTo: formatMessageReply(message),
+		reactions: Array.isArray(message.reactions) ? message.reactions : [],
 		sender: formatMessageSender(message),
 	};
 }
@@ -99,6 +100,7 @@ export function formatLiveMessage(message) {
 		canEdit: true,
 		canDelete: true,
 		replyTo: formatMessageReply(message),
+		reactions: [],
 		sender: formatMessageSender(message),
 	};
 }
