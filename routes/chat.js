@@ -30,6 +30,8 @@ import {
 	openRoomChatMessage,
 	openRoomConversation,
 	promoteChatRoomMember,
+	reactToFriendChatMessage,
+	reactToRoomChatMessage,
 	renderChat,
 	removeChatRoomMember,
 	requestPrivateRoomAccess,
@@ -56,11 +58,13 @@ router.post('/friends/close', closeFriendConversation);
 router.post('/friends/messages', createFriendChatMessage);
 router.post('/friends/messages/edit', editFriendChatMessage);
 router.post('/friends/messages/delete', deleteFriendChatMessage);
+router.post('/friends/messages/react', reactToFriendChatMessage);
 router.post('/rooms/messages', createRoomChatMessage);
 router.post('/rooms/messages/edit', editRoomChatMessage);
 router.post('/rooms/messages/delete', deleteRoomChatMessage);
 router.post('/rooms/messages/flag', flagRoomChatMessage);
 router.post('/rooms/messages/open', openRoomChatMessage);
+router.post('/rooms/messages/react', reactToRoomChatMessage);
 router.post('/rooms/flags/safe', markRoomMessageSafe);
 router.post('/rooms/flags/delete', deleteFlaggedRoomMessage);
 router.post('/rooms', createChatRoom);

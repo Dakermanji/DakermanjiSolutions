@@ -17,6 +17,8 @@ export {
 	getOlderFriendMessages,
 	getOlderRoomMessages,
 	openRoomChatMessage,
+	reactToFriendChatMessage,
+	reactToRoomChatMessage,
 } from './messages.js';
 export {
 	cancelPrivateRoomAccessRequest,
