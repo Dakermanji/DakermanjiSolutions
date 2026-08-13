@@ -462,6 +462,7 @@
 				"mutations.js",
 				"pagination.js",
 				"reads.js",
+				"reactions.js",
 				"utils.js",
 				"writes.js"
 			],

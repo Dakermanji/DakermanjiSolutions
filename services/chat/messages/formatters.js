@@ -1,7 +1,11 @@
 //! services/chat/messages/formatters.js
 
 import { getUserAvatarProfile } from '../../avatar/dicebear.js';
-import { CHAT_MESSAGE_LIMITS } from '../../../constants/chat.js';
+import {
+	CHAT_MESSAGE_LIMITS,
+	CHAT_MESSAGE_REACTION_LABELS,
+	CHAT_MESSAGE_REACTIONS,
+} from '../../../constants/chat.js';
 
 function normalizeMessagePreview(body) {
 	const preview = String(body || '').replace(/\s+/g, ' ').trim();
@@ -96,5 +100,37 @@ export function formatLiveMessage(message) {
 		canDelete: true,
 		replyTo: formatMessageReply(message),
 		sender: formatMessageSender(message),
+	};
+}
+
+export function formatMessageReactionSummary({
+	messageId,
+	reactions,
+	viewerUserId,
+}) {
+	const reactionOrder = new Map(
+		CHAT_MESSAGE_REACTIONS.map((reaction, index) => [reaction, index]),
+	);
+
+	const items = reactions
+		.map((reaction) => ({
+			reaction: reaction.reaction,
+			label:
+				CHAT_MESSAGE_REACTION_LABELS[reaction.reaction] ||
+				reaction.reaction,
+			count: Number(reaction.reaction_count || 0),
+			reactedByViewer: Boolean(reaction.reacted_by_viewer),
+			firstReactedAt: reaction.first_reacted_at,
+			latestReactedAt: reaction.latest_reacted_at,
+		}))
+		.sort((a, b) => (
+			(reactionOrder.get(a.reaction) ?? Number.MAX_SAFE_INTEGER) -
+			(reactionOrder.get(b.reaction) ?? Number.MAX_SAFE_INTEGER)
+		));
+
+	return {
+		messageId,
+		viewerUserId,
+		reactions: items,
 	};
 }

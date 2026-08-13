@@ -15,6 +15,10 @@ export {
 } from './messages/mutations.js';
 export { flagRoomMessage } from './messages/flags.js';
 export {
+	listMessageReactionSummary,
+	toggleMessageReaction,
+} from './messages/reactions.js';
+export {
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,
@@ -33,6 +37,10 @@ import {
 } from './messages/mutations.js';
 import { flagRoomMessage } from './messages/flags.js';
 import {
+	listMessageReactionSummary,
+	toggleMessageReaction,
+} from './messages/reactions.js';
+import {
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,
@@ -47,6 +55,8 @@ export default {
 	deleteOwnMessage,
 	editOwnMessage,
 	flagRoomMessage,
+	listMessageReactionSummary,
+	toggleMessageReaction,
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,
