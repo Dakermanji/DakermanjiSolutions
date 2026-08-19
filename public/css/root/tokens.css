@@ -66,6 +66,9 @@
 	--shadow-text-hard: 1px 1px 6px var(--color-secondary);
 	--shadow-text-brand: 1px 1px 10px var(--color-metalic-gold);
 	--shadow-box-brand: 0 0 0 0.25rem var(--color-primary);
+
+	--bg-reaction: #e0e0e0;
+	--bg-reaction-hover: #fefefe;
 }
 
 [data-theme='dark'] {
@@ -107,4 +110,7 @@
 	--shadow-card: 0 10px 30px rgba(0, 0, 0, 0.28);
 	--shadow-brand: 0 8px 18px rgba(29, 50, 206, 0.35);
 	--shadow-mascot: 0 12px 24px rgba(0, 0, 0, 0.24);
+
+	--bg-reaction: #333333;
+	--bg-reaction-hover: #111111;
 }

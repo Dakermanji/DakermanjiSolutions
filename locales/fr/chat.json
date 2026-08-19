@@ -43,7 +43,14 @@
 		"typingTwo": "{{users}} écrivent...",
 		"typingMany": "Plusieurs utilisateurs écrivent...",
 		"typingJoiner": " et ",
-		"typingUnknown": "Quelqu’un"
+		"typingUnknown": "Quelqu’un",
+		"reactionCount": {
+			"one": "{{count}} réaction",
+			"other": "{{count}} réactions"
+		},
+		"reactionLoading": "Chargement des réactions...",
+		"reactionError": "Impossible de charger les réactions.",
+		"reactionYou": "Vous"
 	},
 	"members": {
 		"toggle": "Membres du salon",

@@ -43,7 +43,14 @@
 		"typingTwo": "{{users}} are writing...",
 		"typingMany": "Many users are writing...",
 		"typingJoiner": " and ",
-		"typingUnknown": "Someone"
+		"typingUnknown": "Someone",
+		"reactionCount": {
+			"one": "{{count}} reaction",
+			"other": "{{count}} reactions"
+		},
+		"reactionLoading": "Loading reactions...",
+		"reactionError": "Could not load reactions.",
+		"reactionYou": "You"
 	},
 	"members": {
 		"toggle": "Room members",

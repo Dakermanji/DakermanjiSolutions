@@ -43,7 +43,17 @@
 		"typingTwo": "{{users}} يكتبان...",
 		"typingMany": "عدة مستخدمين يكتبون...",
 		"typingJoiner": " و ",
-		"typingUnknown": "مستخدم"
+		"typingUnknown": "مستخدم",
+		"reactionCount": {
+			"one": "تفاعل واحد",
+			"two": "تفاعلان",
+			"few": "{{count}} تفاعلات",
+			"many": "{{count}} تفاعلًا",
+			"other": "{{count}} تفاعل"
+		},
+		"reactionLoading": "جارٍ تحميل التفاعلات...",
+		"reactionError": "تعذر تحميل التفاعلات.",
+		"reactionYou": "أنت"
 	},
 	"members": {
 		"toggle": "أعضاء الغرفة",
