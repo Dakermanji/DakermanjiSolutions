@@ -379,8 +379,11 @@
 					"messages.js",
 					"panels.js",
 					"renderer-actions.js",
+					"renderer-content.js",
 					"renderer-list.js",
+					"renderer-reactions.js",
 					"renderer-rows.js",
+					"renderer-senders.js",
 					"renderer.js",
 					"socket.js",
 					"utils.js"
