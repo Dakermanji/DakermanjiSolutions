@@ -358,6 +358,7 @@
 }
 
 .chat-message-reaction-summary-item {
+	position: relative;
 	display: inline-flex;
 	align-items: center;
 	gap: 0.18rem;
@@ -372,11 +373,130 @@
 	font-weight: 700;
 	line-height: 1;
 	white-space: nowrap;
+	cursor: pointer;
+	transition:
+		border-color 0.15s ease,
+		color 0.15s ease,
+		background-color 0.15s ease;
 }
 
 .chat-message-reaction-summary-item.is-active {
 	border-color: var(--color-warning);
 	color: var(--color-warning);
+	background: var(--bg-reaction);
+}
+
+.chat-message-reaction-summary-item:hover,
+.chat-message-reaction-summary-item:focus-visible {
+	border-color: var(--color-warning);
+	color: var(--color-warning);
+	background: var(--bg-reaction-hover);
+}
+
+.chat-message-reaction-summary-item[aria-disabled='true'] {
+	cursor: wait;
+	opacity: 0.72;
+}
+
+.chat-message-reaction-details {
+	position: absolute;
+	z-index: 6;
+	inset-block-end: calc(100% + 0.45rem);
+	inset-inline-start: 50%;
+	display: grid;
+	gap: 0.65rem;
+	min-width: min(16rem, 76vw);
+	padding: 0.75rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-body);
+	background: var(--bg-card-muted);
+	box-shadow: 0 0.75rem 1.7rem rgba(0, 0, 0, 0.24);
+	transform: translateX(-50%);
+}
+
+.chat-message-reaction-details[hidden] {
+	display: none;
+}
+
+.chat-message-row.is-mine .chat-message-reaction-details {
+	inset-inline-start: auto;
+	inset-inline-end: 0;
+	transform: none;
+}
+
+.chat-message-reaction-details::after {
+	position: absolute;
+	inset-block-end: -0.35rem;
+	inset-inline-start: 50%;
+	width: 0.65rem;
+	height: 0.65rem;
+	border-inline-end: 1px solid var(--border-soft);
+	border-block-end: 1px solid var(--border-soft);
+	background: var(--bg-card-muted);
+	content: '';
+	transform: translateX(-50%) rotate(45deg);
+}
+
+.chat-message-row.is-mine .chat-message-reaction-details::after {
+	inset-inline-start: auto;
+	inset-inline-end: 1rem;
+	transform: rotate(45deg);
+}
+
+.chat-message-reaction-details-title,
+.chat-message-reaction-details-state {
+	color: var(--color-text-muted);
+	font-size: 0.76rem;
+	font-weight: 700;
+}
+
+.chat-message-reaction-details-list {
+	display: grid;
+	gap: 0.55rem;
+}
+
+.chat-message-reaction-details-user {
+	display: grid;
+	grid-template-columns: 2rem minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 0.55rem;
+	min-width: 0;
+}
+
+.chat-message-reaction-details-avatar {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	overflow: hidden;
+	border: 1px solid var(--border-soft);
+	border-radius: 50%;
+	color: var(--color-text-heading);
+	background: var(--bg-card);
+	font-size: 0.78rem;
+	font-weight: 700;
+}
+
+.chat-message-reaction-details-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.chat-message-reaction-details-user strong {
+	overflow: hidden;
+	color: var(--color-text-heading);
+	font-size: 0.86rem;
+	font-weight: 800;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.chat-message-reaction-details-emoji {
+	font-size: 1.05rem;
+	line-height: 1;
 }
 
 .chat-message-reaction-toggle {

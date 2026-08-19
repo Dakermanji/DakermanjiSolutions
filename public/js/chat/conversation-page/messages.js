@@ -241,6 +241,17 @@
 		}
 
 		async function handleMessageActionClick(event) {
+			const reactionSummaryItem = event.target.closest(
+				'[data-chat-message-reaction-summary-item]',
+			);
+			if (
+				reactionSummaryItem &&
+				!event.target.closest('[data-chat-message-reaction-details]')
+			) {
+				await toggleSummaryReaction(reactionSummaryItem);
+				return;
+			}
+
 			const reactionToggle = event.target.closest(
 				'[data-chat-message-reaction-toggle]',
 			);
@@ -317,6 +328,17 @@
 			}
 
 			submitMessageMutation(chatPage.dataset.editMessageUrl, fields);
+		}
+
+		async function handleMessageActionKeydown(event) {
+			const reactionSummaryItem = event.target.closest(
+				'[data-chat-message-reaction-summary-item]',
+			);
+			if (!reactionSummaryItem) return;
+			if (!['Enter', ' '].includes(event.key)) return;
+
+			event.preventDefault();
+			await toggleSummaryReaction(reactionSummaryItem);
 		}
 
 		async function handleMessageActionSubmit(event) {
@@ -441,22 +463,7 @@
 			setFormControlsDisabled(form, true);
 
 			try {
-				const response = await fetch(form.action, {
-					method: 'POST',
-					headers: {
-						Accept: 'application/json',
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-					body: fields.toString(),
-					credentials: 'same-origin',
-				});
-				const payload = await response.json();
-
-				if (!response.ok || !payload?.ok) {
-					throw new Error(`Request failed with status ${response.status}`);
-				}
-
-				updateMessageReactions(row, payload.reactions || []);
+				await toggleMessageReaction(row, fields);
 				closeReactionMenus();
 			} catch (error) {
 				console.error('Failed to react to chat message', error);
@@ -464,6 +471,47 @@
 			} finally {
 				setFormControlsDisabled(form, false);
 			}
+		}
+
+		async function toggleSummaryReaction(item) {
+			const row = item.closest('[data-chat-message-id]');
+			const messageId = item.dataset.messageId || row?.dataset.chatMessageId || '';
+			const reaction = item.dataset.reaction || '';
+			if (!row || !messageId || !reaction) return;
+			if (item.dataset.reactionToggleLoading === 'true') return;
+
+			const fields = new URLSearchParams({ messageId, reaction });
+			item.dataset.reactionToggleLoading = 'true';
+			item.setAttribute('aria-disabled', 'true');
+
+			try {
+				await toggleMessageReaction(row, fields);
+			} catch (error) {
+				console.error('Failed to react to chat message summary', error);
+				showFlashMessage(chatPage.dataset.flagMessageErrorLabel || '');
+			} finally {
+				item.dataset.reactionToggleLoading = 'false';
+				item.removeAttribute('aria-disabled');
+			}
+		}
+
+		async function toggleMessageReaction(row, fields) {
+			const response = await fetch(chatPage.dataset.reactMessageUrl || '', {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body: fields.toString(),
+				credentials: 'same-origin',
+			});
+			const payload = await response.json();
+
+			if (!response.ok || !payload?.ok) {
+				throw new Error(`Request failed with status ${response.status}`);
+			}
+
+			updateMessageReactions(row, payload.reactions || []);
 		}
 
 		function submitMessageMutation(action, fields) {
@@ -656,6 +704,174 @@
 				});
 		}
 
+		function handleReactionDetailsOver(event) {
+			const item = event.target.closest('[data-chat-message-reaction-summary-item]');
+			if (!item || !messageSurface.contains(item)) return;
+
+			void showReactionDetails(item);
+		}
+
+		function handleReactionDetailsOut(event) {
+			const item = event.target.closest('[data-chat-message-reaction-summary-item]');
+			if (!item || item.contains(event.relatedTarget)) return;
+
+			hideReactionDetails(item);
+		}
+
+		function handleReactionDetailsFocusIn(event) {
+			const item = event.target.closest('[data-chat-message-reaction-summary-item]');
+			if (!item) return;
+
+			void showReactionDetails(item);
+		}
+
+		function handleReactionDetailsFocusOut(event) {
+			const item = event.target.closest('[data-chat-message-reaction-summary-item]');
+			if (!item || item.contains(event.relatedTarget)) return;
+
+			hideReactionDetails(item);
+		}
+
+		async function showReactionDetails(item) {
+			const popover = getOrCreateReactionDetailsPopover(item);
+			popover.hidden = false;
+
+			if (item.dataset.reactionDetailsLoaded === 'true') return;
+			if (item.dataset.reactionDetailsLoading === 'true') return;
+
+			item.dataset.reactionDetailsLoading = 'true';
+			renderReactionDetailsLoading(popover);
+
+			try {
+				const details = await fetchReactionDetails(item);
+				item.dataset.reactionDetailsLoaded = 'true';
+				renderReactionDetails(popover, item, details.users || []);
+			} catch (error) {
+				console.error('Failed to load message reaction details', error);
+				renderReactionDetailsError(popover);
+			} finally {
+				item.dataset.reactionDetailsLoading = 'false';
+			}
+		}
+
+		function hideReactionDetails(item) {
+			const popover = item.querySelector('[data-chat-message-reaction-details]');
+			if (popover) popover.hidden = true;
+		}
+
+		async function fetchReactionDetails(item) {
+			const url = chatPage.dataset.reactionDetailsUrl || '';
+			const messageId = item.dataset.messageId || '';
+			const reaction = item.dataset.reaction || '';
+			if (!url || !messageId || !reaction) {
+				throw new Error('Missing reaction details input');
+			}
+
+			const params = new URLSearchParams({ messageId, reaction });
+			const response = await fetch(`${url}?${params.toString()}`, {
+				headers: {
+					Accept: 'application/json',
+				},
+				credentials: 'same-origin',
+			});
+			const payload = await response.json().catch(() => null);
+
+			if (!response.ok || !payload?.ok) {
+				throw new Error('Reaction details request failed');
+			}
+
+			return payload;
+		}
+
+		function getOrCreateReactionDetailsPopover(item) {
+			let popover = item.querySelector('[data-chat-message-reaction-details]');
+			if (popover) return popover;
+
+			popover = document.createElement('span');
+			popover.className = 'chat-message-reaction-details';
+			popover.dataset.chatMessageReactionDetails = 'true';
+			popover.hidden = true;
+			item.appendChild(popover);
+
+			return popover;
+		}
+
+		function renderReactionDetailsLoading(popover) {
+			popover.textContent = '';
+			const state = document.createElement('span');
+			state.className = 'chat-message-reaction-details-state';
+			state.textContent = chatPage.dataset.reactionLoadingLabel || '';
+			popover.appendChild(state);
+		}
+
+		function renderReactionDetailsError(popover) {
+			popover.textContent = '';
+			const state = document.createElement('span');
+			state.className = 'chat-message-reaction-details-state';
+			state.textContent = chatPage.dataset.reactionErrorLabel || '';
+			popover.appendChild(state);
+		}
+
+		function renderReactionDetails(popover, item, users) {
+			popover.textContent = '';
+
+			const title = document.createElement('span');
+			title.className = 'chat-message-reaction-details-title';
+			title.textContent = formatReactionDetailsCount(users.length);
+			popover.appendChild(title);
+
+			const list = document.createElement('span');
+			list.className = 'chat-message-reaction-details-list';
+			popover.appendChild(list);
+
+			for (const user of users) {
+				list.appendChild(createReactionDetailsUser(user, item));
+			}
+		}
+
+		function createReactionDetailsUser(user, item) {
+			const row = document.createElement('span');
+			row.className = 'chat-message-reaction-details-user';
+
+			const avatar = document.createElement('span');
+			avatar.className = 'chat-message-reaction-details-avatar';
+			avatar.style.backgroundColor = user.avatar?.background || '';
+			avatar.setAttribute('aria-hidden', 'true');
+			if (user.avatar?.src) {
+				const image = document.createElement('img');
+				image.src = user.avatar.src;
+				image.alt = '';
+				avatar.appendChild(image);
+			} else {
+				avatar.textContent = getReactionUserInitial(user);
+			}
+
+			const name = document.createElement('strong');
+			name.textContent = user.isViewer
+				? chatPage.dataset.reactionYouLabel || user.displayName || ''
+				: user.displayName || '';
+
+			const reaction = document.createElement('span');
+			reaction.className = 'chat-message-reaction-details-emoji';
+			reaction.textContent = item.dataset.reaction || '';
+
+			row.append(avatar, name, reaction);
+			return row;
+		}
+
+		function getReactionUserInitial(user) {
+			return String(user.displayName || user.email || '?').slice(0, 1).toUpperCase();
+		}
+
+		function formatReactionDetailsCount(count) {
+			if (count === 1) {
+				return chatPage.dataset.reactionCountOneLabel || '1 reaction';
+			}
+
+			return String(chatPage.dataset.reactionCountTemplate || '{{count}} reactions')
+				.replace('{{count}}', String(count));
+		}
+
 		function removeMessage(payload) {
 			if (
 				!payload?.messageId ||
@@ -759,7 +975,12 @@
 			focusMessageById,
 			handleMessageActionClick,
 			handleMessageActionInput,
+			handleMessageActionKeydown,
 			handleMessageActionSubmit,
+			handleReactionDetailsFocusIn,
+			handleReactionDetailsFocusOut,
+			handleReactionDetailsOut,
+			handleReactionDetailsOver,
 			loadOlderMessages,
 			removeMessage,
 			scheduleVisibleMessageMutationExpiries,

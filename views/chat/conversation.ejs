@@ -48,6 +48,9 @@
 	const reactionMessageUrl = isRoomConversation
 		? '/chat/rooms/messages/react'
 		: '/chat/friends/messages/react';
+	const reactionDetailsUrl = isRoomConversation
+		? '/chat/rooms/messages/reactions'
+		: '/chat/friends/messages/reactions';
 	const messageFormAction = isRoomConversation
 		? '/chat/rooms/messages'
 		: '/chat/friends/messages';
@@ -196,6 +199,12 @@
 	data-edit-message-url="<%= editMessageUrl %>"
 	data-delete-message-url="<%= deleteMessageUrl %>"
 	data-react-message-url="<%= reactionMessageUrl %>"
+	data-reaction-details-url="<%= reactionDetailsUrl %>"
+	data-reaction-count-one-label="<%= t('chat:conversation.reactionCount.one', { count: 1 }) %>"
+	data-reaction-count-template="<%= t('chat:conversation.reactionCount.other', { count: '{{count}}' }) %>"
+	data-reaction-loading-label="<%= t('chat:conversation.reactionLoading') %>"
+	data-reaction-error-label="<%= t('chat:conversation.reactionError') %>"
+	data-reaction-you-label="<%= t('chat:conversation.reactionYou') %>"
 	data-quick-reactions="<%= JSON.stringify(chatQuickReactions) %>"
 	data-extra-reactions="<%= JSON.stringify(chatExtraReactions) %>"
 	data-edit-message-label="<%= t('chat:conversation.edit') %>"

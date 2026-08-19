@@ -85,7 +85,12 @@
 	});
 	messageSurface.addEventListener('click', messages.handleMessageActionClick);
 	messageSurface.addEventListener('input', messages.handleMessageActionInput);
+	messageSurface.addEventListener('keydown', messages.handleMessageActionKeydown);
 	messageSurface.addEventListener('submit', messages.handleMessageActionSubmit);
+	messageSurface.addEventListener('mouseover', messages.handleReactionDetailsOver);
+	messageSurface.addEventListener('mouseout', messages.handleReactionDetailsOut);
+	messageSurface.addEventListener('focusin', messages.handleReactionDetailsFocusIn);
+	messageSurface.addEventListener('focusout', messages.handleReactionDetailsFocusOut);
 
 	bindPanelToggle({
 		toggle: document.querySelector('[data-chat-members-toggle]'),
