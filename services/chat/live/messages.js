@@ -43,6 +43,23 @@ export function emitChatMessageEdited(message) {
 }
 
 /**
+ * Broadcast reaction summary changes to users currently in the conversation room.
+ *
+ * @param {object|null} summary
+ * @returns {void}
+ */
+export function emitChatMessageReactionsChanged(summary) {
+	const chatSocketServer = getChatSocketServer();
+	if (!chatSocketServer || !summary?.conversationId || !summary?.messageId) {
+		return;
+	}
+
+	chatSocketServer
+		.to(getChatConversationRoom(summary.conversationId))
+		.emit('chat:message:reactions', summary);
+}
+
+/**
  * Broadcast one deleted message to users currently in the conversation room.
  *
  * @param {object|null} message
@@ -61,3 +78,4 @@ export async function emitChatMessageDeleted(message) {
 
 	await emitChatUnreadCountsForConversation(message.conversation_id);
 }
+

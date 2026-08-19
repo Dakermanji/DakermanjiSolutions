@@ -6,6 +6,7 @@ import {
 } from '../../../services/chat/messages.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
 import { CHAT_OPEN_REDIRECT } from '../../../constants/chat.js';
+import { emitChatMessageReactionsChanged } from '../../../services/chat/live.js';
 import { wantsJson } from './utils.js';
 
 function getReactionDetailsInput(req) {
@@ -88,6 +89,10 @@ function createMessageReactionHandler(kind) {
 				reaction: input.reaction,
 			});
 
+			if (summary) {
+				emitChatMessageReactionsChanged(summary);
+			}
+
 			if (wantsJson(req)) {
 				return res.status(summary ? 200 : 400).json({
 					ok: Boolean(summary),
@@ -112,3 +117,4 @@ export const getRoomChatMessageReactionUsers =
 	createMessageReactionDetailsHandler('room');
 export const reactToFriendChatMessage = createMessageReactionHandler('friend');
 export const reactToRoomChatMessage = createMessageReactionHandler('room');
+

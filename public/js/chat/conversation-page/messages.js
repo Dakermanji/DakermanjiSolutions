@@ -213,6 +213,7 @@
 			handleReactionDetailsOver: reactionController.handleReactionDetailsOver,
 			loadOlderMessages: historyController.loadOlderMessages,
 			removeMessage: mutationController.removeMessage,
+			updateMessageReactions: reactionController.updateLiveMessageReactions,
 			scheduleVisibleMessageMutationExpiries:
 				mutationController.scheduleVisibleMessageMutationExpiries,
 			scrollToLatestMessage,
@@ -234,3 +235,4 @@
 		createMessageController,
 	};
 })();
+

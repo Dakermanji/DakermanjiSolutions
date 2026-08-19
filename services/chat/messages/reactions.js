@@ -219,7 +219,9 @@ export async function toggleMessageReaction({
 
 	return {
 		...summary,
+		conversationId: conversation.conversation_id,
 		action: mutation.action,
 		reaction: normalizedReaction,
 	};
 }
+

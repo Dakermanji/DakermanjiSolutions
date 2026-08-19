@@ -154,6 +154,67 @@
 			window.AppTooltips?.hideAll();
 		}
 
+		function updateLiveMessageReactions(payload) {
+			if (
+				!payload?.messageId ||
+				payload.conversationId !== chatPage.dataset.activeConversationId
+			) {
+				return;
+			}
+
+			const row = findMessageReactionRow(payload.messageId);
+			if (!row) return;
+
+			const reactions = payload.viewerUserId === chatPage.dataset.currentUserId
+				? payload.reactions || []
+				: preserveViewerReactionState(row, payload.reactions || []);
+
+			updateMessageReactions(row, reactions);
+		}
+
+		function findMessageReactionRow(messageId) {
+			const escapedMessageId = window.CSS?.escape
+				? CSS.escape(messageId)
+				: String(messageId).replace(/"/g, '\\"');
+
+			return messageSurface.querySelector(
+				`[data-chat-message-id="${escapedMessageId}"]`,
+			);
+		}
+
+		function preserveViewerReactionState(row, reactions) {
+			const activeReactions = getViewerActiveReactions(row);
+
+			return reactions.map((reaction) => ({
+				...reaction,
+				reactedByViewer: activeReactions.has(reaction.reaction),
+			}));
+		}
+
+		function getViewerActiveReactions(row) {
+			const activeReactions = new Set();
+
+			row
+				.querySelectorAll('[data-chat-message-reaction-summary-item].is-active')
+				.forEach((item) => {
+					if (item.dataset.reaction) {
+						activeReactions.add(item.dataset.reaction);
+					}
+				});
+			row
+				.querySelectorAll('[data-chat-message-reaction-form] .is-active')
+				.forEach((button) => {
+					const reaction = button
+						.closest('[data-chat-message-reaction-form]')
+						?.elements.reaction?.value;
+					if (reaction) {
+						activeReactions.add(reaction);
+					}
+				});
+
+			return activeReactions;
+		}
+
 		function updateMessageReactions(row, reactions) {
 			if (!row) return;
 
@@ -441,6 +502,7 @@
 			handleReactionDetailsFocusOut,
 			handleReactionDetailsOut,
 			handleReactionDetailsOver,
+			updateLiveMessageReactions,
 			updateMessageReactions,
 		};
 	}
@@ -449,3 +511,4 @@
 		createReactionController,
 	};
 })();
+

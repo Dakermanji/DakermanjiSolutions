@@ -9,6 +9,7 @@ export {
 	emitChatMessageCreated,
 	emitChatMessageDeleted,
 	emitChatMessageEdited,
+	emitChatMessageReactionsChanged,
 } from './live/messages.js';
 export {
 	emitChatUnreadCountsChanged,
@@ -25,6 +26,7 @@ import {
 	emitChatMessageCreated,
 	emitChatMessageDeleted,
 	emitChatMessageEdited,
+	emitChatMessageReactionsChanged,
 } from './live/messages.js';
 import {
 	emitChatUnreadCountsChanged,
@@ -36,6 +38,7 @@ export default {
 	emitChatMessageCreated,
 	emitChatMessageDeleted,
 	emitChatMessageEdited,
+	emitChatMessageReactionsChanged,
 	emitChatUnreadCountsChanged,
 	emitChatUnreadCountsForConversation,
 	getChatConversationRoom,
@@ -43,3 +46,4 @@ export default {
 	registerChatSocketHandlers,
 	setChatSocketServer,
 };
+

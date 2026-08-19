@@ -165,6 +165,9 @@
 		socket.on('chat:message:deleted', (payload) => {
 			messages.removeMessage(payload);
 		});
+		socket.on('chat:message:reactions', (payload) => {
+			messages.updateMessageReactions(payload);
+		});
 		socket.on('chat:typing:updated', (payload) => {
 			typingController.showTypingIndicator(payload);
 		});
@@ -212,3 +215,4 @@
 		return 'auto';
 	}
 })();
+
