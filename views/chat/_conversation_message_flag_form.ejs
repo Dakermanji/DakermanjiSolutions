@@ -1,0 +1,20 @@
+<!--! views/chat/_conversation_message_flag_form.ejs -->
+<% if (isRoomConversation && !message.isMine) { %>
+	<form
+		class="chat-message-flag-form"
+		method="POST"
+		action="/chat/rooms/messages/flag"
+	>
+		<%- include('../partials/_csrf') %>
+		<input type="hidden" name="messageId" value="<%= message.id %>" />
+		<button
+			class="btn btn-action-outline chat-message-flag-button has-tooltip <%= message.flaggedByViewer ? 'is-flagged' : '' %>"
+			type="submit"
+			data-bs-title="<%= t(message.flaggedByViewer ? 'chat:conversation.flagged' : 'chat:conversation.flag') %>"
+			aria-label="<%= t(message.flaggedByViewer ? 'chat:conversation.flagged' : 'chat:conversation.flag') %>"
+			<% if (message.flaggedByViewer) { %>disabled<% } %>
+		>
+			<i class="bi <%= message.flaggedByViewer ? 'bi-flag-fill' : 'bi-flag' %>" aria-hidden="true"></i>
+		</button>
+	</form>
+<% } %>

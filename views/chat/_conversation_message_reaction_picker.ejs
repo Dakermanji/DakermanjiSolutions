@@ -1,0 +1,62 @@
+<!--! views/chat/_conversation_message_reaction_picker.ejs -->
+<% if (quickReactions?.length > 0) { %>
+	<span class="chat-message-reaction-picker" data-chat-message-reactions>
+		<button
+			class="btn btn-action-outline chat-message-action chat-message-reaction-toggle"
+			type="button"
+			data-chat-message-reaction-toggle
+			aria-label="React"
+			aria-expanded="false"
+		>
+			<i class="bi bi-emoji-smile" aria-hidden="true"></i>
+			<i class="bi bi-plus chat-message-reaction-plus" aria-hidden="true"></i>
+		</button>
+		<span class="chat-message-reaction-menu" data-chat-message-reaction-menu hidden>
+			<span class="chat-message-reaction-search" data-chat-message-reaction-search hidden>
+				<i class="bi bi-search" aria-hidden="true"></i>
+				<input
+					type="search"
+					data-chat-message-reaction-search-input
+					aria-label="Search reactions"
+					placeholder="Search..."
+				/>
+			</span>
+			<span class="chat-message-reaction-group">
+				<%- include('_conversation_message_reaction_forms', {
+					message,
+					reactions: quickReactions,
+					reactionMessageUrl,
+				}) %>
+				<% if (extraReactions?.length > 0) { %>
+					<button
+						class="chat-message-reaction chat-message-reaction-search-toggle"
+						type="button"
+						data-chat-message-reaction-search-toggle
+						aria-label="Search reactions"
+						aria-expanded="false"
+					>
+						<i class="bi bi-search" aria-hidden="true"></i>
+					</button>
+					<button
+						class="chat-message-reaction chat-message-reaction-more"
+						type="button"
+						data-chat-message-reaction-more
+						aria-label="More reactions"
+						aria-expanded="false"
+					>
+						<i class="bi bi-plus-lg" aria-hidden="true"></i>
+					</button>
+				<% } %>
+			</span>
+			<% if (extraReactions?.length > 0) { %>
+				<span class="chat-message-reaction-group is-extra" data-chat-message-reaction-extra hidden>
+					<%- include('_conversation_message_reaction_forms', {
+						message,
+						reactions: extraReactions,
+						reactionMessageUrl,
+					}) %>
+				</span>
+			<% } %>
+		</span>
+	</span>
+<% } %>

@@ -1,0 +1,34 @@
+<!--! views/chat/_conversation_message_reaction_forms.ejs -->
+<% reactions.forEach((reactionOption) => { %>
+	<%
+		const currentReaction = message.reactions?.find(
+			(item) => item.reaction === reactionOption.reaction,
+		);
+		const reactionCount = currentReaction?.count || 0;
+		const reactedByViewer = Boolean(currentReaction?.reactedByViewer);
+		const reactionSearch = [
+			reactionOption.reaction,
+			reactionOption.label,
+			...(reactionOption.keywords || []),
+		].join(' ');
+	%>
+	<form
+		class="chat-message-reaction-form"
+		method="POST"
+		action="<%= reactionMessageUrl %>"
+		data-chat-message-reaction-form
+		data-chat-message-reaction-search-text="<%= reactionSearch %>"
+	>
+		<%- include('../partials/_csrf') %>
+		<input type="hidden" name="messageId" value="<%= message.id %>" />
+		<input type="hidden" name="reaction" value="<%= reactionOption.reaction %>" />
+		<button
+			class="chat-message-reaction has-tooltip has-title <%= reactedByViewer ? 'is-active' : '' %>"
+			type="submit"
+			data-bs-title="<%= reactionOption.label %>"
+			aria-label="<%= `${reactionOption.label}: ${reactionCount}` %>"
+		>
+			<span aria-hidden="true"><%= reactionOption.reaction %></span>
+		</button>
+	</form>
+<% }) %>

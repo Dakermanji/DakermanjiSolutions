@@ -1,0 +1,25 @@
+<!--! views/chat/_conversation_message_sender_stack.ejs -->
+<div class="chat-message-sender-stack">
+	<% if (isRoomConversation) { %>
+		<span
+			class="chat-message-sender-avatar"
+			style="background-color: <%= message.sender?.avatar?.background || '' %>;"
+			aria-hidden="true"
+		>
+			<% if (message.sender?.avatar?.src) { %>
+				<img src="<%= message.sender.avatar.src %>" alt="" />
+			<% } else { %>
+				<%= getSenderName(message).slice(0, 1).toUpperCase() %>
+			<% } %>
+		</span>
+	<% } %>
+	<button
+		class="btn btn-action-outline chat-message-action chat-message-reply-side has-tooltip"
+		type="button"
+		data-chat-message-reply
+		data-bs-title="<%= t('chat:conversation.reply') %>"
+		aria-label="<%= t('chat:conversation.reply') %>"
+	>
+		<i class="bi bi-reply" aria-hidden="true"></i>
+	</button>
+</div>

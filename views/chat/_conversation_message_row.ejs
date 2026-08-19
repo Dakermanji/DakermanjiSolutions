@@ -1,0 +1,49 @@
+<!--! views/chat/_conversation_message_row.ejs -->
+<li
+	class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>"
+	data-chat-message-id="<%= message.id %>"
+	data-chat-message-sender-id="<%= message.sender?.id || '' %>"
+	data-chat-message-sender-name="<%= getSenderName(message) %>"
+	data-chat-message-sender-avatar="<%= message.sender?.avatar?.src || '' %>"
+	data-chat-message-sender-avatar-bg="<%= message.sender?.avatar?.background || '' %>"
+	data-chat-message-created-at="<%= new Date(message.createdAt).toISOString() %>"
+	data-chat-message-pending-flag-count="<%= message.pendingFlagCount || 0 %>"
+	data-chat-message-flagged-by-viewer="<%= message.flaggedByViewer ? 'true' : 'false' %>"
+	data-chat-message-can-edit="<%= message.canEdit ? 'true' : 'false' %>"
+	data-chat-message-can-delete="<%= message.canDelete ? 'true' : 'false' %>"
+	data-chat-message-edited="<%= message.editedAt ? 'true' : 'false' %>"
+>
+	<% if (!message.isMine) { %>
+		<%- include('_conversation_message_sender_stack', {
+			getSenderName,
+			isRoomConversation,
+			message,
+			t,
+		}) %>
+	<% } %>
+	<%- include('_conversation_message_content', {
+		getReplySenderName,
+		getSenderName,
+		isRoomConversation,
+		message,
+		t,
+	}) %>
+	<%- include('_conversation_message_meta', {
+		extraReactions,
+		formatMessageTime,
+		message,
+		quickReactions,
+		reactionMessageUrl,
+		t,
+	}) %>
+	<%- include('_conversation_message_actions', {
+		deleteMessageUrl,
+		message,
+		t,
+	}) %>
+	<%- include('_conversation_message_flag_form', {
+		isRoomConversation,
+		message,
+		t,
+	}) %>
+</li>

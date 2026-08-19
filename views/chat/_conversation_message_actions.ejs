@@ -1,0 +1,35 @@
+<!--! views/chat/_conversation_message_actions.ejs -->
+<% if (message.isMine && (message.canEdit || message.canDelete)) { %>
+	<div class="chat-message-actions">
+		<% if (message.canEdit) { %>
+			<button
+				class="btn btn-action-outline chat-message-action has-tooltip"
+				type="button"
+				data-chat-message-edit
+				data-bs-title="<%= t('chat:conversation.edit') %>"
+				aria-label="<%= t('chat:conversation.edit') %>"
+			>
+				<i class="bi bi-pencil" aria-hidden="true"></i>
+			</button>
+		<% } %>
+		<% if (message.canDelete) { %>
+			<form
+				class="chat-message-delete-form"
+				method="POST"
+				action="<%= deleteMessageUrl %>"
+				data-chat-message-delete-form
+			>
+				<%- include('../partials/_csrf') %>
+				<input type="hidden" name="messageId" value="<%= message.id %>" />
+				<button
+					class="btn btn-action-outline chat-message-action is-danger has-tooltip"
+					type="submit"
+					data-bs-title="<%= t('chat:conversation.delete') %>"
+					aria-label="<%= t('chat:conversation.delete') %>"
+				>
+					<i class="bi bi-trash3" aria-hidden="true"></i>
+				</button>
+			</form>
+		<% } %>
+	</div>
+<% } %>

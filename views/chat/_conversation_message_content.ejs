@@ -1,0 +1,26 @@
+<!--! views/chat/_conversation_message_content.ejs -->
+<div class="chat-message-content">
+	<article class="chat-message-bubble">
+		<% if (isRoomConversation && !message.isMine) { %>
+			<header class="chat-message-sender-name">
+				<%= getSenderName(message) %>
+			</header>
+		<% } %>
+		<% if (message.replyTo) { %>
+			<blockquote
+				class="chat-message-reply"
+				dir="auto"
+				data-chat-message-reply-id="<%= message.replyTo.id %>"
+			>
+				<strong><%= getReplySenderName(message) %></strong>
+				<span>
+					<%= message.replyTo.isDeleted
+						? t('chat:conversation.replyDeleted')
+						: message.replyTo.bodyPreview %>
+				</span>
+			</blockquote>
+		<% } %>
+		<p class="chat-message-text" dir="auto"><%= message.body %></p>
+	</article>
+	<%- include('_conversation_message_reaction_summary', { message }) %>
+</div>
