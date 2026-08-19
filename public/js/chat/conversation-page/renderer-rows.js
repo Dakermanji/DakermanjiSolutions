@@ -41,7 +41,7 @@
 			}));
 		}
 
-		const bubble = createMessageBubble(message, {
+		const content = createMessageContent(message, {
 			replyDeletedLabel,
 			senderName,
 			shouldShowSenderDisplay,
@@ -55,7 +55,7 @@
 			replyLabel,
 		});
 
-		row.append(bubble, meta);
+		row.append(content, meta);
 
 		if (canEditMessage || canDeleteMessage) {
 			row.appendChild(createMessageActions(
@@ -104,6 +104,15 @@
 		row.dataset.chatMessageEdited = message.editedAt ? 'true' : 'false';
 	}
 
+	function createMessageContent(message, options = {}) {
+		const content = document.createElement('div');
+		content.className = 'chat-message-content';
+
+		content.appendChild(createMessageBubble(message, options));
+		appendReactionSummary(content, message.reactions || []);
+
+		return content;
+	}
 	function createMessageBubble(message, {
 		replyDeletedLabel = '',
 		senderName = '',
@@ -321,14 +330,50 @@
 
 		button.appendChild(emoji);
 
-		if (count > 0) {
-			const countText = document.createElement('span');
-			countText.textContent = String(count);
-			button.appendChild(countText);
-		}
-
 		form.append(messageInput, reactionInput, button);
 		return form;
+	}
+
+	function appendReactionSummary(container, reactions = []) {
+		const summary = createReactionSummary(reactions);
+		if (!summary) return;
+
+		container.appendChild(summary);
+	}
+
+	function createReactionSummary(reactions = []) {
+		const visibleReactions = reactions.filter((reaction) =>
+			Number(reaction.count || 0) > 0,
+		);
+
+		if (visibleReactions.length === 0) {
+			return null;
+		}
+
+		const summary = document.createElement('div');
+		summary.className = 'chat-message-reaction-summary';
+		summary.dataset.chatMessageReactionSummary = 'true';
+
+		for (const reaction of visibleReactions) {
+			const item = document.createElement('span');
+			item.className = `chat-message-reaction-summary-item${reaction.reactedByViewer ? ' is-active' : ''}`;
+			item.setAttribute(
+				'aria-label',
+				`${reaction.label || reaction.reaction || ''}: ${reaction.count}`,
+			);
+
+			const emoji = document.createElement('span');
+			emoji.setAttribute('aria-hidden', 'true');
+			emoji.textContent = reaction.reaction || '';
+
+			const count = document.createElement('span');
+			count.textContent = String(reaction.count || 0);
+
+			item.append(emoji, count);
+			summary.appendChild(item);
+		}
+
+		return summary;
 	}
 
 	function createReactionSearchBox() {
@@ -489,6 +534,8 @@
 			reactions,
 		};
 
+		row.querySelector('[data-chat-message-reaction-summary]')?.remove();
+		appendReactionSummary(row.querySelector('.chat-message-content') || row, reactions);
 		row.querySelector('[data-chat-message-reactions]')?.remove();
 		const timeActions = row.querySelector('.chat-message-time-actions');
 		const picker = createReactionPicker(message, {

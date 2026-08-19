@@ -58,28 +58,43 @@
 							</button>
 						</div>
 					<% } %>
-					<article class="chat-message-bubble">
-						<% if (isRoomConversation && !message.isMine) { %>
-							<header class="chat-message-sender-name">
-								<%= getSenderName(message) %>
-							</header>
+					<div class="chat-message-content">
+						<article class="chat-message-bubble">
+							<% if (isRoomConversation && !message.isMine) { %>
+								<header class="chat-message-sender-name">
+									<%= getSenderName(message) %>
+								</header>
+							<% } %>
+							<% if (message.replyTo) { %>
+								<blockquote
+									class="chat-message-reply"
+									dir="auto"
+									data-chat-message-reply-id="<%= message.replyTo.id %>"
+								>
+									<strong><%= getReplySenderName(message) %></strong>
+									<span>
+										<%= message.replyTo.isDeleted
+											? t('chat:conversation.replyDeleted')
+											: message.replyTo.bodyPreview %>
+									</span>
+								</blockquote>
+							<% } %>
+							<p class="chat-message-text" dir="auto"><%= message.body %></p>
+						</article>
+						<% if (message.reactions?.some((reaction) => reaction.count > 0)) { %>
+							<div class="chat-message-reaction-summary" data-chat-message-reaction-summary>
+								<% message.reactions.filter((reaction) => reaction.count > 0).forEach((reaction) => { %>
+									<span
+										class="chat-message-reaction-summary-item <%= reaction.reactedByViewer ? 'is-active' : '' %>"
+										aria-label="<%= `${reaction.label}: ${reaction.count}` %>"
+									>
+										<span aria-hidden="true"><%= reaction.reaction %></span>
+										<span><%= reaction.count %></span>
+									</span>
+								<% }) %>
+							</div>
 						<% } %>
-						<% if (message.replyTo) { %>
-							<blockquote
-								class="chat-message-reply"
-								dir="auto"
-								data-chat-message-reply-id="<%= message.replyTo.id %>"
-							>
-								<strong><%= getReplySenderName(message) %></strong>
-								<span>
-									<%= message.replyTo.isDeleted
-										? t('chat:conversation.replyDeleted')
-										: message.replyTo.bodyPreview %>
-								</span>
-							</blockquote>
-						<% } %>
-						<p class="chat-message-text" dir="auto"><%= message.body %></p>
-					</article>
+					</div>
 					<div class="chat-message-meta">
 						<% if (message.editedAt) { %>
 							<span class="chat-message-edited">
@@ -143,9 +158,6 @@
 														aria-label="<%= `${quickReaction.label}: ${reactionCount}` %>"
 													>
 														<span aria-hidden="true"><%= quickReaction.reaction %></span>
-														<% if (reactionCount > 0) { %>
-															<span><%= reactionCount %></span>
-														<% } %>
 													</button>
 												</form>
 											<% }) %>
@@ -202,9 +214,6 @@
 															aria-label="<%= `${extraReaction.label}: ${reactionCount}` %>"
 														>
 															<span aria-hidden="true"><%= extraReaction.reaction %></span>
-															<% if (reactionCount > 0) { %>
-																<span><%= reactionCount %></span>
-															<% } %>
 														</button>
 													</form>
 												<% }) %>
