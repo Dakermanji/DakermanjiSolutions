@@ -86,7 +86,14 @@
 								<% message.reactions.filter((reaction) => reaction.count > 0).forEach((reaction) => { %>
 									<span
 										class="chat-message-reaction-summary-item <%= reaction.reactedByViewer ? 'is-active' : '' %>"
+										data-chat-message-reaction-summary-item
+										data-message-id="<%= message.id %>"
+										data-reaction="<%= reaction.reaction %>"
+										data-reaction-label="<%= reaction.label %>"
 										aria-label="<%= `${reaction.label}: ${reaction.count}` %>"
+										aria-pressed="<%= reaction.reactedByViewer ? 'true' : 'false' %>"
+										role="button"
+										tabindex="0"
 									>
 										<span aria-hidden="true"><%= reaction.reaction %></span>
 										<span><%= reaction.count %></span>

@@ -357,6 +357,13 @@
 		for (const reaction of visibleReactions) {
 			const item = document.createElement('span');
 			item.className = `chat-message-reaction-summary-item${reaction.reactedByViewer ? ' is-active' : ''}`;
+			item.dataset.chatMessageReactionSummaryItem = 'true';
+			item.dataset.messageId = reaction.messageId || '';
+			item.dataset.reaction = reaction.reaction || '';
+			item.dataset.reactionLabel = reaction.label || reaction.reaction || '';
+			item.setAttribute('aria-pressed', reaction.reactedByViewer ? 'true' : 'false');
+			item.setAttribute('role', 'button');
+			item.tabIndex = 0;
 			item.setAttribute(
 				'aria-label',
 				`${reaction.label || reaction.reaction || ''}: ${reaction.count}`,
