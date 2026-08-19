@@ -362,21 +362,36 @@
 		function renderReactionDetails(popover, item, users) {
 			popover.textContent = '';
 
-			const title = document.createElement('span');
-			title.className = 'chat-message-reaction-details-title';
-			title.textContent = formatReactionDetailsCount(users.length);
-			popover.appendChild(title);
+			popover.appendChild(createReactionDetailsTitle(item, users.length));
 
 			const list = document.createElement('span');
 			list.className = 'chat-message-reaction-details-list';
 			popover.appendChild(list);
 
 			for (const user of users) {
-				list.appendChild(createReactionDetailsUser(user, item));
+				list.appendChild(createReactionDetailsUser(user));
 			}
 		}
 
-		function createReactionDetailsUser(user, item) {
+		function createReactionDetailsTitle(item, count) {
+			const title = document.createElement('span');
+			title.className = 'chat-message-reaction-details-title';
+
+			const countText = document.createElement('span');
+			countText.textContent = String(count);
+
+			const reaction = document.createElement('span');
+			reaction.setAttribute('aria-hidden', 'true');
+			reaction.textContent = item.dataset.reaction || '';
+
+			const label = document.createElement('span');
+			label.textContent = item.dataset.reactionLabel || '';
+
+			title.append(countText, reaction, label);
+			return title;
+		}
+
+		function createReactionDetailsUser(user) {
 			const row = document.createElement('span');
 			row.className = 'chat-message-reaction-details-user';
 
@@ -398,11 +413,7 @@
 				? chatPage.dataset.reactionYouLabel || user.displayName || ''
 				: user.displayName || '';
 
-			const reaction = document.createElement('span');
-			reaction.className = 'chat-message-reaction-details-emoji';
-			reaction.textContent = item.dataset.reaction || '';
-
-			row.append(avatar, name, reaction);
+			row.append(avatar, name);
 			return row;
 		}
 
@@ -410,14 +421,6 @@
 			return String(user.displayName || user.email || '?').slice(0, 1).toUpperCase();
 		}
 
-		function formatReactionDetailsCount(count) {
-			if (count === 1) {
-				return chatPage.dataset.reactionCountOneLabel || '1 reaction';
-			}
-
-			return String(chatPage.dataset.reactionCountTemplate || '{{count}} reactions')
-				.replace('{{count}}', String(count));
-		}
 
 		return {
 			closeReactionMenus,
