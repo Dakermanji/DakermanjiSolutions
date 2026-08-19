@@ -255,6 +255,14 @@
 					"messages.css",
 					"sections.css",
 					"shared.css"
+				],
+				"messages": [
+					"actions.css",
+					"bubbles.css",
+					"mobile.css",
+					"reactions.css",
+					"surface.css",
+					"typing.css"
 				]
 			},
 			"dashboard": [],

@@ -1,0 +1,12 @@
+/*! public/css/chat/messages/typing.css */
+
+.chat-typing-indicator {
+	min-height: 1.5rem;
+	padding: 0 0.25rem;
+	color: var(--color-text-muted);
+	font-size: 0.9rem;
+}
+
+.chat-typing-indicator[hidden] {
+	display: none;
+}

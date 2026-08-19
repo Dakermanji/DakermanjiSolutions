@@ -1,0 +1,75 @@
+/*! public/css/chat/messages/mobile.css */
+
+@media (max-width: 575.98px) {
+	.chat-message-surface {
+		padding: 0.75rem;
+	}
+
+	.chat-message-row {
+		gap: 0.35rem;
+	}
+
+	.chat-message-sender-stack {
+		flex-basis: 1.65rem;
+		gap: 0.15rem;
+		width: 1.65rem;
+		min-height: calc(1.65rem + 0.15rem + 1rem);
+	}
+
+	.chat-message-sender-avatar {
+		flex-basis: 1.65rem;
+		width: 1.65rem;
+		height: 1.65rem;
+		font-size: 0.68rem;
+	}
+
+	.chat-message-reply-side {
+		width: 1rem;
+		height: 1rem;
+		font-size: 0.56rem;
+	}
+
+	.chat-message-bubble {
+		gap: 0.28rem;
+		padding: 0.55rem 0.65rem;
+	}
+
+	.chat-message-content {
+		max-width: min(18rem, 78%);
+	}
+
+	.chat-message-reply {
+		gap: 0.08rem;
+		padding: 0.28rem 0.4rem;
+		border-inline-start-width: 2px;
+		font-size: 0.7rem;
+		line-height: 1.18;
+	}
+
+	.chat-message-sender-name {
+		font-size: 0.72rem;
+	}
+
+	.chat-message-reaction-menu {
+		max-width: min(13rem, 78vw);
+	}
+
+	.chat-message-reaction-summary {
+		max-width: min(12rem, 82%);
+		margin-top: -0.45rem;
+		margin-inline-end: 0.38rem;
+	}
+
+	.chat-message-reaction-summary-item {
+		min-height: 1.2rem;
+		padding: 0.1rem 0.34rem;
+		font-size: 0.68rem;
+	}
+
+	.chat-message-reaction {
+		min-width: 1.35rem;
+		min-height: 1.35rem;
+		padding: 0.08rem 0.32rem;
+		font-size: 0.68rem;
+	}
+}
