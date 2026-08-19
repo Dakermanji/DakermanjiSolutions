@@ -94,6 +94,7 @@
 			setFormControlsDisabled(form, true);
 
 			try {
+				resetReactionTooltips(form.closest('[data-chat-message-reactions]'));
 				await toggleMessageReaction(row, fields);
 				closeReactionMenus();
 			} catch (error) {
@@ -116,6 +117,7 @@
 			item.setAttribute('aria-disabled', 'true');
 
 			try {
+				hideReactionDetails(item);
 				await toggleMessageReaction(row, fields);
 			} catch (error) {
 				console.error('Failed to react to chat message summary', error);
@@ -143,6 +145,13 @@
 			}
 
 			updateMessageReactions(row, payload.reactions || []);
+		}
+
+		function resetReactionTooltips(scope) {
+			scope
+				?.querySelectorAll('.has-tooltip')
+				.forEach((element) => window.AppTooltips?.reset(element));
+			window.AppTooltips?.hideAll();
 		}
 
 		function updateMessageReactions(row, reactions) {
