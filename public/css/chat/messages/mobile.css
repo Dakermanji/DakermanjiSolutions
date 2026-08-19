@@ -50,19 +50,6 @@
 		font-size: 0.72rem;
 	}
 
-	.chat-message-reaction-menu {
-		position: fixed;
-		inset-block: auto 4.75rem;
-		inset-inline: 0.75rem;
-		justify-content: center;
-		width: auto;
-		max-width: none;
-		padding: 2.25rem 0.85rem 0.75rem;
-	}
-
-	.chat-message-row.is-mine .chat-message-reaction-menu {
-		inset-inline: 0.75rem;
-	}
 
 	.chat-message-reaction-group {
 		justify-content: center;

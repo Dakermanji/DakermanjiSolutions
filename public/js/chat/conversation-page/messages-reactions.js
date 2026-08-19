@@ -240,6 +240,10 @@
 			closeReactionMenus(picker);
 			menu.hidden = !shouldOpen;
 			button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+
+			if (shouldOpen) {
+				positionReactionMenu(button, menu);
+			}
 		}
 
 		function toggleExtraReactions(button) {
@@ -251,6 +255,7 @@
 			extra.hidden = !shouldOpen;
 			button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
 			setReactionMoreIcon(button, shouldOpen);
+			positionOpenReactionMenu(picker);
 		}
 
 		function toggleReactionSearch(button) {
@@ -264,14 +269,60 @@
 			button.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
 
 			if (shouldOpen) {
+				positionOpenReactionMenu(picker);
 				input.focus();
 				return;
 			}
 
 			input.value = '';
 			filterReactionMenu(input);
+			positionOpenReactionMenu(picker);
 		}
 
+		function positionOpenReactionMenu(picker) {
+			const button = picker?.querySelector('[data-chat-message-reaction-toggle]');
+			const menu = picker?.querySelector('[data-chat-message-reaction-menu]');
+			if (!button || !menu || menu.hidden) return;
+
+			positionReactionMenu(button, menu);
+		}
+
+		function positionReactionMenu(button, menu) {
+			clearReactionMenuPosition(menu);
+
+			const row = button.closest('[data-chat-message-id]');
+			const bubble = row?.querySelector('.chat-message-bubble');
+			if (!row || !bubble) return;
+
+			window.requestAnimationFrame(() => {
+				const rowRect = row.getBoundingClientRect();
+				const bubbleRect = bubble.getBoundingClientRect();
+				const top = bubbleRect.bottom - rowRect.top + 6;
+
+				menu.style.setProperty('--chat-reaction-menu-top', `${top}px`);
+
+				if (row.classList.contains('is-mine')) {
+					menu.style.setProperty('--chat-reaction-menu-start', 'auto');
+					menu.style.setProperty(
+						'--chat-reaction-menu-end',
+						`${Math.max(0, rowRect.right - bubbleRect.right)}px`,
+					);
+					return;
+				}
+
+				menu.style.setProperty(
+					'--chat-reaction-menu-start',
+					`${Math.max(0, bubbleRect.left - rowRect.left)}px`,
+				);
+				menu.style.setProperty('--chat-reaction-menu-end', 'auto');
+			});
+		}
+
+		function clearReactionMenuPosition(menu) {
+			menu.style.removeProperty('--chat-reaction-menu-top');
+			menu.style.removeProperty('--chat-reaction-menu-start');
+			menu.style.removeProperty('--chat-reaction-menu-end');
+		}
 		function filterReactionMenu(input) {
 			const picker = input.closest('[data-chat-message-reactions]');
 			const query = String(input.value || '').trim().toLowerCase();
@@ -304,7 +355,10 @@
 					const toggle = picker.querySelector('[data-chat-message-reaction-toggle]');
 					const more = picker.querySelector('[data-chat-message-reaction-more]');
 
-					if (menu) menu.hidden = true;
+					if (menu) {
+						menu.hidden = true;
+						clearReactionMenuPosition(menu);
+					}
 					if (extra) extra.hidden = true;
 					picker
 						.querySelectorAll('[data-chat-message-reaction-form]')
@@ -518,4 +572,3 @@
 		createReactionController,
 	};
 })();
-

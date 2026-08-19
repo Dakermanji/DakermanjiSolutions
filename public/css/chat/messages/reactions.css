@@ -1,7 +1,11 @@
 /*! public/css/chat/messages/reactions.css */
 
-.chat-message-reaction-picker {
+.chat-message-row {
 	position: relative;
+}
+
+.chat-message-reaction-picker {
+	position: static;
 	display: inline-flex;
 	align-items: center;
 }
@@ -178,24 +182,19 @@
 .chat-message-reaction-menu {
 	position: absolute;
 	z-index: 5;
-	inset-block-end: calc(100% + 0.25rem);
-	inset-inline-start: 0;
+	inset-block-start: var(--chat-reaction-menu-top, 100%);
+	inset-inline-start: var(--chat-reaction-menu-start, auto);
+	inset-inline-end: var(--chat-reaction-menu-end, auto);
 	display: grid;
 	gap: 0.2rem;
 	width: max-content;
-	max-width: min(15rem, 70vw);
+	max-width: min(15rem, calc(100vw - 1rem));
 	padding: 0.25rem;
 	border: 1px solid var(--border-soft);
 	border-radius: 5px;
 	background: var(--bg-card-muted);
 	box-shadow: 0 0.45rem 1.2rem rgba(0, 0, 0, 0.2);
 }
-
-.chat-message-row.is-mine .chat-message-reaction-menu {
-	inset-inline-start: auto;
-	inset-inline-end: 0;
-}
-
 .chat-message-reaction-menu[hidden],
 .chat-message-reaction-group[hidden] {
 	display: none;
