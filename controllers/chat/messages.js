@@ -17,6 +17,8 @@ export {
 export { flagRoomChatMessage } from './messages/flags.js';
 export { openRoomChatMessage } from './messages/open.js';
 export {
+	getFriendChatMessageReactionUsers,
+	getRoomChatMessageReactionUsers,
 	reactToFriendChatMessage,
 	reactToRoomChatMessage,
 } from './messages/reactions.js';

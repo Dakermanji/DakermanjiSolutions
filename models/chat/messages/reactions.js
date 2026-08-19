@@ -105,6 +105,43 @@ export async function listMessageReactions({
 	return queryRows(q, [messageIds, viewerUserId]);
 }
 
+
+/**
+ * List users who reacted with one reaction on one message.
+ *
+ * @param {object} params
+ * @param {string} params.messageId
+ * @param {string} params.reaction
+ * @param {string|null} [params.viewerUserId]
+ * @returns {Promise<Array>}
+ */
+export async function listMessageReactionUsers({
+	messageId,
+	reaction,
+	viewerUserId = null,
+}) {
+	const q = `
+		SELECT
+			cmr.message_id,
+			cmr.reaction,
+			cmr.user_id,
+			cmr.created_at,
+			cmr.user_id = $3::uuid AS is_viewer,
+			u.username,
+			u.email,
+			u.avatar_seed
+		FROM chat_message_reactions cmr
+		INNER JOIN users u
+			ON u.id = cmr.user_id
+		WHERE cmr.message_id = $1
+			AND cmr.reaction = $2
+		ORDER BY
+			is_viewer DESC,
+			cmr.created_at ASC;
+	`;
+
+	return queryRows(q, [messageId, reaction, viewerUserId]);
+}
 /**
  * Toggle one reaction. Removes it when present, otherwise creates it.
  *

@@ -15,6 +15,7 @@ export { createMessageFlag } from './messages/flags.js';
 export {
 	addMessageReaction,
 	listMessageReactions,
+	listMessageReactionUsers,
 	removeMessageReaction,
 	toggleMessageReaction,
 } from './messages/reactions.js';
@@ -34,6 +35,7 @@ import { createMessageFlag } from './messages/flags.js';
 import {
 	addMessageReaction,
 	listMessageReactions,
+	listMessageReactionUsers,
 	removeMessageReaction,
 	toggleMessageReaction,
 } from './messages/reactions.js';
@@ -48,6 +50,7 @@ export default {
 	addMessageReaction,
 	removeMessageReaction,
 	listMessageReactions,
+	listMessageReactionUsers,
 	toggleMessageReaction,
 	updateOwnConversationMessage,
 	deleteOwnConversationMessage,

@@ -16,6 +16,7 @@ export {
 export { flagRoomMessage } from './messages/flags.js';
 export {
 	listMessageReactionSummary,
+	listMessageReactionUsers,
 	toggleMessageReaction,
 } from './messages/reactions.js';
 export {
@@ -38,6 +39,7 @@ import {
 import { flagRoomMessage } from './messages/flags.js';
 import {
 	listMessageReactionSummary,
+	listMessageReactionUsers,
 	toggleMessageReaction,
 } from './messages/reactions.js';
 import {
@@ -56,6 +58,7 @@ export default {
 	editOwnMessage,
 	flagRoomMessage,
 	listMessageReactionSummary,
+	listMessageReactionUsers,
 	toggleMessageReaction,
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,

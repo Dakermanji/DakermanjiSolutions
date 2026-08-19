@@ -17,12 +17,14 @@ import {
 	editRoomChatMessage,
 	flagRoomChatMessage,
 	getFriendChats,
+	getFriendChatMessageReactionUsers,
 	getOlderFriendMessages,
 	getOlderRoomMessages,
 	getPrivateRooms,
 	getPublicRooms,
 	getRoomActivityLogs,
 	getRoomMessageFlags,
+	getRoomChatMessageReactionUsers,
 	joinPublicRoomConversation,
 	markRoomMessageSafe,
 	muteChatRoomMember,
@@ -46,7 +48,9 @@ const router = Router();
 router.get('/', renderChat);
 router.get('/friends', getFriendChats);
 router.get('/friends/messages', getOlderFriendMessages);
+router.get('/friends/messages/reactions', getFriendChatMessageReactionUsers);
 router.get('/rooms/messages', getOlderRoomMessages);
+router.get('/rooms/messages/reactions', getRoomChatMessageReactionUsers);
 router.get('/rooms/public', getPublicRooms);
 router.get('/rooms/private', getPrivateRooms);
 router.get('/rooms/search', searchVisibleRooms);

@@ -116,6 +116,7 @@ export function formatMessageReactionSummary({
 
 	const items = reactions
 		.map((reaction) => ({
+			messageId,
 			reaction: reaction.reaction,
 			label:
 				CHAT_MESSAGE_REACTION_LABELS[reaction.reaction] ||

@@ -16,6 +16,8 @@ export {
 	flagRoomChatMessage,
 	getOlderFriendMessages,
 	getOlderRoomMessages,
+	getFriendChatMessageReactionUsers,
+	getRoomChatMessageReactionUsers,
 	openRoomChatMessage,
 	reactToFriendChatMessage,
 	reactToRoomChatMessage,
