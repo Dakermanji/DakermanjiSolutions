@@ -91,6 +91,7 @@
 	messageSurface.addEventListener('mouseout', messages.handleReactionDetailsOut);
 	messageSurface.addEventListener('focusin', messages.handleReactionDetailsFocusIn);
 	messageSurface.addEventListener('focusout', messages.handleReactionDetailsFocusOut);
+	document.addEventListener('click', messages.handleReactionOutsideClick);
 
 	bindPanelToggle({
 		toggle: document.querySelector('[data-chat-members-toggle]'),

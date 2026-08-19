@@ -205,6 +205,7 @@
 			handleMessageActionInput,
 			handleMessageActionKeydown,
 			handleMessageActionSubmit,
+			handleReactionOutsideClick: reactionController.handleOutsideClick,
 			handleReactionDetailsFocusIn:
 				reactionController.handleReactionDetailsFocusIn,
 			handleReactionDetailsFocusOut:

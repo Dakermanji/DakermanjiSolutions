@@ -85,6 +85,12 @@
 			return true;
 		}
 
+		function handleOutsideClick(event) {
+			if (event.target.closest('[data-chat-message-reactions]')) return;
+
+			closeReactionMenus();
+		}
+
 		async function submitMessageReaction(form) {
 			const row = form.closest('[data-chat-message-id]');
 			const button = form.querySelector('button[type="submit"]');
@@ -498,6 +504,7 @@
 			handleActionInput,
 			handleActionKeydown,
 			handleActionSubmit,
+			handleOutsideClick,
 			handleReactionDetailsFocusIn,
 			handleReactionDetailsFocusOut,
 			handleReactionDetailsOut,

@@ -51,7 +51,53 @@
 	}
 
 	.chat-message-reaction-menu {
-		max-width: min(13rem, 78vw);
+		position: fixed;
+		inset-block: auto 4.75rem;
+		inset-inline: 0.75rem;
+		justify-content: center;
+		width: auto;
+		max-width: none;
+		padding: 2.25rem 0.85rem 0.75rem;
+	}
+
+	.chat-message-row.is-mine .chat-message-reaction-menu {
+		inset-inline: 0.75rem;
+	}
+
+	.chat-message-reaction-group {
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		padding-inline: 1.75rem;
+	}
+
+	.chat-message-reaction-search-toggle,
+	.chat-message-reaction-more {
+		position: absolute;
+		inset-block-start: 0.35rem;
+	}
+
+	.chat-message-reaction-search-toggle {
+		inset-inline-end: 2.05rem;
+	}
+
+	.chat-message-reaction-more {
+		inset-inline-end: 0.35rem;
+	}
+
+	.chat-message-reaction-group.is-extra {
+		padding-block-start: 0.25rem;
+	}
+
+	.chat-message-reaction-search {
+		width: min(100%, 14rem);
+		min-height: 2rem;
+		min-width: 0;
+		font-size: 0.82rem;
+	}
+
+	.chat-message-reaction-search input {
+		width: 100%;
 	}
 
 	.chat-message-reaction-summary {
@@ -67,9 +113,9 @@
 	}
 
 	.chat-message-reaction {
-		min-width: 1.35rem;
-		min-height: 1.35rem;
-		padding: 0.08rem 0.32rem;
-		font-size: 0.68rem;
+		min-width: 2rem;
+		min-height: 2rem;
+		padding: 0.2rem 0.42rem;
+		font-size: 0.95rem;
 	}
 }
