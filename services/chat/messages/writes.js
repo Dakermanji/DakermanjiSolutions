@@ -4,6 +4,7 @@ import ChatMessagesModel from '../../../models/chat/Messages.js';
 import { findWritableChatConversation } from '../authorization.js';
 import { findWritableRoomConversation } from '../rooms.js';
 import { formatLiveMessage } from './formatters.js';
+import { extractMessageMentionUsernames } from './mentions.js';
 import {
 	MESSAGE_BODY_MAX_LENGTH,
 	normalizeMessageBody,
@@ -50,10 +51,16 @@ export async function createFriendMessage({
 		return null;
 	}
 
+	const mentionedUserIds = await resolveMentionedUserIds({
+		conversationId: conversation.conversation_id,
+		body: normalizedBody,
+	});
+
 	const message = await ChatMessagesModel.createConversationMessage({
 		conversationId: conversation.conversation_id,
 		senderUserId,
 		replyToMessageId: reply.replyToMessageId,
+		mentionedUserIds,
 		body: normalizedBody,
 	});
 
@@ -100,12 +107,33 @@ export async function createRoomMessage({
 		return null;
 	}
 
+	const mentionedUserIds = await resolveMentionedUserIds({
+		conversationId: conversation.conversation_id,
+		body: normalizedBody,
+	});
+
 	const message = await ChatMessagesModel.createConversationMessage({
 		conversationId: conversation.conversation_id,
 		senderUserId,
 		replyToMessageId: reply.replyToMessageId,
+		mentionedUserIds,
 		body: normalizedBody,
 	});
 
 	return formatLiveMessage(message);
+}
+
+async function resolveMentionedUserIds({
+	conversationId,
+	body,
+}) {
+	const usernames = extractMessageMentionUsernames(body);
+	if (usernames.length === 0) return [];
+
+	const users = await ChatMessagesModel.findMentionableConversationUsersByUsernames({
+		conversationId,
+		usernames,
+	});
+
+	return users.map((user) => user.id);
 }

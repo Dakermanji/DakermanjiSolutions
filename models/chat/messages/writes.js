@@ -9,6 +9,7 @@ import pool, { queryRows } from '../../../config/database.js';
  * @param {string} message.conversationId
  * @param {string} message.senderUserId
  * @param {string|null} [message.replyToMessageId]
+ * @param {Array<string>} [message.mentionedUserIds]
  * @param {string} message.body
  * @returns {Promise<object>}
  */
@@ -16,6 +17,7 @@ export async function createConversationMessage({
 	conversationId,
 	senderUserId,
 	replyToMessageId = null,
+	mentionedUserIds = [],
 	body,
 }) {
 	const client = await pool.connect();
@@ -60,6 +62,11 @@ export async function createConversationMessage({
 			`,
 			[conversationId, senderUserId, messageId],
 		);
+
+		await createMessageMentions(client, {
+			messageId,
+			mentionedUserIds,
+		});
 
 		const messageRowsWithSender = await client.query(
 			`
@@ -294,4 +301,28 @@ export async function deleteOwnConversationMessage({
 	} finally {
 		client.release();
 	}
+}
+
+async function createMessageMentions(client, {
+	messageId,
+	mentionedUserIds = [],
+}) {
+	const uniqueMentionedUserIds = [...new Set(
+		mentionedUserIds.filter(Boolean),
+	)];
+
+	if (uniqueMentionedUserIds.length === 0) return;
+
+	await client.query(
+		`
+			INSERT INTO chat_message_mentions (
+				message_id,
+				mentioned_user_id
+			)
+			SELECT $1, mentioned_user_id
+			FROM UNNEST($2::uuid[]) AS mentioned_user_id
+			ON CONFLICT (message_id, mentioned_user_id) DO NOTHING;
+		`,
+		[messageId, uniqueMentionedUserIds],
+	);
 }
