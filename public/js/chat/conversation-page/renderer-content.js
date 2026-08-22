@@ -7,6 +7,51 @@
 	const { appendReactionSummary, createReactionPicker } =
 		window.ChatConversationRendererReactions;
 
+	function getMentionUsernames(message) {
+		return new Set(
+			(message.mentions || [])
+				.map((mention) => String(mention.username || '').toLowerCase())
+				.filter(Boolean),
+		);
+	}
+
+	function setMessageTextContent(element, message) {
+		const text = String(message.body || '');
+		const mentionUsernames = getMentionUsernames(message);
+		const mentionPattern = /(^|[^a-zA-Z0-9_.-])@([a-zA-Z0-9_.-]{3,20})(?=$|[^a-zA-Z0-9_.-])/g;
+		let cursor = 0;
+		let match;
+
+		element.textContent = '';
+
+		while ((match = mentionPattern.exec(text))) {
+			const prefix = match[1] || '';
+			const username = match[2] || '';
+			const mentionStart = match.index + prefix.length;
+			const mentionText = `@${username}`;
+
+			if (mentionStart > cursor) {
+				element.appendChild(document.createTextNode(
+					text.slice(cursor, mentionStart),
+				));
+			}
+
+			if (mentionUsernames.has(username.toLowerCase())) {
+				const mention = document.createElement('span');
+				mention.className = 'chat-message-mention';
+				mention.textContent = mentionText;
+				element.appendChild(mention);
+			} else {
+				element.appendChild(document.createTextNode(mentionText));
+			}
+
+			cursor = mentionStart + mentionText.length;
+		}
+
+		if (cursor < text.length) {
+			element.appendChild(document.createTextNode(text.slice(cursor)));
+		}
+	}
 	function createMessageContent(message, options = {}) {
 		const content = document.createElement('div');
 		content.className = 'chat-message-content';
@@ -41,7 +86,7 @@
 		const body = document.createElement('p');
 		body.className = 'chat-message-text';
 		body.dir = 'auto';
-		body.textContent = message.body || '';
+		setMessageTextContent(body, message);
 		bubble.appendChild(body);
 
 		return bubble;
@@ -108,5 +153,6 @@
 		createEditedTime,
 		createMessageContent,
 		createMessageMeta,
+		setMessageTextContent,
 	};
 })();

@@ -92,6 +92,7 @@
 	messageSurface.addEventListener('focusin', messages.handleReactionDetailsFocusIn);
 	messageSurface.addEventListener('focusout', messages.handleReactionDetailsFocusOut);
 	document.addEventListener('click', messages.handleReactionOutsideClick);
+	document.addEventListener('click', messages.handleMentionOutsideClick);
 
 	bindPanelToggle({
 		toggle: document.querySelector('[data-chat-members-toggle]'),
@@ -182,9 +183,13 @@
 		const input = composer.elements.message;
 		input?.addEventListener('input', () => {
 			syncComposerInputDirection();
+			messages.handleMentionInput();
 			typingController.handleTypingInput(socket, input);
 		});
+		input?.addEventListener('keydown', messages.handleMentionKeydown);
+		input?.addEventListener('click', messages.handleMentionInput);
 		input?.addEventListener('blur', () => {
+			messages.handleMentionBlur();
 			typingController.emitTypingState(socket, false);
 		});
 	}

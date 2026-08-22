@@ -20,7 +20,40 @@
 				</span>
 			</blockquote>
 		<% } %>
-		<p class="chat-message-text" dir="auto"><%= message.body %></p>
+		<%
+			const mentionUsernames = new Set(
+				(message.mentions || [])
+					.map((mention) => String(mention.username || '').toLowerCase())
+					.filter(Boolean),
+			);
+			const messageBody = String(message.body || '');
+			const mentionPattern = /(^|[^a-zA-Z0-9_.-])@([a-zA-Z0-9_.-]{3,20})(?=$|[^a-zA-Z0-9_.-])/g;
+			const messageBodyParts = [];
+			let mentionCursor = 0;
+			let mentionMatch;
+
+			while ((mentionMatch = mentionPattern.exec(messageBody))) {
+				const prefix = mentionMatch[1] || '';
+				const username = mentionMatch[2] || '';
+				const mentionStart = mentionMatch.index + prefix.length;
+				const mentionText = `@${username}`;
+
+				if (mentionStart > mentionCursor) {
+					messageBodyParts.push({ text: messageBody.slice(mentionCursor, mentionStart) });
+				}
+
+				messageBodyParts.push({
+					text: mentionText,
+					isMention: mentionUsernames.has(username.toLowerCase()),
+				});
+				mentionCursor = mentionStart + mentionText.length;
+			}
+
+			if (mentionCursor < messageBody.length) {
+				messageBodyParts.push({ text: messageBody.slice(mentionCursor) });
+			}
+		%>
+		<p class="chat-message-text" dir="auto"><% messageBodyParts.forEach((part) => { %><% if (part.isMention) { %><span class="chat-message-mention"><%= part.text %></span><% } else { %><%= part.text %><% } %><% }) %></p>
 	</article>
 	<%- include('_conversation_message_reaction_summary', { message }) %>
 </div>

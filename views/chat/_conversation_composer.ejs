@@ -43,6 +43,13 @@
 		value=""
 		data-chat-reply-to-message-id
 	/>
+	<div
+		class="chat-mention-menu"
+		data-chat-mention-menu
+		role="listbox"
+		aria-label="<%= t('chat:conversation.mentionSuggestions') %>"
+		hidden
+	></div>
 	<input
 		class="form-control"
 		type="text"
@@ -52,6 +59,8 @@
 		autocomplete="off"
 		dir="auto"
 		data-chat-message-input
+		aria-autocomplete="list"
+		aria-expanded="false"
 		required
 		<% if (!canWriteConversation) { %>disabled<% } %>
 	/>

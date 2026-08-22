@@ -50,7 +50,8 @@
 		},
 		"reactionLoading": "Loading reactions...",
 		"reactionError": "Could not load reactions.",
-		"reactionYou": "You"
+		"reactionYou": "You",
+		"mentionSuggestions": "Mention suggestions"
 	},
 	"members": {
 		"toggle": "Room members",

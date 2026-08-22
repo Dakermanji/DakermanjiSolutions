@@ -108,6 +108,18 @@
 	white-space: pre-wrap;
 }
 
+.chat-message-mention {
+	color: var(--color-secondary);
+	font-weight: 700;
+}
+
+.chat-message-row.is-mine .chat-message-mention {
+	color: var(--color-text-inverse);
+	text-decoration: underline;
+	text-decoration-thickness: 0.08em;
+	text-underline-offset: 0.16em;
+}
+
 .chat-message-row.is-mine .chat-message-content {
 	order: 0;
 }

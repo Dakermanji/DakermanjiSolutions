@@ -73,6 +73,19 @@
 	};
 	const chatQuickReactions = normalizeReactionOptions(quickReactions);
 	const chatExtraReactions = normalizeReactionOptions(extraReactions);
+	const mentionSuggestionUsers = (isRoomConversation
+		? roomMemberList
+		: [friend]
+	)
+		.filter((member) => member && member.id && member.id !== user.id)
+		.filter((member) => !isRoomConversation || ['active', 'muted'].includes(member.status))
+		.map((member) => ({
+			id: member.id,
+			username: member.username || '',
+			displayName: member.displayName || member.username || member.email || '',
+			avatar: member.avatar || null,
+		}))
+		.filter((member) => member.username);
 	const canWriteConversation = !isRoomConversation || room.canWrite !== false;
 	const getMemberName = (member) =>
 		member.displayName ||
@@ -243,6 +256,7 @@
 	data-activity-field-label-description="<%= t('chat:rooms.description') %>"
 	data-activity-field-label-keywords="<%= t('chat:rooms.keywords') %>"
 	data-activity-field-label-visibility="<%= t('chat:rooms.visibility') %>"
+	data-mention-users="<%= JSON.stringify(mentionSuggestionUsers) %>"
 >
 	<%- include('_conversation_header', {
 		canManageRoom,

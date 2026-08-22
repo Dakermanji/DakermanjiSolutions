@@ -10,6 +10,7 @@
 	const { createMutationController } = window.ChatConversationMessageMutations;
 	const { createReactionController } = window.ChatConversationMessageReactions;
 	const { createReplyController } = window.ChatConversationMessageReply;
+	const { createMentionController } = window.ChatConversationMessageMentions;
 
 	function createMessageController({
 		chatPage,
@@ -56,6 +57,11 @@
 			quickReactions,
 		});
 		const flagController = createFlagController({ chatPage });
+		const mentionController = createMentionController({
+			chatPage,
+			composer,
+			focusComposerInput,
+		});
 
 		async function submitLiveMessage(socket) {
 			const input = composer.elements.message;
@@ -205,11 +211,15 @@
 			handleMessageActionInput,
 			handleMessageActionKeydown,
 			handleMessageActionSubmit,
+			handleMentionBlur: mentionController.handleBlur,
 			handleReactionOutsideClick: reactionController.handleOutsideClick,
 			handleReactionDetailsFocusIn:
 				reactionController.handleReactionDetailsFocusIn,
 			handleReactionDetailsFocusOut:
 				reactionController.handleReactionDetailsFocusOut,
+			handleMentionInput: mentionController.handleInput,
+			handleMentionKeydown: mentionController.handleKeydown,
+			handleMentionOutsideClick: mentionController.handleOutsideClick,
 			handleReactionDetailsOut: reactionController.handleReactionDetailsOut,
 			handleReactionDetailsOver: reactionController.handleReactionDetailsOver,
 			loadOlderMessages: historyController.loadOlderMessages,

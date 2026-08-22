@@ -50,7 +50,8 @@
 		},
 		"reactionLoading": "Chargement des réactions...",
 		"reactionError": "Impossible de charger les réactions.",
-		"reactionYou": "Vous"
+		"reactionYou": "Vous",
+		"mentionSuggestions": "Suggestions de mention"
 	},
 	"members": {
 		"toggle": "Membres du salon",

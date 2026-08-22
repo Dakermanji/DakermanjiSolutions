@@ -11,6 +11,7 @@
 		createEditedTime,
 		createMessageContent,
 		createMessageMeta,
+		setMessageTextContent,
 	} = window.ChatConversationRendererContent;
 	const { createReplyQuote } = window.ChatConversationRendererSenders;
 
@@ -116,7 +117,7 @@
 	function updateMessageRow(row, message, options = {}) {
 		const body = row.querySelector('.chat-message-text');
 		if (body) {
-			body.textContent = message.body || '';
+			setMessageTextContent(body, message);
 		}
 
 		const existingReply = row.querySelector('.chat-message-reply');

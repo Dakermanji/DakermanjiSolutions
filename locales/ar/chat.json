@@ -53,7 +53,8 @@
 		},
 		"reactionLoading": "جارٍ تحميل التفاعلات...",
 		"reactionError": "تعذر تحميل التفاعلات.",
-		"reactionYou": "أنت"
+		"reactionYou": "أنت",
+		"mentionSuggestions": "اقتراحات الإشارة"
 	},
 	"members": {
 		"toggle": "أعضاء الغرفة",

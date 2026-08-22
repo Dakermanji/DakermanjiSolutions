@@ -387,6 +387,7 @@
 					"flagReview.js",
 					"messages-flags.js",
 					"messages-history.js",
+					"messages-mentions.js",
 					"messages-mutations.js",
 					"messages-reactions.js",
 					"messages-reply.js",
