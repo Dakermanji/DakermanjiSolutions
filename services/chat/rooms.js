@@ -34,6 +34,10 @@ import {
 	requestPrivateListedRoom,
 } from './rooms/requests.js';
 import {
+	inviteRoomMember,
+	ROOM_INVITATION_RESULT,
+} from './rooms/invitations.js';
+import {
 	banRoomMember,
 	deleteRoomMemberHistory,
 	demoteRoomAdmin,
@@ -87,6 +91,10 @@ export {
 	requestPrivateListedRoom,
 } from './rooms/requests.js';
 export {
+	inviteRoomMember,
+	ROOM_INVITATION_RESULT,
+} from './rooms/invitations.js';
+export {
 	banRoomMember,
 	deleteRoomMemberHistory,
 	demoteRoomAdmin,
@@ -126,6 +134,7 @@ export default {
 	findWritableRoomConversation,
 	getOpenRoomConversation,
 	getRoomActivityLogsPage,
+	inviteRoomMember,
 	joinPublicRoom,
 	listRoomFlagReviewQueue,
 	listRoomActivityLogsPage,
@@ -144,6 +153,7 @@ export default {
 	requestPrivateListedRoom,
 	ROOM_ACTIVITY_LOG_RESULT,
 	ROOM_FLAG_REVIEW_RESULT,
+	ROOM_INVITATION_RESULT,
 	ROOM_MEMBER_MANAGEMENT_RESULT,
 	searchRooms,
 	unbanRoomMember,

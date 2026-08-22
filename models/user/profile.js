@@ -90,6 +90,18 @@ export async function findByUsername(username) {
 	return result.rows[0] || null;
 }
 
+export async function findBasicById(userId) {
+	const q = `
+		SELECT id, username, email
+		FROM users
+		WHERE id = $1
+		LIMIT 1;
+	`;
+
+	const rows = await queryRows(q, [userId]);
+	return rows[0] || null;
+}
+
 export async function findPasswordById(userId) {
 	const q = `
 		SELECT id, hashed_password

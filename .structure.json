@@ -504,12 +504,13 @@
 				"writes.js"
 			],
 			"rooms": [
-				"activity.js",
 				"access.js",
+				"activity.js",
 				"create.js",
 				"flagReview.js",
 				"formatters.js",
 				"helpers.js",
+				"invitations.js",
 				"lists.js",
 				"memberManagement.js",
 				"members.js",
