@@ -6,6 +6,12 @@ export {
 	RECENT_MESSAGE_LIMIT,
 } from './messages/utils.js';
 export {
+	extractMessageMentionUsernames,
+	formatMentionToken,
+	isMentionUsername,
+	normalizeMentionUsername,
+} from './messages/mentions.js';
+export {
 	createFriendMessage,
 	createRoomMessage,
 } from './messages/writes.js';
@@ -28,6 +34,12 @@ export {
 	listRoomMessages,
 } from './messages/reads.js';
 
+import {
+	extractMessageMentionUsernames,
+	formatMentionToken,
+	isMentionUsername,
+	normalizeMentionUsername,
+} from './messages/mentions.js';
 import {
 	createFriendMessage,
 	createRoomMessage,
@@ -56,10 +68,14 @@ export default {
 	createRoomMessage,
 	deleteOwnMessage,
 	editOwnMessage,
+	extractMessageMentionUsernames,
 	flagRoomMessage,
+	formatMentionToken,
+	isMentionUsername,
 	listMessageReactionSummary,
 	listMessageReactionUsers,
 	toggleMessageReaction,
+	normalizeMentionUsername,
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,

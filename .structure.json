@@ -486,6 +486,7 @@
 			"messages": [
 				"flags.js",
 				"formatters.js",
+				"mentions.js",
 				"mutations.js",
 				"pagination.js",
 				"reads.js",
