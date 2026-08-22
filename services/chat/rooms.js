@@ -34,7 +34,9 @@ import {
 	requestPrivateListedRoom,
 } from './rooms/requests.js';
 import {
+	acceptRoomInvitation,
 	inviteRoomMember,
+	rejectRoomInvitation,
 	ROOM_INVITATION_RESULT,
 } from './rooms/invitations.js';
 import {
@@ -91,7 +93,9 @@ export {
 	requestPrivateListedRoom,
 } from './rooms/requests.js';
 export {
+	acceptRoomInvitation,
 	inviteRoomMember,
+	rejectRoomInvitation,
 	ROOM_INVITATION_RESULT,
 } from './rooms/invitations.js';
 export {
@@ -119,6 +123,7 @@ export {
 } from './rooms/activity.js';
 
 export default {
+	acceptRoomInvitation,
 	approvePrivateRoomRequest,
 	banRoomMember,
 	cancelPrivateRoomRequest,
@@ -148,6 +153,7 @@ export default {
 	muteRoomMember,
 	promoteRoomMember,
 	rejectPrivateRoomRequest,
+	rejectRoomInvitation,
 	recordRoomActivity,
 	removeRoomMember,
 	requestPrivateListedRoom,

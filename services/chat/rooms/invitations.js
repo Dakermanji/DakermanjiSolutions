@@ -1,6 +1,10 @@
 //! services/chat/rooms/invitations.js
 
 import ChatRoomInvitationsModel from '../../../models/chat/RoomInvitations.js';
+import {
+	NOTIFICATION_ENTITY_TYPES,
+	NOTIFICATION_RESPONSE_KEYS,
+} from '../../../constants/notifications.js';
 import ChatRoomsModel from '../../../models/chat/Rooms.js';
 import UserModel from '../../../models/User.js';
 import {
@@ -9,6 +13,7 @@ import {
 } from '../../../constants/chat.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
 import { findOpenableRoomConversation } from './access.js';
+import { respondAndDismissNotificationsByEntity } from '../../notifications/appNotifications.js';
 import { notifyRoomInvitationCreated } from './notifications.js';
 import { canManageChatRoomMember } from './permissions.js';
 
@@ -22,6 +27,7 @@ export const ROOM_INVITATION_RESULT = Object.freeze({
 	TARGET_BANNED: 'target_banned',
 	TARGET_ALREADY_MEMBER: 'target_already_member',
 	INVITE_NOT_CREATED: 'invite_not_created',
+	RESPONSE_NOT_UPDATED: 'response_not_updated',
 });
 
 function createRoomInvitationResult(reason, extra = {}) {
@@ -153,4 +159,64 @@ export async function inviteRoomMember({
 		ROOM_INVITATION_RESULT.OK,
 		{ room, targetUser, targetMember, invitation },
 	);
+}
+async function respondToRoomInvitation({ invitationId, userId, responseKey, run }) {
+	if (!isValidUuid(invitationId) || !isValidUuid(userId)) {
+		return createRoomInvitationResult(
+			ROOM_INVITATION_RESULT.INVALID_INPUT,
+		);
+	}
+
+	const invitation = await run({ invitationId, userId });
+
+	if (!invitation) {
+		return createRoomInvitationResult(
+			ROOM_INVITATION_RESULT.RESPONSE_NOT_UPDATED,
+		);
+	}
+
+	await respondAndDismissNotificationsByEntity({
+		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_INVITATION,
+		entityId: invitation.id,
+		responseKey,
+	});
+
+	return createRoomInvitationResult(
+		ROOM_INVITATION_RESULT.OK,
+		{ invitation },
+	);
+}
+
+/**
+ * Accept one pending room invitation for the signed-in user.
+ *
+ * @param {object} input
+ * @param {string} input.invitationId
+ * @param {string} input.userId
+ * @returns {Promise<object>}
+ */
+export function acceptRoomInvitation({ invitationId, userId }) {
+	return respondToRoomInvitation({
+		invitationId,
+		userId,
+		responseKey: NOTIFICATION_RESPONSE_KEYS.ACCEPTED,
+		run: ChatRoomInvitationsModel.acceptPendingInvitationForUser,
+	});
+}
+
+/**
+ * Reject one pending room invitation for the signed-in user.
+ *
+ * @param {object} input
+ * @param {string} input.invitationId
+ * @param {string} input.userId
+ * @returns {Promise<object>}
+ */
+export function rejectRoomInvitation({ invitationId, userId }) {
+	return respondToRoomInvitation({
+		invitationId,
+		userId,
+		responseKey: NOTIFICATION_RESPONSE_KEYS.REJECTED,
+		run: ChatRoomInvitationsModel.rejectPendingInvitationForUser,
+	});
 }

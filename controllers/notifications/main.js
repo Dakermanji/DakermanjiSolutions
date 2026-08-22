@@ -1,12 +1,15 @@
 //! controllers/notifications/main.js
 
+import { CHAT_OPEN_REDIRECT } from '../../constants/chat.js';
 import {
 	NOTIFICATIONS_REDIRECT,
 	NOTIFICATION_TYPES,
 } from '../../constants/notifications.js';
 import {
+	acceptRoomInvitation,
 	approvePrivateRoomRequest,
 	rejectPrivateRoomRequest,
+	rejectRoomInvitation,
 } from '../../services/chat/rooms.js';
 import {
 	countUnreadNotifications,
@@ -16,6 +19,7 @@ import {
 } from '../../services/notifications/appNotifications.js';
 import { getNotificationLinkUrl } from '../../services/notifications/links.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
+import { setActiveChatConversation } from '../chat/session.js';
 
 const DISMISS_NOTIFICATION_ACTION = Object.freeze({
 	key: 'dismiss',
@@ -36,6 +40,21 @@ const CHAT_ROOM_JOIN_REQUEST_ACTIONS = Object.freeze([
 		icon: 'bi-x-circle',
 		path: '/notifications/chat/room-join-request/reject',
 		tooltipKey: 'notifications:actions.reject',
+	},
+]);
+
+const CHAT_ROOM_INVITATION_ACTIONS = Object.freeze([
+	{
+		key: 'accept',
+		icon: 'bi-check-lg',
+		path: '/notifications/chat/room-invitation/accept',
+		tooltipKey: 'notifications:actions.acceptInvitation',
+	},
+	{
+		key: 'reject',
+		icon: 'bi-x-circle',
+		path: '/notifications/chat/room-invitation/reject',
+		tooltipKey: 'notifications:actions.rejectInvitation',
 	},
 ]);
 
@@ -65,6 +84,10 @@ function getActorDisplayName(notification) {
 
 function getNotificationActions(notification) {
 	let actions = [];
+
+	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_INVITATION) {
+		actions = notification.responded_at ? [] : CHAT_ROOM_INVITATION_ACTIONS;
+	}
 
 	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST) {
 		actions = notification.responded_at ? [] : CHAT_ROOM_JOIN_REQUEST_ACTIONS;
@@ -276,6 +299,75 @@ export async function rejectChatRoomJoinRequest(req, res, next) {
 			request
 				? 'notifications:actions.rejectSuccess'
 				: 'notifications:actions.rejectError',
+		);
+		return res.redirect(NOTIFICATIONS_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Accept one chat room invitation notification.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function acceptChatRoomInvitation(req, res, next) {
+	const invitationId = getFirstUuidBodyValue(req, ['invitationId', 'entityId']);
+
+	if (!invitationId) {
+		req.flash('error', 'notifications:actions.acceptInvitationError');
+		return res.redirect(NOTIFICATIONS_REDIRECT);
+	}
+
+	try {
+		const result = await acceptRoomInvitation({
+			invitationId,
+			userId: req.user.id,
+		});
+
+		if (!result.ok) {
+			req.flash('error', 'notifications:actions.acceptInvitationError');
+			return res.redirect(NOTIFICATIONS_REDIRECT);
+		}
+
+		setActiveChatConversation(req, result.invitation.conversation_id);
+		req.flash('success', 'notifications:actions.acceptInvitationSuccess');
+		return res.redirect(CHAT_OPEN_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Reject one chat room invitation notification.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function rejectChatRoomInvitation(req, res, next) {
+	const invitationId = getFirstUuidBodyValue(req, ['invitationId', 'entityId']);
+
+	if (!invitationId) {
+		req.flash('error', 'notifications:actions.rejectInvitationError');
+		return res.redirect(NOTIFICATIONS_REDIRECT);
+	}
+
+	try {
+		const result = await rejectRoomInvitation({
+			invitationId,
+			userId: req.user.id,
+		});
+
+		req.flash(
+			result.ok ? 'success' : 'error',
+			result.ok
+				? 'notifications:actions.rejectInvitationSuccess'
+				: 'notifications:actions.rejectInvitationError',
 		);
 		return res.redirect(NOTIFICATIONS_REDIRECT);
 	} catch (error) {
