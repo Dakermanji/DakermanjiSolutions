@@ -9,6 +9,7 @@ import {
 } from '../../../constants/chat.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
 import { findOpenableRoomConversation } from './access.js';
+import { notifyRoomInvitationCreated } from './notifications.js';
 import { canManageChatRoomMember } from './permissions.js';
 
 export const ROOM_INVITATION_RESULT = Object.freeze({
@@ -140,6 +141,13 @@ export async function inviteRoomMember({
 			{ room, targetUser },
 		);
 	}
+
+	await notifyRoomInvitationCreated({
+		room,
+		invitation,
+		targetUser,
+		actorUserId,
+	});
 
 	return createRoomInvitationResult(
 		ROOM_INVITATION_RESULT.OK,

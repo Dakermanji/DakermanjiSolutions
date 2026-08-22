@@ -5,6 +5,7 @@ import {
 	createRoom,
 	findOpenableRoomConversation,
 	getRoomActivityLogsPage,
+	inviteRoomMember,
 	joinPublicRoom,
 	listPrivateRoomSection,
 	listPublicRooms,
@@ -241,6 +242,41 @@ export async function cancelPrivateRoomAccessRequest(req, res, next) {
 
 		req.flash('success', 'chat:rooms.cancelRequestSuccess');
 		return res.redirect(CHAT_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+/**
+ * Invite one user to the active room, then return to the open conversation.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function inviteChatRoomMember(req, res, next) {
+	const conversationId = String(req.body?.conversationId || '').trim();
+	const targetUserId = String(req.body?.targetUserId || '').trim();
+
+	if (!isValidUuid(conversationId) || !isValidUuid(targetUserId)) {
+		req.flash('error', 'chat:rooms.inviteError');
+		return res.redirect(CHAT_OPEN_REDIRECT);
+	}
+
+	try {
+		const result = await inviteRoomMember({
+			conversationId,
+			actorUserId: req.user.id,
+			targetUserId,
+		});
+
+		setActiveChatConversation(req, conversationId);
+		req.flash(
+			result.ok ? 'success' : 'error',
+			result.ok ? 'chat:rooms.inviteSuccess' : 'chat:rooms.inviteError',
+		);
+		return res.redirect(CHAT_OPEN_REDIRECT);
 	} catch (error) {
 		return next(error);
 	}

@@ -24,6 +24,7 @@ import {
 	getPublicRooms,
 	getRoomActivityLogs,
 	getRoomMessageFlags,
+	inviteChatRoomMember,
 	getRoomChatMessageReactionUsers,
 	joinPublicRoomConversation,
 	markRoomMessageSafe,
@@ -77,6 +78,7 @@ router.post('/rooms/join', joinPublicRoomConversation);
 router.post('/rooms/open', openRoomConversation);
 router.post('/rooms/request', requestPrivateRoomAccess);
 router.post('/rooms/request/cancel', cancelPrivateRoomAccessRequest);
+router.post('/rooms/invitations', inviteChatRoomMember);
 router.post('/rooms/members/promote', promoteChatRoomMember);
 router.post('/rooms/members/demote', demoteChatRoomAdmin);
 router.post('/rooms/members/remove', removeChatRoomMember);

@@ -96,3 +96,32 @@ export async function notifyRoomMemberPromoted({ room, member, actorUserId }) {
 		priority: NOTIFICATION_PRIORITIES.NORMAL,
 	});
 }
+
+export async function notifyRoomInvitationCreated({
+	room,
+	invitation,
+	targetUser,
+	actorUserId,
+}) {
+	if (!room?.conversation_id || !invitation?.id || !targetUser?.id) {
+		return null;
+	}
+
+	return createNotificationIfNotExists({
+		recipientUserId: targetUser.id,
+		actorUserId,
+		appKey: NOTIFICATION_APP_KEYS.CHAT,
+		type: NOTIFICATION_TYPES.CHAT_ROOM_INVITATION,
+		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_INVITATION,
+		entityId: invitation.id,
+		titleKey: 'notifications:types.chatRoomInvitation.title',
+		bodyKey: 'notifications:types.chatRoomInvitation.body',
+		linkUrl: '/notifications',
+		data: {
+			conversationId: room.conversation_id,
+			invitationId: invitation.id,
+			roomName: room.title || '',
+		},
+		priority: NOTIFICATION_PRIORITIES.NORMAL,
+	});
+}

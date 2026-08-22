@@ -172,6 +172,8 @@
 		"requestError": "Impossible de demander l’accès à ce salon.",
 		"cancelRequestSuccess": "Demande annulée.",
 		"cancelRequestError": "Impossible d’annuler cette demande.",
+		"inviteSuccess": "Invitation au salon envoyée.",
+		"inviteError": "Impossible d'inviter cet utilisateur.",
 		"pendingRequests": "Demandes en attente",
 		"searchTitle": "Rechercher un salon",
 		"searchLabel": "Nom du salon ou mot-clé",

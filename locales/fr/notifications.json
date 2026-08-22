@@ -42,6 +42,10 @@
 		"dismissError": "Impossible de masquer la notification."
 	},
 	"types": {
+		"chatRoomInvitation": {
+			"title": "Invitation à un salon",
+			"body": "Vous avez été invité à rejoindre {{roomName}}."
+		},
 		"chatRoomJoinRequest": {
 			"title": "Demande d’accès au salon",
 			"body": "{{requesterName}} souhaite rejoindre {{roomName}}."

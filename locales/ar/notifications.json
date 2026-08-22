@@ -42,6 +42,10 @@
 		"dismissError": "تعذر إخفاء الإشعار."
 	},
 	"types": {
+		"chatRoomInvitation": {
+			"title": "دعوة إلى غرفة",
+			"body": "تمت دعوتك للانضمام إلى {{roomName}}."
+		},
 		"chatRoomJoinRequest": {
 			"title": "طلب انضمام إلى غرفة",
 			"body": "{{requesterName}} يريد الانضمام إلى {{roomName}}."

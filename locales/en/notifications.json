@@ -42,6 +42,10 @@
 		"dismissError": "Could not dismiss the notification."
 	},
 	"types": {
+		"chatRoomInvitation": {
+			"title": "Room invitation",
+			"body": "You were invited to join {{roomName}}."
+		},
 		"chatRoomJoinRequest": {
 			"title": "Room join request",
 			"body": "{{requesterName}} wants to join {{roomName}}."

@@ -28,6 +28,7 @@ export {
 	getPrivateRooms,
 	getPublicRooms,
 	getRoomActivityLogs,
+	inviteChatRoomMember,
 	joinPublicRoomConversation,
 	openRoomConversation,
 	requestPrivateRoomAccess,
