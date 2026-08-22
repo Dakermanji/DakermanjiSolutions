@@ -96,6 +96,8 @@
 	border-radius: var(--radius-sm);
 	background: var(--bg-card);
 	box-shadow: var(--shadow-lg);
+	direction: ltr;
+	unicode-bidi: isolate;
 }
 
 .chat-mention-menu[hidden] {
@@ -113,7 +115,9 @@
 	border-radius: var(--radius-sm);
 	color: var(--color-text-body);
 	background: transparent;
-	text-align: start;
+	text-align: left;
+	direction: ltr;
+	unicode-bidi: isolate;
 }
 
 .chat-mention-option:hover,
@@ -146,6 +150,8 @@
 	display: grid;
 	min-width: 0;
 	gap: 0.05rem;
+	direction: ltr;
+	text-align: left;
 }
 
 .chat-mention-option-body strong,

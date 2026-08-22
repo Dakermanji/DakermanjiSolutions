@@ -47,6 +47,7 @@
 		class="chat-mention-menu"
 		data-chat-mention-menu
 		role="listbox"
+		dir="ltr"
 		aria-label="<%= t('chat:conversation.mentionSuggestions') %>"
 		hidden
 	></div>
@@ -57,7 +58,7 @@
 		maxlength="<%= messageBodyMaxLength %>"
 		placeholder="<%= t('chat:conversation.placeholder') %>"
 		autocomplete="off"
-		dir="auto"
+		dir="<%= currentLang === 'ar' ? 'rtl' : 'ltr' %>"
 		data-chat-message-input
 		aria-autocomplete="list"
 		aria-expanded="false"

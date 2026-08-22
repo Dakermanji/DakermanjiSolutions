@@ -1,6 +1,9 @@
 //! public/js/chat/conversation-page/messages-mentions.js
 
 (() => {
+	const LEFT_TO_RIGHT_MARK = '\u200e';
+	const MENTION_USERNAME_CHARS = /^[a-zA-Z0-9_.-]{0,20}$/;
+	const USERNAME_CHARACTER = /^[a-zA-Z0-9_.-]$/;
 	const TOKEN_PATTERN = /(^|[^a-zA-Z0-9_.-])@([a-zA-Z0-9_.-]{0,20})$/;
 	const MAX_VISIBLE_SUGGESTIONS = 8;
 
@@ -15,6 +18,7 @@
 		function handleInput() {
 			if (!input || !menu || mentionUsers.length === 0) return;
 
+			isolateActiveMentionTokenStart(input);
 			activeToken = findActiveMentionToken(input);
 			if (!activeToken) {
 				hideSuggestions();
@@ -89,6 +93,7 @@
 				button.role = 'option';
 				button.dataset.chatMentionIndex = String(index);
 				button.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
+				button.dir = 'ltr';
 
 				const avatar = document.createElement('span');
 				avatar.className = 'chat-mention-avatar';
@@ -108,11 +113,13 @@
 				body.className = 'chat-mention-option-body';
 
 				const username = document.createElement('strong');
+				username.dir = 'ltr';
 				username.textContent = `@${user.username}`;
 				body.appendChild(username);
 
 				if (user.displayName && user.displayName !== user.username) {
 					const displayName = document.createElement('span');
+					displayName.dir = 'auto';
 					displayName.textContent = user.displayName;
 					body.appendChild(displayName);
 				}
@@ -150,9 +157,12 @@
 			if (!input || !activeToken || !user?.username) return;
 
 			const value = input.value;
-			const before = value.slice(0, activeToken.start);
+			let before = value.slice(0, activeToken.start);
+			if (before.endsWith(LEFT_TO_RIGHT_MARK)) {
+				before = before.slice(0, -1);
+			}
 			const after = value.slice(activeToken.end);
-			const mentionText = `@${user.username} `;
+			const mentionText = LEFT_TO_RIGHT_MARK + '@' + user.username + LEFT_TO_RIGHT_MARK + ' ';
 			const nextValue = `${before}${mentionText}${after}`;
 			const nextCursor = before.length + mentionText.length;
 
@@ -180,6 +190,28 @@
 			handleKeydown,
 			handleOutsideClick,
 		};
+	}
+
+	function isolateActiveMentionTokenStart(input) {
+		if (document.documentElement.dir !== 'rtl') return;
+
+		const caret = input.selectionStart ?? 0;
+		if (caret !== (input.selectionEnd ?? caret)) return;
+
+		const value = input.value;
+		const beforeCaret = value.slice(0, caret);
+		const atIndex = beforeCaret.lastIndexOf('@');
+		if (atIndex < 0) return;
+
+		const query = beforeCaret.slice(atIndex + 1);
+		if (!MENTION_USERNAME_CHARS.test(query)) return;
+
+		const previousCharacter = value.charAt(atIndex - 1);
+		if (previousCharacter === LEFT_TO_RIGHT_MARK) return;
+		if (previousCharacter && USERNAME_CHARACTER.test(previousCharacter)) return;
+
+		input.value = value.slice(0, atIndex) + LEFT_TO_RIGHT_MARK + value.slice(atIndex);
+		input.setSelectionRange(caret + 1, caret + 1);
 	}
 
 	function findActiveMentionToken(input) {

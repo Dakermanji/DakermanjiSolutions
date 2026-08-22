@@ -8,8 +8,10 @@ export const MESSAGE_BODY_MAX_LENGTH = CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH;
 export const MESSAGE_PAGE_LIMIT = CHAT_MESSAGE_LIMITS.OLDER_PAGE_SIZE;
 export const RECENT_MESSAGE_LIMIT = CHAT_MESSAGE_LIMITS.RECENT_PAGE_SIZE;
 
+const BIDI_CONTROL_MARKS = /[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g;
+
 export function normalizeMessageBody(body) {
-	return String(body || '').trim();
+	return String(body || '').replace(BIDI_CONTROL_MARKS, '').trim();
 }
 
 export function getMutationWindowMs(kind) {

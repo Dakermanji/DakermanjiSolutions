@@ -62,6 +62,7 @@
 		focusComposerInput,
 		hideTypingIndicator: typingController.hideTypingIndicator,
 		getChatSocket: () => chatSocket,
+		syncComposerInputDirection,
 	});
 
 	requestAnimationFrame(async () => {
@@ -218,7 +219,11 @@
 			}
 		}
 
-		return 'auto';
+		return getPageDirection();
+	}
+
+	function getPageDirection() {
+		return document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
 	}
 })();
 

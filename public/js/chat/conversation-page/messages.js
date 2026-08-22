@@ -20,6 +20,7 @@
 		focusComposerInput,
 		hideTypingIndicator,
 		getChatSocket,
+		syncComposerInputDirection = null,
 	}) {
 		const isRoomConversation =
 			chatPage?.dataset.chatConversationKind === 'room';
@@ -91,7 +92,7 @@
 
 				appendMessage(response.message, socket);
 				input.value = '';
-				input.dir = 'auto';
+				syncComposerInputDirection?.();
 				if (composer.elements.replyToMessageId) {
 					replyController.clearReplyTarget();
 				}

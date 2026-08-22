@@ -11,6 +11,8 @@ const {
 	USERNAME_MAX_LENGTH,
 	USERNAME_MIN_LENGTH,
 } = CHAT_MESSAGE_MENTION_LIMITS;
+const BIDI_CONTROL_MARKS = /[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g;
+
 const {
 	PREFIX,
 	TOKEN_PATTERN_SOURCE,
@@ -42,7 +44,7 @@ export function formatMentionToken(username) {
 }
 
 export function extractMessageMentionUsernames(body) {
-	const normalizedBody = normalizeText(body);
+	const normalizedBody = normalizeText(body).replace(BIDI_CONTROL_MARKS, '');
 	if (!normalizedBody) return [];
 
 	const mentions = [];
