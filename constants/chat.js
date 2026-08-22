@@ -111,6 +111,20 @@ export const CHAT_MESSAGE_REACTION_LABELS = Object.freeze(
 	].map((reaction) => [reaction.icon, reaction.title])),
 );
 
+export const CHAT_MESSAGE_MENTION_LIMITS = Object.freeze({
+	MAX_PER_MESSAGE: 10,
+	USERNAME_MIN_LENGTH: 3,
+	USERNAME_MAX_LENGTH: 20,
+});
+
+export const CHAT_MESSAGE_MENTION_RULES = Object.freeze({
+	PREFIX: '@',
+	USERNAME_CHARS_PATTERN_SOURCE: 'a-zA-Z0-9_.-',
+	USERNAME_PATTERN_SOURCE: '[a-zA-Z0-9_.-]{3,20}',
+	TOKEN_PATTERN_SOURCE:
+		'(^|[^a-zA-Z0-9_.-])@([a-zA-Z0-9_.-]{3,20})(?=$|[^a-zA-Z0-9_.-])',
+});
+
 export const CHAT_ROOM_ACTIVITY_ACTIONS = Object.freeze({
 	JOIN_REQUEST_APPROVED: 'join_request_approved',
 	JOIN_REQUEST_REJECTED: 'join_request_rejected',
