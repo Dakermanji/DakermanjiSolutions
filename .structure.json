@@ -208,8 +208,14 @@
 				"MessageFlags.js",
 				"Messages.js",
 				"RoomActivityLogs.js",
+				"RoomInvitations.js",
 				"RoomJoinRequests.js",
 				"Rooms.js"
+			],
+			"roomInvitations": [
+				"create.js",
+				"pending.js",
+				"review.js"
 			]
 		},
 		"notifications": [
