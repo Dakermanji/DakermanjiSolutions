@@ -90,7 +90,8 @@ export async function createConversationMessage({
 					reply_message.deleted_at AS reply_deleted_at,
 					reply_sender.id AS reply_sender_user_id,
 					reply_sender.username AS reply_sender_username,
-					reply_sender.email AS reply_sender_email
+					reply_sender.email AS reply_sender_email,
+					COALESCE(mention_list.mentions, '[]'::json) AS mentions
 				FROM chat_messages cm
 				INNER JOIN users u
 					ON u.id = cm.sender_user_id
@@ -99,6 +100,24 @@ export async function createConversationMessage({
 					AND reply_message.conversation_id = cm.conversation_id
 				LEFT JOIN users reply_sender
 					ON reply_sender.id = reply_message.sender_user_id
+				LEFT JOIN LATERAL (
+					SELECT COALESCE(
+						JSON_AGG(
+							JSON_BUILD_OBJECT(
+								'userId', mention_user.id,
+								'username', mention_user.username,
+								'email', mention_user.email
+							)
+							ORDER BY mention_user.username
+						),
+						'[]'::json
+					) AS mentions
+					FROM chat_message_mentions cmm
+					INNER JOIN users mention_user
+						ON mention_user.id = cmm.mentioned_user_id
+					WHERE cmm.message_id = cm.id
+				) mention_list
+					ON true
 				WHERE cm.id = $1
 				LIMIT 1;
 			`,
@@ -189,7 +208,8 @@ export async function updateOwnConversationMessage({
 			reply_message.deleted_at AS reply_deleted_at,
 			reply_sender.id AS reply_sender_user_id,
 			reply_sender.username AS reply_sender_username,
-			reply_sender.email AS reply_sender_email
+			reply_sender.email AS reply_sender_email,
+			COALESCE(mention_list.mentions, '[]'::json) AS mentions
 		FROM updated_message
 		INNER JOIN users u
 			ON u.id = updated_message.sender_user_id
@@ -197,7 +217,25 @@ export async function updateOwnConversationMessage({
 			ON reply_message.id = updated_message.reply_to_message_id
 			AND reply_message.conversation_id = updated_message.conversation_id
 		LEFT JOIN users reply_sender
-			ON reply_sender.id = reply_message.sender_user_id;
+			ON reply_sender.id = reply_message.sender_user_id
+		LEFT JOIN LATERAL (
+			SELECT COALESCE(
+				JSON_AGG(
+					JSON_BUILD_OBJECT(
+						'userId', mention_user.id,
+						'username', mention_user.username,
+						'email', mention_user.email
+					)
+					ORDER BY mention_user.username
+				),
+				'[]'::json
+			) AS mentions
+			FROM chat_message_mentions cmm
+			INNER JOIN users mention_user
+				ON mention_user.id = cmm.mentioned_user_id
+			WHERE cmm.message_id = updated_message.id
+		) mention_list
+			ON true;
 	`;
 
 	const rows = await queryRows(q, [

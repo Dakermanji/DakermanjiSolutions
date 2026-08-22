@@ -42,6 +42,36 @@ function formatMessageSender(message) {
 	};
 }
 
+function formatMessageMentions(message) {
+	let mentions = message.mentions || [];
+
+	if (typeof mentions === 'string') {
+		try {
+			mentions = JSON.parse(mentions);
+		} catch {
+			mentions = [];
+		}
+	}
+
+	if (!Array.isArray(mentions)) return [];
+
+	return mentions
+		.map((mention) => {
+			const userId = mention.userId || mention.user_id || null;
+			const username = mention.username || null;
+			const email = mention.email || null;
+			const displayName = username || email || 'User';
+
+			return {
+				userId,
+				username,
+				email,
+				displayName,
+			};
+		})
+		.filter((mention) => mention.userId);
+}
+
 function formatMessageReply(message) {
 	const replyId = message.reply_message_id || message.reply_to_message_id;
 	if (!replyId) return null;
@@ -82,6 +112,7 @@ export function formatMessage(message, viewerUserId) {
 		canEdit: Boolean(message.can_edit ?? (isMine && pendingFlagCount === 0)),
 		canDelete: Boolean(message.can_delete ?? (isMine && pendingFlagCount === 0)),
 		replyTo: formatMessageReply(message),
+		mentions: formatMessageMentions(message),
 		reactions: Array.isArray(message.reactions) ? message.reactions : [],
 		sender: formatMessageSender(message),
 	};
@@ -100,6 +131,7 @@ export function formatLiveMessage(message) {
 		canEdit: true,
 		canDelete: true,
 		replyTo: formatMessageReply(message),
+		mentions: formatMessageMentions(message),
 		reactions: [],
 		sender: formatMessageSender(message),
 	};

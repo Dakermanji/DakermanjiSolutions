@@ -37,7 +37,8 @@ export async function findRecentConversationMessages(
 				reply_message.deleted_at AS reply_deleted_at,
 				reply_sender.id AS reply_sender_user_id,
 				reply_sender.username AS reply_sender_username,
-				reply_sender.email AS reply_sender_email
+				reply_sender.email AS reply_sender_email,
+				COALESCE(mention_list.mentions, '[]'::json) AS mentions
 			FROM chat_messages cm
 			INNER JOIN users u
 				ON u.id = cm.sender_user_id
@@ -46,6 +47,24 @@ export async function findRecentConversationMessages(
 				AND reply_message.conversation_id = cm.conversation_id
 			LEFT JOIN users reply_sender
 				ON reply_sender.id = reply_message.sender_user_id
+			LEFT JOIN LATERAL (
+				SELECT COALESCE(
+					JSON_AGG(
+						JSON_BUILD_OBJECT(
+							'userId', mention_user.id,
+							'username', mention_user.username,
+							'email', mention_user.email
+						)
+						ORDER BY mention_user.username
+					),
+					'[]'::json
+				) AS mentions
+				FROM chat_message_mentions cmm
+				INNER JOIN users mention_user
+					ON mention_user.id = cmm.mentioned_user_id
+				WHERE cmm.message_id = cm.id
+			) mention_list
+				ON true
 			LEFT JOIN LATERAL (
 				SELECT COUNT(*) AS pending_flag_count
 				FROM chat_message_flags cmf
@@ -113,7 +132,8 @@ export async function findOlderConversationMessages({
 				reply_message.deleted_at AS reply_deleted_at,
 				reply_sender.id AS reply_sender_user_id,
 				reply_sender.username AS reply_sender_username,
-				reply_sender.email AS reply_sender_email
+				reply_sender.email AS reply_sender_email,
+				COALESCE(mention_list.mentions, '[]'::json) AS mentions
 			FROM chat_messages cm
 			CROSS JOIN cursor_message cursor
 			INNER JOIN users u
@@ -123,6 +143,24 @@ export async function findOlderConversationMessages({
 				AND reply_message.conversation_id = cm.conversation_id
 			LEFT JOIN users reply_sender
 				ON reply_sender.id = reply_message.sender_user_id
+			LEFT JOIN LATERAL (
+				SELECT COALESCE(
+					JSON_AGG(
+						JSON_BUILD_OBJECT(
+							'userId', mention_user.id,
+							'username', mention_user.username,
+							'email', mention_user.email
+						)
+						ORDER BY mention_user.username
+					),
+					'[]'::json
+				) AS mentions
+				FROM chat_message_mentions cmm
+				INNER JOIN users mention_user
+					ON mention_user.id = cmm.mentioned_user_id
+				WHERE cmm.message_id = cm.id
+			) mention_list
+				ON true
 			LEFT JOIN LATERAL (
 				SELECT COUNT(*) AS pending_flag_count
 				FROM chat_message_flags cmf
