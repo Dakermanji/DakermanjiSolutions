@@ -57,6 +57,10 @@
 		"chatRoomMemberPromoted": {
 			"title": "Vous êtes maintenant admin du salon",
 			"body": "Vous êtes maintenant admin dans {{roomName}}."
+		},
+		"chatMessageMention": {
+			"title": "Vous avez été mentionné",
+			"body": "{{senderName}} vous a mentionné."
 		}
 	},
 	"item": {

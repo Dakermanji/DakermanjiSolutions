@@ -15,6 +15,7 @@ export {
 	createFriendMessage,
 	createRoomMessage,
 } from './messages/writes.js';
+export { notifyMessageMentions } from './messages/notifications.js';
 export {
 	deleteOwnMessage,
 	editOwnMessage,
@@ -44,6 +45,7 @@ import {
 	createFriendMessage,
 	createRoomMessage,
 } from './messages/writes.js';
+import { notifyMessageMentions } from './messages/notifications.js';
 import {
 	deleteOwnMessage,
 	editOwnMessage,
@@ -75,6 +77,7 @@ export default {
 	listMessageReactionSummary,
 	listMessageReactionUsers,
 	toggleMessageReaction,
+	notifyMessageMentions,
 	normalizeMentionUsername,
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,

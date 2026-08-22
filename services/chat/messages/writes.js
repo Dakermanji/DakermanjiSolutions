@@ -5,6 +5,7 @@ import { findWritableChatConversation } from '../authorization.js';
 import { findWritableRoomConversation } from '../rooms.js';
 import { formatLiveMessage } from './formatters.js';
 import { extractMessageMentionUsernames } from './mentions.js';
+import { notifyMessageMentions } from './notifications.js';
 import {
 	MESSAGE_BODY_MAX_LENGTH,
 	normalizeMessageBody,
@@ -64,7 +65,15 @@ export async function createFriendMessage({
 		body: normalizedBody,
 	});
 
-	return formatLiveMessage(message);
+	const formattedMessage = formatLiveMessage(message);
+
+	await notifyMessageMentions({
+		message: formattedMessage,
+		senderUserId,
+		kind: 'friend',
+	});
+
+	return formattedMessage;
 }
 
 /**
@@ -120,7 +129,15 @@ export async function createRoomMessage({
 		body: normalizedBody,
 	});
 
-	return formatLiveMessage(message);
+	const formattedMessage = formatLiveMessage(message);
+
+	await notifyMessageMentions({
+		message: formattedMessage,
+		senderUserId,
+		kind: 'room',
+	});
+
+	return formattedMessage;
 }
 
 async function resolveMentionedUserIds({

@@ -57,6 +57,10 @@
 		"chatRoomMemberPromoted": {
 			"title": "You are now a room admin",
 			"body": "You are now an admin in {{roomName}}."
+		},
+		"chatMessageMention": {
+			"title": "You were mentioned",
+			"body": "{{senderName}} mentioned you."
 		}
 	},
 	"item": {

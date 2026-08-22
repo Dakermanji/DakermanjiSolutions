@@ -490,9 +490,10 @@
 				"formatters.js",
 				"mentions.js",
 				"mutations.js",
+				"notifications.js",
 				"pagination.js",
-				"reads.js",
 				"reactions.js",
+				"reads.js",
 				"utils.js",
 				"writes.js"
 			],

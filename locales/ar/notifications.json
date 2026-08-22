@@ -57,6 +57,10 @@
 		"chatRoomMemberPromoted": {
 			"title": "أصبحت مشرفًا على الغرفة",
 			"body": "أصبحت الآن مشرفًا في {{roomName}}."
+		},
+		"chatMessageMention": {
+			"title": "تمت الإشارة إليك",
+			"body": "{{senderName}} أشار إليك."
 		}
 	},
 	"item": {
