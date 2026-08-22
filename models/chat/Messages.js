@@ -7,6 +7,9 @@ export {
 	findReplyableConversationMessage,
 } from './messages/reads.js';
 export {
+	findMentionableConversationUsersByUsernames,
+} from './messages/mentions.js';
+export {
 	createConversationMessage,
 	deleteOwnConversationMessage,
 	updateOwnConversationMessage,
@@ -27,6 +30,9 @@ import {
 	findReplyableConversationMessage,
 } from './messages/reads.js';
 import {
+	findMentionableConversationUsersByUsernames,
+} from './messages/mentions.js';
+import {
 	createConversationMessage,
 	deleteOwnConversationMessage,
 	updateOwnConversationMessage,
@@ -45,6 +51,7 @@ export default {
 	findOlderConversationMessages,
 	findConversationMessageById,
 	findReplyableConversationMessage,
+	findMentionableConversationUsersByUsernames,
 	createConversationMessage,
 	createMessageFlag,
 	addMessageReaction,

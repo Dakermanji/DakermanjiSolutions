@@ -180,6 +180,7 @@
 			],
 			"messages": [
 				"flags.js",
+				"mentions.js",
 				"reads.js",
 				"reactions.js",
 				"writes.js"
