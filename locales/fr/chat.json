@@ -100,7 +100,10 @@
 			"deleteHistory": "Supprimer l’historique",
 			"deleteHistorySuccess": "Membre et historique des messages supprimés.",
 			"deleteHistoryError": "Impossible de supprimer l’historique de ce membre.",
-			"invite": "Inviter un membre"
+			"invite": "Inviter un membre",
+			"follow": "Demander à suivre",
+			"followBack": "Suivre en retour",
+			"followRequested": "Demandé"
 		},
 		"inviteLabel": "Inviter par nom d’utilisateur",
 		"invitePlaceholder": "nom d’utilisateur"

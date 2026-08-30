@@ -103,7 +103,10 @@
 			"deleteHistory": "حذف سجل العضو",
 			"deleteHistorySuccess": "تم حذف العضو وسجل رسائله.",
 			"deleteHistoryError": "تعذر حذف سجل هذا العضو.",
-			"invite": "دعوة عضو"
+			"invite": "دعوة عضو",
+			"follow": "طلب متابعة",
+			"followBack": "متابعة بالمقابل",
+			"followRequested": "تم الطلب"
 		},
 		"inviteLabel": "دعوة باسم المستخدم",
 		"invitePlaceholder": "اسم المستخدم"

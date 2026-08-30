@@ -100,7 +100,10 @@
 			"deleteHistory": "Delete member history",
 			"deleteHistorySuccess": "Member and message history deleted.",
 			"deleteHistoryError": "Could not delete this member history.",
-			"invite": "Invite member"
+			"invite": "Invite member",
+			"follow": "Request follow",
+			"followBack": "Follow back",
+			"followRequested": "Requested"
 		},
 		"inviteLabel": "Invite by username",
 		"invitePlaceholder": "username"

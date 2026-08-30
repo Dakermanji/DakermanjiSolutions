@@ -63,6 +63,17 @@
 							<% } %>
 							<ol class="chat-members-list">
 								<% group.members.forEach((member) => { %>
+									<% const social = member.social || {}; %>
+									<% const canShowSocialAction = member.id !== user.id
+										&& Boolean(member.username)
+										&& ['active', 'muted'].includes(member.status)
+										&& !social.isFollowing
+										&& !social.isBlocked
+										&& !social.isBlocking; %>
+									<% const canRequestFollow = canShowSocialAction && !social.hasPendingFollowRequest; %>
+									<% const followActionLabel = social.isFollower || social.hasPendingIncomingFollowRequest
+										? 'followBack'
+										: 'follow'; %>
 									<% const memberActionForms = canManageRoom ? [
 										{ show: canPromoteTarget(member), path: '/chat/rooms/members/promote', icon: 'bi-arrow-up-circle', label: 'promote' },
 										{ show: canDemoteTarget(member), path: '/chat/rooms/members/demote', icon: 'bi-arrow-down-circle', label: 'demote' },
@@ -73,7 +84,8 @@
 										{ show: canUnbanTarget(member), path: '/chat/rooms/members/unban', icon: 'bi-unlock', label: 'unban' },
 										{ show: canDeleteTarget(member), path: '/chat/rooms/members/delete-history', icon: 'bi-trash3', label: 'deleteHistory', danger: true },
 									].filter((item) => item.show) : []; %>
-									<li class="chat-member-item <%= memberActionForms.length > 0 ? 'chat-management-member-item' : '' %>">
+									<% const hasRowActions = canShowSocialAction || memberActionForms.length > 0; %>
+									<li class="chat-member-item <%= hasRowActions ? 'chat-management-member-item' : '' %>">
 										<span
 											class="chat-member-avatar"
 											style="background-color: <%= member.avatar?.background || '' %>;"
@@ -100,8 +112,26 @@
 											</div>
 										</div>
 
-										<% if (memberActionForms.length > 0) { %>
+										<% if (hasRowActions) { %>
 											<div class="chat-management-actions">
+												<% if (canRequestFollow) { %>
+													<form method="POST" action="/social/follow-request">
+														<input type="hidden" name="identifier" value="<%= member.username %>" />
+														<input type="hidden" name="returnTo" value="/chat?conversation=active" />
+														<button
+															class="btn btn-action-outline chat-management-action chat-member-social-action has-tooltip"
+															type="submit"
+															data-bs-title="<%= t(`chat:members.actions.${followActionLabel}`) %>"
+															aria-label="<%= t(`chat:members.actions.${followActionLabel}`) %>"
+														>
+															<i class="bi bi-person-plus" aria-hidden="true"></i>
+														</button>
+													</form>
+												<% } else if (canShowSocialAction && social.hasPendingFollowRequest) { %>
+													<span class="chat-member-social-badge">
+														<%= t('chat:members.actions.followRequested') %>
+													</span>
+												<% } %>
 												<% memberActionForms.forEach((action) => { %>
 													<form method="POST" action="<%= action.path %>">
 														<input type="hidden" name="conversationId" value="<%= conversation.id %>" />

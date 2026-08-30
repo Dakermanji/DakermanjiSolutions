@@ -194,6 +194,30 @@
 	padding: 0;
 }
 
+.chat-member-social-action {
+	border-color: var(--color-secondary);
+	color: var(--color-secondary);
+}
+
+.chat-member-social-action:hover,
+.chat-member-social-action:focus-visible {
+	background: var(--color-secondary);
+	color: var(--color-text-inverse);
+}
+
+.chat-member-social-badge {
+	display: inline-flex;
+	align-items: center;
+	min-height: 2.25rem;
+	padding: 0 0.65rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-muted);
+	background: var(--bg-card-muted);
+	font-size: 0.8rem;
+	font-weight: 700;
+}
+
 .chat-management-action.is-danger {
 	border-color: var(--bs-danger);
 	color: var(--bs-danger);

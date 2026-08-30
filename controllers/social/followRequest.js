@@ -31,6 +31,7 @@ const ERROR_PREFIX = 'social:error.';
 export async function followRequest(req, res, next) {
 	const senderId = req.user?.id;
 	const { identifier, identifierType, returnTo } = req.body;
+	const modal = req.body?.modalOnReturn === 'social' ? 'social' : false;
 
 	try {
 		// 1. sender is a registered user
@@ -46,7 +47,7 @@ export async function followRequest(req, res, next) {
 		// 3. Target exists
 		if (!targetUser) {
 			return success(req, res, GENERIC_SUCCESS_KEY, {
-				modal: 'social',
+				modal,
 				to: returnTo,
 			});
 		}
@@ -56,7 +57,7 @@ export async function followRequest(req, res, next) {
 		// 4. Self-check
 		if (senderId === receiverId) {
 			return fail(req, res, `${ERROR_PREFIX}cannot_follow_self`, {
-				modal: 'social',
+				modal,
 				to: returnTo,
 			});
 		}
@@ -68,7 +69,7 @@ export async function followRequest(req, res, next) {
 		);
 		if (senderBlockedReceiver) {
 			return fail(req, res, `${ERROR_PREFIX}you_blocked_this_user`, {
-				modal: 'social',
+				modal,
 				to: returnTo,
 			});
 		}
@@ -80,7 +81,7 @@ export async function followRequest(req, res, next) {
 		);
 		if (receiverBlockedSender) {
 			return success(req, res, GENERIC_SUCCESS_KEY, {
-				modal: 'social',
+				modal,
 				to: returnTo,
 			});
 		}
@@ -92,7 +93,7 @@ export async function followRequest(req, res, next) {
 		);
 		if (alreadyFollowing) {
 			return fail(req, res, `${ERROR_PREFIX}already_following`, {
-				modal: 'social',
+				modal,
 				to: returnTo,
 			});
 		}
@@ -112,7 +113,7 @@ export async function followRequest(req, res, next) {
 			emitSocialCountsChanged([receiverId]);
 
 			return success(req, res, GENERIC_SUCCESS_KEY, {
-				modal: 'social',
+				modal,
 				to: returnTo,
 			});
 		}
@@ -149,7 +150,7 @@ export async function followRequest(req, res, next) {
 			emitSocialCountsChanged([senderId, receiverId]);
 
 			return success(req, res, FOLLOWING_NOW_SUCCESS_KEY, {
-				modal: 'social',
+				modal,
 				to: returnTo,
 			});
 		}
@@ -172,7 +173,7 @@ export async function followRequest(req, res, next) {
 			emitSocialCountsChanged([senderId, receiverId]);
 
 			return success(req, res, FOLLOWING_NOW_SUCCESS_KEY, {
-				modal: 'social',
+				modal,
 				to: returnTo,
 			});
 		}
@@ -201,7 +202,7 @@ export async function followRequest(req, res, next) {
 
 		// 13. Success
 		return success(req, res, GENERIC_SUCCESS_KEY, {
-			modal: 'social',
+			modal,
 			to: returnTo,
 		});
 	} catch (error) {
