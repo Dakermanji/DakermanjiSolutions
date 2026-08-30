@@ -12,6 +12,7 @@ import {
 	listPublicRooms,
 	requestPrivateListedRoom,
 	ROOM_ACTIVITY_LOG_RESULT,
+	ROOM_INVITATION_RESULT,
 	searchRooms,
 	updateRoom,
 } from '../../services/chat/rooms.js';
@@ -260,6 +261,7 @@ export async function inviteChatRoomMember(req, res, next) {
 	const conversationId = String(req.body?.conversationId || '').trim();
 	const submittedTargetUserId = String(req.body?.targetUserId || '').trim();
 	const targetUsername = String(req.body?.targetUsername || '').trim();
+	const isUsernameInvite = !isValidUuid(submittedTargetUserId);
 
 	if (!isValidUuid(conversationId)) {
 		req.flash('error', 'chat:rooms.inviteError');
@@ -269,7 +271,7 @@ export async function inviteChatRoomMember(req, res, next) {
 	try {
 		let targetUserId = submittedTargetUserId;
 
-		if (!isValidUuid(targetUserId)) {
+		if (isUsernameInvite) {
 			if (!isValidUsername(targetUsername)) {
 				req.flash('error', 'chat:rooms.inviteError');
 				return res.redirect(CHAT_OPEN_REDIRECT);
@@ -277,6 +279,12 @@ export async function inviteChatRoomMember(req, res, next) {
 
 			const targetUser = await UserModel.findByUsername(targetUsername);
 			targetUserId = targetUser?.id || '';
+
+			if (!isValidUuid(targetUserId)) {
+				setActiveChatConversation(req, conversationId);
+				req.flash('success', 'chat:rooms.inviteQueued');
+				return res.redirect(CHAT_OPEN_REDIRECT);
+			}
 		}
 
 		if (!isValidUuid(targetUserId)) {
@@ -291,6 +299,16 @@ export async function inviteChatRoomMember(req, res, next) {
 		});
 
 		setActiveChatConversation(req, conversationId);
+
+		if (isUsernameInvite && ![
+			ROOM_INVITATION_RESULT.FORBIDDEN,
+			ROOM_INVITATION_RESULT.INVALID_INPUT,
+			ROOM_INVITATION_RESULT.ROOM_NOT_FOUND,
+		].includes(result.reason)) {
+			req.flash('success', 'chat:rooms.inviteQueued');
+			return res.redirect(CHAT_OPEN_REDIRECT);
+		}
+
 		req.flash(
 			result.ok ? 'success' : 'error',
 			result.ok ? 'chat:rooms.inviteSuccess' : 'chat:rooms.inviteError',

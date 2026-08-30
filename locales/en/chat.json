@@ -203,7 +203,8 @@
 			"public": "Public",
 			"privateListed": "Private, listed",
 			"privateUnlisted": "Private, unlisted"
-		}
+		},
+		"inviteQueued": "If this user exists and can be invited, an invitation will be sent."
 	},
 	"sections": {
 		"friends": {
