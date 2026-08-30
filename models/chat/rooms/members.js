@@ -75,9 +75,10 @@ export async function findRoomConversationMember({
  * Find readable members for one room conversation.
  *
  * @param {string} conversationId
+ * @param {string} viewerUserId
  * @returns {Promise<Array>}
  */
-export function findRoomConversationMembers(conversationId) {
+export function findRoomConversationMembers(conversationId, viewerUserId) {
 	const q = `
 		SELECT
 			ccm.conversation_id,
@@ -89,7 +90,45 @@ export function findRoomConversationMembers(conversationId) {
 			u.username,
 			u.email,
 			u.avatar_seed,
-			u.country_code
+			u.country_code,
+			EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = $2::uuid
+					AND uf.followee_id = ccm.user_id
+			) AS viewer_follows_member,
+			EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = ccm.user_id
+					AND uf.followee_id = $2::uuid
+			) AS member_follows_viewer,
+			EXISTS (
+				SELECT 1
+				FROM user_follow_requests ufr
+				WHERE ufr.requester_id = $2::uuid
+					AND ufr.target_id = ccm.user_id
+					AND ufr.status = 'pending'
+			) AS viewer_pending_follow_request,
+			EXISTS (
+				SELECT 1
+				FROM user_follow_requests ufr
+				WHERE ufr.requester_id = ccm.user_id
+					AND ufr.target_id = $2::uuid
+					AND ufr.status = 'pending'
+			) AS member_pending_follow_request,
+			EXISTS (
+				SELECT 1
+				FROM user_blocks ub
+				WHERE ub.blocker_id = $2::uuid
+					AND ub.blocked_id = ccm.user_id
+			) AS viewer_blocked_member,
+			EXISTS (
+				SELECT 1
+				FROM user_blocks ub
+				WHERE ub.blocker_id = ccm.user_id
+					AND ub.blocked_id = $2::uuid
+			) AS member_blocked_viewer
 		FROM chat_conversation_members ccm
 		INNER JOIN users u
 			ON u.id = ccm.user_id
@@ -102,16 +141,17 @@ export function findRoomConversationMembers(conversationId) {
 			ccm.joined_at ASC;
 	`;
 
-	return queryRows(q, [conversationId]);
+	return queryRows(q, [conversationId, viewerUserId]);
 }
 
 /**
  * Find members visible in the owner/admin management panel.
  *
  * @param {string} conversationId
+ * @param {string} viewerUserId
  * @returns {Promise<Array>}
  */
-export function findRoomConversationManagementMembers(conversationId) {
+export function findRoomConversationManagementMembers(conversationId, viewerUserId) {
 	const q = `
 		SELECT
 			ccm.conversation_id,
@@ -123,7 +163,45 @@ export function findRoomConversationManagementMembers(conversationId) {
 			u.username,
 			u.email,
 			u.avatar_seed,
-			u.country_code
+			u.country_code,
+			EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = $9::uuid
+					AND uf.followee_id = ccm.user_id
+			) AS viewer_follows_member,
+			EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = ccm.user_id
+					AND uf.followee_id = $9::uuid
+			) AS member_follows_viewer,
+			EXISTS (
+				SELECT 1
+				FROM user_follow_requests ufr
+				WHERE ufr.requester_id = $9::uuid
+					AND ufr.target_id = ccm.user_id
+					AND ufr.status = 'pending'
+			) AS viewer_pending_follow_request,
+			EXISTS (
+				SELECT 1
+				FROM user_follow_requests ufr
+				WHERE ufr.requester_id = ccm.user_id
+					AND ufr.target_id = $9::uuid
+					AND ufr.status = 'pending'
+			) AS member_pending_follow_request,
+			EXISTS (
+				SELECT 1
+				FROM user_blocks ub
+				WHERE ub.blocker_id = $9::uuid
+					AND ub.blocked_id = ccm.user_id
+			) AS viewer_blocked_member,
+			EXISTS (
+				SELECT 1
+				FROM user_blocks ub
+				WHERE ub.blocker_id = ccm.user_id
+					AND ub.blocked_id = $9::uuid
+			) AS member_blocked_viewer
 		FROM chat_conversation_members ccm
 		INNER JOIN users u
 			ON u.id = ccm.user_id
@@ -156,5 +234,6 @@ export function findRoomConversationManagementMembers(conversationId) {
 		CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
 		CHAT_CONVERSATION_MEMBER_STATUSES.MUTED,
 		CHAT_CONVERSATION_MEMBER_STATUSES.BANNED,
+		viewerUserId,
 	]);
 }

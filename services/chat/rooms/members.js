@@ -23,6 +23,18 @@ function formatRoomMember(member) {
 		email: member.email,
 		displayName,
 		countryCode: member.country_code,
+		social: {
+			isFollowing: Boolean(member.viewer_follows_member),
+			isFollower: Boolean(member.member_follows_viewer),
+			hasPendingFollowRequest: Boolean(
+				member.viewer_pending_follow_request,
+			),
+			hasPendingIncomingFollowRequest: Boolean(
+				member.member_pending_follow_request,
+			),
+			isBlocked: Boolean(member.viewer_blocked_member),
+			isBlocking: Boolean(member.member_blocked_viewer),
+		},
 		avatar: {
 			src: avatar.src,
 			background: avatar.background,
@@ -49,6 +61,7 @@ export async function listRoomMembers(conversationId, viewerUserId) {
 
 	const members = await ChatRoomsModel.findRoomConversationMembers(
 		room.conversation_id,
+		viewerUserId,
 	);
 
 	return members.map(formatRoomMember);
@@ -76,6 +89,7 @@ export async function listRoomManagementMembers(conversationId, viewerUserId) {
 
 	const members = await ChatRoomsModel.findRoomConversationManagementMembers(
 		room.conversation_id,
+		viewerUserId,
 	);
 
 	return members.map(formatRoomMember);
