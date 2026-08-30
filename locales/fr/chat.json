@@ -102,8 +102,11 @@
 			"unbanError": "Impossible de débannir ce membre.",
 			"deleteHistory": "Supprimer l’historique",
 			"deleteHistorySuccess": "Membre et historique des messages supprimés.",
-			"deleteHistoryError": "Impossible de supprimer l’historique de ce membre."
-		}
+			"deleteHistoryError": "Impossible de supprimer l’historique de ce membre.",
+			"invite": "Inviter un membre"
+		},
+		"inviteLabel": "Inviter par nom d’utilisateur",
+		"invitePlaceholder": "nom d’utilisateur"
 	},
 	"activity": {
 		"toggle": "Journal d’activité",

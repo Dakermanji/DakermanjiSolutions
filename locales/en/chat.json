@@ -102,8 +102,11 @@
 			"unbanError": "Could not unban this member.",
 			"deleteHistory": "Delete member history",
 			"deleteHistorySuccess": "Member and message history deleted.",
-			"deleteHistoryError": "Could not delete this member history."
-		}
+			"deleteHistoryError": "Could not delete this member history.",
+			"invite": "Invite member"
+		},
+		"inviteLabel": "Invite by username",
+		"invitePlaceholder": "username"
 	},
 	"activity": {
 		"toggle": "Activity log",

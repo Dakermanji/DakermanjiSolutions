@@ -17,6 +17,41 @@
 			</span>
 		</header>
 
+		<% if (canManageRoom) { %>
+			<form class="chat-members-invite" method="POST" action="/chat/rooms/invitations">
+				<input type="hidden" name="conversationId" value="<%= conversation.id %>" />
+				<label class="visually-hidden" for="chat-room-invite-username">
+					<%= t('chat:members.inviteLabel') %>
+				</label>
+				<div class="input-group" dir="ltr">
+					<span class="input-group-text" aria-hidden="true">@</span>
+					<input
+						id="chat-room-invite-username"
+						class="form-control"
+						type="text"
+						name="targetUsername"
+						placeholder="<%= t('chat:members.invitePlaceholder') %>"
+						autocomplete="off"
+						autocapitalize="none"
+						dir="ltr"
+						spellcheck="false"
+						minlength="3"
+						maxlength="20"
+						pattern="[A-Za-z0-9_.-]{3,20}"
+						required
+					/>
+					<button
+						class="btn btn-action-outline chat-members-invite-submit has-tooltip"
+						type="submit"
+						data-bs-title="<%= t('chat:members.actions.invite') %>"
+						aria-label="<%= t('chat:members.actions.invite') %>"
+					>
+						<i class="bi bi-person-plus" aria-hidden="true"></i>
+					</button>
+				</div>
+			</form>
+		<% } %>
+
 		<% if (roomMemberList.length > 0) { %>
 			<ol class="chat-members-list">
 				<% roomMemberList.forEach((member) => { %>
