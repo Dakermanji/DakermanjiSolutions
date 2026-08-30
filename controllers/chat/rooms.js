@@ -1,5 +1,6 @@
 //! controllers/chat/rooms.js
 
+import UserModel from '../../models/User.js';
 import {
 	cancelPrivateRoomRequest,
 	createRoom,
@@ -15,7 +16,7 @@ import {
 	updateRoom,
 } from '../../services/chat/rooms.js';
 import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
-import { isValidUuid } from '../../middlewares/validators/common.js';
+import { isValidUsername, isValidUuid } from '../../middlewares/validators/common.js';
 import { setActiveChatConversation } from './session.js';
 
 function getRoomInput(req) {
@@ -257,14 +258,32 @@ export async function cancelPrivateRoomAccessRequest(req, res, next) {
  */
 export async function inviteChatRoomMember(req, res, next) {
 	const conversationId = String(req.body?.conversationId || '').trim();
-	const targetUserId = String(req.body?.targetUserId || '').trim();
+	const submittedTargetUserId = String(req.body?.targetUserId || '').trim();
+	const targetUsername = String(req.body?.targetUsername || '').trim();
 
-	if (!isValidUuid(conversationId) || !isValidUuid(targetUserId)) {
+	if (!isValidUuid(conversationId)) {
 		req.flash('error', 'chat:rooms.inviteError');
 		return res.redirect(CHAT_OPEN_REDIRECT);
 	}
 
 	try {
+		let targetUserId = submittedTargetUserId;
+
+		if (!isValidUuid(targetUserId)) {
+			if (!isValidUsername(targetUsername)) {
+				req.flash('error', 'chat:rooms.inviteError');
+				return res.redirect(CHAT_OPEN_REDIRECT);
+			}
+
+			const targetUser = await UserModel.findByUsername(targetUsername);
+			targetUserId = targetUser?.id || '';
+		}
+
+		if (!isValidUuid(targetUserId)) {
+			req.flash('error', 'chat:rooms.inviteError');
+			return res.redirect(CHAT_OPEN_REDIRECT);
+		}
+
 		const result = await inviteRoomMember({
 			conversationId,
 			actorUserId: req.user.id,

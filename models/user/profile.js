@@ -86,7 +86,6 @@ export async function findByUsername(username) {
 	`;
 
 	const result = await query(q, [normalizedUsername]);
-	console.log(result);
 	return result.rows[0] || null;
 }
 
