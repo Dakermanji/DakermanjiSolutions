@@ -50,6 +50,19 @@ export const CHAT_MESSAGE_FLAG_STATUSES = Object.freeze({
 	DELETED: 'deleted',
 });
 
+export const CHAT_MESSAGE_MODERATION_STATUSES = Object.freeze({
+	VISIBLE: 'visible',
+	PENDING_REVIEW: 'pending_review',
+	HIDDEN: 'hidden',
+});
+
+export const CHAT_MESSAGE_MODERATION_REASONS = Object.freeze({
+	PROFANITY: 'profanity',
+	ABUSE: 'abuse',
+	FLAGGED: 'flagged',
+	ADMIN_DELETED: 'admin_deleted',
+});
+
 export const CHAT_MESSAGE_QUICK_REACTIONS = Object.freeze([
 	Object.freeze({
 		icon: '👍',
@@ -218,4 +231,14 @@ export const CHAT_MESSAGE_LIMITS = Object.freeze({
 	ROOM_EDIT_DELETE_WINDOW_MS: 2 * 60 * 1000,
 	RECENT_PAGE_SIZE: 10,
 	OLDER_PAGE_SIZE: 10,
+});
+
+export const CHAT_MESSAGE_SAFETY = Object.freeze({
+	PROFANITY_REVIEW_ENABLED: true,
+	PROFANITY_REVIEW_CONVERSATION_TYPES: Object.freeze([
+		CHAT_CONVERSATION_TYPES.PUBLIC_ROOM,
+	]),
+	PROFANITY_REVIEW_MATCH_THRESHOLD: 1,
+	PROFANITY_MATCH_SAMPLE_LIMIT: 10,
+	ALLOW_REVIEWER_SELF_APPROVAL: true,
 });
