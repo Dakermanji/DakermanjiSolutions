@@ -280,13 +280,6 @@
 		reactionMessageUrl,
 	}) %>
 	<%- include('_conversation_members_panel', {
-		canManageRoom,
-		conversation,
-		getMemberName,
-		isRoomConversation,
-		roomMemberList,
-	}) %>
-	<%- include('_conversation_management_panel', {
 		canBanTarget,
 		canDeleteTarget,
 		canDemoteTarget,
@@ -301,6 +294,7 @@
 		isRoomConversation,
 		managementGroups,
 		roomManagementMemberList,
+		roomMemberList,
 	}) %>
 	<%- include('_conversation_flags_panel', {
 		canManageRoom,

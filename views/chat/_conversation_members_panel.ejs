@@ -13,7 +13,7 @@
 				<h2 id="chat-members-title"><%= t('chat:members.title') %></h2>
 			</div>
 			<span class="chat-members-count">
-				<%= t('chat:members.count', { count: roomMemberList.length }) %>
+				<%= t('chat:members.count', { count: roomManagementMemberList.length || roomMemberList.length }) %>
 			</span>
 		</header>
 
@@ -52,38 +52,79 @@
 			</form>
 		<% } %>
 
-		<% if (roomMemberList.length > 0) { %>
-			<ol class="chat-members-list">
-				<% roomMemberList.forEach((member) => { %>
-					<li class="chat-member-item">
-						<span
-							class="chat-member-avatar"
-							style="background-color: <%= member.avatar?.background || '' %>;"
-							aria-hidden="true"
-						>
-							<% if (member.avatar?.src) { %>
-								<img src="<%= member.avatar.src %>" alt="" />
-							<% } else { %>
-								<%= getMemberName(member).slice(0, 1).toUpperCase() %>
+		<% const visibleGroups = canManageRoom ? managementGroups : [{ key: null, members: roomMemberList }]; %>
+		<% if (visibleGroups.some((group) => group.members.length > 0)) { %>
+			<div class="chat-management-groups">
+				<% visibleGroups.forEach((group) => { %>
+					<% if (group.members.length > 0) { %>
+						<section class="chat-management-group">
+							<% if (group.key) { %>
+								<h3><%= t(`chat:members.groups.${group.key}`) %></h3>
 							<% } %>
-						</span>
+							<ol class="chat-members-list">
+								<% group.members.forEach((member) => { %>
+									<% const memberActionForms = canManageRoom ? [
+										{ show: canPromoteTarget(member), path: '/chat/rooms/members/promote', icon: 'bi-arrow-up-circle', label: 'promote' },
+										{ show: canDemoteTarget(member), path: '/chat/rooms/members/demote', icon: 'bi-arrow-down-circle', label: 'demote' },
+										{ show: canMuteTarget(member), path: '/chat/rooms/members/mute', icon: 'bi-volume-mute', label: 'mute' },
+										{ show: canUnmuteTarget(member), path: '/chat/rooms/members/unmute', icon: 'bi-volume-up', label: 'unmute' },
+										{ show: canRemoveTarget(member), path: '/chat/rooms/members/remove', icon: 'bi-person-dash', label: 'remove' },
+										{ show: canBanTarget(member), path: '/chat/rooms/members/ban', icon: 'bi-slash-circle', label: 'ban' },
+										{ show: canUnbanTarget(member), path: '/chat/rooms/members/unban', icon: 'bi-unlock', label: 'unban' },
+										{ show: canDeleteTarget(member), path: '/chat/rooms/members/delete-history', icon: 'bi-trash3', label: 'deleteHistory', danger: true },
+									].filter((item) => item.show) : []; %>
+									<li class="chat-member-item <%= memberActionForms.length > 0 ? 'chat-management-member-item' : '' %>">
+										<span
+											class="chat-member-avatar"
+											style="background-color: <%= member.avatar?.background || '' %>;"
+											aria-hidden="true"
+										>
+											<% if (member.avatar?.src) { %>
+												<img src="<%= member.avatar.src %>" alt="" />
+											<% } else { %>
+												<%= getMemberName(member).slice(0, 1).toUpperCase() %>
+											<% } %>
+										</span>
 
-						<div class="chat-member-body">
-							<strong><%= getMemberName(member) %></strong>
-							<div class="chat-member-badges">
-								<span class="chat-member-badge chat-member-badge--<%= member.role %>">
-									<%= t(`chat:members.roles.${member.role}`) %>
-								</span>
-								<% if (member.status === 'muted') { %>
-									<span class="chat-member-badge chat-member-badge--muted">
-										<%= t('chat:members.statuses.muted') %>
-									</span>
-								<% } %>
-							</div>
-						</div>
-					</li>
+										<div class="chat-member-body">
+											<strong><%= getMemberName(member) %></strong>
+											<div class="chat-member-badges">
+												<span class="chat-member-badge chat-member-badge--<%= member.role %>">
+													<%= t(`chat:members.roles.${member.role}`) %>
+												</span>
+												<% if (member.status !== 'active') { %>
+													<span class="chat-member-badge chat-member-badge--<%= member.status %>">
+														<%= t(`chat:members.statuses.${member.status}`) %>
+													</span>
+												<% } %>
+											</div>
+										</div>
+
+										<% if (memberActionForms.length > 0) { %>
+											<div class="chat-management-actions">
+												<% memberActionForms.forEach((action) => { %>
+													<form method="POST" action="<%= action.path %>">
+														<input type="hidden" name="conversationId" value="<%= conversation.id %>" />
+														<input type="hidden" name="targetUserId" value="<%= member.id %>" />
+														<button
+															class="btn btn-action-outline chat-management-action has-tooltip <%= action.danger ? 'is-danger' : '' %>"
+															type="submit"
+															data-bs-title="<%= t(`chat:members.actions.${action.label}`) %>"
+															aria-label="<%= t(`chat:members.actions.${action.label}`) %>"
+														>
+															<i class="bi <%= action.icon %>" aria-hidden="true"></i>
+														</button>
+													</form>
+												<% }) %>
+											</div>
+										<% } %>
+									</li>
+								<% }) %>
+							</ol>
+						</section>
+					<% } %>
 				<% }) %>
-			</ol>
+			</div>
 		<% } else { %>
 			<div class="chat-members-empty">
 				<i class="bi bi-people" aria-hidden="true"></i>

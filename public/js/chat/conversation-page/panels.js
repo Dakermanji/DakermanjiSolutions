@@ -15,7 +15,6 @@
 			const visibility = {
 				activity: panelName === 'activity',
 				flags: panelName === 'flags',
-				management: panelName === 'management',
 				members: panelName === 'members',
 			};
 			const isAnyPanelVisible = Object.values(visibility).some(Boolean);

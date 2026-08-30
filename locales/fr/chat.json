@@ -55,11 +55,8 @@
 	},
 	"members": {
 		"toggle": "Membres du salon",
-		"manageToggle": "Gérer le salon",
 		"kicker": "Salon",
 		"title": "Membres",
-		"manageKicker": "Salon",
-		"manageTitle": "Gestion",
 		"count": "{{count}} membres",
 		"empty": "Aucun membre à afficher.",
 		"roles": {

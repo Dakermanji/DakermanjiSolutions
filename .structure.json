@@ -601,7 +601,6 @@
 			"_conversation_composer.ejs",
 			"_conversation_flags_panel.ejs",
 			"_conversation_header.ejs",
-			"_conversation_management_panel.ejs",
 			"_conversation_members_panel.ejs",
 			"_conversation_message_actions.ejs",
 			"_conversation_message_content.ejs",

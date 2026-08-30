@@ -33,13 +33,11 @@
 		panels: {
 			activity: document.querySelector('[data-chat-activity-panel]'),
 			flags: document.querySelector('[data-chat-flags-panel]'),
-			management: document.querySelector('[data-chat-management-panel]'),
 			members: document.querySelector('[data-chat-members-panel]'),
 		},
 		toggles: {
 			activity: document.querySelector('[data-chat-activity-toggle]'),
 			flags: document.querySelector('[data-chat-flags-toggle]'),
-			management: document.querySelector('[data-chat-management-toggle]'),
 			members: document.querySelector('[data-chat-members-toggle]'),
 		},
 	});
@@ -100,11 +98,7 @@
 		panel: document.querySelector('[data-chat-members-panel]'),
 		panelName: 'members',
 	});
-	bindPanelToggle({
-		toggle: document.querySelector('[data-chat-management-toggle]'),
-		panel: document.querySelector('[data-chat-management-panel]'),
-		panelName: 'management',
-	});
+
 	bindPanelToggle({
 		toggle: document.querySelector('[data-chat-activity-toggle]'),
 		panel: document.querySelector('[data-chat-activity-panel]'),

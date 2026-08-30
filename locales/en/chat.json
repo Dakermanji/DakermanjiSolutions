@@ -55,11 +55,8 @@
 	},
 	"members": {
 		"toggle": "Room members",
-		"manageToggle": "Manage room",
 		"kicker": "Room",
 		"title": "Members",
-		"manageKicker": "Room",
-		"manageTitle": "Management",
 		"count": "{{count}} members",
 		"empty": "No members to show.",
 		"roles": {

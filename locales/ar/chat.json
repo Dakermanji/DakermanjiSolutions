@@ -58,11 +58,8 @@
 	},
 	"members": {
 		"toggle": "أعضاء الغرفة",
-		"manageToggle": "إدارة الغرفة",
 		"kicker": "الغرفة",
 		"title": "الأعضاء",
-		"manageKicker": "الغرفة",
-		"manageTitle": "الإدارة",
 		"count": "{{count}} أعضاء",
 		"empty": "لا يوجد أعضاء للعرض.",
 		"roles": {
