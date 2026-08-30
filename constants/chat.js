@@ -133,6 +133,7 @@ export const CHAT_MESSAGE_MENTION_RULES = Object.freeze({
 });
 
 export const CHAT_ROOM_ACTIVITY_ACTIONS = Object.freeze({
+	ROOM_INVITATION_QUEUED: 'room_invitation_queued',
 	MEMBER_INVITED: 'member_invited',
 	ROOM_INVITATION_ACCEPTED: 'room_invitation_accepted',
 	ROOM_INVITATION_REJECTED: 'room_invitation_rejected',

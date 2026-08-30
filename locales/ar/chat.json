@@ -121,6 +121,7 @@
 		"loadMore": "تحميل المزيد",
 		"system": "النظام",
 		"actions": {
+			"roomInvitationQueued": "سجّل محاولة دعوة",
 			"memberInvited": "دعا",
 			"roomInvitationAccepted": "قبل دعوة من",
 			"roomInvitationRejected": "رفض دعوة من",

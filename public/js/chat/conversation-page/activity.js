@@ -24,6 +24,7 @@
 		message_flagged: 'bi-flag',
 		message_marked_safe: 'bi-shield-check',
 		room_info_updated: 'bi-info-circle',
+		room_invitation_queued: 'bi-envelope-plus',
 		room_invitation_accepted: 'bi-check2-circle',
 		room_invitation_rejected: 'bi-x-circle',
 	});

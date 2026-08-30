@@ -7,6 +7,7 @@ import {
 } from '../../../constants/notifications.js';
 import ChatRoomsModel from '../../../models/chat/Rooms.js';
 import UserModel from '../../../models/User.js';
+import UserFollowsModel from '../../../models/social/Follows.js';
 import {
 	CHAT_ROOM_ACTIVITY_ACTIONS,
 	CHAT_CONVERSATION_MEMBER_ROLES,
@@ -58,6 +59,18 @@ function isCurrentRoomMember(member) {
 	].includes(access?.status);
 }
 
+async function recordRoomInvitationQueueActivity({ room, actorUserId }) {
+	return recordRoomActivity({
+		roomId: room.room_id,
+		conversationId: room.conversation_id,
+		actorUserId,
+		action: CHAT_ROOM_ACTIVITY_ACTIONS.ROOM_INVITATION_QUEUED,
+		metadata: {
+			roomName: room.title,
+		},
+	});
+}
+
 async function recordRoomInvitationActivity({ invitation, action }) {
 	return recordRoomActivity({
 		roomId: invitation.room_id,
@@ -90,6 +103,72 @@ async function recordRoomInvitationResponseActivity({ invitation, action }) {
 	});
 }
 
+export async function canLogRoomInvitationTarget({
+	actorUserId,
+	targetUserId,
+} = {}) {
+	if (
+		!isValidUuid(actorUserId) ||
+		!isValidUuid(targetUserId) ||
+		actorUserId === targetUserId
+	) {
+		return false;
+	}
+
+	const [actorFollowsTarget, targetFollowsActor] = await Promise.all([
+		UserFollowsModel.exists(actorUserId, targetUserId),
+		UserFollowsModel.exists(targetUserId, actorUserId),
+	]);
+
+	return actorFollowsTarget || targetFollowsActor;
+}
+/**
+ * Record a neutral username invitation attempt for owner/admin audit history.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.actorUserId
+ * @returns {Promise<object>}
+ */
+export async function recordRoomInvitationQueueAttempt({
+	conversationId,
+	actorUserId,
+} = {}) {
+	if (!isValidUuid(conversationId) || !isValidUuid(actorUserId)) {
+		return createRoomInvitationResult(
+			ROOM_INVITATION_RESULT.INVALID_INPUT,
+		);
+	}
+
+	const room = await findOpenableRoomConversation(conversationId, actorUserId);
+
+	if (!room) {
+		return createRoomInvitationResult(
+			ROOM_INVITATION_RESULT.ROOM_NOT_FOUND,
+		);
+	}
+
+	const actor = getMemberAccess(room);
+	if (!canManageChatRoomMember(actor, {
+		role: CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,
+		status: CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+	})) {
+		return createRoomInvitationResult(
+			ROOM_INVITATION_RESULT.FORBIDDEN,
+			{ room },
+		);
+	}
+
+	const activity = await recordRoomInvitationQueueActivity({
+		room,
+		actorUserId,
+	});
+
+	return createRoomInvitationResult(
+		ROOM_INVITATION_RESULT.OK,
+		{ room, activity },
+	);
+}
 /**
  * Invite one user to a room as owner/admin.
  *
@@ -98,6 +177,7 @@ async function recordRoomInvitationResponseActivity({ invitation, action }) {
  * @param {string} input.actorUserId
  * @param {string} input.targetUserId
  * @param {Date|string|null} [input.expiresAt]
+ * @param {boolean} [input.logActivity]
  * @returns {Promise<object>}
  */
 export async function inviteRoomMember({
@@ -105,6 +185,7 @@ export async function inviteRoomMember({
 	actorUserId,
 	targetUserId,
 	expiresAt = null,
+	logActivity = true,
 }) {
 	if (
 		!isValidUuid(conversationId) ||
@@ -182,10 +263,12 @@ export async function inviteRoomMember({
 		);
 	}
 
-	await recordRoomInvitationActivity({
-		invitation,
-		action: CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_INVITED,
-	});
+	if (logActivity) {
+		await recordRoomInvitationActivity({
+			invitation,
+			action: CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_INVITED,
+		});
+	}
 
 	await notifyRoomInvitationCreated({
 		room,

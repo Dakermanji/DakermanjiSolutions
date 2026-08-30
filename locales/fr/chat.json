@@ -118,6 +118,7 @@
 		"loadMore": "Charger plus",
 		"system": "Système",
 		"actions": {
+			"roomInvitationQueued": "a préparé une invitation",
 			"memberInvited": "a invité",
 			"roomInvitationAccepted": "a accepté l’invitation de",
 			"roomInvitationRejected": "a refusé l’invitation de",

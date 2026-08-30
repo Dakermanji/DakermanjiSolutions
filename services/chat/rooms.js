@@ -35,7 +35,9 @@ import {
 } from './rooms/requests.js';
 import {
 	acceptRoomInvitation,
+	canLogRoomInvitationTarget,
 	inviteRoomMember,
+	recordRoomInvitationQueueAttempt,
 	rejectRoomInvitation,
 	ROOM_INVITATION_RESULT,
 } from './rooms/invitations.js';
@@ -94,7 +96,9 @@ export {
 } from './rooms/requests.js';
 export {
 	acceptRoomInvitation,
+	canLogRoomInvitationTarget,
 	inviteRoomMember,
+	recordRoomInvitationQueueAttempt,
 	rejectRoomInvitation,
 	ROOM_INVITATION_RESULT,
 } from './rooms/invitations.js';
@@ -126,6 +130,7 @@ export default {
 	acceptRoomInvitation,
 	approvePrivateRoomRequest,
 	banRoomMember,
+	canLogRoomInvitationTarget,
 	cancelPrivateRoomRequest,
 	countVisibleRooms,
 	countUnreadPrivateRoomMessages,
@@ -155,6 +160,7 @@ export default {
 	rejectPrivateRoomRequest,
 	rejectRoomInvitation,
 	recordRoomActivity,
+	recordRoomInvitationQueueAttempt,
 	removeRoomMember,
 	requestPrivateListedRoom,
 	ROOM_ACTIVITY_LOG_RESULT,

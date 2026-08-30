@@ -3,6 +3,7 @@
 import UserModel from '../../models/User.js';
 import {
 	cancelPrivateRoomRequest,
+	canLogRoomInvitationTarget,
 	createRoom,
 	findOpenableRoomConversation,
 	getRoomActivityLogsPage,
@@ -10,6 +11,7 @@ import {
 	joinPublicRoom,
 	listPrivateRoomSection,
 	listPublicRooms,
+	recordRoomInvitationQueueAttempt,
 	requestPrivateListedRoom,
 	ROOM_ACTIVITY_LOG_RESULT,
 	ROOM_INVITATION_RESULT,
@@ -270,6 +272,7 @@ export async function inviteChatRoomMember(req, res, next) {
 
 	try {
 		let targetUserId = submittedTargetUserId;
+		let canLogTarget = !isUsernameInvite;
 
 		if (isUsernameInvite) {
 			if (!isValidUsername(targetUsername)) {
@@ -281,10 +284,25 @@ export async function inviteChatRoomMember(req, res, next) {
 			targetUserId = targetUser?.id || '';
 
 			if (!isValidUuid(targetUserId)) {
+				const queueResult = await recordRoomInvitationQueueAttempt({
+					conversationId,
+					actorUserId: req.user.id,
+				});
+
+				if (!queueResult.ok) {
+					req.flash('error', 'chat:rooms.inviteError');
+					return res.redirect(CHAT_OPEN_REDIRECT);
+				}
+
 				setActiveChatConversation(req, conversationId);
 				req.flash('success', 'chat:rooms.inviteQueued');
 				return res.redirect(CHAT_OPEN_REDIRECT);
 			}
+
+			canLogTarget = await canLogRoomInvitationTarget({
+				actorUserId: req.user.id,
+				targetUserId,
+			});
 		}
 
 		if (!isValidUuid(targetUserId)) {
@@ -296,6 +314,7 @@ export async function inviteChatRoomMember(req, res, next) {
 			conversationId,
 			actorUserId: req.user.id,
 			targetUserId,
+			logActivity: canLogTarget,
 		});
 
 		setActiveChatConversation(req, conversationId);
@@ -305,6 +324,13 @@ export async function inviteChatRoomMember(req, res, next) {
 			ROOM_INVITATION_RESULT.INVALID_INPUT,
 			ROOM_INVITATION_RESULT.ROOM_NOT_FOUND,
 		].includes(result.reason)) {
+			if (!canLogTarget || !result.ok) {
+				await recordRoomInvitationQueueAttempt({
+					conversationId,
+					actorUserId: req.user.id,
+				});
+			}
+
 			req.flash('success', 'chat:rooms.inviteQueued');
 			return res.redirect(CHAT_OPEN_REDIRECT);
 		}

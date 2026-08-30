@@ -118,6 +118,7 @@
 		"loadMore": "Load more",
 		"system": "System",
 		"actions": {
+			"roomInvitationQueued": "queued an invitation",
 			"memberInvited": "invited",
 			"roomInvitationAccepted": "accepted the invitation from",
 			"roomInvitationRejected": "rejected the invitation from",
