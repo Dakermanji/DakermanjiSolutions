@@ -23,6 +23,9 @@ BEGIN
 		WHERE typname = 'chat_room_activity_action'
 	) THEN
 		CREATE TYPE chat_room_activity_action AS ENUM (
+			'member_invited',
+			'room_invitation_accepted',
+			'room_invitation_rejected',
 			'join_request_approved',
 			'join_request_rejected',
 			'member_promoted',

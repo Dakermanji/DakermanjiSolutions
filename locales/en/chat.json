@@ -118,6 +118,9 @@
 		"loadMore": "Load more",
 		"system": "System",
 		"actions": {
+			"memberInvited": "invited",
+			"roomInvitationAccepted": "accepted the invitation from",
+			"roomInvitationRejected": "rejected the invitation from",
 			"joinRequestApproved": "approved the join request for",
 			"joinRequestRejected": "rejected the join request for",
 			"memberPromoted": "promoted",

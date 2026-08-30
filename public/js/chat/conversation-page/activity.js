@@ -12,6 +12,7 @@
 		flagged_message_deleted: 'bi-shield-x',
 		join_request_approved: 'bi-check-circle',
 		join_request_rejected: 'bi-x-circle',
+		member_invited: 'bi-person-plus',
 		member_banned: 'bi-slash-circle',
 		member_history_deleted: 'bi-trash3',
 		member_muted: 'bi-volume-mute',
@@ -23,6 +24,8 @@
 		message_flagged: 'bi-flag',
 		message_marked_safe: 'bi-shield-check',
 		room_info_updated: 'bi-info-circle',
+		room_invitation_accepted: 'bi-check2-circle',
+		room_invitation_rejected: 'bi-x-circle',
 	});
 
 	function createActivityPanel({

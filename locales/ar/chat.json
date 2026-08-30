@@ -121,6 +121,9 @@
 		"loadMore": "تحميل المزيد",
 		"system": "النظام",
 		"actions": {
+			"memberInvited": "دعا",
+			"roomInvitationAccepted": "قبل دعوة من",
+			"roomInvitationRejected": "رفض دعوة من",
 			"joinRequestApproved": "وافق على طلب انضمام",
 			"joinRequestRejected": "رفض طلب انضمام",
 			"memberPromoted": "رقّى",

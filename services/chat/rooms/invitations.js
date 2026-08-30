@@ -8,6 +8,7 @@ import {
 import ChatRoomsModel from '../../../models/chat/Rooms.js';
 import UserModel from '../../../models/User.js';
 import {
+	CHAT_ROOM_ACTIVITY_ACTIONS,
 	CHAT_CONVERSATION_MEMBER_ROLES,
 	CHAT_CONVERSATION_MEMBER_STATUSES,
 } from '../../../constants/chat.js';
@@ -16,6 +17,7 @@ import { findOpenableRoomConversation } from './access.js';
 import { respondAndDismissNotificationsByEntity } from '../../notifications/appNotifications.js';
 import { notifyRoomInvitationCreated } from './notifications.js';
 import { canManageChatRoomMember } from './permissions.js';
+import { recordRoomActivity } from './activity.js';
 
 export const ROOM_INVITATION_RESULT = Object.freeze({
 	OK: 'ok',
@@ -54,6 +56,38 @@ function isCurrentRoomMember(member) {
 		CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
 		CHAT_CONVERSATION_MEMBER_STATUSES.MUTED,
 	].includes(access?.status);
+}
+
+async function recordRoomInvitationActivity({ invitation, action }) {
+	return recordRoomActivity({
+		roomId: invitation.room_id,
+		conversationId: invitation.conversation_id,
+		actorUserId: invitation.invited_by_user_id,
+		targetUserId: invitation.invited_user_id,
+		action,
+		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_INVITATION,
+		entityId: invitation.id,
+		metadata: {
+			roomName: invitation.room_title,
+			invitationId: invitation.id,
+		},
+	});
+}
+
+async function recordRoomInvitationResponseActivity({ invitation, action }) {
+	return recordRoomActivity({
+		roomId: invitation.room_id,
+		conversationId: invitation.conversation_id,
+		actorUserId: invitation.invited_user_id,
+		targetUserId: invitation.invited_by_user_id,
+		action,
+		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_INVITATION,
+		entityId: invitation.id,
+		metadata: {
+			roomName: invitation.room_title,
+			invitationId: invitation.id,
+		},
+	});
 }
 
 /**
@@ -148,6 +182,11 @@ export async function inviteRoomMember({
 		);
 	}
 
+	await recordRoomInvitationActivity({
+		invitation,
+		action: CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_INVITED,
+	});
+
 	await notifyRoomInvitationCreated({
 		room,
 		invitation,
@@ -160,7 +199,13 @@ export async function inviteRoomMember({
 		{ room, targetUser, targetMember, invitation },
 	);
 }
-async function respondToRoomInvitation({ invitationId, userId, responseKey, run }) {
+async function respondToRoomInvitation({
+	invitationId,
+	userId,
+	responseKey,
+	activityAction,
+	run,
+}) {
 	if (!isValidUuid(invitationId) || !isValidUuid(userId)) {
 		return createRoomInvitationResult(
 			ROOM_INVITATION_RESULT.INVALID_INPUT,
@@ -174,6 +219,11 @@ async function respondToRoomInvitation({ invitationId, userId, responseKey, run 
 			ROOM_INVITATION_RESULT.RESPONSE_NOT_UPDATED,
 		);
 	}
+
+	await recordRoomInvitationResponseActivity({
+		invitation,
+		action: activityAction,
+	});
 
 	await respondAndDismissNotificationsByEntity({
 		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_INVITATION,
@@ -200,6 +250,7 @@ export function acceptRoomInvitation({ invitationId, userId }) {
 		invitationId,
 		userId,
 		responseKey: NOTIFICATION_RESPONSE_KEYS.ACCEPTED,
+		activityAction: CHAT_ROOM_ACTIVITY_ACTIONS.ROOM_INVITATION_ACCEPTED,
 		run: ChatRoomInvitationsModel.acceptPendingInvitationForUser,
 	});
 }
@@ -217,6 +268,7 @@ export function rejectRoomInvitation({ invitationId, userId }) {
 		invitationId,
 		userId,
 		responseKey: NOTIFICATION_RESPONSE_KEYS.REJECTED,
+		activityAction: CHAT_ROOM_ACTIVITY_ACTIONS.ROOM_INVITATION_REJECTED,
 		run: ChatRoomInvitationsModel.rejectPendingInvitationForUser,
 	});
 }

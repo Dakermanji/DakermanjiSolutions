@@ -118,6 +118,9 @@
 		"loadMore": "Charger plus",
 		"system": "Système",
 		"actions": {
+			"memberInvited": "a invité",
+			"roomInvitationAccepted": "a accepté l’invitation de",
+			"roomInvitationRejected": "a refusé l’invitation de",
 			"joinRequestApproved": "a approuvé la demande de",
 			"joinRequestRejected": "a refusé la demande de",
 			"memberPromoted": "a promu",

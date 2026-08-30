@@ -133,6 +133,9 @@ export const CHAT_MESSAGE_MENTION_RULES = Object.freeze({
 });
 
 export const CHAT_ROOM_ACTIVITY_ACTIONS = Object.freeze({
+	MEMBER_INVITED: 'member_invited',
+	ROOM_INVITATION_ACCEPTED: 'room_invitation_accepted',
+	ROOM_INVITATION_REJECTED: 'room_invitation_rejected',
 	JOIN_REQUEST_APPROVED: 'join_request_approved',
 	JOIN_REQUEST_REJECTED: 'join_request_rejected',
 	MEMBER_PROMOTED: 'member_promoted',
