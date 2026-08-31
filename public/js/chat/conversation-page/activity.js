@@ -23,6 +23,8 @@
 		message_deleted_by_admin: 'bi-trash3',
 		message_flagged: 'bi-flag',
 		message_marked_safe: 'bi-shield-check',
+		pending_message_approved: 'bi-check2-circle',
+		pending_message_hidden: 'bi-eye-slash',
 		room_info_updated: 'bi-info-circle',
 		room_invitation_queued: 'bi-envelope-plus',
 		room_invitation_accepted: 'bi-check2-circle',

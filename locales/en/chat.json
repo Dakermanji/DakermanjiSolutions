@@ -51,7 +51,8 @@
 		"reactionLoading": "Loading reactions...",
 		"reactionError": "Could not load reactions.",
 		"reactionYou": "You",
-		"mentionSuggestions": "Mention suggestions"
+		"mentionSuggestions": "Mention suggestions",
+		"waitingApproval": "Waiting for approval"
 	},
 	"members": {
 		"toggle": "Room members",
@@ -136,16 +137,18 @@
 			"messageFlagged": "flagged a message from",
 			"messageMarkedSafe": "marked a message safe from",
 			"flaggedMessageDeleted": "deleted a flagged message from",
-			"messageDeletedByAdmin": "deleted a message"
+			"messageDeletedByAdmin": "deleted a message",
+			"pendingMessageApproved": "approved a pending message from",
+			"pendingMessageHidden": "hid a pending message from"
 		}
 	},
 	"flags": {
 		"toggle": "Flag review",
 		"kicker": "Room",
 		"title": "Flag review",
-		"empty": "No flagged messages to review.",
-		"loading": "Loading flagged messages...",
-		"error": "Could not load flagged messages.",
+		"empty": "No messages to review.",
+		"loading": "Loading review queue...",
+		"error": "Could not load review queue.",
 		"flagCount": {
 			"one": "{{count}} flag",
 			"other": "{{count}} flags"
@@ -155,12 +158,23 @@
 		"actions": {
 			"openContext": "Open context",
 			"safe": "Mark safe",
-			"delete": "Delete message"
+			"delete": "Delete message",
+			"approvePending": "Approve message",
+			"hidePending": "Hide message"
 		},
 		"safeSuccess": "Message marked safe.",
 		"safeError": "Could not mark this message safe.",
 		"deleteSuccess": "Flagged message deleted.",
-		"deleteError": "Could not delete this flagged message."
+		"deleteError": "Could not delete this flagged message.",
+		"pendingModeration": "Waiting approval",
+		"reasons": {
+			"profanity": "Profanity check"
+		},
+		"hidePendingConfirm": "Hide this pending message?",
+		"approvePendingSuccess": "Message approved.",
+		"approvePendingError": "Could not approve this message.",
+		"hidePendingSuccess": "Pending message hidden.",
+		"hidePendingError": "Could not hide this message."
 	},
 	"rooms": {
 		"createTitle": "Create room",

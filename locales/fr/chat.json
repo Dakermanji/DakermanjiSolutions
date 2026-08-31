@@ -51,7 +51,8 @@
 		"reactionLoading": "Chargement des réactions...",
 		"reactionError": "Impossible de charger les réactions.",
 		"reactionYou": "Vous",
-		"mentionSuggestions": "Suggestions de mention"
+		"mentionSuggestions": "Suggestions de mention",
+		"waitingApproval": "En attente d'approbation"
 	},
 	"members": {
 		"toggle": "Membres du salon",
@@ -136,16 +137,18 @@
 			"messageFlagged": "a signalé un message de",
 			"messageMarkedSafe": "a marqué comme sûr un message de",
 			"flaggedMessageDeleted": "a supprimé un message signalé de",
-			"messageDeletedByAdmin": "a supprimé un message"
+			"messageDeletedByAdmin": "a supprimé un message",
+			"pendingMessageApproved": "a approuve un message en attente de",
+			"pendingMessageHidden": "a masque un message en attente de"
 		}
 	},
 	"flags": {
 		"toggle": "Examen des signalements",
 		"kicker": "Salon",
 		"title": "Examen des signalements",
-		"empty": "Aucun message signalé à examiner.",
-		"loading": "Chargement des messages signalés...",
-		"error": "Impossible de charger les messages signalés.",
+		"empty": "Aucun message a examiner.",
+		"loading": "Chargement de la file d'examen...",
+		"error": "Impossible de charger la file d'examen.",
 		"flagCount": {
 			"one": "{{count}} signalement",
 			"other": "{{count}} signalements"
@@ -155,12 +158,23 @@
 		"actions": {
 			"openContext": "Ouvrir le contexte",
 			"safe": "Marquer comme sûr",
-			"delete": "Supprimer le message"
+			"delete": "Supprimer le message",
+			"approvePending": "Approuver le message",
+			"hidePending": "Masquer le message"
 		},
 		"safeSuccess": "Message marqué comme sûr.",
 		"safeError": "Impossible de marquer ce message comme sûr.",
 		"deleteSuccess": "Message signalé supprimé.",
-		"deleteError": "Impossible de supprimer ce message signalé."
+		"deleteError": "Impossible de supprimer ce message signalé.",
+		"pendingModeration": "En attente d'approbation",
+		"reasons": {
+			"profanity": "Controle de langage"
+		},
+		"hidePendingConfirm": "Masquer ce message en attente ?",
+		"approvePendingSuccess": "Message approuve.",
+		"approvePendingError": "Impossible d'approuver ce message.",
+		"hidePendingSuccess": "Message en attente masque.",
+		"hidePendingError": "Impossible de masquer ce message."
 	},
 	"rooms": {
 		"createTitle": "Créer un salon",

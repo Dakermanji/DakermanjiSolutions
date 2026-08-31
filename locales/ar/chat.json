@@ -54,7 +54,8 @@
 		"reactionLoading": "جارٍ تحميل التفاعلات...",
 		"reactionError": "تعذر تحميل التفاعلات.",
 		"reactionYou": "أنت",
-		"mentionSuggestions": "اقتراحات الإشارة"
+		"mentionSuggestions": "اقتراحات الإشارة",
+		"waitingApproval": "بانتظار الموافقة"
 	},
 	"members": {
 		"toggle": "أعضاء الغرفة",
@@ -139,16 +140,18 @@
 			"messageFlagged": "أبلغ عن رسالة من",
 			"messageMarkedSafe": "اعتبر الرسالة آمنة من",
 			"flaggedMessageDeleted": "حذف رسالة مبلغ عنها من",
-			"messageDeletedByAdmin": "حذف رسالة"
+			"messageDeletedByAdmin": "حذف رسالة",
+			"pendingMessageApproved": "وافق على رسالة قيد المراجعة من",
+			"pendingMessageHidden": "أخفى رسالة قيد المراجعة من"
 		}
 	},
 	"flags": {
 		"toggle": "مراجعة البلاغات",
 		"kicker": "الغرفة",
 		"title": "مراجعة البلاغات",
-		"empty": "لا توجد رسائل مبلغ عنها للمراجعة.",
-		"loading": "جارٍ تحميل الرسائل المبلغ عنها...",
-		"error": "تعذر تحميل الرسائل المبلغ عنها.",
+		"empty": "لا توجد رسائل للمراجعة.",
+		"loading": "جارٍ تحميل قائمة المراجعة...",
+		"error": "تعذر تحميل قائمة المراجعة.",
 		"flagCount": {
 			"zero": "لا بلاغات",
 			"one": "بلاغ واحد",
@@ -162,12 +165,23 @@
 		"actions": {
 			"openContext": "فتح السياق",
 			"safe": "اعتبارها آمنة",
-			"delete": "حذف الرسالة"
+			"delete": "حذف الرسالة",
+			"approvePending": "الموافقة على الرسالة",
+			"hidePending": "إخفاء الرسالة"
 		},
 		"safeSuccess": "تم اعتبار الرسالة آمنة.",
 		"safeError": "تعذر اعتبار هذه الرسالة آمنة.",
 		"deleteSuccess": "تم حذف الرسالة المبلغ عنها.",
-		"deleteError": "تعذر حذف هذه الرسالة المبلغ عنها."
+		"deleteError": "تعذر حذف هذه الرسالة المبلغ عنها.",
+		"pendingModeration": "بانتظار الموافقة",
+		"reasons": {
+			"profanity": "فحص الألفاظ"
+		},
+		"hidePendingConfirm": "هل تريد إخفاء هذه الرسالة قيد المراجعة؟",
+		"approvePendingSuccess": "تمت الموافقة على الرسالة.",
+		"approvePendingError": "تعذرت الموافقة على هذه الرسالة.",
+		"hidePendingSuccess": "تم إخفاء الرسالة قيد المراجعة.",
+		"hidePendingError": "تعذر إخفاء هذه الرسالة."
 	},
 	"rooms": {
 		"createTitle": "إنشاء غرفة",
