@@ -51,6 +51,38 @@ export function collapseProfanityText(value) {
 }
 
 /**
+ * Inspect text for profanity in both normal and collapsed forms.
+ *
+ * @param {unknown} value
+ * @returns {{ contains: boolean, normalized: boolean, collapsed: boolean }}
+ */
+export function inspectProfanity(value) {
+	const normalizedValue = normalizeProfanityText(value);
+
+	if (!normalizedValue) {
+		return {
+			contains: false,
+			normalized: false,
+			collapsed: false,
+		};
+	}
+
+	const normalized = profanity.exists(normalizedValue);
+	const collapsedValue = collapseProfanityText(normalizedValue);
+	const collapsed = Boolean(
+		collapsedValue &&
+		collapsedValue !== normalizedValue &&
+		profanity.exists(collapsedValue),
+	);
+
+	return {
+		contains: normalized || collapsed,
+		normalized,
+		collapsed,
+	};
+}
+
+/**
  * Check whether text contains profanity.
  *
  * Strategy:
@@ -61,23 +93,7 @@ export function collapseProfanityText(value) {
  * @returns {boolean}
  */
 export function containsProfanity(value) {
-	const normalizedValue = normalizeProfanityText(value);
-
-	if (!normalizedValue) {
-		return false;
-	}
-
-	if (profanity.exists(normalizedValue)) {
-		return true;
-	}
-
-	const collapsedValue = collapseProfanityText(normalizedValue);
-
-	if (collapsedValue && collapsedValue !== normalizedValue) {
-		return profanity.exists(collapsedValue);
-	}
-
-	return false;
+	return inspectProfanity(value).contains;
 }
 
 /**

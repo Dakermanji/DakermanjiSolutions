@@ -17,6 +17,11 @@ export {
 } from './messages/writes.js';
 export { notifyMessageMentions } from './messages/notifications.js';
 export {
+	checkMessageProfanity,
+	getMessageSafetyDecision,
+	shouldReviewMessageProfanity,
+} from './messages/safety.js';
+export {
 	deleteOwnMessage,
 	editOwnMessage,
 } from './messages/mutations.js';
@@ -47,6 +52,11 @@ import {
 } from './messages/writes.js';
 import { notifyMessageMentions } from './messages/notifications.js';
 import {
+	checkMessageProfanity,
+	getMessageSafetyDecision,
+	shouldReviewMessageProfanity,
+} from './messages/safety.js';
+import {
 	deleteOwnMessage,
 	editOwnMessage,
 } from './messages/mutations.js';
@@ -71,14 +81,17 @@ export default {
 	deleteOwnMessage,
 	editOwnMessage,
 	extractMessageMentionUsernames,
+	checkMessageProfanity,
 	flagRoomMessage,
 	formatMentionToken,
 	isMentionUsername,
+	getMessageSafetyDecision,
 	listMessageReactionSummary,
 	listMessageReactionUsers,
 	toggleMessageReaction,
 	notifyMessageMentions,
 	normalizeMentionUsername,
+	shouldReviewMessageProfanity,
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,

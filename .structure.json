@@ -500,6 +500,7 @@
 				"pagination.js",
 				"reactions.js",
 				"reads.js",
+				"safety.js",
 				"utils.js",
 				"writes.js"
 			],
