@@ -51,7 +51,9 @@
 			stack.appendChild(createSenderAvatar(message, senderName));
 		}
 
-		stack.appendChild(createReplyButton(replyLabel, 'chat-message-reply-side'));
+		if (!message.isPendingReview) {
+			stack.appendChild(createReplyButton(replyLabel, 'chat-message-reply-side'));
+		}
 		return stack;
 	}
 

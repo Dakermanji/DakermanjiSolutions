@@ -52,6 +52,7 @@
 			element.appendChild(document.createTextNode(text.slice(cursor)));
 		}
 	}
+
 	function createMessageContent(message, options = {}) {
 		const content = document.createElement('div');
 		content.className = 'chat-message-content';
@@ -63,6 +64,7 @@
 	}
 
 	function createMessageBubble(message, {
+		pendingApprovalLabel = '',
 		replyDeletedLabel = '',
 		senderName = '',
 		shouldShowSenderDisplay = false,
@@ -89,7 +91,27 @@
 		setMessageTextContent(body, message);
 		bubble.appendChild(body);
 
+		if (message.isPendingReview && pendingApprovalLabel) {
+			bubble.appendChild(createPendingReviewMarker(pendingApprovalLabel));
+		}
+
 		return bubble;
+	}
+
+	function createPendingReviewMarker(labelText) {
+		const marker = document.createElement('span');
+		marker.className = 'chat-message-moderation-marker';
+		marker.dataset.chatMessageModerationMarker = '';
+
+		const icon = document.createElement('i');
+		icon.className = 'bi bi-hourglass-split';
+		icon.setAttribute('aria-hidden', 'true');
+
+		const label = document.createElement('span');
+		label.textContent = labelText;
+
+		marker.append(icon, label);
+		return marker;
 	}
 
 	function createMessageMeta(message, {
@@ -113,18 +135,20 @@
 			meta.appendChild(createEditedTime(message.editedAt, editedLabel));
 		}
 
-		const reactionPicker = createReactionPicker(message, {
-			extraReactions,
-			quickReactions,
-			reactionUrl,
-		});
+		const reactionPicker = message.isPendingReview
+			? null
+			: createReactionPicker(message, {
+				extraReactions,
+				quickReactions,
+				reactionUrl,
+			});
 
 		if (reactionPicker) {
 			timeActions.appendChild(reactionPicker);
 		}
 
 		timeActions.appendChild(time);
-		if (isMine) {
+		if (isMine && !message.isPendingReview) {
 			timeActions.appendChild(
 				createReplyButton(replyLabel, 'chat-message-reply-inline'),
 			);

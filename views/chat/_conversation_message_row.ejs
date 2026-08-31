@@ -1,6 +1,6 @@
 <!--! views/chat/_conversation_message_row.ejs -->
 <li
-	class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %>"
+	class="chat-message-row <%= message.isMine ? 'is-mine' : 'is-theirs' %> <%= message.isPendingReview ? 'is-pending-review' : '' %>"
 	data-chat-message-id="<%= message.id %>"
 	data-chat-message-sender-id="<%= message.sender?.id || '' %>"
 	data-chat-message-sender-name="<%= getSenderName(message) %>"
@@ -12,6 +12,8 @@
 	data-chat-message-can-edit="<%= message.canEdit ? 'true' : 'false' %>"
 	data-chat-message-can-delete="<%= message.canDelete ? 'true' : 'false' %>"
 	data-chat-message-edited="<%= message.editedAt ? 'true' : 'false' %>"
+	data-chat-message-moderation-status="<%= message.moderationStatus || 'visible' %>"
+	data-chat-message-pending-review="<%= message.isPendingReview ? 'true' : 'false' %>"
 >
 	<% if (!message.isMine) { %>
 		<%- include('_conversation_message_sender_stack', {

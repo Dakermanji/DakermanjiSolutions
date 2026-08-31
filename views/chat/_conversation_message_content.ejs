@@ -54,6 +54,12 @@
 			}
 		%>
 		<p class="chat-message-text" dir="auto"><% messageBodyParts.forEach((part) => { %><% if (part.isMention) { %><span class="chat-message-mention"><%= part.text %></span><% } else { %><%= part.text %><% } %><% }) %></p>
+		<% if (message.isPendingReview) { %>
+			<span class="chat-message-moderation-marker" data-chat-message-moderation-marker>
+				<i class="bi bi-hourglass-split" aria-hidden="true"></i>
+				<span><%= t('chat:conversation.waitingApproval') %></span>
+			</span>
+		<% } %>
 	</article>
 	<%- include('_conversation_message_reaction_summary', { message }) %>
 </div>

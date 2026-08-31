@@ -13,13 +13,15 @@
 			<% } %>
 		</span>
 	<% } %>
-	<button
-		class="btn btn-action-outline chat-message-action chat-message-reply-side has-tooltip"
-		type="button"
-		data-chat-message-reply
-		data-bs-title="<%= t('chat:conversation.reply') %>"
-		aria-label="<%= t('chat:conversation.reply') %>"
-	>
-		<i class="bi bi-reply" aria-hidden="true"></i>
-	</button>
+	<% if (!message.isPendingReview) { %>
+		<button
+			class="btn btn-action-outline chat-message-action chat-message-reply-side has-tooltip"
+			type="button"
+			data-chat-message-reply
+			data-bs-title="<%= t('chat:conversation.reply') %>"
+			aria-label="<%= t('chat:conversation.reply') %>"
+		>
+			<i class="bi bi-reply" aria-hidden="true"></i>
+		</button>
+	<% } %>
 </div>

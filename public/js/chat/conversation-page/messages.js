@@ -198,6 +198,8 @@
 				quickReactions,
 				reactionUrl: chatPage.dataset.reactMessageUrl || '',
 				replyLabel: chatPage.dataset.replyMessageLabel || '',
+				pendingApprovalLabel:
+					chatPage.dataset.messageWaitingApprovalLabel || '',
 				replyDeletedLabel: chatPage.dataset.replyDeletedLabel || '',
 				showSenderDisplay: isRoomConversation,
 			};
@@ -247,4 +249,3 @@
 		createMessageController,
 	};
 })();
-

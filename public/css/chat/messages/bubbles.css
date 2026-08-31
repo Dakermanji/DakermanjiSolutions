@@ -129,3 +129,34 @@
 	background: var(--color-secondary);
 	color: var(--color-text-inverse);
 }
+.chat-message-moderation-marker {
+	display: inline-flex;
+	align-items: center;
+	justify-self: start;
+	gap: 0.25rem;
+	max-width: 100%;
+	padding: 0.16rem 0.4rem;
+	border: 1px solid var(--color-warning);
+	border-radius: 999px;
+	color: var(--color-warning);
+	background: var(--color-warning-alpha);
+	font-size: 0.68rem;
+	font-weight: 700;
+	line-height: 1.2;
+}
+
+.chat-message-moderation-marker span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.chat-message-row.is-pending-review .chat-message-bubble {
+	border-style: dashed;
+}
+
+.chat-message-row.is-mine .chat-message-moderation-marker {
+	border-color: rgba(255, 255, 255, 0.55);
+	color: var(--color-text-inverse);
+	background: rgba(255, 255, 255, 0.16);
+}

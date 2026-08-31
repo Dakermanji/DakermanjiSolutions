@@ -25,6 +25,7 @@
 		flaggedLabel = '',
 		flagUrl = '',
 		editedLabel = '',
+		pendingApprovalLabel = '',
 		replyLabel = '',
 		replyDeletedLabel = '',
 		reactionUrl = '',
@@ -36,11 +37,16 @@
 		const isMine = message.sender?.id === currentUserId;
 		const senderName = getSenderName(message);
 		const shouldShowSenderDisplay = showSenderDisplay && !isMine;
-		const canFlagMessage = canFlagMessages && !isMine && flagUrl;
+		const canFlagMessage =
+			canFlagMessages && !isMine && !message.isPendingReview && flagUrl;
 		const canEditMessage = isMine && message.canEdit && editUrl;
 		const canDeleteMessage = isMine && message.canDelete && deleteUrl;
 
-		row.className = `chat-message-row ${isMine ? 'is-mine' : 'is-theirs'}`;
+		row.className = [
+			'chat-message-row',
+			isMine ? 'is-mine' : 'is-theirs',
+			message.isPendingReview ? 'is-pending-review' : '',
+		].filter(Boolean).join(' ');
 		setMessageRowDataset(row, message, senderName);
 
 		if (!isMine) {
@@ -53,6 +59,7 @@
 
 		row.append(
 			createMessageContent(message, {
+				pendingApprovalLabel,
 				replyDeletedLabel,
 				senderName,
 				shouldShowSenderDisplay,
@@ -112,6 +119,11 @@
 		row.dataset.chatMessageCanEdit = message.canEdit ? 'true' : 'false';
 		row.dataset.chatMessageCanDelete = message.canDelete ? 'true' : 'false';
 		row.dataset.chatMessageEdited = message.editedAt ? 'true' : 'false';
+		row.dataset.chatMessageModerationStatus =
+			message.moderationStatus || 'visible';
+		row.dataset.chatMessagePendingReview = message.isPendingReview
+			? 'true'
+			: 'false';
 	}
 
 	function updateMessageRow(row, message, options = {}) {
@@ -134,9 +146,16 @@
 			existingReply?.remove();
 		}
 
+		row.classList.toggle('is-pending-review', Boolean(message.isPendingReview));
+		updatePendingReviewMarker(row, message, options);
 		row.dataset.chatMessageEdited = message.editedAt ? 'true' : 'false';
 		row.dataset.chatMessageCanEdit = message.canEdit ? 'true' : 'false';
 		row.dataset.chatMessageCanDelete = message.canDelete ? 'true' : 'false';
+		row.dataset.chatMessageModerationStatus =
+			message.moderationStatus || 'visible';
+		row.dataset.chatMessagePendingReview = message.isPendingReview
+			? 'true'
+			: 'false';
 
 		const meta = row.querySelector('.chat-message-meta');
 		meta?.querySelector('.chat-message-edited')?.remove();
@@ -148,6 +167,22 @@
 		return true;
 	}
 
+	function updatePendingReviewMarker(row, message, options = {}) {
+		const marker = row.querySelector('[data-chat-message-moderation-marker]');
+		const bubble = row.querySelector('.chat-message-bubble');
+
+		if (!message.isPendingReview) {
+			marker?.remove();
+			return;
+		}
+
+		if (marker) return;
+		if (!bubble || !options.pendingApprovalLabel) return;
+
+		bubble.appendChild(createPendingReviewMarker(
+			options.pendingApprovalLabel,
+		));
+	}
 	function updateMessageReactions(row, reactions, options = {}) {
 		const message = {
 			id: row.dataset.chatMessageId || '',
