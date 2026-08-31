@@ -40,6 +40,8 @@ BEGIN
 			'room_info_updated',
 			'message_flagged',
 			'message_marked_safe',
+			'pending_message_approved',
+			'pending_message_hidden',
 			'flagged_message_deleted',
 			'message_deleted_by_admin'
 		);
