@@ -193,5 +193,10 @@ export async function findOpenableRoomMessageContext({
 	return ChatMessagesModel.findConversationMessageById({
 		conversationId: conversation.conversation_id,
 		messageId,
+		viewerUserId,
+		canViewPendingModeration: canChatMemberManage(
+			conversation.member_role,
+			conversation.member_status,
+		),
 	});
 }

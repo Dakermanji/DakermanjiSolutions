@@ -222,29 +222,48 @@ export async function findOlderConversationMessages({
 }
 
 /**
- * Find one visible message in a conversation.
+ * Find one readable message in a conversation.
  *
  * @param {object} params
  * @param {string} params.conversationId
  * @param {string} params.messageId
+ * @param {string|null} [params.viewerUserId]
+ * @param {boolean} [params.canViewPendingModeration]
  * @returns {Promise<object|null>}
  */
 export async function findConversationMessageById({
 	conversationId,
 	messageId,
+	viewerUserId = null,
+	canViewPendingModeration = false,
 }) {
 	const q = `
 		SELECT
 			cm.id,
-			cm.conversation_id
+			cm.conversation_id,
+			cm.sender_user_id,
+			cm.moderation_status,
+			cm.moderation_reason,
+			cm.reviewed_by_user_id,
+			cm.reviewed_at
 		FROM chat_messages cm
 		WHERE cm.conversation_id = $1
 			AND cm.id = $2
 			AND cm.deleted_at IS NULL
+			AND (
+				cm.moderation_status = 'visible'
+				OR cm.sender_user_id = $3
+				OR $4::boolean
+			)
 		LIMIT 1;
 	`;
 
-	const rows = await queryRows(q, [conversationId, messageId]);
+	const rows = await queryRows(q, [
+		conversationId,
+		messageId,
+		viewerUserId,
+		canViewPendingModeration,
+	]);
 
 	return rows[0] || null;
 }
