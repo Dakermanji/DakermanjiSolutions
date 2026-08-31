@@ -53,7 +53,9 @@ import {
 	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 import {
+	approvePendingRoomMessage,
 	deleteReviewedFlaggedRoomMessage,
+	hidePendingRoomMessage,
 	listRoomFlagReviewQueue,
 	markRoomMessageFlagsSafe,
 	ROOM_FLAG_REVIEW_RESULT,
@@ -114,7 +116,9 @@ export {
 	unmuteRoomMember,
 } from './rooms/memberManagement.js';
 export {
+	approvePendingRoomMessage,
 	deleteReviewedFlaggedRoomMessage,
+	hidePendingRoomMessage,
 	listRoomFlagReviewQueue,
 	markRoomMessageFlagsSafe,
 	ROOM_FLAG_REVIEW_RESULT,
@@ -128,6 +132,7 @@ export {
 
 export default {
 	acceptRoomInvitation,
+	approvePendingRoomMessage,
 	approvePrivateRoomRequest,
 	banRoomMember,
 	canLogRoomInvitationTarget,
@@ -144,6 +149,7 @@ export default {
 	findWritableRoomConversation,
 	getOpenRoomConversation,
 	getRoomActivityLogsPage,
+	hidePendingRoomMessage,
 	inviteRoomMember,
 	joinPublicRoom,
 	listRoomFlagReviewQueue,

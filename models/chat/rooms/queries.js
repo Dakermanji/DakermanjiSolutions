@@ -16,15 +16,30 @@ const manageableMemberRoles = CHAT_CONVERSATION_MEMBER_MANAGE_ROLES
 
 const activeMemberStatus = CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE;
 
-function buildVisibleMessageCondition(messageAlias, includeSender = false) {
-	const senderCondition = includeSender ? `
-					OR ${messageAlias}.sender_user_id = $1` : '';
+function buildPendingMessageAudienceCondition(messageAlias, includeSender) {
+	const conditions = [
+		`(
+							ccm.role IN (${manageableMemberRoles})
+							AND ccm.status = '${activeMemberStatus}'
+						)`,
+	];
 
+	if (includeSender) {
+		conditions.unshift(`${messageAlias}.sender_user_id = $1`);
+	}
+
+	return conditions.join(`
+						OR `);
+}
+
+function buildVisibleMessageCondition(messageAlias, includeSender = false) {
 	return `
-					${messageAlias}.moderation_status = 'visible'${senderCondition}
+					${messageAlias}.moderation_status = 'visible'
 					OR (
-						ccm.role IN (${manageableMemberRoles})
-						AND ccm.status = '${activeMemberStatus}'
+						${messageAlias}.moderation_status = 'pending_review'
+						AND (
+							${buildPendingMessageAudienceCondition(messageAlias, includeSender)}
+						)
 					)
 				`;
 }

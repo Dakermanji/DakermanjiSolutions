@@ -46,7 +46,9 @@ export {
 	unmuteChatRoomMember,
 } from './roomMembers.js';
 export {
+	approvePendingRoomChatMessage,
 	deleteFlaggedRoomMessage,
 	getRoomMessageFlags,
+	hidePendingRoomChatMessage,
 	markRoomMessageSafe,
 } from './roomFlags.js';

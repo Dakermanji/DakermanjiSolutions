@@ -1,8 +1,12 @@
 //! services/chat/messages/writes.js
 
 import ChatMessagesModel from '../../../models/chat/Messages.js';
+import {
+	CHAT_MESSAGE_MODERATION_STATUSES,
+} from '../../../constants/chat.js';
 import { findWritableChatConversation } from '../authorization.js';
 import { findWritableRoomConversation } from '../rooms.js';
+import { canChatMemberManage } from '../rooms/permissions.js';
 import { formatLiveMessage } from './formatters.js';
 import { extractMessageMentionUsernames } from './mentions.js';
 import { notifyMessageMentions } from './notifications.js';
@@ -122,9 +126,9 @@ export async function createRoomMessage({
 		body: normalizedBody,
 	});
 
-	const safetyDecision = getMessageSafetyDecision({
+	const safetyDecision = getRoomMessageSafetyDecision({
 		body: normalizedBody,
-		conversationType: conversation.conversation_type,
+		conversation,
 	});
 
 	const message = await ChatMessagesModel.createConversationMessage({
@@ -148,6 +152,25 @@ export async function createRoomMessage({
 	}
 
 	return formattedMessage;
+}
+
+function getRoomMessageSafetyDecision({ body, conversation }) {
+	if (
+		canChatMemberManage(
+			conversation.member_role,
+			conversation.member_status,
+		)
+	) {
+		return {
+			moderationStatus: CHAT_MESSAGE_MODERATION_STATUSES.VISIBLE,
+			moderationReason: null,
+		};
+	}
+
+	return getMessageSafetyDecision({
+		body,
+		conversationType: conversation.conversation_type,
+	});
 }
 
 async function resolveMentionedUserIds({

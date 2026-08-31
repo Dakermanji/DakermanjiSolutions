@@ -22,7 +22,8 @@ const unreadMessageVisibilityCondition = `
 			AND (
 				unread_messages.moderation_status = 'visible'
 				OR (
-					ccm.role IN (${manageableMemberRoles})
+					unread_messages.moderation_status = 'pending_review'
+					AND ccm.role IN (${manageableMemberRoles})
 					AND ccm.status = '${activeMemberStatus}'
 				)
 			)

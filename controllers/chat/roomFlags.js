@@ -2,12 +2,18 @@
 
 import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
 import {
+	approvePendingRoomMessage,
 	deleteReviewedFlaggedRoomMessage,
+	hidePendingRoomMessage,
 	listRoomFlagReviewQueue,
 	markRoomMessageFlagsSafe,
 	ROOM_FLAG_REVIEW_RESULT,
 } from '../../services/chat/rooms.js';
-import { emitChatMessageDeleted } from '../../services/chat/live.js';
+import {
+	emitChatMessageCreated,
+	emitChatMessageDeleted,
+	emitChatMessageEdited,
+} from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import { setActiveChatConversation } from './session.js';
 
@@ -22,6 +28,18 @@ const ROOM_FLAG_REVIEW_ACTIONS = Object.freeze({
 		run: deleteReviewedFlaggedRoomMessage,
 		successKey: 'chat:flags.deleteSuccess',
 		errorKey: 'chat:flags.deleteError',
+		emitDeleted: true,
+	},
+	approvePending: {
+		run: approvePendingRoomMessage,
+		successKey: 'chat:flags.approvePendingSuccess',
+		errorKey: 'chat:flags.approvePendingError',
+		emitCreated: true,
+	},
+	hidePending: {
+		run: hidePendingRoomMessage,
+		successKey: 'chat:flags.hidePendingSuccess',
+		errorKey: 'chat:flags.hidePendingError',
 		emitDeleted: true,
 	},
 });
@@ -52,8 +70,24 @@ function isStaleFlagReviewResult(result) {
 	return result.reason === ROOM_FLAG_REVIEW_RESULT.MESSAGE_NOT_FOUND;
 }
 
+async function emitReviewAction(action, result) {
+	if (!result.ok || !result.message) return;
+
+	if (action.emitCreated) {
+		emitChatMessageEdited(result.message);
+		await emitChatMessageCreated(result.message);
+	}
+
+	if (action.emitDeleted) {
+		await emitChatMessageDeleted({
+			id: result.message.id,
+			conversation_id: result.message.conversationId,
+		});
+	}
+}
+
 /**
- * Return pending flagged messages for one manageable room.
+ * Return pending flagged and moderated messages for one manageable room.
  *
  * @param {import('express').Request} req
  * @param {import('express').Response} res
@@ -102,12 +136,7 @@ function createRoomFlagReviewActionHandler(action) {
 			const result = await action.run(input);
 
 			if (wantsJson(req)) {
-				if (result.ok && action.emitDeleted) {
-					await emitChatMessageDeleted({
-						id: result.message.id,
-						conversation_id: result.message.conversationId,
-					});
-				}
+				await emitReviewAction(action, result);
 
 				return res.status(getRoomFlagReviewStatus(result.reason)).json({
 					ok: result.ok,
@@ -124,12 +153,7 @@ function createRoomFlagReviewActionHandler(action) {
 			);
 			setActiveChatConversation(req, input.conversationId);
 
-			if (result.ok && action.emitDeleted) {
-				await emitChatMessageDeleted({
-					id: result.message.id,
-					conversation_id: result.message.conversationId,
-				});
-			}
+			await emitReviewAction(action, result);
 
 			return res.redirect(CHAT_OPEN_REDIRECT);
 		} catch (error) {
@@ -143,4 +167,10 @@ export const markRoomMessageSafe = createRoomFlagReviewActionHandler(
 );
 export const deleteFlaggedRoomMessage = createRoomFlagReviewActionHandler(
 	ROOM_FLAG_REVIEW_ACTIONS.delete,
+);
+export const approvePendingRoomChatMessage = createRoomFlagReviewActionHandler(
+	ROOM_FLAG_REVIEW_ACTIONS.approvePending,
+);
+export const hidePendingRoomChatMessage = createRoomFlagReviewActionHandler(
+	ROOM_FLAG_REVIEW_ACTIONS.hidePending,
 );

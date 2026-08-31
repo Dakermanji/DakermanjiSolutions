@@ -4,6 +4,7 @@ import MessageFlagsModel from '../../../models/chat/MessageFlags.js';
 import { CHAT_ROOM_ACTIVITY_ACTIONS } from '../../../constants/chat.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
 import { getUserAvatarProfile } from '../../avatar/dicebear.js';
+import { formatLiveMessage } from '../messages/formatters.js';
 import { recordRoomActivity } from './activity.js';
 import { findOpenableRoomConversation } from './access.js';
 import { canChatMemberManage } from './permissions.js';
@@ -14,6 +15,11 @@ export const ROOM_FLAG_REVIEW_RESULT = Object.freeze({
 	ROOM_NOT_FOUND: 'room_not_found',
 	FORBIDDEN: 'forbidden',
 	MESSAGE_NOT_FOUND: 'message_not_found',
+});
+
+export const ROOM_REVIEW_ITEM_TYPES = Object.freeze({
+	FLAGGED: 'flagged',
+	PENDING_MODERATION: 'pending_moderation',
 });
 
 const FLAG_REVIEW_ACTIVITY_ENTITY_TYPE = 'chat_message';
@@ -76,9 +82,7 @@ function normalizeMessagePreview(body) {
 	return `${preview.slice(0, MESSAGE_PREVIEW_MAX_LENGTH - 1)}...`;
 }
 
-function formatFlaggedMessage(message) {
-	if (!message) return null;
-
+function formatReviewMessageSender(message) {
 	const displayName =
 		message.sender_username ||
 		message.sender_email ||
@@ -88,7 +92,24 @@ function formatFlaggedMessage(message) {
 	);
 
 	return {
+		id: message.sender_user_id,
+		username: message.sender_username,
+		email: message.sender_email,
+		displayName,
+		countryCode: message.sender_country_code,
+		avatar: {
+			src: avatar.src,
+			background: avatar.background,
+		},
+	};
+}
+
+function formatFlaggedMessage(message) {
+	if (!message) return null;
+
+	return {
 		id: message.message_id,
+		type: ROOM_REVIEW_ITEM_TYPES.FLAGGED,
 		conversationId: message.conversation_id,
 		body: message.body,
 		preview: normalizeMessagePreview(message.body),
@@ -97,18 +118,33 @@ function formatFlaggedMessage(message) {
 		flagCount: Number(message.flag_count || message.reviewed_flag_count || 0),
 		firstFlaggedAt: message.first_flagged_at,
 		latestFlaggedAt: message.latest_flagged_at,
-		sender: {
-			id: message.sender_user_id,
-			username: message.sender_username,
-			email: message.sender_email,
-			displayName,
-			countryCode: message.sender_country_code,
-			avatar: {
-				src: avatar.src,
-				background: avatar.background,
-			},
-		},
+		sender: formatReviewMessageSender(message),
 	};
+}
+
+function formatPendingModerationMessage(message) {
+	if (!message) return null;
+
+	return {
+		id: message.message_id,
+		type: ROOM_REVIEW_ITEM_TYPES.PENDING_MODERATION,
+		conversationId: message.conversation_id,
+		body: message.body,
+		preview: normalizeMessagePreview(message.body),
+		createdAt: message.message_created_at,
+		updatedAt: message.message_updated_at,
+		moderationStatus: message.moderation_status,
+		moderationReason: message.moderation_reason,
+		sender: formatReviewMessageSender(message),
+	};
+}
+
+function getReviewItemSortTime(message) {
+	return new Date(
+		message.latestFlaggedAt ||
+		message.createdAt ||
+		0,
+	).getTime();
 }
 
 async function recordFlagReviewActivity({
@@ -116,6 +152,7 @@ async function recordFlagReviewActivity({
 	actorUserId,
 	message,
 	action,
+	metadata = {},
 }) {
 	return recordRoomActivity({
 		roomId: room.room_id,
@@ -126,14 +163,14 @@ async function recordFlagReviewActivity({
 		entityType: FLAG_REVIEW_ACTIVITY_ENTITY_TYPE,
 		entityId: message.message_id,
 		metadata: {
-			reviewedFlagCount: Number(message.reviewed_flag_count || 0),
 			messagePreview: normalizeMessagePreview(message.body),
+			...metadata,
 		},
 	});
 }
 
 /**
- * List pending flagged messages for one manageable room.
+ * List pending flagged and moderated messages for one manageable room.
  *
  * @param {object} input
  * @param {string} input.conversationId
@@ -157,17 +194,31 @@ export async function listRoomFlagReviewQueue({
 		});
 	}
 
-	const messages = await MessageFlagsModel.listPendingRoomMessageFlags({
-		conversationId: access.room.conversation_id,
-		order,
-		limit,
-	});
+	const [flaggedMessages, pendingModerationMessages] = await Promise.all([
+		MessageFlagsModel.listPendingRoomMessageFlags({
+			conversationId: access.room.conversation_id,
+			order,
+			limit,
+		}),
+		MessageFlagsModel.listPendingRoomMessageModeration({
+			conversationId: access.room.conversation_id,
+			order,
+			limit,
+		}),
+	]);
+
+	const messages = [
+		...flaggedMessages.map(formatFlaggedMessage),
+		...pendingModerationMessages.map(formatPendingModerationMessage),
+	]
+		.filter(Boolean)
+		.sort((a, b) => getReviewItemSortTime(b) - getReviewItemSortTime(a));
 
 	return createFlagReviewResult(
 		ROOM_FLAG_REVIEW_RESULT.OK,
 		{
 			room: access.room,
-			messages: messages.map(formatFlaggedMessage).filter(Boolean),
+			messages,
 		},
 	);
 }
@@ -209,6 +260,9 @@ async function reviewFlaggedMessage({
 		actorUserId,
 		message,
 		action: activityAction,
+		metadata: {
+			reviewedFlagCount: Number(message.reviewed_flag_count || 0),
+		},
 	});
 
 	return createFlagReviewResult(
@@ -216,6 +270,58 @@ async function reviewFlaggedMessage({
 		{
 			room: access.room,
 			message: formatFlaggedMessage(message),
+		},
+	);
+}
+
+async function reviewPendingModerationMessage({
+	conversationId,
+	actorUserId,
+	messageId,
+	modelAction,
+	activityAction,
+	formatMessage = formatPendingModerationMessage,
+}) {
+	if (!isValidUuid(messageId)) {
+		return createFlagReviewResult(
+			ROOM_FLAG_REVIEW_RESULT.INVALID_INPUT,
+		);
+	}
+
+	const access = await getManageableRoom(conversationId, actorUserId);
+
+	if (!access.ok) {
+		return createFlagReviewResult(access.reason, { room: access.room });
+	}
+
+	const message = await modelAction({
+		conversationId: access.room.conversation_id,
+		messageId,
+		reviewedByUserId: actorUserId,
+	});
+
+	if (!message) {
+		return createFlagReviewResult(
+			ROOM_FLAG_REVIEW_RESULT.MESSAGE_NOT_FOUND,
+			{ room: access.room },
+		);
+	}
+
+	await recordFlagReviewActivity({
+		room: access.room,
+		actorUserId,
+		message,
+		action: activityAction,
+		metadata: {
+			moderationReason: message.moderation_reason || null,
+		},
+	});
+
+	return createFlagReviewResult(
+		ROOM_FLAG_REVIEW_RESULT.OK,
+		{
+			room: access.room,
+			message: formatMessage(message),
 		},
 	);
 }
@@ -254,9 +360,47 @@ export function deleteReviewedFlaggedRoomMessage(input) {
 	});
 }
 
+/**
+ * Approve one pending moderated room message.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.actorUserId
+ * @param {string} input.messageId
+ * @returns {Promise<object>}
+ */
+export function approvePendingRoomMessage(input) {
+	return reviewPendingModerationMessage({
+		...input,
+		modelAction: MessageFlagsModel.approvePendingMessage,
+		activityAction: CHAT_ROOM_ACTIVITY_ACTIONS.PENDING_MESSAGE_APPROVED,
+		formatMessage: formatLiveMessage,
+	});
+}
+
+/**
+ * Hide one pending moderated room message.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.actorUserId
+ * @param {string} input.messageId
+ * @returns {Promise<object>}
+ */
+export function hidePendingRoomMessage(input) {
+	return reviewPendingModerationMessage({
+		...input,
+		modelAction: MessageFlagsModel.hidePendingMessage,
+		activityAction: CHAT_ROOM_ACTIVITY_ACTIONS.PENDING_MESSAGE_HIDDEN,
+	});
+}
+
 export default {
+	approvePendingRoomMessage,
 	deleteReviewedFlaggedRoomMessage,
+	hidePendingRoomMessage,
 	listRoomFlagReviewQueue,
 	markRoomMessageFlagsSafe,
 	ROOM_FLAG_REVIEW_RESULT,
+	ROOM_REVIEW_ITEM_TYPES,
 };

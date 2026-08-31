@@ -2,6 +2,7 @@
 
 import { Router } from 'express';
 import {
+	approvePendingRoomChatMessage,
 	closeFriendConversation,
 	cancelPrivateRoomAccessRequest,
 	banChatRoomMember,
@@ -24,6 +25,7 @@ import {
 	getPublicRooms,
 	getRoomActivityLogs,
 	getRoomMessageFlags,
+	hidePendingRoomChatMessage,
 	inviteChatRoomMember,
 	getRoomChatMessageReactionUsers,
 	joinPublicRoomConversation,
@@ -72,6 +74,8 @@ router.post('/rooms/messages/open', openRoomChatMessage);
 router.post('/rooms/messages/react', reactToRoomChatMessage);
 router.post('/rooms/flags/safe', markRoomMessageSafe);
 router.post('/rooms/flags/delete', deleteFlaggedRoomMessage);
+router.post('/rooms/flags/approve-pending', approvePendingRoomChatMessage);
+router.post('/rooms/flags/hide-pending', hidePendingRoomChatMessage);
 router.post('/rooms', createChatRoom);
 router.post('/rooms/update', updateChatRoom);
 router.post('/rooms/join', joinPublicRoomConversation);

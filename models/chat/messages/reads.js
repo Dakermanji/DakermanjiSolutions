@@ -85,8 +85,13 @@ export async function findRecentConversationMessages(
 				AND cm.deleted_at IS NULL
 				AND (
 					cm.moderation_status = 'visible'
-					OR cm.sender_user_id = $3
-					OR $4::boolean
+					OR (
+						cm.moderation_status = 'pending_review'
+						AND (
+							cm.sender_user_id = $3
+							OR $4::boolean
+						)
+					)
 				)
 			ORDER BY cm.created_at DESC, cm.id DESC
 			LIMIT $2
@@ -196,8 +201,13 @@ export async function findOlderConversationMessages({
 				AND cm.deleted_at IS NULL
 				AND (
 					cm.moderation_status = 'visible'
-					OR cm.sender_user_id = $4
-					OR $5::boolean
+					OR (
+						cm.moderation_status = 'pending_review'
+						AND (
+							cm.sender_user_id = $4
+							OR $5::boolean
+						)
+					)
 				)
 				AND (
 					cm.created_at < cursor.created_at
@@ -252,8 +262,13 @@ export async function findConversationMessageById({
 			AND cm.deleted_at IS NULL
 			AND (
 				cm.moderation_status = 'visible'
-				OR cm.sender_user_id = $3
-				OR $4::boolean
+				OR (
+					cm.moderation_status = 'pending_review'
+					AND (
+						cm.sender_user_id = $3
+						OR $4::boolean
+					)
+				)
 			)
 		LIMIT 1;
 	`;
