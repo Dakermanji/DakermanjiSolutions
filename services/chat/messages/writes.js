@@ -6,6 +6,7 @@ import { findWritableRoomConversation } from '../rooms.js';
 import { formatLiveMessage } from './formatters.js';
 import { extractMessageMentionUsernames } from './mentions.js';
 import { notifyMessageMentions } from './notifications.js';
+import { getMessageSafetyDecision } from './safety.js';
 import {
 	MESSAGE_BODY_MAX_LENGTH,
 	normalizeMessageBody,
@@ -121,21 +122,30 @@ export async function createRoomMessage({
 		body: normalizedBody,
 	});
 
+	const safetyDecision = getMessageSafetyDecision({
+		body: normalizedBody,
+		conversationType: conversation.conversation_type,
+	});
+
 	const message = await ChatMessagesModel.createConversationMessage({
 		conversationId: conversation.conversation_id,
 		senderUserId,
 		replyToMessageId: reply.replyToMessageId,
 		mentionedUserIds,
 		body: normalizedBody,
+		moderationStatus: safetyDecision.moderationStatus,
+		moderationReason: safetyDecision.moderationReason,
 	});
 
 	const formattedMessage = formatLiveMessage(message);
 
-	await notifyMessageMentions({
-		message: formattedMessage,
-		senderUserId,
-		kind: 'room',
-	});
+	if (!formattedMessage.isPendingReview) {
+		await notifyMessageMentions({
+			message: formattedMessage,
+			senderUserId,
+			kind: 'room',
+		});
+	}
 
 	return formattedMessage;
 }

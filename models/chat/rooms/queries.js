@@ -1,10 +1,33 @@
 //! models/chat/rooms/queries.js
 
-import { CHAT_CONVERSATION_MEMBER_READ_STATUSES } from '../../../constants/chat.js';
+import {
+	CHAT_CONVERSATION_MEMBER_MANAGE_ROLES,
+	CHAT_CONVERSATION_MEMBER_READ_STATUSES,
+	CHAT_CONVERSATION_MEMBER_STATUSES,
+} from '../../../constants/chat.js';
 
 const readableMemberStatuses = CHAT_CONVERSATION_MEMBER_READ_STATUSES
 	.map((status) => `'${status}'`)
 	.join(', ');
+
+const manageableMemberRoles = CHAT_CONVERSATION_MEMBER_MANAGE_ROLES
+	.map((role) => `'${role}'`)
+	.join(', ');
+
+const activeMemberStatus = CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE;
+
+function buildVisibleMessageCondition(messageAlias, includeSender = false) {
+	const senderCondition = includeSender ? `
+					OR ${messageAlias}.sender_user_id = $1` : '';
+
+	return `
+					${messageAlias}.moderation_status = 'visible'${senderCondition}
+					OR (
+						ccm.role IN (${manageableMemberRoles})
+						AND ccm.status = '${activeMemberStatus}'
+					)
+				`;
+}
 
 export function buildVisibleRoomsQuery(visibilityCondition) {
 	return `
@@ -18,7 +41,7 @@ export function buildVisibleRoomsQuery(visibilityCondition) {
 			cc.type AS conversation_type,
 			cc.title,
 			cc.created_by_user_id,
-			cc.last_message_id,
+			lm.id AS last_message_id,
 			cc.created_at,
 			cc.updated_at,
 			lm.created_at AS last_message_created_at,
@@ -35,6 +58,7 @@ export function buildVisibleRoomsQuery(visibilityCondition) {
 				WHERE unread_messages.conversation_id = cc.id
 					AND unread_messages.sender_user_id <> $1
 					AND unread_messages.deleted_at IS NULL
+					AND (${buildVisibleMessageCondition('unread_messages')})
 					AND (
 						ccm.last_read_message_id IS NULL
 						OR unread_messages.created_at > read_message.created_at
@@ -54,8 +78,16 @@ export function buildVisibleRoomsQuery(visibilityCondition) {
 			AND ccm.status IN (${readableMemberStatuses})
 		INNER JOIN users owner
 			ON owner.id = cc.created_by_user_id
-		LEFT JOIN chat_messages lm
-			ON lm.id = cc.last_message_id
+		LEFT JOIN LATERAL (
+			SELECT latest_message.id, latest_message.created_at
+			FROM chat_messages latest_message
+			WHERE latest_message.conversation_id = cc.id
+				AND latest_message.deleted_at IS NULL
+				AND (${buildVisibleMessageCondition('latest_message', true)})
+			ORDER BY latest_message.created_at DESC, latest_message.id DESC
+			LIMIT 1
+		) lm
+			ON true
 		WHERE ${visibilityCondition}
 			AND cr.archived_at IS NULL
 			AND cc.archived_at IS NULL

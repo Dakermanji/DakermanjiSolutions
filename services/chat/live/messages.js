@@ -1,8 +1,10 @@
 //! services/chat/live/messages.js
 
+import ChatConversationMembersModel from '../../../models/chat/ConversationMembers.js';
 import {
 	getChatConversationRoom,
 	getChatSocketServer,
+	getChatUserRoom,
 } from './state.js';
 import { emitChatUnreadCountsForConversation } from './unread.js';
 
@@ -15,6 +17,24 @@ import { emitChatUnreadCountsForConversation } from './unread.js';
 export async function emitChatMessageCreated(message) {
 	const chatSocketServer = getChatSocketServer();
 	if (!chatSocketServer || !message?.conversationId) return;
+
+	if (message.isPendingReview) {
+		const recipientUserIds =
+			await ChatConversationMembersModel.findPendingMessageRecipientUserIds({
+				conversationId: message.conversationId,
+				senderUserId: message.sender?.id,
+			});
+
+		for (const userId of new Set(recipientUserIds.filter(Boolean))) {
+			chatSocketServer
+				.to(getChatUserRoom(userId))
+				.emit('chat:message:created', {
+					message,
+				});
+		}
+
+		return;
+	}
 
 	chatSocketServer
 		.to(getChatConversationRoom(message.conversationId))

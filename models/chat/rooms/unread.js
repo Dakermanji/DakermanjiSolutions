@@ -2,13 +2,31 @@
 
 import { queryRows } from '../../../config/database.js';
 import {
+	CHAT_CONVERSATION_MEMBER_MANAGE_ROLES,
 	CHAT_CONVERSATION_MEMBER_READ_STATUSES,
+	CHAT_CONVERSATION_MEMBER_STATUSES,
 	CHAT_ROOM_VISIBILITY,
 } from '../../../constants/chat.js';
 
 const readableMemberStatuses = CHAT_CONVERSATION_MEMBER_READ_STATUSES
 	.map((status) => `'${status}'`)
 	.join(', ');
+
+const manageableMemberRoles = CHAT_CONVERSATION_MEMBER_MANAGE_ROLES
+	.map((role) => `'${role}'`)
+	.join(', ');
+
+const activeMemberStatus = CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE;
+
+const unreadMessageVisibilityCondition = `
+			AND (
+				unread_messages.moderation_status = 'visible'
+				OR (
+					ccm.role IN (${manageableMemberRoles})
+					AND ccm.status = '${activeMemberStatus}'
+				)
+			)
+`;
 
 async function countUnreadRoomMessagesForUserByVisibility(
 	userId,
@@ -29,6 +47,7 @@ async function countUnreadRoomMessagesForUserByVisibility(
 			ON unread_messages.conversation_id = cc.id
 			AND unread_messages.sender_user_id <> $1
 			AND unread_messages.deleted_at IS NULL
+		${unreadMessageVisibilityCondition}
 		LEFT JOIN chat_messages read_message
 			ON read_message.id = ccm.last_read_message_id
 		WHERE ${visibilityCondition}
@@ -69,6 +88,7 @@ export async function countUnreadRoomMessagesForUser(userId) {
 			ON unread_messages.conversation_id = cc.id
 			AND unread_messages.sender_user_id <> $1
 			AND unread_messages.deleted_at IS NULL
+		${unreadMessageVisibilityCondition}
 		LEFT JOIN chat_messages read_message
 			ON read_message.id = ccm.last_read_message_id
 		WHERE cr.archived_at IS NULL

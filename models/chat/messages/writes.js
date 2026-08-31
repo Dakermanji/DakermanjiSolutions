@@ -11,6 +11,8 @@ import pool, { queryRows } from '../../../config/database.js';
  * @param {string|null} [message.replyToMessageId]
  * @param {Array<string>} [message.mentionedUserIds]
  * @param {string} message.body
+ * @param {string} [message.moderationStatus]
+ * @param {string|null} [message.moderationReason]
  * @returns {Promise<object>}
  */
 export async function createConversationMessage({
@@ -19,6 +21,8 @@ export async function createConversationMessage({
 	replyToMessageId = null,
 	mentionedUserIds = [],
 	body,
+	moderationStatus = 'visible',
+	moderationReason = null,
 }) {
 	const client = await pool.connect();
 
@@ -31,12 +35,21 @@ export async function createConversationMessage({
 					conversation_id,
 					sender_user_id,
 					reply_to_message_id,
-					body
+					body,
+					moderation_status,
+					moderation_reason
 				)
-				VALUES ($1, $2, $3, $4)
+				VALUES ($1, $2, $3, $4, $5, $6)
 				RETURNING id;
 			`,
-			[conversationId, senderUserId, replyToMessageId, body],
+			[
+				conversationId,
+				senderUserId,
+				replyToMessageId,
+				body,
+				moderationStatus,
+				moderationReason,
+			],
 		);
 		const messageId = messageRows.rows[0].id;
 
@@ -76,6 +89,10 @@ export async function createConversationMessage({
 					cm.sender_user_id,
 					cm.reply_to_message_id,
 					cm.body,
+					cm.moderation_status,
+					cm.moderation_reason,
+					cm.reviewed_by_user_id,
+					cm.reviewed_at,
 					cm.edited_at,
 					cm.created_at,
 					cm.updated_at,
@@ -161,6 +178,7 @@ export async function updateOwnConversationMessage({
 				AND cm.conversation_id = $1
 				AND cm.sender_user_id = $3
 				AND cm.deleted_at IS NULL
+				AND cm.moderation_status = 'visible'
 				AND cm.created_at >= NOW() - ($5::int * INTERVAL '1 millisecond')
 				AND NOT EXISTS (
 					SELECT 1
@@ -184,6 +202,10 @@ export async function updateOwnConversationMessage({
 				cm.sender_user_id,
 				cm.reply_to_message_id,
 				cm.body,
+				cm.moderation_status,
+				cm.moderation_reason,
+				cm.reviewed_by_user_id,
+				cm.reviewed_at,
 				cm.edited_at,
 				cm.created_at,
 				cm.updated_at
@@ -194,6 +216,10 @@ export async function updateOwnConversationMessage({
 			updated_message.sender_user_id,
 			updated_message.reply_to_message_id,
 			updated_message.body,
+			updated_message.moderation_status,
+			updated_message.moderation_reason,
+			updated_message.reviewed_by_user_id,
+			updated_message.reviewed_at,
 			updated_message.edited_at,
 			updated_message.created_at,
 			updated_message.updated_at,
@@ -279,6 +305,7 @@ export async function deleteOwnConversationMessage({
 						AND cm.conversation_id = $1
 						AND cm.sender_user_id = $3
 						AND cm.deleted_at IS NULL
+						AND cm.moderation_status = 'visible'
 						AND cm.created_at >= NOW() - ($4::int * INTERVAL '1 millisecond')
 						AND NOT EXISTS (
 							SELECT 1
@@ -321,6 +348,7 @@ export async function deleteOwnConversationMessage({
 						FROM chat_messages cm
 						WHERE cm.conversation_id = cc.id
 							AND cm.deleted_at IS NULL
+							AND cm.moderation_status = 'visible'
 						ORDER BY cm.created_at DESC, cm.id DESC
 						LIMIT 1
 					),

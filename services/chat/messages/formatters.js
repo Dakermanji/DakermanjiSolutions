@@ -3,6 +3,7 @@
 import { getUserAvatarProfile } from '../../avatar/dicebear.js';
 import {
 	CHAT_MESSAGE_LIMITS,
+	CHAT_MESSAGE_MODERATION_STATUSES,
 	CHAT_MESSAGE_REACTION_LABELS,
 	CHAT_MESSAGE_REACTIONS,
 } from '../../../constants/chat.js';
@@ -98,6 +99,10 @@ function formatMessageReply(message) {
 export function formatMessage(message, viewerUserId) {
 	const isMine = message.sender_user_id === viewerUserId;
 	const pendingFlagCount = Number(message.pending_flag_count || 0);
+	const moderationStatus = message.moderation_status ||
+		CHAT_MESSAGE_MODERATION_STATUSES.VISIBLE;
+	const isPendingReview =
+		moderationStatus === CHAT_MESSAGE_MODERATION_STATUSES.PENDING_REVIEW;
 
 	return {
 		id: message.id,
@@ -106,11 +111,20 @@ export function formatMessage(message, viewerUserId) {
 		createdAt: message.created_at,
 		updatedAt: message.updated_at,
 		editedAt: message.edited_at,
+		moderationStatus,
+		moderationReason: message.moderation_reason || null,
+		isPendingReview,
 		pendingFlagCount,
 		flaggedByViewer: Boolean(message.flagged_by_viewer),
 		isMine,
-		canEdit: Boolean(message.can_edit ?? (isMine && pendingFlagCount === 0)),
-		canDelete: Boolean(message.can_delete ?? (isMine && pendingFlagCount === 0)),
+		canEdit: Boolean(
+			message.can_edit ??
+			(isMine && !isPendingReview && pendingFlagCount === 0),
+		),
+		canDelete: Boolean(
+			message.can_delete ??
+			(isMine && !isPendingReview && pendingFlagCount === 0),
+		),
 		replyTo: formatMessageReply(message),
 		mentions: formatMessageMentions(message),
 		reactions: Array.isArray(message.reactions) ? message.reactions : [],
@@ -119,6 +133,11 @@ export function formatMessage(message, viewerUserId) {
 }
 
 export function formatLiveMessage(message) {
+	const moderationStatus = message.moderation_status ||
+		CHAT_MESSAGE_MODERATION_STATUSES.VISIBLE;
+	const isPendingReview =
+		moderationStatus === CHAT_MESSAGE_MODERATION_STATUSES.PENDING_REVIEW;
+
 	return {
 		id: message.id,
 		conversationId: message.conversation_id,
@@ -126,10 +145,13 @@ export function formatLiveMessage(message) {
 		createdAt: message.created_at,
 		updatedAt: message.updated_at,
 		editedAt: message.edited_at,
+		moderationStatus,
+		moderationReason: message.moderation_reason || null,
+		isPendingReview,
 		pendingFlagCount: Number(message.pending_flag_count || 0),
 		flaggedByViewer: Boolean(message.flagged_by_viewer),
-		canEdit: true,
-		canDelete: true,
+		canEdit: !isPendingReview,
+		canDelete: !isPendingReview,
 		replyTo: formatMessageReply(message),
 		mentions: formatMessageMentions(message),
 		reactions: [],

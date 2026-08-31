@@ -13,6 +13,7 @@ export async function findRecentConversationMessages(
 	conversationId,
 	limit = 50,
 	viewerUserId = null,
+	canViewPendingModeration = false,
 ) {
 	const q = `
 		SELECT *
@@ -23,6 +24,10 @@ export async function findRecentConversationMessages(
 				cm.sender_user_id,
 				cm.reply_to_message_id,
 				cm.body,
+				cm.moderation_status,
+				cm.moderation_reason,
+				cm.reviewed_by_user_id,
+				cm.reviewed_at,
 				cm.edited_at,
 				cm.created_at,
 				cm.updated_at,
@@ -78,13 +83,23 @@ export async function findRecentConversationMessages(
 				AND viewer_flag.status = 'pending'
 			WHERE cm.conversation_id = $1
 				AND cm.deleted_at IS NULL
+				AND (
+					cm.moderation_status = 'visible'
+					OR cm.sender_user_id = $3
+					OR $4::boolean
+				)
 			ORDER BY cm.created_at DESC, cm.id DESC
 			LIMIT $2
 		) recent_messages
 		ORDER BY recent_messages.created_at ASC, recent_messages.id ASC;
 	`;
 
-	return queryRows(q, [conversationId, limit, viewerUserId]);
+	return queryRows(q, [
+		conversationId,
+		limit,
+		viewerUserId,
+		canViewPendingModeration,
+	]);
 }
 
 /**
@@ -101,6 +116,7 @@ export async function findOlderConversationMessages({
 	beforeId,
 	limit = 50,
 	viewerUserId = null,
+	canViewPendingModeration = false,
 }) {
 	const q = `
 		WITH cursor_message AS (
@@ -118,6 +134,10 @@ export async function findOlderConversationMessages({
 				cm.sender_user_id,
 				cm.reply_to_message_id,
 				cm.body,
+				cm.moderation_status,
+				cm.moderation_reason,
+				cm.reviewed_by_user_id,
+				cm.reviewed_at,
 				cm.edited_at,
 				cm.created_at,
 				cm.updated_at,
@@ -175,6 +195,11 @@ export async function findOlderConversationMessages({
 			WHERE cm.conversation_id = $1
 				AND cm.deleted_at IS NULL
 				AND (
+					cm.moderation_status = 'visible'
+					OR cm.sender_user_id = $4
+					OR $5::boolean
+				)
+				AND (
 					cm.created_at < cursor.created_at
 					OR (
 						cm.created_at = cursor.created_at
@@ -192,6 +217,7 @@ export async function findOlderConversationMessages({
 		beforeId,
 		limit,
 		viewerUserId,
+		canViewPendingModeration,
 	]);
 }
 
@@ -243,6 +269,7 @@ export async function findReplyableConversationMessage({
 		WHERE cm.conversation_id = $1
 			AND cm.id = $2
 			AND cm.deleted_at IS NULL
+			AND cm.moderation_status = 'visible'
 		LIMIT 1;
 	`;
 

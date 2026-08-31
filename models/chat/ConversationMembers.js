@@ -1,6 +1,10 @@
 //! models/chat/ConversationMembers.js
 
 import { queryRows } from '../../config/database.js';
+import {
+	CHAT_CONVERSATION_MEMBER_MANAGE_ROLES,
+	CHAT_CONVERSATION_MEMBER_STATUSES,
+} from '../../constants/chat.js';
 
 /**
  * List user ids for members in one conversation.
@@ -16,6 +20,42 @@ export async function findConversationMemberUserIds(conversationId) {
 	`;
 
 	const rows = await queryRows(q, [conversationId]);
+	return rows.map((row) => row.user_id);
+}
+
+/**
+ * List user ids allowed to see one pending moderated message.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.senderUserId
+ * @returns {Promise<Array<string>>}
+ */
+export async function findPendingMessageRecipientUserIds({
+	conversationId,
+	senderUserId,
+}) {
+	const q = `
+		SELECT user_id
+		FROM chat_conversation_members
+		WHERE conversation_id = $1
+			AND archived_at IS NULL
+			AND (
+				user_id = $2
+				OR (
+					role = ANY($3::chat_member_role[])
+					AND status = $4::chat_member_status
+				)
+			);
+	`;
+
+	const rows = await queryRows(q, [
+		conversationId,
+		senderUserId,
+		CHAT_CONVERSATION_MEMBER_MANAGE_ROLES,
+		CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+	]);
+
 	return rows.map((row) => row.user_id);
 }
 
@@ -50,5 +90,6 @@ export async function markReadThroughLatestMessage(conversationId, userId) {
 
 export default {
 	findConversationMemberUserIds,
+	findPendingMessageRecipientUserIds,
 	markReadThroughLatestMessage,
 };

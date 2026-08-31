@@ -3,6 +3,7 @@
 import ChatMessagesModel from '../../../models/chat/Messages.js';
 import { findReadableChatConversation } from '../authorization.js';
 import { findOpenableRoomConversation } from '../rooms.js';
+import { canChatMemberManage } from '../rooms/permissions.js';
 import { emptyMessagePage, formatMessagePage } from './pagination.js';
 import { MESSAGE_PAGE_LIMIT, RECENT_MESSAGE_LIMIT } from './utils.js';
 
@@ -72,6 +73,10 @@ export async function listRoomMessages(conversationId, viewerUserId) {
 		conversation.conversation_id,
 		RECENT_MESSAGE_LIMIT + 1,
 		viewerUserId,
+		canChatMemberManage(
+			conversation.member_role,
+			conversation.member_status,
+		),
 	);
 
 	return formatMessagePage(
@@ -148,6 +153,10 @@ export async function listOlderRoomMessages({
 		beforeId,
 		limit: MESSAGE_PAGE_LIMIT + 1,
 		viewerUserId,
+		canViewPendingModeration: canChatMemberManage(
+			conversation.member_role,
+			conversation.member_status,
+		),
 	});
 
 	return formatMessagePage(
