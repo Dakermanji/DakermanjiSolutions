@@ -52,7 +52,8 @@
 		"reactionError": "Impossible de charger les réactions.",
 		"reactionYou": "Vous",
 		"mentionSuggestions": "Suggestions de mention",
-		"waitingApproval": "En attente d'approbation"
+		"waitingApproval": "En attente d'approbation",
+		"roomAccessLost": "Vous n’avez plus accès à ce salon."
 	},
 	"members": {
 		"toggle": "Membres du salon",

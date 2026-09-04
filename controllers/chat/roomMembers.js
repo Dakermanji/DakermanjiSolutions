@@ -11,6 +11,7 @@ import {
 	unbanRoomMember,
 	unmuteRoomMember,
 } from '../../services/chat/rooms.js';
+import { emitChatRoomMembershipChanged } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import { setActiveChatConversation } from './session.js';
 
@@ -84,6 +85,10 @@ function createRoomMemberActionHandler(action) {
 				actorUserId: req.user.id,
 				targetUserId,
 			});
+
+			if (result.ok) {
+				emitChatRoomMembershipChanged(result.member);
+			}
 
 			req.flash(
 				result.ok ? 'success' : 'error',

@@ -52,7 +52,8 @@
 		"reactionError": "Could not load reactions.",
 		"reactionYou": "You",
 		"mentionSuggestions": "Mention suggestions",
-		"waitingApproval": "Waiting for approval"
+		"waitingApproval": "Waiting for approval",
+		"roomAccessLost": "You no longer have access to this room."
 	},
 	"members": {
 		"toggle": "Room members",

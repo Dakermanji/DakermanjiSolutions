@@ -55,7 +55,8 @@
 		"reactionError": "تعذر تحميل التفاعلات.",
 		"reactionYou": "أنت",
 		"mentionSuggestions": "اقتراحات الإشارة",
-		"waitingApproval": "بانتظار الموافقة"
+		"waitingApproval": "بانتظار الموافقة",
+		"roomAccessLost": "لم يعد لديك حق الوصول إلى هذه الغرفة."
 	},
 	"members": {
 		"toggle": "أعضاء الغرفة",

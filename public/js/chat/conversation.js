@@ -3,7 +3,7 @@
 (() => {
 	const chatPage = document.querySelector('[data-active-conversation-id]');
 	const composer = document.querySelector('[data-chat-composer]');
-	const composerNotice = document.querySelector('[data-chat-composer-notice]');
+	let composerNotice = document.querySelector('[data-chat-composer-notice]');
 	const messageSurface = document.querySelector('[data-chat-message-surface]');
 	const typingIndicator = document.querySelector('[data-chat-typing-indicator]');
 	const messageRenderer = window.ChatConversationRenderer;
@@ -168,9 +168,14 @@
 		socket.on('chat:typing:updated', (payload) => {
 			typingController.showTypingIndicator(payload);
 		});
+		socket.on('chat:room:membership:changed', (payload) => {
+			handleRoomMembershipChange(socket, payload);
+		});
 
 		composer.addEventListener('submit', (event) => {
 			event.preventDefault();
+			if (chatPage.dataset.roomCanWrite === 'false') return;
+
 			typingController.emitTypingState(socket, false);
 			void messages.submitLiveMessage(socket);
 		});
@@ -189,6 +194,78 @@
 		});
 	}
 
+	function handleRoomMembershipChange(socket, payload) {
+		if (
+			!payload ||
+			payload.conversationId !== chatPage.dataset.activeConversationId ||
+			payload.userId !== chatPage.dataset.currentUserId
+		) {
+			return;
+		}
+
+		chatPage.dataset.roomMemberRole = payload.role || '';
+		chatPage.dataset.roomMemberStatus = payload.status || '';
+		chatPage.dataset.roomCanWrite = payload.canWrite ? 'true' : 'false';
+		typingController.emitTypingState(socket, false);
+
+		setComposerDisabled(!payload.canWrite, getMembershipNotice(payload));
+	}
+
+	function getMembershipNotice(payload) {
+		if (payload.canWrite) return '';
+		if (!payload.canRead) {
+			return chatPage.dataset.roomReadDisabledLabel || '';
+		}
+
+		return chatPage.dataset.roomWriteDisabledLabel || '';
+	}
+
+	function setComposerDisabled(isDisabled, noticeText = '') {
+		if (!composer) return;
+
+		for (const control of composer.querySelectorAll('input, button, textarea, select')) {
+			control.disabled = isDisabled;
+		}
+
+		if (isDisabled) {
+			showComposerNotice(noticeText);
+			return;
+		}
+
+		if (composerNotice) {
+			composerNotice.hidden = true;
+		}
+	}
+
+	function showComposerNotice(message) {
+		composerNotice = composerNotice || createComposerNotice();
+		if (!composerNotice) return;
+
+		const text = composerNotice.querySelector('span');
+		if (text) {
+			text.textContent = message;
+		}
+		composerNotice.hidden = false;
+	}
+
+	function createComposerNotice() {
+		if (!composer) return null;
+
+		const notice = document.createElement('div');
+		notice.className = 'chat-composer-notice';
+		notice.dataset.chatComposerNotice = '';
+		notice.setAttribute('role', 'status');
+
+		const icon = document.createElement('i');
+		icon.className = 'bi bi-exclamation-circle-fill';
+		icon.setAttribute('aria-hidden', 'true');
+
+		const text = document.createElement('span');
+		notice.append(icon, text);
+		composer.before(notice);
+
+		return notice;
+	}
 	function focusComposerInput() {
 		const input = composer?.elements.message;
 		if (!input || input.disabled) return;
