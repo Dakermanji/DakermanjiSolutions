@@ -109,6 +109,7 @@ export async function joinPublicRoomConversation({ conversationId, userId }) {
 				WHERE banned_member.conversation_id = cr.conversation_id
 					AND banned_member.user_id = $2
 					AND banned_member.status = $6::chat_member_status
+					AND banned_member.archived_at IS NULL
 			)
 		ON CONFLICT (conversation_id, user_id)
 		DO UPDATE SET

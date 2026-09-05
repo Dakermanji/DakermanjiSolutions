@@ -48,6 +48,14 @@ export async function approvePendingRequestByManager({
 						AND cjr.status = $4::chat_room_join_request_status
 						AND cr.archived_at IS NULL
 						AND cc.archived_at IS NULL
+						AND NOT EXISTS (
+							SELECT 1
+							FROM chat_conversation_members banned_member
+							WHERE banned_member.conversation_id = cr.conversation_id
+								AND banned_member.user_id = cjr.requested_by_user_id
+								AND banned_member.status = $8::chat_member_status
+								AND banned_member.archived_at IS NULL
+						)
 					RETURNING
 						cjr.id,
 						cjr.room_id,
@@ -77,6 +85,7 @@ export async function approvePendingRequestByManager({
 				CHAT_CONVERSATION_MEMBER_ROLES.OWNER,
 				CHAT_CONVERSATION_MEMBER_ROLES.ADMIN,
 				CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+				CHAT_CONVERSATION_MEMBER_STATUSES.BANNED,
 			],
 		);
 		const request = reviewResult.rows[0];
