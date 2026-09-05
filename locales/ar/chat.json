@@ -143,7 +143,8 @@
 			"flaggedMessageDeleted": "حذف رسالة مبلغ عنها من",
 			"messageDeletedByAdmin": "حذف رسالة",
 			"pendingMessageApproved": "وافق على رسالة قيد المراجعة من",
-			"pendingMessageHidden": "أخفى رسالة قيد المراجعة من"
+			"pendingMessageHidden": "أخفى رسالة قيد المراجعة من",
+			"memberJoined": "انضم إلى الغرفة"
 		}
 	},
 	"flags": {

@@ -156,6 +156,26 @@ export async function recordRoomActivity({
 	return formatRoomActivityLog(activity);
 }
 
+export function recordRoomMemberJoinedActivity({
+	room,
+	memberUserId,
+	joinSource = null,
+} = {}) {
+	if (!room || !isValidUuid(memberUserId)) return null;
+
+	return recordRoomActivity({
+		roomId: room.room_id || room.id,
+		conversationId: room.conversation_id || room.conversationId,
+		actorUserId: memberUserId,
+		action: CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_JOINED,
+		entityType: 'chat_conversation_member',
+		entityId: memberUserId,
+		metadata: {
+			roomName: room.title || room.room_title,
+			joinSource,
+		},
+	});
+}
 export async function listRoomActivityLogsPage({
 	roomId,
 	page,
@@ -231,5 +251,6 @@ export default {
 	listRoomActivityLogsPage,
 	normalizeRoomActivityMetadata,
 	recordRoomActivity,
+	recordRoomMemberJoinedActivity,
 	ROOM_ACTIVITY_LOG_RESULT,
 };

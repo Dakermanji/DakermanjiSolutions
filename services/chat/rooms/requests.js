@@ -13,7 +13,10 @@ import {
 	notifyRoomJoinRequestManagers,
 	notifyRoomJoinRequestResult,
 } from './notifications.js';
-import { recordRoomActivity } from './activity.js';
+import {
+	recordRoomActivity,
+	recordRoomMemberJoinedActivity,
+} from './activity.js';
 
 async function recordJoinRequestReviewActivity({ request, action }) {
 	return recordRoomActivity({
@@ -112,6 +115,12 @@ export async function approvePrivateRoomRequest({
 			request,
 			action: CHAT_ROOM_ACTIVITY_ACTIONS.JOIN_REQUEST_APPROVED,
 		});
+		await recordRoomMemberJoinedActivity({
+			room: request,
+			memberUserId: request.requested_by_user_id,
+			joinSource: 'join_request',
+		});
+
 		await respondAndDismissNotificationsByEntity({
 			entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_JOIN_REQUEST,
 			entityId: request.id,

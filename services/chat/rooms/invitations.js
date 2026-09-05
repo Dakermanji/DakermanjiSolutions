@@ -18,7 +18,10 @@ import { findOpenableRoomConversation } from './access.js';
 import { respondAndDismissNotificationsByEntity } from '../../notifications/appNotifications.js';
 import { notifyRoomInvitationCreated } from './notifications.js';
 import { canManageChatRoomMember } from './permissions.js';
-import { recordRoomActivity } from './activity.js';
+import {
+	recordRoomActivity,
+	recordRoomMemberJoinedActivity,
+} from './activity.js';
 
 export const ROOM_INVITATION_RESULT = Object.freeze({
 	OK: 'ok',
@@ -307,6 +310,14 @@ async function respondToRoomInvitation({
 		invitation,
 		action: activityAction,
 	});
+
+	if (responseKey === NOTIFICATION_RESPONSE_KEYS.ACCEPTED) {
+		await recordRoomMemberJoinedActivity({
+			room: invitation,
+			memberUserId: invitation.invited_user_id,
+			joinSource: 'invitation',
+		});
+	}
 
 	await respondAndDismissNotificationsByEntity({
 		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_INVITATION,

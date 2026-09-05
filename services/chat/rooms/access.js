@@ -3,6 +3,7 @@
 import ChatRoomsModel from '../../../models/chat/Rooms.js';
 import ChatConversationMembersModel from '../../../models/chat/ConversationMembers.js';
 import { formatOpenRoomConversation } from './formatters.js';
+import { recordRoomMemberJoinedActivity } from './activity.js';
 import { canChatMemberWrite } from './permissions.js';
 
 /**
@@ -18,6 +19,11 @@ export async function joinPublicRoom({ conversationId, userId }) {
 		return null;
 	}
 
+	const existingRoom = await findOpenableRoomConversation(conversationId, userId);
+	if (existingRoom) {
+		return formatOpenRoomConversation(existingRoom);
+	}
+
 	const membership = await ChatRoomsModel.joinPublicRoomConversation({
 		conversationId,
 		userId,
@@ -27,7 +33,16 @@ export async function joinPublicRoom({ conversationId, userId }) {
 		return null;
 	}
 
-	return getOpenRoomConversation(conversationId, userId);
+	const room = await findOpenableRoomConversation(conversationId, userId);
+	if (room) {
+		await recordRoomMemberJoinedActivity({
+			room,
+			memberUserId: userId,
+			joinSource: 'public_join',
+		});
+	}
+
+	return room ? formatOpenRoomConversation(room) : null;
 }
 
 /**

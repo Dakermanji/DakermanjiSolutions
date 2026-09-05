@@ -140,7 +140,8 @@
 			"flaggedMessageDeleted": "deleted a flagged message from",
 			"messageDeletedByAdmin": "deleted a message",
 			"pendingMessageApproved": "approved a pending message from",
-			"pendingMessageHidden": "hid a pending message from"
+			"pendingMessageHidden": "hid a pending message from",
+			"memberJoined": "joined the room"
 		}
 	},
 	"flags": {

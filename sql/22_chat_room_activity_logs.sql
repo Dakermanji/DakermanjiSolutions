@@ -25,6 +25,7 @@ BEGIN
 		CREATE TYPE chat_room_activity_action AS ENUM (
 			'room_invitation_queued',
 			'member_invited',
+			'member_joined',
 			'room_invitation_accepted',
 			'room_invitation_rejected',
 			'join_request_approved',
