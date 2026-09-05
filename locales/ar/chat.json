@@ -145,7 +145,8 @@
 			"messageDeletedByAdmin": "حذف رسالة",
 			"pendingMessageApproved": "وافق على رسالة قيد المراجعة من",
 			"pendingMessageHidden": "أخفى رسالة قيد المراجعة من",
-			"memberJoined": "انضم إلى الغرفة"
+			"memberJoined": "انضم إلى الغرفة",
+			"memberLeft": "غادر الغرفة"
 		}
 	},
 	"flags": {

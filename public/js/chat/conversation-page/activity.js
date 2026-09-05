@@ -14,6 +14,7 @@
 		join_request_rejected: 'bi-x-circle',
 		member_invited: 'bi-person-plus',
 		member_joined: 'bi-person-check',
+		member_left: 'bi-box-arrow-left',
 		member_banned: 'bi-slash-circle',
 		member_history_deleted: 'bi-trash3',
 		member_muted: 'bi-volume-mute',

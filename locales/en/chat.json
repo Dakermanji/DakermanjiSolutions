@@ -142,7 +142,8 @@
 			"messageDeletedByAdmin": "deleted a message",
 			"pendingMessageApproved": "approved a pending message from",
 			"pendingMessageHidden": "hid a pending message from",
-			"memberJoined": "joined the room"
+			"memberJoined": "joined the room",
+			"memberLeft": "left the room"
 		}
 	},
 	"flags": {

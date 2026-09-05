@@ -142,7 +142,8 @@
 			"messageDeletedByAdmin": "a supprimé un message",
 			"pendingMessageApproved": "a approuve un message en attente de",
 			"pendingMessageHidden": "a masque un message en attente de",
-			"memberJoined": "a rejoint le salon"
+			"memberJoined": "a rejoint le salon",
+			"memberLeft": "a quitté le salon"
 		}
 	},
 	"flags": {

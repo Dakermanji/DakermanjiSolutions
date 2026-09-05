@@ -149,6 +149,7 @@ export const CHAT_ROOM_ACTIVITY_ACTIONS = Object.freeze({
 	ROOM_INVITATION_QUEUED: 'room_invitation_queued',
 	MEMBER_INVITED: 'member_invited',
 	MEMBER_JOINED: 'member_joined',
+	MEMBER_LEFT: 'member_left',
 	ROOM_INVITATION_ACCEPTED: 'room_invitation_accepted',
 	ROOM_INVITATION_REJECTED: 'room_invitation_rejected',
 	JOIN_REQUEST_APPROVED: 'join_request_approved',

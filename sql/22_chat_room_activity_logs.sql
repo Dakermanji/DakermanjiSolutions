@@ -26,6 +26,7 @@ BEGIN
 			'room_invitation_queued',
 			'member_invited',
 			'member_joined',
+			'member_left',
 			'room_invitation_accepted',
 			'room_invitation_rejected',
 			'join_request_approved',
