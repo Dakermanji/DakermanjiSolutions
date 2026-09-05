@@ -19,7 +19,10 @@ import {
 } from './permissions.js';
 import { findOpenableRoomConversation } from './access.js';
 import { notifyRoomMemberPromoted } from './notifications.js';
-import { recordRoomActivity } from './activity.js';
+import {
+	recordRoomActivity,
+	recordRoomMemberLeftActivity,
+} from './activity.js';
 
 export const ROOM_MEMBER_MANAGEMENT_RESULT = Object.freeze({
 	OK: 'ok',
@@ -29,6 +32,7 @@ export const ROOM_MEMBER_MANAGEMENT_RESULT = Object.freeze({
 	SELF_TARGET: 'self_target',
 	FORBIDDEN: 'forbidden',
 	ACTION_NOT_ALLOWED: 'action_not_allowed',
+	OWNER_CANNOT_LEAVE: 'owner_cannot_leave',
 });
 
 const ROOM_MEMBER_MANAGEMENT_ACTIONS = Object.freeze({
@@ -234,6 +238,51 @@ async function manageRoomMember({
 	return createRoomMemberManagementResult(
 		ROOM_MEMBER_MANAGEMENT_RESULT.OK,
 		{ room, target, member },
+	);
+}
+
+export async function leaveRoom({ conversationId, actorUserId } = {}) {
+	if (!conversationId || !actorUserId) {
+		return createRoomMemberManagementResult(
+			ROOM_MEMBER_MANAGEMENT_RESULT.INVALID_INPUT,
+		);
+	}
+
+	const room = await findOpenableRoomConversation(conversationId, actorUserId);
+
+	if (!room) {
+		return createRoomMemberManagementResult(
+			ROOM_MEMBER_MANAGEMENT_RESULT.ROOM_NOT_FOUND,
+		);
+	}
+
+	if (room.member_role === CHAT_CONVERSATION_MEMBER_ROLES.OWNER) {
+		return createRoomMemberManagementResult(
+			ROOM_MEMBER_MANAGEMENT_RESULT.OWNER_CANNOT_LEAVE,
+			{ room },
+		);
+	}
+
+	const member = await ChatRoomsModel.leaveRoomConversation({
+		conversationId: room.conversation_id,
+		userId: actorUserId,
+	});
+
+	if (!member) {
+		return createRoomMemberManagementResult(
+			ROOM_MEMBER_MANAGEMENT_RESULT.ACTION_NOT_ALLOWED,
+			{ room },
+		);
+	}
+
+	await recordRoomMemberLeftActivity({
+		room,
+		memberUserId: actorUserId,
+	});
+
+	return createRoomMemberManagementResult(
+		ROOM_MEMBER_MANAGEMENT_RESULT.OK,
+		{ room, member },
 	);
 }
 

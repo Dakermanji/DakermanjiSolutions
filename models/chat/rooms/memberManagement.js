@@ -93,6 +93,41 @@ async function updateManagedMember({
 }
 
 /**
+ * Archive a member's own room membership when they leave voluntarily.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.userId
+ * @returns {Promise<object|null>}
+ */
+export async function leaveRoomConversation({ conversationId, userId }) {
+	const q = `
+		UPDATE chat_conversation_members target
+		SET
+			archived_at = NOW(),
+			updated_at = NOW()
+		WHERE target.conversation_id = $1
+			AND target.user_id = $2
+			AND target.role <> $3::chat_member_role
+			AND target.status = ANY($4::chat_member_status[])
+			AND target.archived_at IS NULL
+		RETURNING ${MEMBER_RETURN_FIELDS};
+	`;
+
+	const rows = await queryRows(q, [
+		conversationId,
+		userId,
+		CHAT_CONVERSATION_MEMBER_ROLES.OWNER,
+		[
+			CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+			CHAT_CONVERSATION_MEMBER_STATUSES.MUTED,
+		],
+	]);
+
+	return rows[0] || null;
+}
+
+/**
  * Promote a room member to admin. Owner only.
  *
  * @param {object} input

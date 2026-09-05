@@ -176,6 +176,23 @@ export function recordRoomMemberJoinedActivity({
 		},
 	});
 }
+
+export function recordRoomMemberLeftActivity({ room, memberUserId } = {}) {
+	if (!room || !isValidUuid(memberUserId)) return null;
+
+	return recordRoomActivity({
+		roomId: room.room_id || room.id,
+		conversationId: room.conversation_id || room.conversationId,
+		actorUserId: memberUserId,
+		action: CHAT_ROOM_ACTIVITY_ACTIONS.MEMBER_LEFT,
+		entityType: 'chat_conversation_member',
+		entityId: memberUserId,
+		metadata: {
+			roomName: room.title || room.room_title,
+		},
+	});
+}
+
 export async function listRoomActivityLogsPage({
 	roomId,
 	page,
@@ -252,5 +269,6 @@ export default {
 	normalizeRoomActivityMetadata,
 	recordRoomActivity,
 	recordRoomMemberJoinedActivity,
+	recordRoomMemberLeftActivity,
 	ROOM_ACTIVITY_LOG_RESULT,
 };
