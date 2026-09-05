@@ -21,6 +21,7 @@
 		"send": "Envoyer",
 		"messageError": "Impossible d’envoyer ce message.",
 		"mutedMessageError": "Vous pouvez lire ce salon, mais vous ne pouvez pas envoyer de messages.",
+		"rateLimited": "Vous envoyez des messages trop rapidement. Veuillez patienter un instant.",
 		"edit": "Modifier le message",
 		"delete": "Supprimer le message",
 		"edited": "modifié",

@@ -21,6 +21,7 @@
 		"send": "Send",
 		"messageError": "Could not send this message.",
 		"mutedMessageError": "You can read this room but cannot send messages.",
+		"rateLimited": "You are sending messages too quickly. Please wait a moment.",
 		"edit": "Edit message",
 		"delete": "Delete message",
 		"edited": "edited",

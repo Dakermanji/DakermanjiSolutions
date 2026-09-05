@@ -4,6 +4,7 @@
 	const {
 		emitWithAck,
 		setFormControlsDisabled,
+		showFlashMessage,
 	} = window.ChatConversationUtils;
 	const { createFlagController } = window.ChatConversationMessageFlags;
 	const { createHistoryController } = window.ChatConversationMessageHistory;
@@ -84,6 +85,16 @@
 					replyToMessageId,
 					message,
 				});
+
+				if (response?.reason === 'rate_limited') {
+					showFlashMessage(
+						chatPage.dataset.messageRateLimitedLabel ||
+							chatPage.dataset.messageErrorLabel ||
+							'',
+					);
+					shouldRefocus = true;
+					return;
+				}
 
 				if (!response?.ok) {
 					submitComposerFallback();
