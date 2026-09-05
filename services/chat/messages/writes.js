@@ -11,11 +11,18 @@ import { formatLiveMessage } from './formatters.js';
 import { extractMessageMentionUsernames } from './mentions.js';
 import { notifyMessageMentions } from './notifications.js';
 import { getMessageSafetyDecision } from './safety.js';
+import { checkRoomMessageRateLimit } from './rateLimit.js';
 import {
 	MESSAGE_BODY_MAX_LENGTH,
 	normalizeMessageBody,
 	resolveReplyToMessageId,
 } from './utils.js';
+
+export const MESSAGE_WRITE_RESULT = Object.freeze({
+	INVALID: 'invalid',
+	RATE_LIMITED: 'rate_limited',
+});
+
 
 /**
  * Create a friend chat message when the user still has write access.
@@ -110,6 +117,19 @@ export async function createRoomMessage({
 
 	if (!conversation) {
 		return null;
+	}
+
+	const rateLimit = checkRoomMessageRateLimit({
+		conversation,
+		senderUserId,
+	});
+
+	if (!rateLimit.ok) {
+		return {
+			ok: false,
+			reason: MESSAGE_WRITE_RESULT.RATE_LIMITED,
+			retryAfterMs: rateLimit.retryAfterMs || 0,
+		};
 	}
 
 	const reply = await resolveReplyToMessageId({

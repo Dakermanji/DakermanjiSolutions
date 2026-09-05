@@ -41,6 +41,7 @@ export async function findVisibleRoomConversationForUser(
 			ccm.role AS member_role,
 			ccm.status AS member_status,
 			ccm.last_read_message_id,
+			ccm.joined_at AS member_joined_at,
 			pending_request.status AS pending_request_status,
 			owner.username AS owner_username,
 			owner.email AS owner_email

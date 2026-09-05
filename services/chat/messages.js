@@ -14,6 +14,7 @@ export {
 export {
 	createFriendMessage,
 	createRoomMessage,
+	MESSAGE_WRITE_RESULT,
 } from './messages/writes.js';
 export { notifyMessageMentions } from './messages/notifications.js';
 export {
@@ -49,6 +50,7 @@ import {
 import {
 	createFriendMessage,
 	createRoomMessage,
+	MESSAGE_WRITE_RESULT,
 } from './messages/writes.js';
 import { notifyMessageMentions } from './messages/notifications.js';
 import {
@@ -86,6 +88,7 @@ export default {
 	formatMentionToken,
 	isMentionUsername,
 	getMessageSafetyDecision,
+	MESSAGE_WRITE_RESULT,
 	listMessageReactionSummary,
 	listMessageReactionUsers,
 	toggleMessageReaction,

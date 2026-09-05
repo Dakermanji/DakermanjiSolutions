@@ -3,6 +3,7 @@
 import {
 	createFriendMessage,
 	createRoomMessage,
+	MESSAGE_WRITE_RESULT,
 } from '../../../services/chat/messages.js';
 import { emitChatMessageCreated } from '../../../services/chat/live.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
@@ -54,7 +55,9 @@ export async function createRoomChatMessage(req, res, next) {
 			body: req.body?.message,
 		});
 
-		if (!message) {
+		if (message?.reason === MESSAGE_WRITE_RESULT.RATE_LIMITED) {
+			req.flash('error', 'chat:conversation.rateLimited');
+		} else if (!message) {
 			req.flash('error', 'chat:conversation.messageError');
 		} else {
 			await emitChatMessageCreated(message);

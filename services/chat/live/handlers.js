@@ -8,6 +8,7 @@ import {
 	findOpenableConversation,
 	markConversationRead,
 } from './conversations.js';
+import { MESSAGE_WRITE_RESULT } from '../messages.js';
 import {
 	emitChatMessageCreated,
 	emitChatMessageDeleted,
@@ -88,6 +89,15 @@ export function registerChatSocketHandlers(io, socket) {
 				replyToMessageId: payload?.replyToMessageId,
 				body: payload?.message,
 			});
+
+			if (message?.reason === MESSAGE_WRITE_RESULT.RATE_LIMITED) {
+				acknowledge?.({
+					ok: false,
+					reason: MESSAGE_WRITE_RESULT.RATE_LIMITED,
+					retryAfterMs: message.retryAfterMs || 0,
+				});
+				return;
+			}
 
 			if (!message) {
 				acknowledgeFailure(acknowledge);

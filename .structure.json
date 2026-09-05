@@ -498,6 +498,7 @@
 				"mutations.js",
 				"notifications.js",
 				"pagination.js",
+				"rateLimit.js",
 				"reactions.js",
 				"reads.js",
 				"safety.js",
