@@ -118,6 +118,11 @@
 	text-align: left;
 }
 
+.chat-members-invite .form-control::placeholder {
+	color: var(--color-text-muted);
+	opacity: 1;
+}
+
 .chat-members-invite-submit {
 	width: 2.5rem;
 	padding-inline: 0;
