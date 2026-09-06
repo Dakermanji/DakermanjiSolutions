@@ -64,6 +64,7 @@
 				"friends.js",
 				"index.js",
 				"messages.js",
+				"notes.js",
 				"render.js",
 				"roomFlags.js",
 				"roomMembers.js",

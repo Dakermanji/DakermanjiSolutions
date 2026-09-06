@@ -10,6 +10,9 @@
 	"unreadMessages": "{{count}} messages non lus",
 	"backToChats": "Retour aux chats",
 	"friendFallback": "Ami",
+	"notes": {
+		"openError": "Impossible d’ouvrir les notes."
+	},
 	"states": {
 		"loading": "Chargement des chats...",
 		"error": "Impossible de charger les chats. Veuillez réessayer."

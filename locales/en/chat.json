@@ -10,6 +10,9 @@
 	"unreadMessages": "{{count}} unread messages",
 	"backToChats": "Back to chats",
 	"friendFallback": "Friend",
+	"notes": {
+		"openError": "Could not open notes."
+	},
 	"states": {
 		"loading": "Loading chats...",
 		"error": "Could not load chats. Please try again."

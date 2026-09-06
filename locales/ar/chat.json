@@ -10,6 +10,9 @@
 	"unreadMessages": "{{count}} رسائل غير مقروءة",
 	"backToChats": "العودة إلى الدردشات",
 	"friendFallback": "صديق",
+	"notes": {
+		"openError": "تعذر فتح الملاحظات."
+	},
 	"states": {
 		"loading": "جارٍ تحميل الدردشات...",
 		"error": "تعذر تحميل الدردشات. يرجى المحاولة مرة أخرى."
