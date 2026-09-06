@@ -2,6 +2,7 @@
 
 import ChatMessagesModel from '../../../models/chat/Messages.js';
 import {
+	CHAT_CONVERSATION_TYPES,
 	CHAT_MESSAGE_MODERATION_STATUSES,
 } from '../../../constants/chat.js';
 import { findWritableChatConversation } from '../authorization.js';
@@ -86,6 +87,58 @@ export async function createFriendMessage({
 	});
 
 	return formattedMessage;
+}
+
+/**
+ * Create a notes message when the user owns the self conversation.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.senderUserId
+ * @param {string|null} [input.replyToMessageId]
+ * @param {string} input.body
+ * @returns {Promise<object|null>}
+ */
+export async function createNotesMessage({
+	conversationId,
+	senderUserId,
+	replyToMessageId = null,
+	body,
+}) {
+	const normalizedBody = normalizeMessageBody(body);
+
+	if (!normalizedBody || normalizedBody.length > MESSAGE_BODY_MAX_LENGTH) {
+		return null;
+	}
+
+	const conversation = await findWritableChatConversation({
+		conversationId,
+		userId: senderUserId,
+		type: CHAT_CONVERSATION_TYPES.SELF,
+	});
+
+	if (!conversation) {
+		return null;
+	}
+
+	const reply = await resolveReplyToMessageId({
+		conversationId: conversation.conversation_id,
+		replyToMessageId,
+	});
+
+	if (!reply.ok) {
+		return null;
+	}
+
+	const message = await ChatMessagesModel.createConversationMessage({
+		conversationId: conversation.conversation_id,
+		senderUserId,
+		replyToMessageId: reply.replyToMessageId,
+		mentionedUserIds: [],
+		body: normalizedBody,
+	});
+
+	return formatLiveMessage(message);
 }
 
 /**

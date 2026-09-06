@@ -15,6 +15,10 @@ export function normalizeMessageBody(body) {
 }
 
 export function getMutationWindowMs(kind) {
+	if (kind === 'self') {
+		return Number.POSITIVE_INFINITY;
+	}
+
 	return kind === 'room'
 		? CHAT_MESSAGE_LIMITS.ROOM_EDIT_DELETE_WINDOW_MS
 		: CHAT_MESSAGE_LIMITS.FRIEND_EDIT_DELETE_WINDOW_MS;

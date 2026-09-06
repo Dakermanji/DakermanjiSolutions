@@ -13,6 +13,7 @@ export {
 } from './messages/mentions.js';
 export {
 	createFriendMessage,
+	createNotesMessage,
 	createRoomMessage,
 	MESSAGE_WRITE_RESULT,
 } from './messages/writes.js';
@@ -36,7 +37,9 @@ export {
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,
+	listNotesMessages,
 	listOlderFriendMessages,
+	listOlderNotesMessages,
 	listOlderRoomMessages,
 	listRoomMessages,
 } from './messages/reads.js';
@@ -49,6 +52,7 @@ import {
 } from './messages/mentions.js';
 import {
 	createFriendMessage,
+	createNotesMessage,
 	createRoomMessage,
 	MESSAGE_WRITE_RESULT,
 } from './messages/writes.js';
@@ -72,13 +76,16 @@ import {
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,
+	listNotesMessages,
 	listOlderFriendMessages,
+	listOlderNotesMessages,
 	listOlderRoomMessages,
 	listRoomMessages,
 } from './messages/reads.js';
 
 export default {
 	createFriendMessage,
+	createNotesMessage,
 	createRoomMessage,
 	deleteOwnMessage,
 	editOwnMessage,
@@ -98,7 +105,9 @@ export default {
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,
+	listNotesMessages,
 	listOlderFriendMessages,
+	listOlderNotesMessages,
 	listOlderRoomMessages,
 	listRoomMessages,
 };
