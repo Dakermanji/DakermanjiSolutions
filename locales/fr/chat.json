@@ -196,6 +196,9 @@
 		"leaveSuccess": "Salon quitté.",
 		"leaveError": "Impossible de quitter ce salon.",
 		"leaveOwnerError": "Le propriétaire du salon doit transférer la propriété avant de quitter.",
+		"leaveTitle": "Quitter le salon",
+		"leaveBody": "Voulez-vous vraiment quitter ce salon ?",
+		"leaveConfirm": "Quitter le salon",
 		"requestSuccess": "Demande envoyée.",
 		"requestError": "Impossible de demander l’accès à ce salon.",
 		"cancelRequestSuccess": "Demande annulée.",
@@ -216,7 +219,8 @@
 			"open": "Ouvrir le salon",
 			"join": "Rejoindre le salon",
 			"request": "Demander à rejoindre",
-			"pending": "Demande en attente"
+			"pending": "Demande en attente",
+			"leave": "Quitter le salon"
 		},
 		"name": "Nom du salon",
 		"description": "Description",

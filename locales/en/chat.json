@@ -196,6 +196,9 @@
 		"leaveSuccess": "Left room.",
 		"leaveError": "Could not leave this room.",
 		"leaveOwnerError": "Room owners must transfer ownership before leaving.",
+		"leaveTitle": "Leave room",
+		"leaveBody": "Are you sure you want to leave this room?",
+		"leaveConfirm": "Leave room",
 		"requestSuccess": "Join request sent.",
 		"requestError": "Could not request access to this room.",
 		"cancelRequestSuccess": "Join request canceled.",
@@ -216,7 +219,8 @@
 			"open": "Open room",
 			"join": "Join room",
 			"request": "Request to join",
-			"pending": "Request pending"
+			"pending": "Request pending",
+			"leave": "Leave room"
 		},
 		"name": "Room name",
 		"description": "Description",

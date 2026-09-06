@@ -165,6 +165,40 @@
 	outline: none;
 }
 
+.chat-room-list-item {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: stretch;
+	gap: 0.5rem;
+}
+
+.chat-room-list-item .chat-friend-form {
+	min-width: 0;
+}
+
+.chat-room-leave-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	min-height: 100%;
+	padding: 0;
+	border-color: var(--bs-danger);
+	color: var(--bs-danger);
+}
+
+.chat-room-leave-button:hover,
+.chat-room-leave-button:focus-visible {
+	border-color: var(--bs-danger);
+	background: var(--bs-danger);
+	color: var(--color-text-inverse);
+}
+
+.chat-room-leave-name {
+	margin: 0.5rem 0 0;
+	color: var(--color-text-heading);
+	font-weight: 700;
+}
 .chat-request-item {
 	cursor: default;
 	grid-template-columns: 3rem minmax(0, 1fr) auto auto auto;

@@ -78,6 +78,17 @@
 	gap: 0.5rem;
 }
 
+.chat-room-leave-header-button {
+	border-color: var(--bs-danger);
+	color: var(--bs-danger);
+}
+
+.chat-room-leave-header-button:hover,
+.chat-room-leave-header-button:focus-visible {
+	border-color: var(--bs-danger);
+	background: var(--bs-danger);
+	color: var(--color-text-inverse);
+}
 .chat-panel-toggle.is-active {
 	border-color: var(--color-secondary);
 	background: var(--color-secondary);

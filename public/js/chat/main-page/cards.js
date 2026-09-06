@@ -162,6 +162,37 @@
 		return form;
 	}
 
+	function canLeaveRoom(room) {
+		return Boolean(
+			room.conversationId
+			&& room.memberRole
+			&& room.memberRole !== 'owner'
+		);
+	}
+
+	function createRoomLeaveButton(sectionBody, room, roomName) {
+		const button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'btn btn-action-outline chat-room-leave-button has-tooltip';
+		button.dataset.chatRoomLeaveButton = 'true';
+		button.dataset.conversationId = room.conversationId || '';
+		button.dataset.roomName = roomName;
+		button.setAttribute('data-bs-toggle', 'modal');
+		button.setAttribute(
+			'data-bs-target',
+			sectionBody.dataset.leaveModalTarget || '#chatRoomLeaveModal',
+		);
+		button.setAttribute('data-bs-title', sectionBody.dataset.leaveLabel || '');
+		button.setAttribute('aria-label', sectionBody.dataset.leaveLabel || '');
+
+		const icon = document.createElement('i');
+		icon.className = 'bi bi-box-arrow-right';
+		icon.setAttribute('aria-hidden', 'true');
+		button.appendChild(icon);
+
+		return button;
+	}
+
 	function createRoomItem(sectionBody, item) {
 		const room = item.room || {};
 		const owner = item.owner || {};
@@ -216,7 +247,16 @@
 		button.append(avatar, content, unreadBadge, icon);
 		form.append(input, button);
 
-		return form;
+		if (!canLeaveRoom(room)) {
+			return form;
+		}
+
+		const wrapper = document.createElement('div');
+		wrapper.className = 'chat-room-list-item';
+		wrapper.append(form, createRoomLeaveButton(sectionBody, room, roomName));
+		window.AppTooltips?.initIn(wrapper);
+
+		return wrapper;
 	}
 
 	function createFriendChatItem(sectionBody, item) {

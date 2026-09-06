@@ -21,6 +21,7 @@
 		room.memberStatus === 'active' &&
 		['owner', 'admin'].includes(room.memberRole);
 	const isRoomOwner = room.memberRole === 'owner';
+	const canLeaveRoom = isRoomConversation && room.memberRole && !isRoomOwner;
 	const friendName =
 		friend.username ||
 		friend.email ||
@@ -272,7 +273,9 @@
 	data-mention-users="<%= JSON.stringify(mentionSuggestionUsers) %>"
 >
 	<%- include('_conversation_header', {
+		canLeaveRoom,
 		canManageRoom,
+		conversation,
 		conversationKicker,
 		conversationName,
 		friend,
@@ -332,3 +335,7 @@
 	room,
 	roomVisibility,
 }) %>
+
+<% if (canLeaveRoom) { %>
+	<%- include('../modals/chat/_room_leave_modal') %>
+<% } %>

@@ -413,6 +413,7 @@
 					"badges.js",
 					"cards.js",
 					"roomModal.js",
+					"leaveRoom.js",
 					"roomSearch.js",
 					"sections.js",
 					"utils.js"
@@ -657,6 +658,7 @@
 			],
 			"chat": [
 				"_room_modal.ejs",
+				"_room_leave_modal.ejs",
 				"_room_search_modal.ejs"
 			],
 			"dashboard": [],

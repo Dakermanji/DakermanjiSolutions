@@ -11,7 +11,12 @@
 	});
 
 	sections.init();
+	const roomLeave = window.ChatMainLeaveRoom.createRoomLeaveController({
+		modal: document.getElementById('chatRoomLeaveModal'),
+	});
+
 	roomSearch.init();
+	roomLeave.init();
 	window.ChatMainRoomModal.initRoomCreateModalDefaults({
 		modal: document.getElementById('chatRoomModal'),
 		buttons: document.querySelectorAll('[data-chat-room-visibility]'),

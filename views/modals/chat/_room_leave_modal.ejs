@@ -1,0 +1,45 @@
+<!--! views/modals/chat/_room_leave_modal.ejs -->
+<div
+	class="modal fade"
+	id="chatRoomLeaveModal"
+	tabindex="-1"
+	aria-labelledby="chatRoomLeaveModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="chatRoomLeaveModalLabel">
+					<%= t('chat:rooms.leaveTitle') %>
+				</h5>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="<%= t('common:close') %>"
+				></button>
+			</div>
+
+			<form method="POST" action="/chat/rooms/leave" data-chat-room-leave-form>
+				<%- include('../../partials/_csrf') %>
+				<input type="hidden" name="conversationId" data-chat-room-leave-input />
+
+				<div class="modal-body">
+					<p class="mb-0">
+						<%= t('chat:rooms.leaveBody') %>
+					</p>
+					<p class="chat-room-leave-name" data-chat-room-leave-name></p>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<%= t('common:cancel') %>
+					</button>
+					<button type="submit" class="btn btn-danger">
+						<%= t('chat:rooms.leaveConfirm') %>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

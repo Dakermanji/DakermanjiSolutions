@@ -30,6 +30,21 @@
 
 	<% if (isRoomConversation) { %>
 		<div class="chat-conversation-actions">
+			<% if (canLeaveRoom) { %>
+				<button
+					class="btn btn-action-outline chat-panel-toggle chat-room-leave-header-button has-tooltip"
+					type="button"
+					data-bs-toggle="modal"
+					data-bs-target="#chatRoomLeaveModal"
+					data-chat-room-leave-button
+					data-conversation-id="<%= conversation.id %>"
+					data-room-name="<%= conversationName %>"
+					data-bs-title="<%= t('chat:rooms.actions.leave') %>"
+					aria-label="<%= t('chat:rooms.actions.leave') %>"
+				>
+					<i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+				</button>
+			<% } %>
 			<% if (isRoomOwner) { %>
 				<button
 					class="btn btn-action-outline chat-panel-toggle has-tooltip"

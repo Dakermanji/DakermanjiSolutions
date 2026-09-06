@@ -7,8 +7,13 @@
 	const messageSurface = document.querySelector('[data-chat-message-surface]');
 	const typingIndicator = document.querySelector('[data-chat-typing-indicator]');
 	const messageRenderer = window.ChatConversationRenderer;
+	const roomLeave = window.ChatMainLeaveRoom?.createRoomLeaveController({
+		modal: document.getElementById('chatRoomLeaveModal'),
+	});
 
 	if (!chatPage || !messageSurface || !messageRenderer) return;
+
+	roomLeave?.init();
 
 	const activityPanel = window.ChatConversationActivity.createActivityPanel({
 		chatPage,
