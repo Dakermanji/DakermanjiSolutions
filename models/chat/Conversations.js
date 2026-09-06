@@ -11,6 +11,7 @@ import {
 	findVisibleFriendConversationForUser,
 } from './conversations/friends.js';
 import {
+	deleteSelfConversationMessages,
 	findOrCreateSelfConversation,
 	findSelfConversationForUser,
 	findSelfConversationForUserById,
@@ -27,6 +28,7 @@ export {
 	findVisibleFriendConversationForUser,
 } from './conversations/friends.js';
 export {
+	deleteSelfConversationMessages,
 	findOrCreateSelfConversation,
 	findSelfConversationForUser,
 	findSelfConversationForUserById,
@@ -34,6 +36,7 @@ export {
 
 export default {
 	countUnreadFriendMessagesForUser,
+	deleteSelfConversationMessages,
 	findDirectConversation,
 	findOrCreateFriendConversation,
 	findFriendConversationsForUser,

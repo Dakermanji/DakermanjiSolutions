@@ -12,7 +12,9 @@
 	"friendFallback": "Friend",
 	"notes": {
 		"openError": "Could not open notes.",
-		"kicker": "Your notes"
+		"kicker": "Your notes",
+		"resetSuccess": "Notes reset.",
+		"resetError": "Could not reset notes."
 	},
 	"states": {
 		"loading": "Loading chats...",

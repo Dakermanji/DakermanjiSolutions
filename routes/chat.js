@@ -48,6 +48,7 @@ import {
 	renderChat,
 	removeChatRoomMember,
 	requestPrivateRoomAccess,
+	resetNotesConversation,
 	searchVisibleRooms,
 	unbanChatRoomMember,
 	unmuteChatRoomMember,
@@ -72,6 +73,7 @@ router.get('/rooms/flags', getRoomMessageFlags);
 router.get('/rooms/open/:conversationId', openRoomConversation);
 router.post('/friends/open', openFriendConversation);
 router.post('/notes/open', openNotesConversation);
+router.post('/notes/reset', resetNotesConversation);
 router.post('/notes/messages', createNotesChatMessage);
 router.post('/notes/messages/edit', editNotesMessage);
 router.post('/notes/messages/delete', deleteNotesMessage);

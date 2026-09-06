@@ -175,3 +175,70 @@ export async function findOrCreateSelfConversation(userId) {
 		client.release();
 	}
 }
+
+/**
+ * Hard-delete every message in one self-notes conversation.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<{conversationId: string, deletedCount: number}|null>}
+ */
+export async function deleteSelfConversationMessages(conversationId, userId) {
+	const conversation = await findSelfConversationForUserById(
+		conversationId,
+		userId,
+	);
+
+	if (!conversation) {
+		return null;
+	}
+
+	const client = await pool.connect();
+
+	try {
+		await client.query('BEGIN');
+
+		await client.query(
+			`
+				UPDATE chat_conversations
+				SET
+					last_message_id = NULL,
+					updated_at = NOW()
+				WHERE id = $1;
+			`,
+			[conversationId],
+		);
+
+		await client.query(
+			`
+				UPDATE chat_conversation_members
+				SET
+					last_read_message_id = NULL,
+					updated_at = NOW()
+				WHERE conversation_id = $1
+					AND user_id = $2;
+			`,
+			[conversationId, userId],
+		);
+
+		const deletedRows = await client.query(
+			`
+				DELETE FROM chat_messages
+				WHERE conversation_id = $1;
+			`,
+			[conversationId],
+		);
+
+		await client.query('COMMIT');
+
+		return {
+			conversationId,
+			deletedCount: deletedRows.rowCount,
+		};
+	} catch (error) {
+		await client.query('ROLLBACK');
+		throw error;
+	} finally {
+		client.release();
+	}
+}

@@ -12,7 +12,9 @@
 	"friendFallback": "Ami",
 	"notes": {
 		"openError": "Impossible d’ouvrir les notes.",
-		"kicker": "Vos notes"
+		"kicker": "Vos notes",
+		"resetSuccess": "Notes réinitialisées.",
+		"resetError": "Impossible de réinitialiser les notes."
 	},
 	"states": {
 		"loading": "Chargement des chats...",

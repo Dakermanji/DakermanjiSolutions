@@ -12,7 +12,9 @@
 	"friendFallback": "صديق",
 	"notes": {
 		"openError": "تعذر فتح الملاحظات.",
-		"kicker": "ملاحظاتك"
+		"kicker": "ملاحظاتك",
+		"resetSuccess": "تمت إعادة ضبط الملاحظات.",
+		"resetError": "تعذرت إعادة ضبط الملاحظات."
 	},
 	"states": {
 		"loading": "جارٍ تحميل الدردشات...",

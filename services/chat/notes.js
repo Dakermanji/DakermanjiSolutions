@@ -90,6 +90,29 @@ export async function getOpenNotesConversation(conversationId, userId) {
 }
 
 /**
+ * Hard reset one openable self-notes conversation.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<{conversationId: string, deletedCount: number}|null>}
+ */
+export async function resetNotesConversation(conversationId, userId) {
+	const conversation = await findOpenableNotesConversation(
+		conversationId,
+		userId,
+	);
+
+	if (!conversation) {
+		return null;
+	}
+
+	return ChatConversationsModel.deleteSelfConversationMessages(
+		conversation.conversation_id,
+		userId,
+	);
+}
+
+/**
  * Mark an openable self-notes conversation read through its latest message.
  *
  * @param {string} conversationId
