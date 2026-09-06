@@ -10,12 +10,18 @@ import {
 	getChatUserRoom,
 } from './state.js';
 
-function canReadChatMembership(status) {
-	return CHAT_CONVERSATION_MEMBER_READ_STATUSES.includes(status);
+function canReadChatMembership(member) {
+	return (
+		!member.archived_at
+		&& CHAT_CONVERSATION_MEMBER_READ_STATUSES.includes(member.status)
+	);
 }
 
-function canWriteChatMembership(status) {
-	return CHAT_CONVERSATION_MEMBER_WRITE_STATUSES.includes(status);
+function canWriteChatMembership(member) {
+	return (
+		!member.archived_at
+		&& CHAT_CONVERSATION_MEMBER_WRITE_STATUSES.includes(member.status)
+	);
 }
 
 /**
@@ -33,8 +39,8 @@ export function emitChatRoomMembershipChanged(member) {
 		userId: member.user_id,
 		role: member.role,
 		status: member.status,
-		canRead: canReadChatMembership(member.status),
-		canWrite: canWriteChatMembership(member.status),
+		canRead: canReadChatMembership(member),
+		canWrite: canWriteChatMembership(member),
 	};
 
 	if (!payload.canRead) {

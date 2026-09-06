@@ -30,6 +30,7 @@ export {
 	getRoomActivityLogs,
 	inviteChatRoomMember,
 	joinPublicRoomConversation,
+	leaveChatRoom,
 	openRoomConversation,
 	requestPrivateRoomAccess,
 	searchVisibleRooms,

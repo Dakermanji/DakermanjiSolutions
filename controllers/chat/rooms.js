@@ -9,18 +9,24 @@ import {
 	getRoomActivityLogsPage,
 	inviteRoomMember,
 	joinPublicRoom,
+	leaveRoom,
 	listPrivateRoomSection,
 	listPublicRooms,
 	recordRoomInvitationQueueAttempt,
 	requestPrivateListedRoom,
 	ROOM_ACTIVITY_LOG_RESULT,
 	ROOM_INVITATION_RESULT,
+	ROOM_MEMBER_MANAGEMENT_RESULT,
 	searchRooms,
 	updateRoom,
 } from '../../services/chat/rooms.js';
 import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
+import { emitChatRoomMembershipChanged } from '../../services/chat/live.js';
 import { isValidUsername, isValidUuid } from '../../middlewares/validators/common.js';
-import { setActiveChatConversation } from './session.js';
+import {
+	clearActiveChatConversation,
+	setActiveChatConversation,
+} from './session.js';
 
 function getRoomInput(req) {
 	return {
@@ -183,6 +189,47 @@ export async function joinPublicRoomConversation(req, res, next) {
 	}
 }
 
+/**
+ * Leave the active room conversation, then return to /chat.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+export async function leaveChatRoom(req, res, next) {
+	const conversationId = String(req.body?.conversationId || '').trim();
+
+	if (!isValidUuid(conversationId)) {
+		req.flash('error', 'chat:rooms.leaveError');
+		return res.redirect(CHAT_REDIRECT);
+	}
+
+	try {
+		const result = await leaveRoom({
+			conversationId,
+			actorUserId: req.user.id,
+		});
+
+		if (result.ok) {
+			emitChatRoomMembershipChanged(result.member);
+			clearActiveChatConversation(req);
+			req.flash('success', 'chat:rooms.leaveSuccess');
+			return res.redirect(CHAT_REDIRECT);
+		}
+
+		setActiveChatConversation(req, conversationId);
+		req.flash(
+			'error',
+			result.reason === ROOM_MEMBER_MANAGEMENT_RESULT.OWNER_CANNOT_LEAVE
+				? 'chat:rooms.leaveOwnerError'
+				: 'chat:rooms.leaveError',
+		);
+		return res.redirect(CHAT_OPEN_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
 /**
  * Request access to a listed private room, then return to /chat.
  *

@@ -29,6 +29,7 @@ import {
 	inviteChatRoomMember,
 	getRoomChatMessageReactionUsers,
 	joinPublicRoomConversation,
+	leaveChatRoom,
 	markRoomMessageSafe,
 	muteChatRoomMember,
 	openFriendConversation,
@@ -79,6 +80,7 @@ router.post('/rooms/flags/hide-pending', hidePendingRoomChatMessage);
 router.post('/rooms', createChatRoom);
 router.post('/rooms/update', updateChatRoom);
 router.post('/rooms/join', joinPublicRoomConversation);
+router.post('/rooms/leave', leaveChatRoom);
 router.post('/rooms/open', openRoomConversation);
 router.post('/rooms/request', requestPrivateRoomAccess);
 router.post('/rooms/request/cancel', cancelPrivateRoomAccessRequest);
