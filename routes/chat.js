@@ -10,15 +10,18 @@ import {
 	createFriendChatMessage,
 	createRoomChatMessage,
 	deleteFriendChatMessage,
+	deleteNotesMessage,
 	deleteFlaggedRoomMessage,
 	deleteRoomChatMessage,
 	deleteChatRoomMemberHistory,
 	demoteChatRoomAdmin,
 	editFriendChatMessage,
+	editNotesMessage,
 	editRoomChatMessage,
 	flagRoomChatMessage,
 	getFriendChats,
 	getFriendChatMessageReactionUsers,
+	getNotesMessageReactionUsers,
 	getOlderFriendMessages,
 	getOlderRoomMessages,
 	getPrivateRooms,
@@ -38,6 +41,7 @@ import {
 	openRoomConversation,
 	promoteChatRoomMember,
 	reactToFriendChatMessage,
+	reactToNotesMessage,
 	reactToRoomChatMessage,
 	renderChat,
 	removeChatRoomMember,
@@ -54,6 +58,7 @@ router.get('/', renderChat);
 router.get('/friends', getFriendChats);
 router.get('/friends/messages', getOlderFriendMessages);
 router.get('/friends/messages/reactions', getFriendChatMessageReactionUsers);
+router.get('/notes/messages/reactions', getNotesMessageReactionUsers);
 router.get('/rooms/messages', getOlderRoomMessages);
 router.get('/rooms/messages/reactions', getRoomChatMessageReactionUsers);
 router.get('/rooms/public', getPublicRooms);
@@ -64,6 +69,9 @@ router.get('/rooms/flags', getRoomMessageFlags);
 router.get('/rooms/open/:conversationId', openRoomConversation);
 router.post('/friends/open', openFriendConversation);
 router.post('/notes/open', openNotesConversation);
+router.post('/notes/messages/edit', editNotesMessage);
+router.post('/notes/messages/delete', deleteNotesMessage);
+router.post('/notes/messages/react', reactToNotesMessage);
 router.post('/friends/close', closeFriendConversation);
 router.post('/friends/messages', createFriendChatMessage);
 router.post('/friends/messages/edit', editFriendChatMessage);

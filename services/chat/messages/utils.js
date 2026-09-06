@@ -16,7 +16,7 @@ export function normalizeMessageBody(body) {
 
 export function getMutationWindowMs(kind) {
 	if (kind === 'self') {
-		return Number.POSITIVE_INFINITY;
+		return null;
 	}
 
 	return kind === 'room'

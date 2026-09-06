@@ -115,6 +115,9 @@ export const getFriendChatMessageReactionUsers =
 	createMessageReactionDetailsHandler('friend');
 export const getRoomChatMessageReactionUsers =
 	createMessageReactionDetailsHandler('room');
+export const getNotesMessageReactionUsers =
+	createMessageReactionDetailsHandler('self');
 export const reactToFriendChatMessage = createMessageReactionHandler('friend');
 export const reactToRoomChatMessage = createMessageReactionHandler('room');
+export const reactToNotesMessage = createMessageReactionHandler('self');
 

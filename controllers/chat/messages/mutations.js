@@ -24,6 +24,12 @@ const MESSAGE_MUTATION_HANDLERS = {
 		deleteSuccessKey: 'chat:conversation.deleteSuccess',
 		deleteErrorKey: 'chat:conversation.deleteError',
 	},
+	self: {
+		editSuccessKey: 'chat:conversation.editSuccess',
+		editErrorKey: 'chat:conversation.editError',
+		deleteSuccessKey: 'chat:conversation.deleteSuccess',
+		deleteErrorKey: 'chat:conversation.deleteError',
+	},
 };
 
 function getActiveMessageMutationInput(req) {
@@ -114,3 +120,5 @@ export const editFriendChatMessage = createMessageEditHandler('friend');
 export const deleteFriendChatMessage = createMessageDeleteHandler('friend');
 export const editRoomChatMessage = createMessageEditHandler('room');
 export const deleteRoomChatMessage = createMessageDeleteHandler('room');
+export const editNotesMessage = createMessageEditHandler('self');
+export const deleteNotesMessage = createMessageDeleteHandler('self');

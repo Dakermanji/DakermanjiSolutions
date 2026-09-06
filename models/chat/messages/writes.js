@@ -160,7 +160,7 @@ export async function createConversationMessage({
  * @param {string} message.messageId
  * @param {string} message.senderUserId
  * @param {string} message.body
- * @param {number} message.windowMs
+ * @param {number|null} message.windowMs
  * @returns {Promise<object|null>}
  */
 export async function updateOwnConversationMessage({
@@ -179,7 +179,10 @@ export async function updateOwnConversationMessage({
 				AND cm.sender_user_id = $3
 				AND cm.deleted_at IS NULL
 				AND cm.moderation_status = 'visible'
-				AND cm.created_at >= NOW() - ($5::int * INTERVAL '1 millisecond')
+				AND (
+					$5::int IS NULL
+					OR cm.created_at >= NOW() - ($5::int * INTERVAL '1 millisecond')
+				)
 				AND NOT EXISTS (
 					SELECT 1
 					FROM chat_message_flags cmf
@@ -282,7 +285,7 @@ export async function updateOwnConversationMessage({
  * @param {string} message.conversationId
  * @param {string} message.messageId
  * @param {string} message.senderUserId
- * @param {number} message.windowMs
+ * @param {number|null} message.windowMs
  * @returns {Promise<object|null>}
  */
 export async function deleteOwnConversationMessage({
@@ -306,7 +309,10 @@ export async function deleteOwnConversationMessage({
 						AND cm.sender_user_id = $3
 						AND cm.deleted_at IS NULL
 						AND cm.moderation_status = 'visible'
-						AND cm.created_at >= NOW() - ($4::int * INTERVAL '1 millisecond')
+						AND (
+							$4::int IS NULL
+							OR cm.created_at >= NOW() - ($4::int * INTERVAL '1 millisecond')
+						)
 						AND NOT EXISTS (
 							SELECT 1
 							FROM chat_message_flags cmf

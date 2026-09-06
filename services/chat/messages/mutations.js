@@ -1,6 +1,7 @@
 //! services/chat/messages/mutations.js
 
 import ChatMessagesModel from '../../../models/chat/Messages.js';
+import { CHAT_CONVERSATION_TYPES } from '../../../constants/chat.js';
 import { findWritableChatConversation } from '../authorization.js';
 import { findWritableRoomConversation } from '../rooms.js';
 import { formatMessage } from './formatters.js';
@@ -22,6 +23,9 @@ async function findWritableConversationForMutation({
 	return findWritableChatConversation({
 		conversationId,
 		userId,
+		type: kind === 'self'
+			? CHAT_CONVERSATION_TYPES.SELF
+			: CHAT_CONVERSATION_TYPES.FRIEND,
 	});
 }
 
@@ -29,7 +33,7 @@ async function findWritableConversationForMutation({
  * Edit one sender-owned message inside the active mutation window.
  *
  * @param {object} input
- * @param {'friend'|'room'} input.kind
+ * @param {'friend'|'room'|'self'} input.kind
  * @param {string} input.conversationId
  * @param {string} input.messageId
  * @param {string} input.senderUserId
@@ -74,7 +78,7 @@ export async function editOwnMessage({
  * Delete one sender-owned message inside the active mutation window.
  *
  * @param {object} input
- * @param {'friend'|'room'} input.kind
+ * @param {'friend'|'room'|'self'} input.kind
  * @param {string} input.conversationId
  * @param {string} input.messageId
  * @param {string} input.senderUserId

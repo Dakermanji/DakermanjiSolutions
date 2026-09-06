@@ -46,7 +46,9 @@ async function findReadableConversationForReaction({
 	return findReadableChatConversation({
 		conversationId,
 		userId,
-		type: CHAT_CONVERSATION_TYPES.FRIEND,
+		type: kind === 'self'
+			? CHAT_CONVERSATION_TYPES.SELF
+			: CHAT_CONVERSATION_TYPES.FRIEND,
 	});
 }
 
@@ -70,7 +72,7 @@ async function getMessageReactionSummary({
  * List grouped reactions for one visible message.
  *
  * @param {object} input
- * @param {'friend'|'room'} input.kind
+ * @param {'friend'|'room'|'self'} input.kind
  * @param {string} input.conversationId
  * @param {string} input.messageId
  * @param {string} input.viewerUserId
@@ -111,7 +113,7 @@ export async function listMessageReactionSummary({
  * List users for one visible message reaction.
  *
  * @param {object} input
- * @param {'friend'|'room'} input.kind
+ * @param {'friend'|'room'|'self'} input.kind
  * @param {string} input.conversationId
  * @param {string} input.messageId
  * @param {string} input.reaction
@@ -167,7 +169,7 @@ export async function listMessageReactionUsers({
  * Toggle one allowed reaction on one visible message.
  *
  * @param {object} input
- * @param {'friend'|'room'} input.kind
+ * @param {'friend'|'room'|'self'} input.kind
  * @param {string} input.conversationId
  * @param {string} input.messageId
  * @param {string} input.userId

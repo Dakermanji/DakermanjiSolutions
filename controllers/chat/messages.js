@@ -10,15 +10,19 @@ export {
 } from './messages/writes.js';
 export {
 	deleteFriendChatMessage,
+	deleteNotesMessage,
 	deleteRoomChatMessage,
 	editFriendChatMessage,
+	editNotesMessage,
 	editRoomChatMessage,
 } from './messages/mutations.js';
 export { flagRoomChatMessage } from './messages/flags.js';
 export { openRoomChatMessage } from './messages/open.js';
 export {
 	getFriendChatMessageReactionUsers,
+	getNotesMessageReactionUsers,
 	getRoomChatMessageReactionUsers,
 	reactToFriendChatMessage,
+	reactToNotesMessage,
 	reactToRoomChatMessage,
 } from './messages/reactions.js';
