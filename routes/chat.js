@@ -8,6 +8,7 @@ import {
 	banChatRoomMember,
 	createChatRoom,
 	createFriendChatMessage,
+	createNotesChatMessage,
 	createRoomChatMessage,
 	deleteFriendChatMessage,
 	deleteNotesMessage,
@@ -23,6 +24,7 @@ import {
 	getFriendChatMessageReactionUsers,
 	getNotesMessageReactionUsers,
 	getOlderFriendMessages,
+	getOlderNotesMessages,
 	getOlderRoomMessages,
 	getPrivateRooms,
 	getPublicRooms,
@@ -57,6 +59,7 @@ const router = Router();
 router.get('/', renderChat);
 router.get('/friends', getFriendChats);
 router.get('/friends/messages', getOlderFriendMessages);
+router.get('/notes/messages', getOlderNotesMessages);
 router.get('/friends/messages/reactions', getFriendChatMessageReactionUsers);
 router.get('/notes/messages/reactions', getNotesMessageReactionUsers);
 router.get('/rooms/messages', getOlderRoomMessages);
@@ -69,6 +72,7 @@ router.get('/rooms/flags', getRoomMessageFlags);
 router.get('/rooms/open/:conversationId', openRoomConversation);
 router.post('/friends/open', openFriendConversation);
 router.post('/notes/open', openNotesConversation);
+router.post('/notes/messages', createNotesChatMessage);
 router.post('/notes/messages/edit', editNotesMessage);
 router.post('/notes/messages/delete', deleteNotesMessage);
 router.post('/notes/messages/react', reactToNotesMessage);

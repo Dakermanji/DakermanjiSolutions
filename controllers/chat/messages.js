@@ -2,10 +2,12 @@
 
 export {
 	getOlderFriendMessages,
+	getOlderNotesMessages,
 	getOlderRoomMessages,
 } from './messages/pagination.js';
 export {
 	createFriendChatMessage,
+	createNotesChatMessage,
 	createRoomChatMessage,
 } from './messages/writes.js';
 export {

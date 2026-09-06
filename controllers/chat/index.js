@@ -9,6 +9,7 @@ export {
 } from './friends.js';
 export {
 	createFriendChatMessage,
+	createNotesChatMessage,
 	createRoomChatMessage,
 	deleteFriendChatMessage,
 	deleteNotesMessage,
@@ -18,6 +19,7 @@ export {
 	editRoomChatMessage,
 	flagRoomChatMessage,
 	getOlderFriendMessages,
+	getOlderNotesMessages,
 	getOlderRoomMessages,
 	getFriendChatMessageReactionUsers,
 	getNotesMessageReactionUsers,

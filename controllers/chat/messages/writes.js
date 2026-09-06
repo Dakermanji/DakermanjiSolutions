@@ -2,6 +2,7 @@
 
 import {
 	createFriendMessage,
+	createNotesMessage,
 	createRoomMessage,
 	MESSAGE_WRITE_RESULT,
 } from '../../../services/chat/messages.js';
@@ -30,6 +31,33 @@ export async function createFriendChatMessage(req, res, next) {
 				'error',
 				await getRoomMessageFailureKey(activeConversationId, req.user.id),
 			);
+		} else {
+			await emitChatMessageCreated(message);
+		}
+
+		return res.redirect(CHAT_OPEN_REDIRECT);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function createNotesChatMessage(req, res, next) {
+	const activeConversationId = req.session.chat?.activeConversationId || null;
+
+	if (!activeConversationId || !isValidUuid(activeConversationId)) {
+		return res.redirect(CHAT_REDIRECT);
+	}
+
+	try {
+		const message = await createNotesMessage({
+			conversationId: activeConversationId,
+			senderUserId: req.user.id,
+			replyToMessageId: req.body?.replyToMessageId,
+			body: req.body?.message,
+		});
+
+		if (!message) {
+			req.flash('error', 'chat:conversation.messageError');
 		} else {
 			await emitChatMessageCreated(message);
 		}
