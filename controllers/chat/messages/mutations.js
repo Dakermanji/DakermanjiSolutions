@@ -49,6 +49,14 @@ function hasValidMessageMutationIds({ conversationId, messageId }) {
 	);
 }
 
+function getSelfConversationEmitOptions(kind, userId) {
+	return kind === 'self'
+		? {
+				targetUserId: userId,
+			}
+		: {};
+}
+
 function createMessageEditHandler(kind) {
 	const config = MESSAGE_MUTATION_HANDLERS[kind];
 
@@ -72,7 +80,10 @@ function createMessageEditHandler(kind) {
 			if (!message) {
 				req.flash('error', config.editErrorKey);
 			} else {
-				emitChatMessageEdited(message);
+				emitChatMessageEdited(
+					message,
+					getSelfConversationEmitOptions(kind, req.user.id),
+				);
 				req.flash('success', config.editSuccessKey);
 			}
 
@@ -105,7 +116,10 @@ function createMessageDeleteHandler(kind) {
 			if (!deletedMessage) {
 				req.flash('error', config.deleteErrorKey);
 			} else {
-				await emitChatMessageDeleted(deletedMessage);
+				await emitChatMessageDeleted(
+					deletedMessage,
+					getSelfConversationEmitOptions(kind, req.user.id),
+				);
 				req.flash('success', config.deleteSuccessKey);
 			}
 

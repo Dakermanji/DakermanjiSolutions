@@ -17,6 +17,14 @@ import {
 import { emitChatUnreadCountsChanged } from './unread.js';
 import { getChatConversationRoom } from './state.js';
 
+function getSelfConversationEmitOptions(openConversation, userId) {
+	return openConversation?.kind === 'self'
+		? {
+				targetUserId: userId,
+			}
+		: {};
+}
+
 function acknowledgeFailure(acknowledge) {
 	acknowledge?.({
 		ok: false,
@@ -50,11 +58,14 @@ export function registerChatSocketHandlers(io, socket) {
 				return;
 			}
 
-			socket.join(
-				getChatConversationRoom(
-					openConversation.conversation.conversation_id,
-				),
-			);
+			if (openConversation.kind !== 'self') {
+				socket.join(
+					getChatConversationRoom(
+						openConversation.conversation.conversation_id,
+					),
+				);
+			}
+
 			acknowledge?.({
 				ok: true,
 			});
@@ -104,7 +115,10 @@ export function registerChatSocketHandlers(io, socket) {
 				return;
 			}
 
-			await emitChatMessageCreated(message);
+			await emitChatMessageCreated(
+				message,
+				getSelfConversationEmitOptions(openConversation, socket.data.userId),
+			);
 
 			acknowledge?.({
 				ok: true,
@@ -148,7 +162,10 @@ export function registerChatSocketHandlers(io, socket) {
 				return;
 			}
 
-			emitChatMessageEdited(message);
+			emitChatMessageEdited(
+				message,
+				getSelfConversationEmitOptions(openConversation, socket.data.userId),
+			);
 
 			acknowledge?.({
 				ok: true,
@@ -191,7 +208,10 @@ export function registerChatSocketHandlers(io, socket) {
 				return;
 			}
 
-			await emitChatMessageDeleted(message);
+			await emitChatMessageDeleted(
+				message,
+				getSelfConversationEmitOptions(openConversation, socket.data.userId),
+			);
 
 			acknowledge?.({
 				ok: true,
@@ -216,7 +236,7 @@ export function registerChatSocketHandlers(io, socket) {
 				socket.data.userId,
 			);
 
-			if (!openConversation) {
+			if (!openConversation || openConversation.kind === 'self') {
 				return;
 			}
 

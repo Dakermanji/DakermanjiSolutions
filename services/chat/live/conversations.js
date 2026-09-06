@@ -2,6 +2,7 @@
 
 import {
 	createFriendMessage,
+	createNotesMessage,
 	createRoomMessage,
 	deleteOwnMessage,
 	editOwnMessage,
@@ -12,6 +13,10 @@ import {
 	findOpenableRoomConversation,
 	markRoomConversationRead,
 } from '../rooms.js';
+import {
+	findOpenableNotesConversation,
+	markNotesConversationRead,
+} from '../notes.js';
 
 export async function findOpenableConversation(conversationId, userId) {
 	const friendConversation = await findOpenableFriendConversation(
@@ -23,6 +28,18 @@ export async function findOpenableConversation(conversationId, userId) {
 		return {
 			kind: 'friend',
 			conversation: friendConversation,
+		};
+	}
+
+	const notesConversation = await findOpenableNotesConversation(
+		conversationId,
+		userId,
+	);
+
+	if (notesConversation) {
+		return {
+			kind: 'self',
+			conversation: notesConversation,
 		};
 	}
 
@@ -50,6 +67,15 @@ export async function createChatMessageForConversation({
 }) {
 	if (kind === 'room') {
 		return createRoomMessage({
+			conversationId,
+			senderUserId,
+			replyToMessageId,
+			body,
+		});
+	}
+
+	if (kind === 'self') {
+		return createNotesMessage({
 			conversationId,
 			senderUserId,
 			replyToMessageId,
@@ -98,6 +124,11 @@ export function deleteChatMessageForConversation({
 export async function markConversationRead({ kind, conversationId, userId }) {
 	if (kind === 'room') {
 		await markRoomConversationRead(conversationId, userId);
+		return;
+	}
+
+	if (kind === 'self') {
+		await markNotesConversationRead(conversationId, userId);
 		return;
 	}
 

@@ -25,6 +25,14 @@ function getActiveReactionInput(req) {
 	};
 }
 
+function getSelfConversationEmitOptions(kind, userId) {
+	return kind === 'self'
+		? {
+				targetUserId: userId,
+			}
+		: {};
+}
+
 function createMessageReactionDetailsHandler(kind) {
 	return async function getChatMessageReactionUsers(req, res, next) {
 		const input = getReactionDetailsInput(req);
@@ -90,7 +98,10 @@ function createMessageReactionHandler(kind) {
 			});
 
 			if (summary) {
-				emitChatMessageReactionsChanged(summary);
+				emitChatMessageReactionsChanged(
+					summary,
+					getSelfConversationEmitOptions(kind, req.user.id),
+				);
 			}
 
 			if (wantsJson(req)) {
@@ -120,4 +131,3 @@ export const getNotesMessageReactionUsers =
 export const reactToFriendChatMessage = createMessageReactionHandler('friend');
 export const reactToRoomChatMessage = createMessageReactionHandler('room');
 export const reactToNotesMessage = createMessageReactionHandler('self');
-

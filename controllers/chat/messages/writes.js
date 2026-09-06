@@ -59,7 +59,9 @@ export async function createNotesChatMessage(req, res, next) {
 		if (!message) {
 			req.flash('error', 'chat:conversation.messageError');
 		} else {
-			await emitChatMessageCreated(message);
+			await emitChatMessageCreated(message, {
+				targetUserId: req.user.id,
+			});
 		}
 
 		return res.redirect(CHAT_OPEN_REDIRECT);
