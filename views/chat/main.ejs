@@ -105,14 +105,16 @@
 						<%= t('chat:count', { count: section.count }) %>
 					</span>
 					<% if (section.canOpenSelfChat) { %>
-						<button
-							class="btn btn-action-outline chat-header-action has-tooltip"
-							type="button"
-							data-bs-title="<%= t('chat:selfChat') %>"
-							aria-label="<%= t('chat:selfChat') %>"
-						>
-							<i class="bi bi-journal-text" aria-hidden="true"></i>
-						</button>
+						<form method="POST" action="/chat/notes/open" class="chat-header-action-form">
+							<button
+								class="btn btn-action-outline chat-header-action has-tooltip"
+								type="submit"
+								data-bs-title="<%= t('chat:selfChat') %>"
+								aria-label="<%= t('chat:selfChat') %>"
+							>
+								<i class="bi bi-journal-text" aria-hidden="true"></i>
+							</button>
+						</form>
 					<% } %>
 					<% if (section.canCreateRoom) { %>
 						<button

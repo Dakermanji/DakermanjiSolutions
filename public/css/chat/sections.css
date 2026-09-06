@@ -116,6 +116,10 @@
 	font-weight: 700;
 }
 
+.chat-header-action-form {
+	margin: 0;
+}
+
 .chat-header-action {
 	width: 2.4rem;
 	height: 2.4rem;
