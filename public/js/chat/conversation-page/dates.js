@@ -31,10 +31,15 @@
 		const date = new Date(value);
 		if (Number.isNaN(date.getTime())) return '';
 
-		return new Intl.DateTimeFormat(document.documentElement.lang || 'en', {
+		const locale = document.documentElement.lang || 'en';
+		const formattedTime = new Intl.DateTimeFormat(locale, {
 			hour: '2-digit',
 			minute: '2-digit',
 		}).format(date);
+
+		return locale.toLowerCase().startsWith('ar')
+			? `\u200f${formattedTime}`
+			: formattedTime;
 	}
 
 	window.ChatConversationDates = {

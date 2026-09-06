@@ -152,10 +152,15 @@
 	const formatMessageTime = (value) => {
 		if (!value) return '';
 
-		return new Intl.DateTimeFormat(currentLang || 'en', {
+		const locale = currentLang || 'en';
+		const formattedTime = new Intl.DateTimeFormat(locale, {
 			hour: '2-digit',
 			minute: '2-digit',
 		}).format(new Date(value));
+
+		return String(locale).toLowerCase().startsWith('ar')
+			? `\u200f${formattedTime}`
+			: formattedTime;
 	};
 	const formatMessageDate = (value) => {
 		if (!value) return '';
