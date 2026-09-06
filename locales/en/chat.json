@@ -11,7 +11,8 @@
 	"backToChats": "Back to chats",
 	"friendFallback": "Friend",
 	"notes": {
-		"openError": "Could not open notes."
+		"openError": "Could not open notes.",
+		"kicker": "Your notes"
 	},
 	"states": {
 		"loading": "Loading chats...",

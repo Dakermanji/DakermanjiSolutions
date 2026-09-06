@@ -11,7 +11,8 @@
 	"backToChats": "العودة إلى الدردشات",
 	"friendFallback": "صديق",
 	"notes": {
-		"openError": "تعذر فتح الملاحظات."
+		"openError": "تعذر فتح الملاحظات.",
+		"kicker": "ملاحظاتك"
 	},
 	"states": {
 		"loading": "جارٍ تحميل الدردشات...",

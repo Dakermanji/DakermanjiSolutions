@@ -11,7 +11,8 @@
 	"backToChats": "Retour aux chats",
 	"friendFallback": "Ami",
 	"notes": {
-		"openError": "Impossible d’ouvrir les notes."
+		"openError": "Impossible d’ouvrir les notes.",
+		"kicker": "Vos notes"
 	},
 	"states": {
 		"loading": "Chargement des chats...",

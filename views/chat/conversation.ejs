@@ -1,7 +1,8 @@
 <!--! views/chat/conversation.ejs -->
 <%
-	const friend = activeConversation.friend || {};
+	const friend = activeConversation.friend || activeConversation.self || {};
 	const room = activeConversation.room || {};
+	const isNotesConversation = activeConversation.kind === 'self';
 	const conversation = activeConversation.conversation || {};
 	const isRoomConversation = activeConversation.kind === 'room' || Boolean(room.id);
 	const safeRoomMembers =
@@ -27,34 +28,53 @@
 		friend.email ||
 		t('chat:friendFallback');
 	const roomName = room.title || t('chat:createRoom');
-	const conversationName = isRoomConversation ? roomName : friendName;
-	const conversationKicker = isRoomConversation
-		? t(
-			room.visibility === 'public'
-				? 'chat:sections.publicRooms.title'
-				: 'chat:sections.privateRooms.title',
-		)
-		: t('chat:sections.friends.title');
+	const notesName = t('chat:selfChat');
+	const conversationName = isNotesConversation
+		? notesName
+		: isRoomConversation
+			? roomName
+			: friendName;
+	const conversationKicker = isNotesConversation
+		? t('chat:notes.kicker')
+		: isRoomConversation
+			? t(
+				room.visibility === 'public'
+					? 'chat:sections.publicRooms.title'
+					: 'chat:sections.privateRooms.title',
+			)
+			: t('chat:sections.friends.title');
 	const chatMessages = Array.isArray(messages) ? messages : [];
 	const canLoadOlderMessages = Boolean(hasOlderMessages);
-	const olderMessagesUrl = isRoomConversation
-		? '/chat/rooms/messages'
-		: '/chat/friends/messages';
-	const editMessageUrl = isRoomConversation
-		? '/chat/rooms/messages/edit'
-		: '/chat/friends/messages/edit';
-	const deleteMessageUrl = isRoomConversation
-		? '/chat/rooms/messages/delete'
-		: '/chat/friends/messages/delete';
-	const reactionMessageUrl = isRoomConversation
-		? '/chat/rooms/messages/react'
-		: '/chat/friends/messages/react';
-	const reactionDetailsUrl = isRoomConversation
-		? '/chat/rooms/messages/reactions'
-		: '/chat/friends/messages/reactions';
-	const messageFormAction = isRoomConversation
-		? '/chat/rooms/messages'
-		: '/chat/friends/messages';
+	const olderMessagesUrl = isNotesConversation
+		? '/chat/notes/messages'
+		: isRoomConversation
+			? '/chat/rooms/messages'
+			: '/chat/friends/messages';
+	const editMessageUrl = isNotesConversation
+		? '/chat/notes/messages/edit'
+		: isRoomConversation
+			? '/chat/rooms/messages/edit'
+			: '/chat/friends/messages/edit';
+	const deleteMessageUrl = isNotesConversation
+		? '/chat/notes/messages/delete'
+		: isRoomConversation
+			? '/chat/rooms/messages/delete'
+			: '/chat/friends/messages/delete';
+	const reactionMessageUrl = isNotesConversation
+		? '/chat/notes/messages/react'
+		: isRoomConversation
+			? '/chat/rooms/messages/react'
+			: '/chat/friends/messages/react';
+	const reactionDetailsUrl = isNotesConversation
+		? '/chat/notes/messages/reactions'
+		: isRoomConversation
+			? '/chat/rooms/messages/reactions'
+			: '/chat/friends/messages/reactions';
+	const messageFormAction = isNotesConversation
+		? '/chat/notes/messages'
+		: isRoomConversation
+			? '/chat/rooms/messages'
+			: '/chat/friends/messages';
 	const normalizeReactionOptions = (reactions) => {
 		if (Array.isArray(reactions)) {
 			return reactions.map((reaction) => ({
@@ -74,9 +94,11 @@
 	};
 	const chatQuickReactions = normalizeReactionOptions(quickReactions);
 	const chatExtraReactions = normalizeReactionOptions(extraReactions);
-	const mentionSuggestionUsers = (isRoomConversation
-		? roomMemberList
-		: [friend]
+	const mentionSuggestionUsers = (isNotesConversation
+		? []
+		: isRoomConversation
+			? roomMemberList
+			: [friend]
 	)
 		.filter((member) => member && member.id && member.id !== user.id)
 		.filter((member) => !isRoomConversation || ['active', 'muted'].includes(member.status))
@@ -206,7 +228,7 @@
 	data-active-conversation-id="<%= conversation.id %>"
 	data-current-user-id="<%= user.id %>"
 	data-focus-message-id="<%= typeof focusMessageId !== 'undefined' ? focusMessageId || '' : '' %>"
-	data-chat-conversation-kind="<%= isRoomConversation ? 'room' : 'friend' %>"
+	data-chat-conversation-kind="<%= isNotesConversation ? 'self' : isRoomConversation ? 'room' : 'friend' %>"
 	data-room-can-write="<%= canWriteConversation ? 'true' : 'false' %>"
 	data-typing-one-label="✍️ <%= t('chat:conversation.typingOne', { user: '{{user}}' }) %>"
 	data-typing-two-label="✍️ <%= t('chat:conversation.typingTwo', { users: '{{users}}' }) %>"

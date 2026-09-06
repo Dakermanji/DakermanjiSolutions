@@ -6,7 +6,12 @@ import {
 	markFriendConversationRead,
 } from '../../services/chat/friends.js';
 import {
+	getOpenNotesConversation,
+	markNotesConversationRead,
+} from '../../services/chat/notes.js';
+import {
 	listFriendMessages,
+	listNotesMessages,
 	listRoomMessages,
 } from '../../services/chat/messages.js';
 import {
@@ -95,6 +100,59 @@ export async function renderChat(req, res, next) {
 					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
 					messageMutationWindowMs:
 						CHAT_MESSAGE_LIMITS.FRIEND_EDIT_DELETE_WINDOW_MS,
+					extraReactions: CHAT_MESSAGE_EXTRA_REACTIONS,
+					quickReactions: CHAT_MESSAGE_QUICK_REACTIONS,
+					roomVisibility: CHAT_ROOM_VISIBILITY,
+				});
+			}
+
+			const activeNotesConversation = await getOpenNotesConversation(
+				activeConversationId,
+				req.user.id,
+			);
+
+			if (activeNotesConversation) {
+				const messages = await listNotesMessages(
+					activeNotesConversation.conversation.id,
+					req.user.id,
+				);
+				await markNotesConversationRead(
+					activeNotesConversation.conversation.id,
+					req.user.id,
+				);
+
+				return res.render('chat/conversation', {
+					titleKey: 'chat:title',
+					styles: ['modals/main', 'chat/main'],
+					scripts: [
+						'chat/conversation-page/dates',
+						'chat/conversation-page/utils',
+						'chat/conversation-page/renderer-actions',
+						'chat/conversation-page/renderer-senders',
+						'chat/conversation-page/renderer-reactions',
+						'chat/conversation-page/renderer-content',
+						'chat/conversation-page/renderer-rows',
+						'chat/conversation-page/renderer-list',
+						'chat/conversation-page/renderer',
+						'chat/conversation-page/socket',
+						'chat/conversation-page/panels',
+						'chat/conversation-page/messages-reply',
+						'chat/conversation-page/messages-history',
+						'chat/conversation-page/messages-mutations',
+						'chat/conversation-page/messages-flags',
+						'chat/conversation-page/messages-reactions',
+						'chat/conversation-page/messages-mentions',
+						'chat/conversation-page/messages',
+						'chat/conversation',
+					],
+					activeConversation: activeNotesConversation,
+					focusMessageId,
+					messages: messages.messages,
+					roomMembers: [],
+					roomManagementMembers: [],
+					hasOlderMessages: messages.hasMore,
+					messageBodyMaxLength: CHAT_MESSAGE_LIMITS.BODY_MAX_LENGTH,
+					messageMutationWindowMs: 0,
 					extraReactions: CHAT_MESSAGE_EXTRA_REACTIONS,
 					quickReactions: CHAT_MESSAGE_QUICK_REACTIONS,
 					roomVisibility: CHAT_ROOM_VISIBILITY,
