@@ -10,6 +10,11 @@ import {
 	findFriendConversationsForUser,
 	findVisibleFriendConversationForUser,
 } from './conversations/friends.js';
+import {
+	findOrCreateSelfConversation,
+	findSelfConversationForUser,
+	findSelfConversationForUserById,
+} from './conversations/self.js';
 
 export {
 	findDirectConversation,
@@ -21,6 +26,11 @@ export {
 	findFriendConversationsForUser,
 	findVisibleFriendConversationForUser,
 } from './conversations/friends.js';
+export {
+	findOrCreateSelfConversation,
+	findSelfConversationForUser,
+	findSelfConversationForUserById,
+} from './conversations/self.js';
 
 export default {
 	countUnreadFriendMessagesForUser,
@@ -29,4 +39,7 @@ export default {
 	findFriendConversationsForUser,
 	findVisibleFriendConversationForUser,
 	findFriendConversationForUserById,
+	findOrCreateSelfConversation,
+	findSelfConversationForUser,
+	findSelfConversationForUserById,
 };

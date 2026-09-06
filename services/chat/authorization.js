@@ -10,8 +10,19 @@ async function findReadableFriendConversation(conversationId, userId) {
 	);
 }
 
+async function findReadableSelfConversation(conversationId, userId) {
+	return ChatConversationsModel.findSelfConversationForUserById(
+		conversationId,
+		userId,
+	);
+}
+
 async function findWritableFriendConversation(conversationId, userId) {
 	return findReadableFriendConversation(conversationId, userId);
+}
+
+async function findWritableSelfConversation(conversationId, userId) {
+	return findReadableSelfConversation(conversationId, userId);
 }
 
 /**
@@ -30,6 +41,10 @@ export async function findReadableChatConversation({
 }) {
 	if (type === CHAT_CONVERSATION_TYPES.FRIEND) {
 		return findReadableFriendConversation(conversationId, userId);
+	}
+
+	if (type === CHAT_CONVERSATION_TYPES.SELF) {
+		return findReadableSelfConversation(conversationId, userId);
 	}
 
 	return null;
@@ -51,6 +66,10 @@ export async function findWritableChatConversation({
 }) {
 	if (type === CHAT_CONVERSATION_TYPES.FRIEND) {
 		return findWritableFriendConversation(conversationId, userId);
+	}
+
+	if (type === CHAT_CONVERSATION_TYPES.SELF) {
+		return findWritableSelfConversation(conversationId, userId);
 	}
 
 	return null;

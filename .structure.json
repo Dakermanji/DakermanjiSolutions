@@ -176,7 +176,8 @@
 		"chat": {
 			"conversations": [
 				"direct.js",
-				"friends.js"
+				"friends.js",
+				"self.js"
 			],
 			"messages": [
 				"flags.js",
@@ -527,6 +528,7 @@
 				"friends.js",
 				"live.js",
 				"messages.js",
+				"notes.js",
 				"rooms.js"
 			]
 		},
