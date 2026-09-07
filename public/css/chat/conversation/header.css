@@ -78,13 +78,13 @@
 	gap: 0.5rem;
 }
 
-.chat-room-leave-header-button {
+.chat-danger-header-button {
 	border-color: var(--bs-danger);
 	color: var(--bs-danger);
 }
 
-.chat-room-leave-header-button:hover,
-.chat-room-leave-header-button:focus-visible {
+.chat-danger-header-button:hover,
+.chat-danger-header-button:focus-visible {
 	border-color: var(--bs-danger);
 	background: var(--bs-danger);
 	color: var(--color-text-inverse);
@@ -146,3 +146,4 @@
 		font-size: 1.35rem;
 	}
 }
+

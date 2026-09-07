@@ -14,7 +14,11 @@
 		"openError": "Could not open notes.",
 		"kicker": "Your notes",
 		"resetSuccess": "Notes reset.",
-		"resetError": "Could not reset notes."
+		"resetError": "Could not reset notes.",
+		"reset": "Reset notes",
+		"resetTitle": "Reset notes",
+		"resetBody": "Delete all notes in this chat? This cannot be undone.",
+		"resetConfirm": "Reset notes"
 	},
 	"states": {
 		"loading": "Loading chats...",

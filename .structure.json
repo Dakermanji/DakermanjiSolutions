@@ -661,6 +661,7 @@
 			],
 			"chat": [
 				"_room_modal.ejs",
+				"_notes_reset_modal.ejs",
 				"_room_leave_modal.ejs",
 				"_room_search_modal.ejs"
 			],

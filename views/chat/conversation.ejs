@@ -23,10 +23,13 @@
 		['owner', 'admin'].includes(room.memberRole);
 	const isRoomOwner = room.memberRole === 'owner';
 	const canLeaveRoom = isRoomConversation && room.memberRole && !isRoomOwner;
+	const participantFallback = isNotesConversation
+		? t('chat:selfChat')
+		: t('chat:friendFallback');
 	const friendName =
 		friend.username ||
 		friend.email ||
-		t('chat:friendFallback');
+		participantFallback;
 	const roomName = room.title || t('chat:createRoom');
 	const notesName = t('chat:selfChat');
 	const conversationName = isNotesConversation
@@ -114,7 +117,7 @@
 		member.displayName ||
 		member.username ||
 		member.email ||
-		t('chat:friendFallback');
+		participantFallback;
 	const getManagementGroupKey = (member) => {
 		if (member.status === 'banned') return 'banned';
 		if (member.status === 'muted') return 'muted';
@@ -165,12 +168,12 @@
 		message.sender?.displayName ||
 		message.sender?.username ||
 		message.sender?.email ||
-		t('chat:friendFallback');
+		participantFallback;
 	const getReplySenderName = (message) =>
 		message.replyTo?.sender?.displayName ||
 		message.replyTo?.sender?.username ||
 		message.replyTo?.sender?.email ||
-		t('chat:friendFallback');
+		participantFallback;
 	const formatMessageTime = (value) => {
 		if (!value) return '';
 
@@ -306,6 +309,7 @@
 		conversationKicker,
 		conversationName,
 		friend,
+		isNotesConversation,
 		isRoomConversation,
 		isRoomOwner,
 	}) %>
@@ -366,3 +370,8 @@
 <% if (canLeaveRoom) { %>
 	<%- include('../modals/chat/_room_leave_modal') %>
 <% } %>
+
+<% if (isNotesConversation) { %>
+	<%- include('../modals/chat/_notes_reset_modal') %>
+<% } %>
+

@@ -14,7 +14,11 @@
 		"openError": "Impossible d’ouvrir les notes.",
 		"kicker": "Vos notes",
 		"resetSuccess": "Notes réinitialisées.",
-		"resetError": "Impossible de réinitialiser les notes."
+		"resetError": "Impossible de réinitialiser les notes.",
+		"reset": "Réinitialiser les notes",
+		"resetTitle": "Réinitialiser les notes",
+		"resetBody": "Supprimer toutes les notes de ce chat ? Cette action est définitive.",
+		"resetConfirm": "Réinitialiser les notes"
 	},
 	"states": {
 		"loading": "Chargement des chats...",
