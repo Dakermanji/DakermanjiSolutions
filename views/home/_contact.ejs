@@ -22,6 +22,7 @@
 			</div>
 		<% } else { %>
 			<form id="contact-form" class="contact-form div-1" method="post" action="/contact">
+				<%- include('../partials/_csrf') %>
 				<div class="col-12 div-2">
 					<label for="subject" class="form-label"><%= contact.form.subject.label %></label>
 					<input

@@ -115,6 +115,7 @@
 							<div class="notification-actions" aria-label="<%= t('notifications:actions.label') %>">
 								<% actions.forEach((action) => { %>
 									<form class="notification-action-form" action="<%= action.path %>" method="post">
+										<%- include('../partials/_csrf') %>
 										<input type="hidden" name="notificationId" value="<%= notification.id %>">
 										<input type="hidden" name="entityType" value="<%= notification.entityType %>">
 										<input type="hidden" name="entityId" value="<%= notification.entityId %>">
