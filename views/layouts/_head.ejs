@@ -24,7 +24,7 @@
       <%= typeof titleKey !== 'undefined' ? `${t(titleKey)} 🔸 Dakermanji Solutions` : 'Dakermanji Solutions' %>
     </title>
 
-    <script>
+    <script nonce="<%= cspNonce %>">
       (() => {
         const root = document.documentElement;
         const values = ['light', 'dark', 'system'];
