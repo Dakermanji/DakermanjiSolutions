@@ -33,7 +33,7 @@
 			<%= t('chat:activity.loadMore') %>
 		</button>
 
-		<script type="application/json" nonce="<%= cspNonce %>" data-chat-activity-labels>
+		<script type="application/json" data-chat-activity-labels>
 			<%- JSON.stringify({
 				room_invitation_queued: t('chat:activity.actions.roomInvitationQueued'),
 				member_invited: t('chat:activity.actions.memberInvited'),

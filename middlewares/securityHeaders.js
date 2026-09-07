@@ -12,7 +12,6 @@
  * same-origin Socket.IO connections.
  */
 
-import { randomBytes } from 'node:crypto';
 import helmet from 'helmet';
 import env from '../config/dotenv.js';
 
@@ -42,7 +41,6 @@ const contentSecurityPolicy = {
 		scriptSrc: [
 			"'self'",
 			'https://cdn.jsdelivr.net',
-			(req, res) => `'nonce-${res.locals.cspNonce}'`,
 		],
 		scriptSrcAttr: ["'none'"],
 		styleSrc: [
@@ -56,11 +54,6 @@ const contentSecurityPolicy = {
 };
 
 export default function securityHeaders(app) {
-	app.use((req, res, next) => {
-		res.locals.cspNonce = randomBytes(32).toString('base64url');
-		next();
-	});
-
 	app.use(
 		helmet({
 			contentSecurityPolicy,

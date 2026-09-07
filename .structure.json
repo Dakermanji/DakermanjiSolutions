@@ -448,6 +448,7 @@
 				"notifications.js",
 				"social.js",
 				"theme.js",
+				"themeInit.js",
 				"tooltips.js"
 			],
 			"weather": [
