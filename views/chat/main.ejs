@@ -106,6 +106,7 @@
 					</span>
 					<% if (section.canOpenSelfChat) { %>
 						<form method="POST" action="/chat/notes/open" class="chat-header-action-form">
+							<%- include('../partials/_csrf') %>
 							<button
 								class="btn btn-action-outline chat-header-action has-tooltip"
 								type="submit"

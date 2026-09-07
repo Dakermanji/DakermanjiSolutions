@@ -19,6 +19,7 @@
 
 		<% if (canManageRoom) { %>
 			<form class="chat-members-invite" method="POST" action="/chat/rooms/invitations">
+				<%- include('../partials/_csrf') %>
 				<input type="hidden" name="conversationId" value="<%= conversation.id %>" />
 				<label class="visually-hidden" for="chat-room-invite-username">
 					<%= t('chat:members.inviteLabel') %>
@@ -116,6 +117,7 @@
 											<div class="chat-management-actions">
 												<% if (canRequestFollow) { %>
 													<form method="POST" action="/social/follow-request">
+														<%- include('../partials/_csrf') %>
 														<input type="hidden" name="identifier" value="<%= member.username %>" />
 														<input type="hidden" name="returnTo" value="/chat?conversation=active" />
 														<button
@@ -134,6 +136,7 @@
 												<% } %>
 												<% memberActionForms.forEach((action) => { %>
 													<form method="POST" action="<%= action.path %>">
+														<%- include('../partials/_csrf') %>
 														<input type="hidden" name="conversationId" value="<%= conversation.id %>" />
 														<input type="hidden" name="targetUserId" value="<%= member.id %>" />
 														<button

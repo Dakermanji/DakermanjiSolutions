@@ -97,6 +97,7 @@
 				submitButton.disabled = false;
 			}
 
+			window.AppCsrf?.addToForm(deleteForm);
 			deleteForm.submit();
 			return true;
 		}
@@ -118,6 +119,7 @@
 			}
 
 			document.body.appendChild(form);
+			window.AppCsrf?.addToForm(form);
 			form.submit();
 		}
 

@@ -121,6 +121,7 @@
 
 		function submitComposerFallback() {
 			setFormControlsDisabled(composer, false);
+			window.AppCsrf?.addToForm(composer);
 			composer.submit();
 		}
 

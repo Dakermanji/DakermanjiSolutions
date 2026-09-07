@@ -1,6 +1,7 @@
 <!--! views/chat/_conversation_header.ejs -->
 <header class="chat-conversation-header">
 	<form method="POST" action="/chat/friends/close" class="chat-back-form">
+		<%- include('../partials/_csrf') %>
 		<button
 			class="btn btn-action-outline chat-back-button has-tooltip"
 			type="submit"

@@ -43,6 +43,7 @@
 
 		form.appendChild(input);
 		document.body.appendChild(form);
+		window.AppCsrf?.addToForm(form);
 		form.submit();
 	}
 
