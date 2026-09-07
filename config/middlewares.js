@@ -13,6 +13,7 @@ import parsers from '../middlewares/parsers.js';
 import session from '../middlewares/session.js';
 import passport from '../middlewares/passport.js';
 import flash from '../middlewares/flash.js';
+import csrf from '../middlewares/csrf.js';
 import locals from '../middlewares/locals.js';
 import i18nextMiddlewares from '../middlewares/i18n.js';
 import staticFiles from '../middlewares/staticFiles.js';
@@ -41,6 +42,9 @@ export default function applyMiddlewares(app) {
 
 	// Register i18next middleware (language detection + view helpers)
 	i18nextMiddlewares(app);
+
+	// Protect unsafe requests with a token stored in the visitor's session
+	csrf(app);
 
 	// Pass Global locals including Flash
 	locals(app);

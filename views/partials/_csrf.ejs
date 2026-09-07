@@ -1,1 +1,4 @@
 <!--! views/partials/_csrf.ejs -->
+<% if (typeof csrfToken !== 'undefined' && csrfToken) { %>
+<input type="hidden" name="<%= csrfFieldName %>" value="<%= csrfToken %>" />
+<% } %>

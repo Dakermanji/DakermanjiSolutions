@@ -148,6 +148,7 @@
 			"weather.js"
 		],
 		"~": [
+			"csrf.js",
 			"errorHandler.js",
 			"flash.js",
 			"i18n.js",
@@ -440,6 +441,7 @@
 			],
 			"root": [
 				"chat.js",
+				"csrf.js",
 				"dropdownMenu.js",
 				"flash.js",
 				"modals.js",
