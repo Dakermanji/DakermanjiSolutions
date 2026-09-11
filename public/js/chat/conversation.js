@@ -57,6 +57,11 @@
 		});
 
 	let chatSocket = null;
+	const readState = window.ChatConversationReadState.createReadStateController({
+		chatPage,
+		messageSurface,
+		getChatSocket: () => chatSocket,
+	});
 	const messages = window.ChatConversationMessages.createMessageController({
 		chatPage,
 		composer,
@@ -65,6 +70,7 @@
 		focusComposerInput,
 		hideTypingIndicator: typingController.hideTypingIndicator,
 		getChatSocket: () => chatSocket,
+		onMessagesChanged: readState.scheduleSync,
 		syncComposerInputDirection,
 	});
 
@@ -80,9 +86,11 @@
 			chatPage.dataset.focusMessageId = '';
 		}
 		messages.scheduleVisibleMessageMutationExpiries();
+		readState.scheduleSync();
 	});
 
 	messageSurface.addEventListener('scroll', () => {
+		readState.scheduleSync();
 		if (messageSurface.scrollTop > 80) return;
 
 		void messages.loadOlderMessages();
@@ -129,9 +137,12 @@
 		.querySelector('[data-chat-flags-list]')
 		?.addEventListener('submit', flagReviewPanel.handleFlagReviewSubmit);
 
-	if (composer) {
-		chatSocket = window.ChatConversationSocket.connectChatSocket();
+	chatSocket = window.ChatConversationSocket.connectChatSocket();
+	if (chatSocket) {
 		bindChatSocket(chatSocket);
+	}
+
+	if (composer) {
 		syncComposerInputDirection();
 		composer
 			.querySelector('[data-chat-reply-clear]')
@@ -154,8 +165,11 @@
 	function bindChatSocket(socket) {
 		if (!socket) return;
 
-		socket.emit('chat:conversation:join', {
-			conversationId: chatPage.dataset.activeConversationId,
+		socket.on('connect', () => {
+			socket.emit('chat:conversation:join', {
+				conversationId: chatPage.dataset.activeConversationId,
+			});
+			readState.scheduleSync();
 		});
 
 		socket.on('chat:message:created', (payload) => {
@@ -177,7 +191,7 @@
 			handleRoomMembershipChange(socket, payload);
 		});
 
-		composer.addEventListener('submit', (event) => {
+		composer?.addEventListener('submit', (event) => {
 			event.preventDefault();
 			if (chatPage.dataset.roomCanWrite === 'false') return;
 
@@ -185,7 +199,7 @@
 			void messages.submitLiveMessage(socket);
 		});
 
-		const input = composer.elements.message;
+		const input = composer?.elements.message;
 		input?.addEventListener('input', () => {
 			syncComposerInputDirection();
 			messages.handleMentionInput();

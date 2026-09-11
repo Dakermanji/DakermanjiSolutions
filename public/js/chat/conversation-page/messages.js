@@ -21,6 +21,7 @@
 		focusComposerInput,
 		hideTypingIndicator,
 		getChatSocket,
+		onMessagesChanged = null,
 		syncComposerInputDirection = null,
 	}) {
 		const isRoomConversation =
@@ -133,6 +134,9 @@
 				return;
 			}
 
+			const shouldScrollToLatest =
+				message.sender?.id === chatPage.dataset.currentUserId ||
+				isScrolledNearLatestMessage();
 			const wasAppended = messageRenderer.appendMessage(
 				messageSurface,
 				message,
@@ -144,14 +148,17 @@
 
 			mutationController.scheduleMessageMutationExpiryById(message.id);
 			hideTypingIndicator();
-			scrollToLatestMessage();
+			if (shouldScrollToLatest) scrollToLatestMessage();
+			onMessagesChanged?.();
+		}
 
-			if (socket && message.sender?.id !== chatPage.dataset.currentUserId) {
-				socket.emit('chat:conversation:read', {
-					conversationId: chatPage.dataset.activeConversationId,
-					messageId: message.id,
-				});
-			}
+		function isScrolledNearLatestMessage() {
+			return (
+				messageSurface.scrollHeight -
+					messageSurface.scrollTop -
+					messageSurface.clientHeight <=
+				48
+			);
 		}
 
 		function scrollToLatestMessage() {
