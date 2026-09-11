@@ -149,6 +149,7 @@
 			if (socket && message.sender?.id !== chatPage.dataset.currentUserId) {
 				socket.emit('chat:conversation:read', {
 					conversationId: chatPage.dataset.activeConversationId,
+					messageId: message.id,
 				});
 			}
 		}

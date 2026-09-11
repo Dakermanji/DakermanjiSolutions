@@ -257,10 +257,12 @@ export function registerChatSocketHandlers(io, socket) {
 		}
 	});
 
-	socket.on('chat:conversation:read', async (payload) => {
+	socket.on('chat:conversation:read', async (payload, acknowledge) => {
 		const conversationId = String(payload?.conversationId || '').trim();
+		const messageId = String(payload?.messageId || '').trim();
 
-		if (!isValidUuid(conversationId)) {
+		if (!isValidUuid(conversationId) || !isValidUuid(messageId)) {
+			acknowledgeFailure(acknowledge);
 			return;
 		}
 
@@ -271,17 +273,31 @@ export function registerChatSocketHandlers(io, socket) {
 			);
 
 			if (!openConversation) {
+				acknowledgeFailure(acknowledge);
 				return;
 			}
 
-			await markConversationRead({
+			const readState = await markConversationRead({
 				kind: openConversation.kind,
 				conversationId: openConversation.conversation.conversation_id,
 				userId: socket.data.userId,
+				messageId,
 			});
+
+			if (!readState) {
+				acknowledgeFailure(acknowledge);
+				return;
+			}
+
 			await emitChatUnreadCountsChanged([socket.data.userId]);
+			acknowledge?.({
+				ok: true,
+				conversationId: readState.conversation_id,
+				lastReadMessageId: readState.last_read_message_id,
+				advanced: readState.advanced,
+			});
 		} catch {
-			// Read receipt updates are recoverable on the next page request.
+			acknowledgeFailure(acknowledge);
 		}
 	});
 }

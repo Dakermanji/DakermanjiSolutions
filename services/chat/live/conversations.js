@@ -121,16 +121,19 @@ export function deleteChatMessageForConversation({
 	});
 }
 
-export async function markConversationRead({ kind, conversationId, userId }) {
+export async function markConversationRead({
+	kind,
+	conversationId,
+	userId,
+	messageId,
+}) {
 	if (kind === 'room') {
-		await markRoomConversationRead(conversationId, userId);
-		return;
+		return markRoomConversationRead(conversationId, userId, messageId);
 	}
 
 	if (kind === 'self') {
-		await markNotesConversationRead(conversationId, userId);
-		return;
+		return markNotesConversationRead(conversationId, userId, messageId);
 	}
 
-	await markFriendConversationRead(conversationId, userId);
+	return markFriendConversationRead(conversationId, userId, messageId);
 }
