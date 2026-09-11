@@ -2,9 +2,10 @@
 
 import ChatRoomsModel from '../../../models/chat/Rooms.js';
 import ChatConversationMembersModel from '../../../models/chat/ConversationMembers.js';
+import ChatMessagesModel from '../../../models/chat/Messages.js';
 import { formatOpenRoomConversation } from './formatters.js';
 import { recordRoomMemberJoinedActivity } from './activity.js';
-import { canChatMemberWrite } from './permissions.js';
+import { canChatMemberManage, canChatMemberWrite } from './permissions.js';
 
 /**
  * Join one public room and return its open conversation data.
@@ -89,21 +90,37 @@ export async function getOpenRoomConversation(conversationId, userId) {
 }
 
 /**
- * Mark an openable room conversation read through its latest message.
+ * Mark an openable room conversation read through one readable message.
  *
  * @param {string} conversationId
  * @param {string} userId
+ * @param {string} messageId
  * @returns {Promise<object|null>}
  */
-export async function markRoomConversationRead(conversationId, userId) {
+export async function markRoomConversationRead(conversationId, userId, messageId) {
 	const room = await findOpenableRoomConversation(conversationId, userId);
 
 	if (!room) {
 		return null;
 	}
 
-	return ChatConversationMembersModel.markReadThroughLatestMessage(
+	const message = await ChatMessagesModel.findConversationMessageById({
+		conversationId: room.conversation_id,
+		messageId,
+		viewerUserId: userId,
+		canViewPendingModeration: canChatMemberManage(
+			room.member_role,
+			room.member_status,
+		),
+	});
+
+	if (!message) {
+		return null;
+	}
+
+	return ChatConversationMembersModel.markReadThroughMessage(
 		room.conversation_id,
 		userId,
+		message.id,
 	);
 }

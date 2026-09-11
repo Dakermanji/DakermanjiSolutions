@@ -2,6 +2,7 @@
 
 import ChatConversationMembersModel from '../../models/chat/ConversationMembers.js';
 import ChatConversationsModel from '../../models/chat/Conversations.js';
+import ChatMessagesModel from '../../models/chat/Messages.js';
 import { CHAT_CONVERSATION_TYPES } from '../../constants/chat.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
 import { findReadableChatConversation } from './authorization.js';
@@ -113,13 +114,14 @@ export async function resetNotesConversation(conversationId, userId) {
 }
 
 /**
- * Mark an openable self-notes conversation read through its latest message.
+ * Mark an openable self-notes conversation read through one readable message.
  *
  * @param {string} conversationId
  * @param {string} userId
+ * @param {string} messageId
  * @returns {Promise<object|null>}
  */
-export async function markNotesConversationRead(conversationId, userId) {
+export async function markNotesConversationRead(conversationId, userId, messageId) {
 	const conversation = await findOpenableNotesConversation(
 		conversationId,
 		userId,
@@ -129,8 +131,19 @@ export async function markNotesConversationRead(conversationId, userId) {
 		return null;
 	}
 
-	return ChatConversationMembersModel.markReadThroughLatestMessage(
+	const message = await ChatMessagesModel.findConversationMessageById({
+		conversationId: conversation.conversation_id,
+		messageId,
+		viewerUserId: userId,
+	});
+
+	if (!message) {
+		return null;
+	}
+
+	return ChatConversationMembersModel.markReadThroughMessage(
 		conversation.conversation_id,
 		userId,
+		message.id,
 	);
 }

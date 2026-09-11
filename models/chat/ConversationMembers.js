@@ -60,36 +60,73 @@ export async function findPendingMessageRecipientUserIds({
 }
 
 /**
- * Mark one member as having read through the conversation's latest message.
+ * Mark one member as having read through a specific conversation message.
  *
  * @param {string} conversationId
  * @param {string} userId
+ * @param {string} messageId
  * @returns {Promise<object|null>}
  */
-export async function markReadThroughLatestMessage(conversationId, userId) {
+export async function markReadThroughMessage(conversationId, userId, messageId) {
 	const q = `
-		UPDATE chat_conversation_members ccm
-		SET
-			last_read_message_id = cc.last_message_id,
-			updated_at = NOW()
-		FROM chat_conversations cc
-		WHERE ccm.conversation_id = cc.id
-			AND ccm.conversation_id = $1
-			AND ccm.user_id = $2
-			AND cc.last_message_id IS NOT NULL
-		RETURNING
+		WITH target_message AS (
+			SELECT id, created_at
+			FROM chat_messages
+			WHERE conversation_id = $1
+				AND id = $3
+			LIMIT 1
+		), updated_member AS (
+			UPDATE chat_conversation_members ccm
+			SET
+				last_read_message_id = target.id,
+				updated_at = NOW()
+			FROM target_message target
+			WHERE ccm.conversation_id = $1
+				AND ccm.user_id = $2
+				AND (
+					ccm.last_read_message_id IS NULL
+					OR EXISTS (
+						SELECT 1
+						FROM chat_messages current_message
+						WHERE current_message.id = ccm.last_read_message_id
+							AND (
+								current_message.created_at < target.created_at
+								OR (
+									current_message.created_at = target.created_at
+									AND current_message.id < target.id
+								)
+							)
+					)
+				)
+			RETURNING
+				ccm.conversation_id,
+				ccm.user_id,
+				ccm.last_read_message_id,
+				ccm.updated_at
+		)
+		SELECT *, true AS advanced
+		FROM updated_member
+		UNION ALL
+		SELECT
 			ccm.conversation_id,
 			ccm.user_id,
 			ccm.last_read_message_id,
-			ccm.updated_at;
+			ccm.updated_at,
+			false AS advanced
+		FROM chat_conversation_members ccm
+		CROSS JOIN target_message
+		WHERE ccm.conversation_id = $1
+			AND ccm.user_id = $2
+			AND NOT EXISTS (SELECT 1 FROM updated_member)
+		LIMIT 1;
 	`;
 
-	const rows = await queryRows(q, [conversationId, userId]);
+	const rows = await queryRows(q, [conversationId, userId, messageId]);
 	return rows[0] || null;
 }
 
 export default {
 	findConversationMemberUserIds,
 	findPendingMessageRecipientUserIds,
-	markReadThroughLatestMessage,
+	markReadThroughMessage,
 };

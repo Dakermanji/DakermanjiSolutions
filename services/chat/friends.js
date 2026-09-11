@@ -2,6 +2,7 @@
 
 import ChatConversationsModel from '../../models/chat/Conversations.js';
 import ChatConversationMembersModel from '../../models/chat/ConversationMembers.js';
+import ChatMessagesModel from '../../models/chat/Messages.js';
 import UserBlocksModel from '../../models/social/Blocks.js';
 import UserFollowsModel from '../../models/social/Follows.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
@@ -132,13 +133,18 @@ export async function getOpenFriendConversation(conversationId, userId) {
 }
 
 /**
- * Mark an openable friend conversation read through its latest message.
+ * Mark an openable friend conversation read through one readable message.
  *
  * @param {string} conversationId
  * @param {string} userId
+ * @param {string} messageId
  * @returns {Promise<object|null>}
  */
-export async function markFriendConversationRead(conversationId, userId) {
+export async function markFriendConversationRead(
+	conversationId,
+	userId,
+	messageId,
+) {
 	const conversation = await findReadableChatConversation({
 		conversationId,
 		userId,
@@ -148,8 +154,19 @@ export async function markFriendConversationRead(conversationId, userId) {
 		return null;
 	}
 
-	return ChatConversationMembersModel.markReadThroughLatestMessage(
+	const message = await ChatMessagesModel.findConversationMessageById({
+		conversationId: conversation.conversation_id,
+		messageId,
+		viewerUserId: userId,
+	});
+
+	if (!message) {
+		return null;
+	}
+
+	return ChatConversationMembersModel.markReadThroughMessage(
 		conversation.conversation_id,
 		userId,
+		message.id,
 	);
 }
