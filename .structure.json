@@ -402,6 +402,7 @@
 					"messages-reply.js",
 					"messages.js",
 					"panels.js",
+					"read-state.js",
 					"renderer-actions.js",
 					"renderer-content.js",
 					"renderer-list.js",

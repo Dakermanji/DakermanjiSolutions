@@ -3,12 +3,8 @@
 import {
 	getOpenFriendConversation,
 	listFriendConversations,
-	markFriendConversationRead,
 } from '../../services/chat/friends.js';
-import {
-	getOpenNotesConversation,
-	markNotesConversationRead,
-} from '../../services/chat/notes.js';
+import { getOpenNotesConversation } from '../../services/chat/notes.js';
 import {
 	listFriendMessages,
 	listNotesMessages,
@@ -19,9 +15,7 @@ import {
 	getOpenRoomConversation,
 	listRoomManagementMembers,
 	listRoomMembers,
-	markRoomConversationRead,
 } from '../../services/chat/rooms.js';
-import { emitChatUnreadCountsChanged } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import {
 	clearActiveChatConversation,
@@ -34,10 +28,6 @@ import {
 	CHAT_MESSAGE_QUICK_REACTIONS,
 	CHAT_ROOM_VISIBILITY,
 } from '../../constants/chat.js';
-
-function getNewestMessageId(messages) {
-	return messages.at(-1)?.id || null;
-}
 
 /**
  * Render the chat shell.
@@ -63,16 +53,6 @@ export async function renderChat(req, res, next) {
 					activeConversation.conversation.id,
 					req.user.id,
 				);
-				const newestMessageId = getNewestMessageId(messages.messages);
-				if (newestMessageId) {
-					await markFriendConversationRead(
-						activeConversation.conversation.id,
-						req.user.id,
-						newestMessageId,
-					);
-				}
-				await emitChatUnreadCountsChanged([req.user.id]);
-
 				return res.render('chat/conversation', {
 					titleKey: 'chat:title',
 					styles: ['modals/main', 'chat/main'],
@@ -94,6 +74,7 @@ export async function renderChat(req, res, next) {
 						'chat/conversation-page/messages-flags',
 						'chat/conversation-page/messages-reactions',
 						'chat/conversation-page/messages-mentions',
+						'chat/conversation-page/read-state',
 						'chat/conversation-page/messages',
 						'chat/conversation-page/activity',
 						'chat/conversation-page/flagReview',
@@ -124,15 +105,6 @@ export async function renderChat(req, res, next) {
 					activeNotesConversation.conversation.id,
 					req.user.id,
 				);
-				const newestMessageId = getNewestMessageId(messages.messages);
-				if (newestMessageId) {
-					await markNotesConversationRead(
-						activeNotesConversation.conversation.id,
-						req.user.id,
-						newestMessageId,
-					);
-				}
-
 				return res.render('chat/conversation', {
 					titleKey: 'chat:title',
 					styles: ['modals/main', 'chat/main'],
@@ -154,6 +126,7 @@ export async function renderChat(req, res, next) {
 						'chat/conversation-page/messages-flags',
 						'chat/conversation-page/messages-reactions',
 						'chat/conversation-page/messages-mentions',
+						'chat/conversation-page/read-state',
 						'chat/conversation-page/messages',
 						'chat/conversation',
 					],
@@ -195,16 +168,6 @@ export async function renderChat(req, res, next) {
 						req.user.id,
 					),
 				]);
-				const newestMessageId = getNewestMessageId(messages.messages);
-				if (newestMessageId) {
-					await markRoomConversationRead(
-						activeRoomConversation.conversation.id,
-						req.user.id,
-						newestMessageId,
-					);
-				}
-				await emitChatUnreadCountsChanged([req.user.id]);
-
 				return res.render('chat/conversation', {
 					titleKey: 'chat:title',
 					styles: ['modals/main', 'chat/main'],
@@ -226,6 +189,7 @@ export async function renderChat(req, res, next) {
 						'chat/conversation-page/messages-flags',
 						'chat/conversation-page/messages-reactions',
 						'chat/conversation-page/messages-mentions',
+						'chat/conversation-page/read-state',
 						'chat/conversation-page/messages',
 						'chat/conversation-page/activity',
 						'chat/conversation-page/flagReview',
