@@ -26,6 +26,7 @@
 	},
 	"conversation": {
 		"empty": "No messages yet.",
+		"unreadDivider": "Unread messages",
 		"composer": "Message composer",
 		"placeholder": "Write a message...",
 		"send": "Send",

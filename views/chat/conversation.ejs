@@ -260,6 +260,7 @@
 	data-message-waiting-approval-label="<%= t('chat:conversation.waitingApproval') %>"
 	data-message-error-label="<%= t('chat:conversation.messageError') %>"
 	data-message-rate-limited-label="<%= t('chat:conversation.rateLimited') %>"
+	data-unread-divider-label="<%= t('chat:conversation.unreadDivider') %>"
 	data-room-read-disabled-label="<%= t('chat:conversation.roomAccessLost') %>"
 	data-room-write-disabled-label="<%= t('chat:conversation.mutedMessageError') %>"
 	data-reply-message-label="<%= t('chat:conversation.reply') %>"
@@ -315,6 +316,8 @@
 	}) %>
 	<%- include('_conversation_messages', {
 		chatMessages,
+		lastReadMessageId: conversation.lastReadMessageId || '',
+		unreadCount: Number(conversation.unreadCount || 0),
 		deleteMessageUrl,
 		formatMessageDate,
 		formatMessageTime,

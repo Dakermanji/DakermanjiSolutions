@@ -73,6 +73,34 @@
 	margin-top: 0;
 }
 
+.chat-unread-divider + .chat-message-row.is-group-start {
+	margin-top: 0;
+}
+
+.chat-unread-divider {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin: 0.45rem 0;
+	color: var(--color-primary);
+	font-size: 0.78rem;
+	font-weight: 700;
+	text-align: center;
+}
+
+.chat-unread-divider::before,
+.chat-unread-divider::after {
+	content: '';
+	flex: 1;
+	height: 1px;
+	background: currentColor;
+	opacity: 0.45;
+}
+
+.chat-unread-divider span {
+	flex: 0 0 auto;
+}
+
 .chat-date-separator {
 	display: flex;
 	justify-content: center;

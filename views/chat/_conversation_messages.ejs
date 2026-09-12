@@ -1,10 +1,20 @@
 <!--! views/chat/_conversation_messages.ejs -->
-<% let currentMessageDateKey = ''; %>
+<%
+	let currentMessageDateKey = '';
+	const lastReadMessageIndex = chatMessages.findIndex(
+		(message) => message.id === lastReadMessageId,
+	);
+	const firstUnreadMessageIndex = unreadCount > 0
+		? lastReadMessageIndex >= 0
+			? lastReadMessageIndex + 1
+			: 0
+		: -1;
+%>
 
 <div class="chat-message-surface" aria-live="polite" data-chat-message-surface>
 	<% if (chatMessages.length > 0) { %>
 		<ol class="chat-message-list" data-chat-message-list>
-			<% chatMessages.forEach((message) => { %>
+			<% chatMessages.forEach((message, messageIndex) => { %>
 				<%
 					const messageDateKey = getMessageDateKey(message.createdAt);
 					const shouldShowDateSeparator =
@@ -16,6 +26,16 @@
 						<time datetime="<%= messageDateKey %>">
 							-- <%= formatMessageDate(message.createdAt) %> --
 						</time>
+					</li>
+				<% } %>
+				<% if (firstUnreadMessageIndex === messageIndex) { %>
+					<li
+						class="chat-unread-divider"
+						role="separator"
+						aria-label="<%= t('chat:conversation.unreadDivider') %>"
+						data-chat-unread-divider
+					>
+						<span><%= t('chat:conversation.unreadDivider') %></span>
 					</li>
 				<% } %>
 				<%- include('_conversation_message_row', {

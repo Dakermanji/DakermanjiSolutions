@@ -26,6 +26,7 @@
 	},
 	"conversation": {
 		"empty": "لا توجد رسائل بعد.",
+		"unreadDivider": "رسائل غير مقروءة",
 		"composer": "مربع كتابة الرسالة",
 		"placeholder": "اكتب رسالة...",
 		"send": "إرسال",
