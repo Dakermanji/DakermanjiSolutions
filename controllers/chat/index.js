@@ -24,6 +24,7 @@ export {
 	getFriendChatMessageReactionUsers,
 	getNotesMessageReactionUsers,
 	getRoomChatMessageReactionUsers,
+	openChatMessage,
 	openRoomChatMessage,
 	reactToFriendChatMessage,
 	reactToNotesMessage,

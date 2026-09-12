@@ -34,6 +34,7 @@ export {
 	toggleMessageReaction,
 } from './messages/reactions.js';
 export {
+	findOpenableChatMessageContext,
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,
@@ -73,6 +74,7 @@ import {
 	toggleMessageReaction,
 } from './messages/reactions.js';
 import {
+	findOpenableChatMessageContext,
 	findOpenableFriendConversation,
 	findOpenableRoomMessageContext,
 	listFriendMessages,
@@ -103,6 +105,7 @@ export default {
 	normalizeMentionUsername,
 	shouldReviewMessageProfanity,
 	findOpenableFriendConversation,
+	findOpenableChatMessageContext,
 	findOpenableRoomMessageContext,
 	listFriendMessages,
 	listNotesMessages,

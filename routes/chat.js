@@ -38,6 +38,7 @@ import {
 	markRoomMessageSafe,
 	muteChatRoomMember,
 	openFriendConversation,
+	openChatMessage,
 	openNotesConversation,
 	openRoomChatMessage,
 	openRoomConversation,
@@ -71,6 +72,10 @@ router.get('/rooms/search', searchVisibleRooms);
 router.get('/rooms/activity', getRoomActivityLogs);
 router.get('/rooms/flags', getRoomMessageFlags);
 router.get('/rooms/open/:conversationId', openRoomConversation);
+router.get(
+	'/messages/open/:conversationId/:messageId',
+	openChatMessage,
+);
 router.post('/friends/open', openFriendConversation);
 router.post('/notes/open', openNotesConversation);
 router.post('/notes/reset', resetNotesConversation);

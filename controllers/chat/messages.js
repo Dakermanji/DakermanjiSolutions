@@ -19,7 +19,7 @@ export {
 	editRoomChatMessage,
 } from './messages/mutations.js';
 export { flagRoomChatMessage } from './messages/flags.js';
-export { openRoomChatMessage } from './messages/open.js';
+export { openChatMessage, openRoomChatMessage } from './messages/open.js';
 export {
 	getFriendChatMessageReactionUsers,
 	getNotesMessageReactionUsers,

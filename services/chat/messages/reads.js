@@ -23,6 +23,40 @@ export function findOpenableFriendConversation(conversationId, userId) {
 }
 
 /**
+ * Find one readable friend or room message for a notification deep link.
+ *
+ * @param {object} input
+ * @param {string} input.conversationId
+ * @param {string} input.messageId
+ * @param {string} input.viewerUserId
+ * @returns {Promise<object|null>}
+ */
+export async function findOpenableChatMessageContext({
+	conversationId,
+	messageId,
+	viewerUserId,
+}) {
+	const friendConversation = await findReadableChatConversation({
+		conversationId,
+		userId: viewerUserId,
+	});
+
+	if (friendConversation) {
+		return ChatMessagesModel.findConversationMessageById({
+			conversationId: friendConversation.conversation_id,
+			messageId,
+			viewerUserId,
+		});
+	}
+
+	return findOpenableRoomMessageContext({
+		conversationId,
+		messageId,
+		viewerUserId,
+	});
+}
+
+/**
  * List recent messages for an openable friend conversation.
  *
  * @param {string} conversationId

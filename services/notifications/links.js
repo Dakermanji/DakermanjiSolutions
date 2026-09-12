@@ -13,6 +13,20 @@ export function getChatRoomOpenUrl(conversationId) {
 	return `/chat/rooms/open/${normalizedConversationId}`;
 }
 
+export function getChatMessageOpenUrl(conversationId, messageId) {
+	const normalizedConversationId = String(conversationId || '').trim();
+	const normalizedMessageId = String(messageId || '').trim();
+
+	if (
+		!isValidUuid(normalizedConversationId) ||
+		!isValidUuid(normalizedMessageId)
+	) {
+		return '/chat';
+	}
+
+	return `/chat/messages/open/${normalizedConversationId}/${normalizedMessageId}`;
+}
+
 export function getNotificationLinkUrl(notification) {
 	if (
 		notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_APPROVED ||
