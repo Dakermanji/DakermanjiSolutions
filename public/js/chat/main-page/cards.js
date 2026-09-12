@@ -238,6 +238,7 @@
 		const unreadBadge = createUnreadBadge(
 			room.unreadCount,
 			sectionBody.dataset.unreadLabel,
+			room.conversationId,
 		);
 
 		const icon = document.createElement('i');
@@ -316,6 +317,7 @@
 		const unreadBadge = createUnreadBadge(
 			conversation.unreadCount,
 			sectionBody.dataset.unreadLabel,
+			conversation.id,
 		);
 
 		const icon = document.createElement('i');

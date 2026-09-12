@@ -23,6 +23,9 @@
 	});
 
 	window.addEventListener('app:chat-unread:changed', (event) => {
-		sections.updateUnreadCounts(event.detail?.sections);
+		sections.updateUnreadCounts(
+			event.detail?.sections,
+			event.detail?.conversation,
+		);
 	});
 })();

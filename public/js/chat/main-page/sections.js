@@ -8,6 +8,7 @@
 		sumUnreadCounts,
 	} = window.ChatMainUtils;
 	const {
+		updateConversationUnreadCount,
 		updateSectionCount,
 		updateSectionUnreadCount,
 		updateSectionUnreadCountsFromPayload,
@@ -119,8 +120,9 @@
 			renderRooms(sectionBody, payload.rooms, payload.pendingRequests || []);
 		}
 
-		function updateUnreadCounts(sections) {
+		function updateUnreadCounts(sections, conversation = null) {
 			updateSectionUnreadCountsFromPayload(sections);
+			updateConversationUnreadCount(conversation);
 			scheduleLoadedChatSectionsRefresh();
 		}
 

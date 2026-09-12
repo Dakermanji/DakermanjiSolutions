@@ -7,9 +7,12 @@
 		getSectionBody,
 	} = window.ChatMainUtils;
 
-	function createUnreadBadge(count, unreadLabel) {
+	function createUnreadBadge(count, unreadLabel, conversationId = '') {
 		const unreadCount = Number(count || 0);
 		const unreadBadge = document.createElement('span');
+		if (conversationId) {
+			unreadBadge.dataset.chatUnreadConversation = conversationId;
+		}
 
 		if (unreadCount <= 0) {
 			unreadBadge.className = 'chat-unread-spacer';
@@ -25,6 +28,25 @@
 		);
 
 		return unreadBadge;
+	}
+
+	function updateConversationUnreadCount(conversation) {
+		const conversationId = String(conversation?.id || '');
+		if (!conversationId) return;
+
+		const badge = document.querySelector(
+			`[data-chat-unread-conversation="${escapeCssIdentifier(conversationId)}"]`,
+		);
+		if (!badge) return;
+
+		const sectionBody = badge.closest('[data-chat-section-body]');
+		badge.replaceWith(
+			createUnreadBadge(
+				conversation.unreadCount,
+				sectionBody?.dataset.unreadLabel || '',
+				conversationId,
+			),
+		);
 	}
 
 	function updateSectionCount(sectionId, count) {
@@ -71,6 +93,7 @@
 	window.ChatMainBadges = {
 		createUnreadBadge,
 		updateSectionCount,
+		updateConversationUnreadCount,
 		updateSectionUnreadCount,
 		updateSectionUnreadCountsFromPayload,
 	};
