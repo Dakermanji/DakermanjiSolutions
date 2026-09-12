@@ -3,6 +3,7 @@
 (() => {
 	const {
 		emitWithAck,
+		escapeCssIdentifier,
 		setFormControlsDisabled,
 		showFlashMessage,
 	} = window.ChatConversationUtils;
@@ -148,8 +149,35 @@
 
 			mutationController.scheduleMessageMutationExpiryById(message.id);
 			hideTypingIndicator();
+			if (
+				!shouldScrollToLatest &&
+				message.sender?.id !== chatPage.dataset.currentUserId
+			) {
+				addUnreadDividerBeforeMessage(message.id);
+			}
 			if (shouldScrollToLatest) scrollToLatestMessage();
 			onMessagesChanged?.();
+		}
+
+		function addUnreadDividerBeforeMessage(messageId) {
+			if (messageSurface.querySelector('[data-chat-unread-divider]')) return;
+
+			const messageRow = messageSurface.querySelector(
+				`[data-chat-message-id="${escapeCssIdentifier(messageId)}"]`,
+			);
+			if (!messageRow) return;
+
+			const divider = document.createElement('li');
+			const label = chatPage.dataset.unreadDividerLabel || '';
+			divider.className = 'chat-unread-divider';
+			divider.dataset.chatUnreadDivider = 'true';
+			divider.setAttribute('role', 'separator');
+			divider.setAttribute('aria-label', label);
+
+			const text = document.createElement('span');
+			text.textContent = label;
+			divider.appendChild(text);
+			messageRow.before(divider);
 		}
 
 		function isScrolledNearLatestMessage() {
@@ -163,6 +191,14 @@
 
 		function scrollToLatestMessage() {
 			messageSurface.scrollTop = messageSurface.scrollHeight;
+		}
+
+		function scrollToUnreadDivider() {
+			const divider = messageSurface.querySelector('[data-chat-unread-divider]');
+			if (!divider) return false;
+
+			messageSurface.scrollTop = Math.max(0, divider.offsetTop - 12);
+			return true;
 		}
 
 		async function handleMessageActionClick(event) {
@@ -251,6 +287,7 @@
 			scheduleVisibleMessageMutationExpiries:
 				mutationController.scheduleVisibleMessageMutationExpiries,
 			scrollToLatestMessage,
+			scrollToUnreadDivider,
 			submitLiveMessage,
 			updateMessage: mutationController.updateMessage,
 		};

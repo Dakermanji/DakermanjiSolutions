@@ -76,7 +76,9 @@
 
 	requestAnimationFrame(async () => {
 		messageRenderer.rebuildMessageDateSeparators(messageSurface);
-		messages.scrollToLatestMessage();
+		if (!messages.scrollToUnreadDivider()) {
+			messages.scrollToLatestMessage();
+		}
 		if (composer) {
 			focusComposerInput();
 		}

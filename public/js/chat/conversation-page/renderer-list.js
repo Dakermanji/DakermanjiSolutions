@@ -89,7 +89,14 @@
 			if (!dateKey || dateKey === currentDateKey) continue;
 
 			currentDateKey = dateKey;
-			row.before(createDateSeparatorRow(dateKey, row.dataset.chatMessageCreatedAt));
+			const unreadDivider = row.previousElementSibling?.matches(
+				'[data-chat-unread-divider]',
+			)
+				? row.previousElementSibling
+				: null;
+			(unreadDivider || row).before(
+				createDateSeparatorRow(dateKey, row.dataset.chatMessageCreatedAt),
+			);
 		}
 
 		rebuildMessageGroups(list);
