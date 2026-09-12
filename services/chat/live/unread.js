@@ -15,9 +15,14 @@ import {
  * Emit fresh unread counts to selected users.
  *
  * @param {Array<string | null | undefined>} userIds
+ * @param {object} [options]
+ * @param {string|null} [options.conversationId]
  * @returns {Promise<void>}
  */
-export async function emitChatUnreadCountsChanged(userIds) {
+export async function emitChatUnreadCountsChanged(
+	userIds,
+	{ conversationId = null } = {},
+) {
 	const chatSocketServer = getChatSocketServer();
 	if (!chatSocketServer) return;
 
@@ -26,10 +31,17 @@ export async function emitChatUnreadCountsChanged(userIds) {
 			unreadFriendCount,
 			unreadPrivateRoomCount,
 			unreadPublicRoomCount,
+			conversationUnreadCount,
 		] = await Promise.all([
 			countUnreadFriendMessages(userId),
 			countUnreadPrivateRoomMessages(userId),
 			countUnreadPublicRoomMessages(userId),
+			conversationId
+				? ChatConversationMembersModel.countUnreadMessagesForUser(
+						conversationId,
+						userId,
+					)
+				: null,
 		]);
 		const unreadRoomCount = unreadPrivateRoomCount + unreadPublicRoomCount;
 		const unreadCount = unreadFriendCount + unreadRoomCount;
@@ -43,6 +55,12 @@ export async function emitChatUnreadCountsChanged(userIds) {
 					privateRooms: unreadPrivateRoomCount,
 					publicRooms: unreadPublicRoomCount,
 				},
+				conversation: conversationId
+					? {
+							id: conversationId,
+							unreadCount: conversationUnreadCount,
+						}
+					: null,
 			});
 	}
 }
@@ -59,5 +77,5 @@ export async function emitChatUnreadCountsForConversation(conversationId) {
 			conversationId,
 		);
 
-	await emitChatUnreadCountsChanged(userIds);
+	await emitChatUnreadCountsChanged(userIds, { conversationId });
 }

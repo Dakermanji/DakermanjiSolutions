@@ -3,6 +3,7 @@
 import { queryRows } from '../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_MANAGE_ROLES,
+	CHAT_CONVERSATION_MEMBER_READ_STATUSES,
 	CHAT_CONVERSATION_MEMBER_STATUSES,
 } from '../../constants/chat.js';
 
@@ -57,6 +58,56 @@ export async function findPendingMessageRecipientUserIds({
 	]);
 
 	return rows.map((row) => row.user_id);
+}
+
+/**
+ * Count unread messages in one conversation for one member.
+ *
+ * @param {string} conversationId
+ * @param {string} userId
+ * @returns {Promise<number>}
+ */
+export async function countUnreadMessagesForUser(conversationId, userId) {
+	const q = `
+		SELECT COUNT(unread_message.id)::int AS unread_count
+		FROM chat_conversation_members ccm
+		INNER JOIN chat_messages unread_message
+			ON unread_message.conversation_id = ccm.conversation_id
+			AND unread_message.sender_user_id <> ccm.user_id
+			AND unread_message.deleted_at IS NULL
+			AND (
+				unread_message.moderation_status = 'visible'
+				OR (
+					unread_message.moderation_status = 'pending_review'
+					AND ccm.role = ANY($3::chat_member_role[])
+					AND ccm.status = $4::chat_member_status
+				)
+			)
+		LEFT JOIN chat_messages read_message
+			ON read_message.id = ccm.last_read_message_id
+		WHERE ccm.conversation_id = $1
+			AND ccm.user_id = $2
+			AND ccm.archived_at IS NULL
+			AND ccm.status = ANY($5::chat_member_status[])
+			AND (
+				ccm.last_read_message_id IS NULL
+				OR unread_message.created_at > read_message.created_at
+				OR (
+					unread_message.created_at = read_message.created_at
+					AND unread_message.id > read_message.id
+				)
+			);
+	`;
+
+	const rows = await queryRows(q, [
+		conversationId,
+		userId,
+		CHAT_CONVERSATION_MEMBER_MANAGE_ROLES,
+		CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+		CHAT_CONVERSATION_MEMBER_READ_STATUSES,
+	]);
+
+	return rows[0]?.unread_count || 0;
 }
 
 /**
@@ -126,6 +177,7 @@ export async function markReadThroughMessage(conversationId, userId, messageId) 
 }
 
 export default {
+	countUnreadMessagesForUser,
 	findConversationMemberUserIds,
 	findPendingMessageRecipientUserIds,
 	markReadThroughMessage,

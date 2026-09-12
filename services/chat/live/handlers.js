@@ -289,7 +289,9 @@ export function registerChatSocketHandlers(io, socket) {
 				return;
 			}
 
-			await emitChatUnreadCountsChanged([socket.data.userId]);
+			await emitChatUnreadCountsChanged([socket.data.userId], {
+				conversationId: readState.conversation_id,
+			});
 			acknowledge?.({
 				ok: true,
 				conversationId: readState.conversation_id,
