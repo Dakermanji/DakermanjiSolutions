@@ -83,7 +83,6 @@ export async function createFriendMessage({
 	await notifyMessageMentions({
 		message: formattedMessage,
 		senderUserId,
-		kind: 'friend',
 	});
 
 	return formattedMessage;
@@ -220,7 +219,6 @@ export async function createRoomMessage({
 		await notifyMessageMentions({
 			message: formattedMessage,
 			senderUserId,
-			kind: 'room',
 		});
 	}
 

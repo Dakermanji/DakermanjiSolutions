@@ -7,8 +7,8 @@ import {
 	NOTIFICATION_PRIORITIES,
 	NOTIFICATION_TYPES,
 } from '../../../constants/notifications.js';
-import { createNotification } from '../../notifications/appNotifications.js';
-import { getChatRoomOpenUrl } from '../../notifications/links.js';
+import { createNotificationIfNotExists } from '../../notifications/appNotifications.js';
+import { getChatMessageOpenUrl } from '../../notifications/links.js';
 
 function getMessagePreview(body) {
 	const preview = String(body || '').replace(/\s+/g, ' ').trim();
@@ -23,30 +23,24 @@ function getMentionRecipientIds(message, senderUserId) {
 	)];
 }
 
-function getMentionLinkUrl({ kind, conversationId }) {
-	return kind === 'room' ? getChatRoomOpenUrl(conversationId) : '/chat';
-}
-
 /**
  * Notify mentioned users after a message is stored.
  *
  * @param {object} input
  * @param {object} input.message
  * @param {string} input.senderUserId
- * @param {'friend'|'room'} input.kind
  * @returns {Promise<void>}
  */
 export async function notifyMessageMentions({
 	message,
 	senderUserId,
-	kind,
 }) {
 	const recipientUserIds = getMentionRecipientIds(message, senderUserId);
 	if (recipientUserIds.length === 0) return;
 
 	const results = await Promise.allSettled(
 		recipientUserIds.map((recipientUserId) =>
-			createNotification({
+			createNotificationIfNotExists({
 				recipientUserId,
 				actorUserId: senderUserId,
 				appKey: NOTIFICATION_APP_KEYS.CHAT,
@@ -55,10 +49,10 @@ export async function notifyMessageMentions({
 				entityId: message.id,
 				titleKey: 'notifications:types.chatMessageMention.title',
 				bodyKey: 'notifications:types.chatMessageMention.body',
-				linkUrl: getMentionLinkUrl({
-					kind,
-					conversationId: message.conversationId,
-				}),
+				linkUrl: getChatMessageOpenUrl(
+					message.conversationId,
+					message.id,
+				),
 				data: {
 					conversationId: message.conversationId,
 					messageId: message.id,
