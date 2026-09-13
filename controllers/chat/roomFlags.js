@@ -10,6 +10,10 @@ import {
 	ROOM_FLAG_REVIEW_RESULT,
 } from '../../services/chat/rooms.js';
 import {
+	notifyMessageMentions,
+	notifyMessageReply,
+} from '../../services/chat/messages.js';
+import {
 	emitChatMessageCreated,
 	emitChatMessageDeleted,
 	emitChatMessageEdited,
@@ -35,6 +39,7 @@ const ROOM_FLAG_REVIEW_ACTIONS = Object.freeze({
 		successKey: 'chat:flags.approvePendingSuccess',
 		errorKey: 'chat:flags.approvePendingError',
 		emitCreated: true,
+		notifyMessageRecipients: true,
 	},
 	hidePending: {
 		run: hidePendingRoomMessage,
@@ -72,6 +77,19 @@ function isStaleFlagReviewResult(result) {
 
 async function emitReviewAction(action, result) {
 	if (!result.ok || !result.message) return;
+
+	if (action.notifyMessageRecipients) {
+		await Promise.all([
+			notifyMessageMentions({
+				message: result.message,
+				senderUserId: result.message.sender?.id,
+			}),
+			notifyMessageReply({
+				message: result.message,
+				senderUserId: result.message.sender?.id,
+			}),
+		]);
+	}
 
 	if (action.emitCreated) {
 		emitChatMessageEdited(result.message);
