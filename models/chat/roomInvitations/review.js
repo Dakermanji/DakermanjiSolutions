@@ -312,32 +312,38 @@ export async function rejectPendingInvitationForUser({
 
 	const q = `
 		WITH rejected_invitation AS (
-			UPDATE chat_room_invitations
+			UPDATE chat_room_invitations cri
 			SET
 				status = $3::chat_room_invitation_status,
 				responded_at = NOW(),
 				revoked_by_user_id = NULL,
 				revoked_at = NULL,
 				updated_at = NOW()
-			WHERE id = $1::uuid
-				AND invited_user_id = $2::uuid
-				AND status = $4::chat_room_invitation_status
+			FROM chat_rooms cr
+			INNER JOIN chat_conversations cc
+				ON cc.id = cr.conversation_id
+			WHERE cri.id = $1::uuid
+				AND cri.invited_user_id = $2::uuid
+				AND cri.room_id = cr.id
+				AND cri.status = $4::chat_room_invitation_status
 				AND (
-					expires_at IS NULL
-					OR expires_at > NOW()
+					cri.expires_at IS NULL
+					OR cri.expires_at > NOW()
 				)
+				AND cr.archived_at IS NULL
+				AND cc.archived_at IS NULL
 			RETURNING
-				id,
-				room_id,
-				invited_user_id,
-				invited_by_user_id,
-				revoked_by_user_id,
-				status,
-				responded_at,
-				revoked_at,
-				expires_at,
-				created_at,
-				updated_at
+				cri.id,
+				cri.room_id,
+				cri.invited_user_id,
+				cri.invited_by_user_id,
+				cri.revoked_by_user_id,
+				cri.status,
+				cri.responded_at,
+				cri.revoked_at,
+				cri.expires_at,
+				cri.created_at,
+				cri.updated_at
 		)
 		SELECT
 			rejected_invitation.*,
@@ -506,4 +512,3 @@ export async function revokePendingInvitationByManager({
 	return rows[0] || null;
 
 }
-

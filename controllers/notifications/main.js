@@ -20,6 +20,7 @@ import {
 import { getNotificationLinkUrl } from '../../services/notifications/links.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import { setActiveChatConversation } from '../chat/session.js';
+import { emitChatRoomMembershipChanged } from '../../services/chat/live.js';
 
 const DISMISS_NOTIFICATION_ACTION = Object.freeze({
 	key: 'dismiss',
@@ -333,6 +334,7 @@ export async function acceptChatRoomInvitation(req, res, next) {
 			return res.redirect(NOTIFICATIONS_REDIRECT);
 		}
 
+		emitChatRoomMembershipChanged(result.member);
 		setActiveChatConversation(req, result.invitation.conversation_id);
 		req.flash('success', 'notifications:actions.acceptInvitationSuccess');
 		return res.redirect(CHAT_OPEN_REDIRECT);
