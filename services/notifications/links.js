@@ -27,6 +27,21 @@ export function getChatMessageOpenUrl(conversationId, messageId) {
 	return `/chat/messages/open/${normalizedConversationId}/${normalizedMessageId}`;
 }
 
+function getSafeInternalNotificationUrl(value) {
+	const normalizedValue = String(value || '').trim();
+
+	if (
+		!normalizedValue.startsWith('/')
+		|| normalizedValue.startsWith('//')
+		|| normalizedValue.startsWith('/\\')
+		|| /[\u0000-\u001F\u007F]/.test(normalizedValue)
+	) {
+		return '/notifications';
+	}
+
+	return normalizedValue;
+}
+
 export function getNotificationLinkUrl(notification) {
 	if (
 		notification.type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_APPROVED ||
@@ -35,5 +50,7 @@ export function getNotificationLinkUrl(notification) {
 		return getChatRoomOpenUrl(notification.data?.conversationId);
 	}
 
-	return notification.link_url || notification.linkUrl || '/notifications';
+	return getSafeInternalNotificationUrl(
+		notification.link_url || notification.linkUrl,
+	);
 }

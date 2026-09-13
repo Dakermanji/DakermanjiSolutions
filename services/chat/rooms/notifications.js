@@ -135,6 +135,8 @@ export async function notifyRoomJoinRequestResult({
 	bodyKey,
 	priority = NOTIFICATION_PRIORITIES.NORMAL,
 }) {
+	const canOpenRoom = type === NOTIFICATION_TYPES.CHAT_ROOM_JOIN_REQUEST_APPROVED;
+
 	await createNotificationIfNotExists({
 		recipientUserId: request.requested_by_user_id,
 		actorUserId: reviewerUserId,
@@ -144,7 +146,9 @@ export async function notifyRoomJoinRequestResult({
 		entityId: request.id,
 		titleKey,
 		bodyKey,
-		linkUrl: getChatRoomOpenUrl(request.conversation_id),
+		linkUrl: canOpenRoom
+			? getChatRoomOpenUrl(request.conversation_id)
+			: '/notifications',
 		data: {
 			conversationId: request.conversation_id,
 			requestId: request.id,
