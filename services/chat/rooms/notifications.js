@@ -5,6 +5,7 @@ import {
 	NOTIFICATION_APP_KEYS,
 	NOTIFICATION_ENTITY_TYPES,
 	NOTIFICATION_PRIORITIES,
+	NOTIFICATION_RESPONSE_KEYS,
 	NOTIFICATION_TYPES,
 } from '../../../constants/notifications.js';
 import {
@@ -121,6 +122,46 @@ export async function notifyRoomInvitationCreated({
 			conversationId: room.conversation_id,
 			invitationId: invitation.id,
 			roomName: room.title || '',
+		},
+		priority: NOTIFICATION_PRIORITIES.NORMAL,
+	});
+}
+
+export async function notifyRoomInvitationResponse({
+	invitation,
+	invitee,
+	responseKey,
+}) {
+	if (
+		!invitation?.id
+		|| !invitation?.conversation_id
+		|| !invitation?.invited_by_user_id
+		|| !invitee?.id
+	) {
+		return null;
+	}
+
+	const accepted = responseKey === NOTIFICATION_RESPONSE_KEYS.ACCEPTED;
+	const responseName = accepted ? 'Accepted' : 'Rejected';
+
+	return createNotificationIfNotExists({
+		recipientUserId: invitation.invited_by_user_id,
+		actorUserId: invitee.id,
+		appKey: NOTIFICATION_APP_KEYS.CHAT,
+		type: accepted
+			? NOTIFICATION_TYPES.CHAT_ROOM_INVITATION_ACCEPTED
+			: NOTIFICATION_TYPES.CHAT_ROOM_INVITATION_REJECTED,
+		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_INVITATION_RESULT,
+		entityId: invitation.id,
+		titleKey: `notifications:types.chatRoomInvitation${responseName}.title`,
+		bodyKey: `notifications:types.chatRoomInvitation${responseName}.body`,
+		linkUrl: getChatRoomOpenUrl(invitation.conversation_id),
+		data: {
+			conversationId: invitation.conversation_id,
+			invitationId: invitation.id,
+			inviteeName: invitee.username || invitee.email || '',
+			roomName: invitation.room_title || '',
+			response: responseKey,
 		},
 		priority: NOTIFICATION_PRIORITIES.NORMAL,
 	});

@@ -52,6 +52,14 @@
 			"title": "Invitation à un salon",
 			"body": "Vous avez été invité à rejoindre {{roomName}}."
 		},
+		"chatRoomInvitationAccepted": {
+			"title": "Invitation acceptée",
+			"body": "{{inviteeName}} a accepté votre invitation à rejoindre {{roomName}}."
+		},
+		"chatRoomInvitationRejected": {
+			"title": "Invitation refusée",
+			"body": "{{inviteeName}} a refusé votre invitation à rejoindre {{roomName}}."
+		},
 		"chatRoomJoinRequest": {
 			"title": "Demande d’accès au salon",
 			"body": "{{requesterName}} souhaite rejoindre {{roomName}}."

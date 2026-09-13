@@ -52,6 +52,14 @@
 			"title": "Room invitation",
 			"body": "You were invited to join {{roomName}}."
 		},
+		"chatRoomInvitationAccepted": {
+			"title": "Invitation accepted",
+			"body": "{{inviteeName}} accepted your invitation to {{roomName}}."
+		},
+		"chatRoomInvitationRejected": {
+			"title": "Invitation declined",
+			"body": "{{inviteeName}} declined your invitation to {{roomName}}."
+		},
 		"chatRoomJoinRequest": {
 			"title": "Room join request",
 			"body": "{{requesterName}} wants to join {{roomName}}."

@@ -52,6 +52,14 @@
 			"title": "دعوة إلى غرفة",
 			"body": "تمت دعوتك للانضمام إلى {{roomName}}."
 		},
+		"chatRoomInvitationAccepted": {
+			"title": "تم قبول الدعوة",
+			"body": "قبل {{inviteeName}} دعوتك للانضمام إلى {{roomName}}."
+		},
+		"chatRoomInvitationRejected": {
+			"title": "تم رفض الدعوة",
+			"body": "رفض {{inviteeName}} دعوتك للانضمام إلى {{roomName}}."
+		},
 		"chatRoomJoinRequest": {
 			"title": "طلب انضمام إلى غرفة",
 			"body": "{{requesterName}} يريد الانضمام إلى {{roomName}}."

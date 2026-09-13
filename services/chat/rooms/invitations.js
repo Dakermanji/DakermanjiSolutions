@@ -16,7 +16,10 @@ import {
 import { isValidUuid } from '../../../middlewares/validators/common.js';
 import { findOpenableRoomConversation } from './access.js';
 import { respondAndDismissNotificationsByEntity } from '../../notifications/appNotifications.js';
-import { notifyRoomInvitationCreated } from './notifications.js';
+import {
+	notifyRoomInvitationCreated,
+	notifyRoomInvitationResponse,
+} from './notifications.js';
 import { canManageChatRoomMember } from './permissions.js';
 import {
 	recordRoomActivity,
@@ -325,9 +328,26 @@ async function respondToRoomInvitation({
 		responseKey,
 	});
 
+	const invitee = await UserModel.findBasicById(invitation.invited_user_id);
+	await notifyRoomInvitationResponse({
+		invitation,
+		invitee,
+		responseKey,
+	});
+
+	const member = responseKey === NOTIFICATION_RESPONSE_KEYS.ACCEPTED
+		? {
+			conversation_id: invitation.conversation_id,
+			user_id: invitation.invited_user_id,
+			role: CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,
+			status: CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+			archived_at: null,
+		}
+		: null;
+
 	return createRoomInvitationResult(
 		ROOM_INVITATION_RESULT.OK,
-		{ invitation },
+		{ invitation, member },
 	);
 }
 
