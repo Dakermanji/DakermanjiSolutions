@@ -457,18 +457,34 @@
 			]
 		}
 	},
-	"routes": [
-		"auth.js",
-		"avatar.js",
-		"chat.js",
-		"home.js",
-		"lang.js",
-		"notifications.js",
-		"profile.js",
-		"social.js",
-		"theme.js",
-		"weather.js"
-	],
+	"routes": {
+		"chat": {
+			"rooms": [
+				"invitations.js",
+				"members.js",
+				"messages.js",
+				"moderation.js",
+				"requests.js"
+			],
+			"~": [
+				"friends.js",
+				"notes.js",
+				"rooms.js"
+			]
+		},
+		"~": [
+			"auth.js",
+			"avatar.js",
+			"chat.js",
+			"home.js",
+			"lang.js",
+			"notifications.js",
+			"profile.js",
+			"social.js",
+			"theme.js",
+			"weather.js"
+		]
+	},
 	"services": {
 		"apiUsage": [
 			"limits.js",
