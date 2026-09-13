@@ -76,6 +76,34 @@
 			"title": "You are now a room admin",
 			"body": "You are now an admin in {{roomName}}."
 		},
+		"chatRoomMemberDemoted": {
+			"title": "Room role changed",
+			"body": "You are no longer an admin in {{roomName}}."
+		},
+		"chatRoomMemberRemoved": {
+			"title": "Removed from room",
+			"body": "You were removed from {{roomName}}."
+		},
+		"chatRoomMemberMuted": {
+			"title": "Muted in room",
+			"body": "You were muted in {{roomName}}."
+		},
+		"chatRoomMemberUnmuted": {
+			"title": "Unmuted in room",
+			"body": "You can send messages in {{roomName}} again."
+		},
+		"chatRoomMemberBanned": {
+			"title": "Banned from room",
+			"body": "You were banned from {{roomName}}."
+		},
+		"chatRoomMemberUnbanned": {
+			"title": "Room ban lifted",
+			"body": "Your ban from {{roomName}} was lifted."
+		},
+		"chatRoomMemberHistoryDeleted": {
+			"title": "Room history deleted",
+			"body": "Your membership history in {{roomName}} was deleted."
+		},
 		"chatMessageMention": {
 			"title": "You were mentioned",
 			"body": "{{senderName}} mentioned you."

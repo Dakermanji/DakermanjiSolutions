@@ -18,7 +18,7 @@ import {
 	canUnmuteChatRoomMember,
 } from './permissions.js';
 import { findOpenableRoomConversation } from './access.js';
-import { notifyRoomMemberPromoted } from './notifications.js';
+import { notifyRoomMemberManagement } from './notifications.js';
 import {
 	recordRoomActivity,
 	recordRoomMemberLeftActivity,
@@ -235,6 +235,13 @@ async function manageRoomMember({
 		member,
 	});
 
+	await notifyRoomMemberManagement({
+		room,
+		member,
+		actorUserId,
+		action,
+	});
+
 	return createRoomMemberManagementResult(
 		ROOM_MEMBER_MANAGEMENT_RESULT.OK,
 		{ room, target, member },
@@ -286,21 +293,11 @@ export async function leaveRoom({ conversationId, actorUserId } = {}) {
 	);
 }
 
-export async function promoteRoomMember(input) {
-	const result = await manageRoomMember({
+export function promoteRoomMember(input) {
+	return manageRoomMember({
 		...input,
 		action: ROOM_MEMBER_MANAGEMENT_ACTIONS.PROMOTE,
 	});
-
-	if (result.ok) {
-		await notifyRoomMemberPromoted({
-			room: result.room,
-			member: result.member,
-			actorUserId: input.actorUserId,
-		});
-	}
-
-	return result;
 }
 
 export function demoteRoomAdmin(input) {

@@ -75,24 +75,65 @@ export async function notifyRoomJoinRequestResult({
 	});
 }
 
-export async function notifyRoomMemberPromoted({ room, member, actorUserId }) {
+const roomMemberNotificationTypes = Object.freeze({
+	promote: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_PROMOTED,
+	demote: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_DEMOTED,
+	remove: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_REMOVED,
+	mute: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_MUTED,
+	unmute: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_UNMUTED,
+	ban: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_BANNED,
+	unban: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_UNBANNED,
+	delete_history: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_HISTORY_DELETED,
+});
+
+const roomMemberNotificationNames = Object.freeze({
+	promote: 'Promoted',
+	demote: 'Demoted',
+	remove: 'Removed',
+	mute: 'Muted',
+	unmute: 'Unmuted',
+	ban: 'Banned',
+	unban: 'Unbanned',
+	delete_history: 'HistoryDeleted',
+});
+
+const roomMemberOpenableActions = new Set([
+	'promote',
+	'demote',
+	'mute',
+	'unmute',
+]);
+
+export async function notifyRoomMemberManagement({
+	room,
+	member,
+	actorUserId,
+	action,
+}) {
 	if (!room?.conversation_id || !member?.user_id || !actorUserId) {
 		return null;
 	}
+
+	const type = roomMemberNotificationTypes[action];
+	const notificationName = roomMemberNotificationNames[action];
+	if (!type || !notificationName) return null;
 
 	return createNotification({
 		recipientUserId: member.user_id,
 		actorUserId,
 		appKey: NOTIFICATION_APP_KEYS.CHAT,
-		type: NOTIFICATION_TYPES.CHAT_ROOM_MEMBER_PROMOTED,
-		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_MEMBER_ROLE,
+		type,
+		entityType: NOTIFICATION_ENTITY_TYPES.CHAT_ROOM_MEMBER_MANAGEMENT,
 		entityId: room.conversation_id,
-		titleKey: 'notifications:types.chatRoomMemberPromoted.title',
-		bodyKey: 'notifications:types.chatRoomMemberPromoted.body',
-		linkUrl: getChatRoomOpenUrl(room.conversation_id),
+		titleKey: `notifications:types.chatRoomMember${notificationName}.title`,
+		bodyKey: `notifications:types.chatRoomMember${notificationName}.body`,
+		linkUrl: roomMemberOpenableActions.has(action)
+			? getChatRoomOpenUrl(room.conversation_id)
+			: '/notifications',
 		data: {
 			conversationId: room.conversation_id,
 			roomName: room.conversation?.title || room.title || '',
+			managementAction: action,
 		},
 		priority: NOTIFICATION_PRIORITIES.NORMAL,
 	});

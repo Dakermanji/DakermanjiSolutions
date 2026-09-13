@@ -76,6 +76,34 @@
 			"title": "أصبحت مشرفًا على الغرفة",
 			"body": "أصبحت الآن مشرفًا في {{roomName}}."
 		},
+		"chatRoomMemberDemoted": {
+			"title": "تم تغيير دورك في الغرفة",
+			"body": "لم تعد مشرفًا في {{roomName}}."
+		},
+		"chatRoomMemberRemoved": {
+			"title": "تمت إزالتك من الغرفة",
+			"body": "تمت إزالتك من {{roomName}}."
+		},
+		"chatRoomMemberMuted": {
+			"title": "تم كتمك في الغرفة",
+			"body": "تم كتمك في {{roomName}}."
+		},
+		"chatRoomMemberUnmuted": {
+			"title": "تم إلغاء كتمك في الغرفة",
+			"body": "يمكنك إرسال الرسائل في {{roomName}} مجددًا."
+		},
+		"chatRoomMemberBanned": {
+			"title": "تم حظرك من الغرفة",
+			"body": "تم حظرك من {{roomName}}."
+		},
+		"chatRoomMemberUnbanned": {
+			"title": "تم رفع الحظر عن الغرفة",
+			"body": "تم رفع حظرك من {{roomName}}."
+		},
+		"chatRoomMemberHistoryDeleted": {
+			"title": "تم حذف سجل الغرفة",
+			"body": "تم حذف سجل عضويتك في {{roomName}}."
+		},
 		"chatMessageMention": {
 			"title": "تمت الإشارة إليك",
 			"body": "{{senderName}} أشار إليك."

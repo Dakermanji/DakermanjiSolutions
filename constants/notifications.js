@@ -24,6 +24,13 @@ export const NOTIFICATION_TYPES = Object.freeze({
 	CHAT_ROOM_JOIN_REQUEST_APPROVED: 'chat_room_join_request_approved',
 	CHAT_ROOM_JOIN_REQUEST_REJECTED: 'chat_room_join_request_rejected',
 	CHAT_ROOM_MEMBER_PROMOTED: 'chat_room_member_promoted',
+	CHAT_ROOM_MEMBER_DEMOTED: 'chat_room_member_demoted',
+	CHAT_ROOM_MEMBER_REMOVED: 'chat_room_member_removed',
+	CHAT_ROOM_MEMBER_MUTED: 'chat_room_member_muted',
+	CHAT_ROOM_MEMBER_UNMUTED: 'chat_room_member_unmuted',
+	CHAT_ROOM_MEMBER_BANNED: 'chat_room_member_banned',
+	CHAT_ROOM_MEMBER_UNBANNED: 'chat_room_member_unbanned',
+	CHAT_ROOM_MEMBER_HISTORY_DELETED: 'chat_room_member_history_deleted',
 	CHAT_MESSAGE_MENTION: 'chat_message_mention',
 	CHAT_MESSAGE_REPLY: 'chat_message_reply',
 });
@@ -33,7 +40,7 @@ export const NOTIFICATION_ENTITY_TYPES = Object.freeze({
 	CHAT_ROOM_INVITATION_RESULT: 'chat_room_invitation_result',
 	CHAT_ROOM_JOIN_REQUEST: 'chat_room_join_request',
 	CHAT_ROOM_JOIN_REQUEST_RESULT: 'chat_room_join_request_result',
-	CHAT_ROOM_MEMBER_ROLE: 'chat_room_member_role',
+	CHAT_ROOM_MEMBER_MANAGEMENT: 'chat_room_member_management',
 	CHAT_MESSAGE_MENTION: 'chat_message_mention',
 	CHAT_MESSAGE_REPLY: 'chat_message_reply',
 });
