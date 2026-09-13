@@ -71,6 +71,10 @@
 		"chatMessageMention": {
 			"title": "Vous avez été mentionné",
 			"body": "{{senderName}} vous a mentionné."
+		},
+		"chatMessageReply": {
+			"title": "Nouvelle réponse",
+			"body": "{{senderName}} a répondu à votre message."
 		}
 	},
 	"item": {

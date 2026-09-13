@@ -17,7 +17,10 @@ export {
 	createRoomMessage,
 	MESSAGE_WRITE_RESULT,
 } from './messages/writes.js';
-export { notifyMessageMentions } from './messages/notifications.js';
+export {
+	notifyMessageMentions,
+	notifyMessageReply,
+} from './messages/notifications.js';
 export {
 	checkMessageProfanity,
 	getMessageSafetyDecision,
@@ -57,7 +60,10 @@ import {
 	createRoomMessage,
 	MESSAGE_WRITE_RESULT,
 } from './messages/writes.js';
-import { notifyMessageMentions } from './messages/notifications.js';
+import {
+	notifyMessageMentions,
+	notifyMessageReply,
+} from './messages/notifications.js';
 import {
 	checkMessageProfanity,
 	getMessageSafetyDecision,
@@ -102,6 +108,7 @@ export default {
 	listMessageReactionUsers,
 	toggleMessageReaction,
 	notifyMessageMentions,
+	notifyMessageReply,
 	normalizeMentionUsername,
 	shouldReviewMessageProfanity,
 	findOpenableFriendConversation,

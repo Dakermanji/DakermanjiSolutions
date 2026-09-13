@@ -23,6 +23,7 @@ export const NOTIFICATION_TYPES = Object.freeze({
 	CHAT_ROOM_JOIN_REQUEST_REJECTED: 'chat_room_join_request_rejected',
 	CHAT_ROOM_MEMBER_PROMOTED: 'chat_room_member_promoted',
 	CHAT_MESSAGE_MENTION: 'chat_message_mention',
+	CHAT_MESSAGE_REPLY: 'chat_message_reply',
 });
 
 export const NOTIFICATION_ENTITY_TYPES = Object.freeze({
@@ -31,6 +32,7 @@ export const NOTIFICATION_ENTITY_TYPES = Object.freeze({
 	CHAT_ROOM_JOIN_REQUEST_RESULT: 'chat_room_join_request_result',
 	CHAT_ROOM_MEMBER_ROLE: 'chat_room_member_role',
 	CHAT_MESSAGE_MENTION: 'chat_message_mention',
+	CHAT_MESSAGE_REPLY: 'chat_message_reply',
 });
 
 export const NOTIFICATION_RESPONSE_KEYS = Object.freeze({

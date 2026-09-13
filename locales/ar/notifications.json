@@ -71,6 +71,10 @@
 		"chatMessageMention": {
 			"title": "تمت الإشارة إليك",
 			"body": "{{senderName}} أشار إليك."
+		},
+		"chatMessageReply": {
+			"title": "رد جديد",
+			"body": "رد {{senderName}} على رسالتك."
 		}
 	},
 	"item": {

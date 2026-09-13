@@ -10,7 +10,10 @@ import { findWritableRoomConversation } from '../rooms.js';
 import { canChatMemberManage } from '../rooms/permissions.js';
 import { formatLiveMessage } from './formatters.js';
 import { extractMessageMentionUsernames } from './mentions.js';
-import { notifyMessageMentions } from './notifications.js';
+import {
+	notifyMessageMentions,
+	notifyMessageReply,
+} from './notifications.js';
 import { getMessageSafetyDecision } from './safety.js';
 import { checkRoomMessageRateLimit } from './rateLimit.js';
 import {
@@ -80,7 +83,7 @@ export async function createFriendMessage({
 
 	const formattedMessage = formatLiveMessage(message);
 
-	await notifyMessageMentions({
+	await notifyMessageNotifications({
 		message: formattedMessage,
 		senderUserId,
 	});
@@ -216,13 +219,20 @@ export async function createRoomMessage({
 	const formattedMessage = formatLiveMessage(message);
 
 	if (!formattedMessage.isPendingReview) {
-		await notifyMessageMentions({
+		await notifyMessageNotifications({
 			message: formattedMessage,
 			senderUserId,
 		});
 	}
 
 	return formattedMessage;
+}
+
+async function notifyMessageNotifications({ message, senderUserId }) {
+	await Promise.all([
+		notifyMessageMentions({ message, senderUserId }),
+		notifyMessageReply({ message, senderUserId }),
+	]);
 }
 
 function getRoomMessageSafetyDecision({ body, conversation }) {

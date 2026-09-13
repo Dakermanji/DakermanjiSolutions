@@ -73,3 +73,57 @@ export async function notifyMessageMentions({
 		});
 	}
 }
+
+/**
+ * Notify the replied-to author unless the message already mentioned them.
+ *
+ * @param {object} input
+ * @param {object} input.message
+ * @param {string} input.senderUserId
+ * @returns {Promise<void>}
+ */
+export async function notifyMessageReply({ message, senderUserId }) {
+	const recipientUserId = message?.replyTo?.sender?.id || null;
+	const mentionRecipientIds = new Set(
+		getMentionRecipientIds(message, senderUserId),
+	);
+
+	if (
+		!recipientUserId ||
+		recipientUserId === senderUserId ||
+		mentionRecipientIds.has(recipientUserId)
+	) {
+		return;
+	}
+
+	try {
+		await createNotificationIfNotExists({
+			recipientUserId,
+			actorUserId: senderUserId,
+			appKey: NOTIFICATION_APP_KEYS.CHAT,
+			type: NOTIFICATION_TYPES.CHAT_MESSAGE_REPLY,
+			entityType: NOTIFICATION_ENTITY_TYPES.CHAT_MESSAGE_REPLY,
+			entityId: message.id,
+			titleKey: 'notifications:types.chatMessageReply.title',
+			bodyKey: 'notifications:types.chatMessageReply.body',
+			linkUrl: getChatMessageOpenUrl(
+				message.conversationId,
+				message.id,
+			),
+			data: {
+				conversationId: message.conversationId,
+				messageId: message.id,
+				messagePreview: getMessagePreview(message.body),
+				replyToMessageId: message.replyTo.id,
+				senderName: message.sender?.displayName || '',
+			},
+			priority: NOTIFICATION_PRIORITIES.NORMAL,
+		});
+	} catch (error) {
+		logger.warning('Chat reply notification creation failed', {
+			type: 'chat',
+			messageId: message.id,
+			error,
+		});
+	}
+}
