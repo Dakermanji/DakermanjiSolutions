@@ -8,6 +8,7 @@ import { formatLiveMessage } from '../messages/formatters.js';
 import { recordRoomActivity } from './activity.js';
 import { findOpenableRoomConversation } from './access.js';
 import { canChatMemberManage } from './permissions.js';
+import { notifyRoomMessageModeration } from './notifications.js';
 
 export const ROOM_FLAG_REVIEW_RESULT = Object.freeze({
 	OK: 'ok',
@@ -229,6 +230,7 @@ async function reviewFlaggedMessage({
 	messageId,
 	modelAction,
 	activityAction,
+	moderationAction = null,
 }) {
 	if (!isValidUuid(messageId)) {
 		return createFlagReviewResult(
@@ -265,6 +267,13 @@ async function reviewFlaggedMessage({
 		},
 	});
 
+	await notifyRoomMessageModeration({
+		room: access.room,
+		message,
+		moderatorUserId: actorUserId,
+		action: moderationAction,
+	});
+
 	return createFlagReviewResult(
 		ROOM_FLAG_REVIEW_RESULT.OK,
 		{
@@ -281,6 +290,7 @@ async function reviewPendingModerationMessage({
 	modelAction,
 	activityAction,
 	formatMessage = formatPendingModerationMessage,
+	moderationAction,
 }) {
 	if (!isValidUuid(messageId)) {
 		return createFlagReviewResult(
@@ -315,6 +325,13 @@ async function reviewPendingModerationMessage({
 		metadata: {
 			moderationReason: message.moderation_reason || null,
 		},
+	});
+
+	await notifyRoomMessageModeration({
+		room: access.room,
+		message,
+		moderatorUserId: actorUserId,
+		action: moderationAction,
 	});
 
 	return createFlagReviewResult(
@@ -357,6 +374,7 @@ export function deleteReviewedFlaggedRoomMessage(input) {
 		...input,
 		modelAction: MessageFlagsModel.deleteFlaggedMessage,
 		activityAction: CHAT_ROOM_ACTIVITY_ACTIONS.FLAGGED_MESSAGE_DELETED,
+		moderationAction: 'deleted',
 	});
 }
 
@@ -375,6 +393,7 @@ export function approvePendingRoomMessage(input) {
 		modelAction: MessageFlagsModel.approvePendingMessage,
 		activityAction: CHAT_ROOM_ACTIVITY_ACTIONS.PENDING_MESSAGE_APPROVED,
 		formatMessage: formatLiveMessage,
+		moderationAction: 'approved',
 	});
 }
 
@@ -392,6 +411,7 @@ export function hidePendingRoomMessage(input) {
 		...input,
 		modelAction: MessageFlagsModel.hidePendingMessage,
 		activityAction: CHAT_ROOM_ACTIVITY_ACTIONS.PENDING_MESSAGE_HIDDEN,
+		moderationAction: 'hidden',
 	});
 }
 

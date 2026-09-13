@@ -111,6 +111,18 @@
 		"chatMessageReply": {
 			"title": "New reply",
 			"body": "{{senderName}} replied to your message."
+		},
+		"chatMessageApproved": {
+			"title": "Message approved",
+			"body": "Your message in {{roomName}} is now visible."
+		},
+		"chatMessageHidden": {
+			"title": "Message not approved",
+			"body": "Your message in {{roomName}} was hidden by a moderator."
+		},
+		"chatMessageDeletedByModerator": {
+			"title": "Message removed",
+			"body": "Your message in {{roomName}} was removed by a moderator."
 		}
 	},
 	"item": {

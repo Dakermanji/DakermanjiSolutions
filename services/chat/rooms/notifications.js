@@ -1,6 +1,7 @@
 //! services/chat/rooms/notifications.js
 
 import ChatRoomJoinRequestsModel from '../../../models/chat/RoomJoinRequests.js';
+import logger from '../../../config/logger.js';
 import {
 	NOTIFICATION_APP_KEYS,
 	NOTIFICATION_ENTITY_TYPES,
@@ -12,10 +13,88 @@ import {
 	createNotification,
 	createNotificationIfNotExists,
 } from '../../notifications/appNotifications.js';
-import { getChatRoomOpenUrl } from '../../notifications/links.js';
+import {
+	getChatMessageOpenUrl,
+	getChatRoomOpenUrl,
+} from '../../notifications/links.js';
 
 function getRequesterDisplayName(recipient) {
 	return recipient.requester_username || recipient.requester_email || '';
+}
+
+function getMessagePreview(body) {
+	const preview = String(body || '').replace(/\s+/g, ' ').trim();
+	return preview.length > 120 ? `${preview.slice(0, 119)}...` : preview;
+}
+
+const messageModerationNotifications = Object.freeze({
+	approved: {
+		type: NOTIFICATION_TYPES.CHAT_MESSAGE_APPROVED,
+		name: 'Approved',
+		openMessage: true,
+	},
+	hidden: {
+		type: NOTIFICATION_TYPES.CHAT_MESSAGE_HIDDEN,
+		name: 'Hidden',
+		openMessage: false,
+	},
+	deleted: {
+		type: NOTIFICATION_TYPES.CHAT_MESSAGE_DELETED_BY_MODERATOR,
+		name: 'DeletedByModerator',
+		openMessage: false,
+	},
+});
+
+export async function notifyRoomMessageModeration({
+	room,
+	message,
+	moderatorUserId,
+	action,
+}) {
+	const notification = messageModerationNotifications[action];
+
+	if (
+		!notification
+		|| !room?.conversation_id
+		|| !message?.message_id
+		|| !message?.sender_user_id
+		|| !moderatorUserId
+		|| message.sender_user_id === moderatorUserId
+	) {
+		return null;
+	}
+
+	try {
+		return await createNotificationIfNotExists({
+			recipientUserId: message.sender_user_id,
+			actorUserId: moderatorUserId,
+			appKey: NOTIFICATION_APP_KEYS.CHAT,
+			type: notification.type,
+			entityType: NOTIFICATION_ENTITY_TYPES.CHAT_MESSAGE_MODERATION,
+			entityId: message.message_id,
+			titleKey: `notifications:types.chatMessage${notification.name}.title`,
+			bodyKey: `notifications:types.chatMessage${notification.name}.body`,
+			linkUrl: notification.openMessage
+				? getChatMessageOpenUrl(room.conversation_id, message.message_id)
+				: '/notifications',
+			data: {
+				conversationId: room.conversation_id,
+				messageId: message.message_id,
+				messagePreview: getMessagePreview(message.body),
+				roomName: room.title || '',
+				moderationAction: action,
+			},
+			priority: NOTIFICATION_PRIORITIES.NORMAL,
+		});
+	} catch (error) {
+		logger.warning('Chat message moderation notification creation failed', {
+			type: 'chat',
+			messageId: message.message_id,
+			action,
+			error,
+		});
+		return null;
+	}
 }
 
 export async function notifyRoomJoinRequestManagers(requestId) {

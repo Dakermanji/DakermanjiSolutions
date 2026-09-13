@@ -111,6 +111,18 @@
 		"chatMessageReply": {
 			"title": "رد جديد",
 			"body": "رد {{senderName}} على رسالتك."
+		},
+		"chatMessageApproved": {
+			"title": "تمت الموافقة على الرسالة",
+			"body": "أصبحت رسالتك في {{roomName}} مرئية الآن."
+		},
+		"chatMessageHidden": {
+			"title": "لم تتم الموافقة على الرسالة",
+			"body": "أخفى أحد المشرفين رسالتك في {{roomName}}."
+		},
+		"chatMessageDeletedByModerator": {
+			"title": "تمت إزالة الرسالة",
+			"body": "أزال أحد المشرفين رسالتك في {{roomName}}."
 		}
 	},
 	"item": {

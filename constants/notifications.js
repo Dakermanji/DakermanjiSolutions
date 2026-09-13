@@ -33,6 +33,9 @@ export const NOTIFICATION_TYPES = Object.freeze({
 	CHAT_ROOM_MEMBER_HISTORY_DELETED: 'chat_room_member_history_deleted',
 	CHAT_MESSAGE_MENTION: 'chat_message_mention',
 	CHAT_MESSAGE_REPLY: 'chat_message_reply',
+	CHAT_MESSAGE_APPROVED: 'chat_message_approved',
+	CHAT_MESSAGE_HIDDEN: 'chat_message_hidden',
+	CHAT_MESSAGE_DELETED_BY_MODERATOR: 'chat_message_deleted_by_moderator',
 });
 
 export const NOTIFICATION_ENTITY_TYPES = Object.freeze({
@@ -43,6 +46,7 @@ export const NOTIFICATION_ENTITY_TYPES = Object.freeze({
 	CHAT_ROOM_MEMBER_MANAGEMENT: 'chat_room_member_management',
 	CHAT_MESSAGE_MENTION: 'chat_message_mention',
 	CHAT_MESSAGE_REPLY: 'chat_message_reply',
+	CHAT_MESSAGE_MODERATION: 'chat_message_moderation',
 });
 
 export const NOTIFICATION_RESPONSE_KEYS = Object.freeze({
