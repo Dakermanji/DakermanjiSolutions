@@ -248,6 +248,7 @@ export async function notifyRoomInvitationCreated({
 			roomName: room.title || '',
 		},
 		priority: NOTIFICATION_PRIORITIES.NORMAL,
+		expiresAt: invitation.expires_at || null,
 	});
 }
 

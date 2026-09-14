@@ -45,7 +45,8 @@
 		"rejectSuccess": "Request rejected.",
 		"rejectError": "Could not reject the request.",
 		"dismissSuccess": "Notification dismissed.",
-		"dismissError": "Could not dismiss the notification."
+		"dismissError": "Could not dismiss the notification.",
+		"noLongerAvailable": "This notification action is no longer available."
 	},
 	"types": {
 		"chatRoomInvitation": {

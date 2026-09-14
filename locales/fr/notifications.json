@@ -45,7 +45,8 @@
 		"rejectSuccess": "Demande refusée.",
 		"rejectError": "Impossible de refuser la demande.",
 		"dismissSuccess": "Notification masquée.",
-		"dismissError": "Impossible de masquer la notification."
+		"dismissError": "Impossible de masquer la notification.",
+		"noLongerAvailable": "Cette action de notification n’est plus disponible."
 	},
 	"types": {
 		"chatRoomInvitation": {

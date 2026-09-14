@@ -45,7 +45,8 @@
 		"rejectSuccess": "تم رفض الطلب.",
 		"rejectError": "تعذر رفض الطلب.",
 		"dismissSuccess": "تم إخفاء الإشعار.",
-		"dismissError": "تعذر إخفاء الإشعار."
+		"dismissError": "تعذر إخفاء الإشعار.",
+		"noLongerAvailable": "لم يعد إجراء هذا الإشعار متاحًا."
 	},
 	"types": {
 		"chatRoomInvitation": {

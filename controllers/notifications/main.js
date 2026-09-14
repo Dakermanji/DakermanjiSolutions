@@ -124,6 +124,14 @@ function getFirstUuidBodyValue(req, keys) {
 	return '';
 }
 
+async function dismissStaleActionNotification(req) {
+	const notificationId = getFirstUuidBodyValue(req, ['notificationId']);
+
+	if (notificationId) {
+		await dismissNotification(notificationId, req.user.id);
+	}
+}
+
 function serializeNotification(notification) {
 	const createdAt = notification.created_at
 		? new Date(notification.created_at)
@@ -261,12 +269,13 @@ export async function approveChatRoomJoinRequest(req, res, next) {
 			reviewerUserId: req.user.id,
 		});
 
-		req.flash(
-			request ? 'success' : 'error',
-			request
-				? 'notifications:actions.approveSuccess'
-				: 'notifications:actions.approveError',
-		);
+		if (!request) {
+			await dismissStaleActionNotification(req);
+			req.flash('error', 'notifications:actions.noLongerAvailable');
+			return res.redirect(NOTIFICATIONS_REDIRECT);
+		}
+
+		req.flash('success', 'notifications:actions.approveSuccess');
 		return res.redirect(NOTIFICATIONS_REDIRECT);
 	} catch (error) {
 		return next(error);
@@ -295,12 +304,13 @@ export async function rejectChatRoomJoinRequest(req, res, next) {
 			reviewerUserId: req.user.id,
 		});
 
-		req.flash(
-			request ? 'success' : 'error',
-			request
-				? 'notifications:actions.rejectSuccess'
-				: 'notifications:actions.rejectError',
-		);
+		if (!request) {
+			await dismissStaleActionNotification(req);
+			req.flash('error', 'notifications:actions.noLongerAvailable');
+			return res.redirect(NOTIFICATIONS_REDIRECT);
+		}
+
+		req.flash('success', 'notifications:actions.rejectSuccess');
 		return res.redirect(NOTIFICATIONS_REDIRECT);
 	} catch (error) {
 		return next(error);
@@ -330,7 +340,8 @@ export async function acceptChatRoomInvitation(req, res, next) {
 		});
 
 		if (!result.ok) {
-			req.flash('error', 'notifications:actions.acceptInvitationError');
+			await dismissStaleActionNotification(req);
+			req.flash('error', 'notifications:actions.noLongerAvailable');
 			return res.redirect(NOTIFICATIONS_REDIRECT);
 		}
 
@@ -365,12 +376,13 @@ export async function rejectChatRoomInvitation(req, res, next) {
 			userId: req.user.id,
 		});
 
-		req.flash(
-			result.ok ? 'success' : 'error',
-			result.ok
-				? 'notifications:actions.rejectInvitationSuccess'
-				: 'notifications:actions.rejectInvitationError',
-		);
+		if (!result.ok) {
+			await dismissStaleActionNotification(req);
+			req.flash('error', 'notifications:actions.noLongerAvailable');
+			return res.redirect(NOTIFICATIONS_REDIRECT);
+		}
+
+		req.flash('success', 'notifications:actions.rejectInvitationSuccess');
 		return res.redirect(NOTIFICATIONS_REDIRECT);
 	} catch (error) {
 		return next(error);
