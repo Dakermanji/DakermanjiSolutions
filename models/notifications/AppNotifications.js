@@ -1,6 +1,6 @@
 //! models/notifications/AppNotifications.js
 
-import { query, queryRows } from '../../config/database.js';
+import pool, { query, queryRows } from '../../config/database.js';
 import { NOTIFICATION_LIMITS } from '../../constants/notifications.js';
 
 const BASE_FIELDS = [
@@ -119,6 +119,13 @@ export async function createIfNotExists({
 	priority = 'normal',
 	expiresAt = null,
 }) {
+	const lockKey = JSON.stringify([
+		recipientUserId,
+		appKey,
+		type,
+		entityType,
+		entityId,
+	]);
 	const q = `
 		INSERT INTO app_notifications (
 			recipient_user_id,
@@ -164,7 +171,7 @@ export async function createIfNotExists({
 		RETURNING ${baseFieldsSQL};
 	`;
 
-	const rows = await queryRows(q, [
+	const values = [
 		recipientUserId,
 		actorUserId,
 		appKey,
@@ -177,9 +184,24 @@ export async function createIfNotExists({
 		data,
 		priority,
 		expiresAt,
-	]);
+	];
+	const client = await pool.connect();
 
-	return rows[0] || null;
+	try {
+		await client.query('BEGIN');
+		await client.query(
+			'SELECT pg_advisory_xact_lock(hashtextextended($1::text, 0));',
+			[lockKey],
+		);
+		const result = await client.query(q, values);
+		await client.query('COMMIT');
+		return result.rows[0] || null;
+	} catch (error) {
+		await client.query('ROLLBACK');
+		throw error;
+	} finally {
+		client.release();
+	}
 }
 
 /**
