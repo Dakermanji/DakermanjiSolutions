@@ -3,6 +3,7 @@
 import ChatRoomJoinRequestsModel from '../../../models/chat/RoomJoinRequests.js';
 import logger from '../../../config/logger.js';
 import {
+	NOTIFICATIONS_REDIRECT,
 	NOTIFICATION_APP_KEYS,
 	NOTIFICATION_ENTITY_TYPES,
 	NOTIFICATION_PRIORITIES,
@@ -76,7 +77,7 @@ export async function notifyRoomMessageModeration({
 			bodyKey: `notifications:types.chatMessage${notification.name}.body`,
 			linkUrl: notification.openMessage
 				? getChatMessageOpenUrl(room.conversation_id, message.message_id)
-				: '/notifications',
+				: NOTIFICATIONS_REDIRECT,
 			data: {
 				conversationId: room.conversation_id,
 				messageId: message.message_id,
@@ -114,7 +115,7 @@ export async function notifyRoomJoinRequestManagers(requestId) {
 				entityId: recipient.request_id,
 				titleKey: 'notifications:types.chatRoomJoinRequest.title',
 				bodyKey: 'notifications:types.chatRoomJoinRequest.body',
-				linkUrl: '/notifications',
+				linkUrl: NOTIFICATIONS_REDIRECT,
 				data: {
 					conversationId: recipient.conversation_id,
 					requestId: recipient.request_id,
@@ -148,7 +149,7 @@ export async function notifyRoomJoinRequestResult({
 		bodyKey,
 		linkUrl: canOpenRoom
 			? getChatRoomOpenUrl(request.conversation_id)
-			: '/notifications',
+			: NOTIFICATIONS_REDIRECT,
 		data: {
 			conversationId: request.conversation_id,
 			requestId: request.id,
@@ -212,7 +213,7 @@ export async function notifyRoomMemberManagement({
 		bodyKey: `notifications:types.chatRoomMember${notificationName}.body`,
 		linkUrl: roomMemberOpenableActions.has(action)
 			? getChatRoomOpenUrl(room.conversation_id)
-			: '/notifications',
+			: NOTIFICATIONS_REDIRECT,
 		data: {
 			conversationId: room.conversation_id,
 			roomName: room.conversation?.title || room.title || '',
@@ -241,7 +242,7 @@ export async function notifyRoomInvitationCreated({
 		entityId: invitation.id,
 		titleKey: 'notifications:types.chatRoomInvitation.title',
 		bodyKey: 'notifications:types.chatRoomInvitation.body',
-		linkUrl: '/notifications',
+		linkUrl: NOTIFICATIONS_REDIRECT,
 		data: {
 			conversationId: room.conversation_id,
 			invitationId: invitation.id,

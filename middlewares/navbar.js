@@ -9,6 +9,7 @@
  */
 
 import { navbar } from '../config/navbar.js';
+import { NOTIFICATION_LIMITS } from '../constants/notifications.js';
 import { countUnreadFriendMessages } from '../services/chat/friends.js';
 import { countUnreadRoomMessages } from '../services/chat/rooms.js';
 import {
@@ -16,8 +17,6 @@ import {
 	listNotifications,
 } from '../services/notifications/appNotifications.js';
 import { getNotificationLinkUrl } from '../services/notifications/links.js';
-
-const NOTIFICATION_PREVIEW_LIMIT = 5;
 
 /**
  * Extract the first URL segment from a request path.
@@ -82,7 +81,7 @@ export const navbarMiddleware = (app) => {
 						countUnreadRoomMessages(req.user.id),
 						countUnreadNotifications(req.user.id),
 						listNotifications(req.user.id, {
-							limit: NOTIFICATION_PREVIEW_LIMIT,
+							limit: NOTIFICATION_LIMITS.PREVIEW_SIZE,
 						}),
 					]);
 

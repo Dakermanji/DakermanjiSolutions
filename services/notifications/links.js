@@ -1,13 +1,17 @@
 //! services/notifications/links.js
 
-import { NOTIFICATION_TYPES } from '../../constants/notifications.js';
+import {
+	NOTIFICATIONS_REDIRECT,
+	NOTIFICATION_TYPES,
+} from '../../constants/notifications.js';
+import { CHAT_REDIRECT } from '../../constants/chat.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 
 export function getChatRoomOpenUrl(conversationId) {
 	const normalizedConversationId = String(conversationId || '').trim();
 
 	if (!isValidUuid(normalizedConversationId)) {
-		return '/chat';
+		return CHAT_REDIRECT;
 	}
 
 	return `/chat/rooms/open/${normalizedConversationId}`;
@@ -21,7 +25,7 @@ export function getChatMessageOpenUrl(conversationId, messageId) {
 		!isValidUuid(normalizedConversationId) ||
 		!isValidUuid(normalizedMessageId)
 	) {
-		return '/chat';
+		return CHAT_REDIRECT;
 	}
 
 	return `/chat/messages/open/${normalizedConversationId}/${normalizedMessageId}`;
@@ -36,7 +40,7 @@ function getSafeInternalNotificationUrl(value) {
 		|| normalizedValue.startsWith('/\\')
 		|| /[\u0000-\u001F\u007F]/.test(normalizedValue)
 	) {
-		return '/notifications';
+		return NOTIFICATIONS_REDIRECT;
 	}
 
 	return normalizedValue;
