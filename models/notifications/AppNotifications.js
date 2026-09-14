@@ -8,6 +8,7 @@ import {
 	countUnreadByRecipient,
 	findByIdForRecipient,
 	findByRecipient,
+	findUnreadSummaryByRecipient,
 } from './appNotifications/queries.js';
 import {
 	dismiss,
@@ -26,6 +27,7 @@ export {
 	countUnreadByRecipient,
 	findByIdForRecipient,
 	findByRecipient,
+	findUnreadSummaryByRecipient,
 } from './appNotifications/queries.js';
 export {
 	dismiss,
@@ -44,6 +46,7 @@ export default {
 	dismissByEntityTypes,
 	findByIdForRecipient,
 	findByRecipient,
+	findUnreadSummaryByRecipient,
 	markAsRead,
 	markManyAsRead,
 	respond,

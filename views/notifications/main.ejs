@@ -31,7 +31,7 @@
 		</div>
 
 		<div class="notifications-summary" aria-label="<%= t('notifications:summary.unread', { count: unreadTotal }) %>">
-			<span><%= formatCount(unreadTotal) %></span>
+			<span data-notifications-unread-count><%= formatCount(unreadTotal) %></span>
 			<small><%= t('notifications:summary.unreadShort') %></small>
 		</div>
 	</header>

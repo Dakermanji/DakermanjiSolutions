@@ -40,6 +40,24 @@ export async function countUnreadByRecipient(recipientUserId) {
 	return rows[0]?.count || 0;
 }
 
+export async function findUnreadSummaryByRecipient(recipientUserId) {
+	const q = `
+		SELECT
+			COUNT(*)::int AS count,
+			MIN(expires_at) AS next_expires_at
+		FROM app_notifications
+		WHERE recipient_user_id = $1
+			AND read_at IS NULL
+			AND dismissed_at IS NULL
+			AND (expires_at IS NULL OR expires_at > NOW());
+	`;
+	const rows = await queryRows(q, [recipientUserId]);
+	return {
+		unreadCount: rows[0]?.count || 0,
+		nextExpiresAt: rows[0]?.next_expires_at || null,
+	};
+}
+
 export async function findByIdForRecipient(notificationId, recipientUserId) {
 	const q = `
 		SELECT ${appNotificationFieldsSQL}

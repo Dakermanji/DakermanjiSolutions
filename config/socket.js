@@ -13,6 +13,7 @@ import {
 } from '../services/chat/live.js';
 import {
 	getNotificationUserRoom,
+	registerNotificationSocketHandlers,
 	setNotificationSocketServer,
 } from '../services/notifications/live.js';
 import UserModel from '../models/User.js';
@@ -54,6 +55,7 @@ export default function configureSocket(server) {
 		socket.join(getSocialUserRoom(socket.data.userId));
 		socket.join(getChatUserRoom(socket.data.userId));
 		socket.join(getNotificationUserRoom(socket.data.userId));
+		registerNotificationSocketHandlers(socket);
 		registerChatSocketHandlers(io, socket);
 	});
 

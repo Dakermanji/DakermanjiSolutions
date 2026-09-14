@@ -60,7 +60,7 @@
 	>
 		<div class="nav-notifications-header">
 			<strong><%= keys.notifications %></strong>
-			<span><%= new Intl.NumberFormat(currentLang || 'en').format(notificationBadgeCount) %></span>
+			<span data-notifications-unread-count><%= new Intl.NumberFormat(currentLang || 'en').format(notificationBadgeCount) %></span>
 		</div>
 
 		<% if (notificationPreviewItems.length === 0) { %>
