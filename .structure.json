@@ -221,9 +221,17 @@
 				"review.js"
 			]
 		},
-		"notifications": [
-			"AppNotifications.js"
-		],
+		"notifications": {
+			"appNotifications": [
+				"create.js",
+				"fields.js",
+				"queries.js",
+				"state.js"
+			],
+			"~": [
+				"AppNotifications.js"
+			]
+		},
 		"social": [
 			"Blocks.js",
 			"FollowRequests.js",
