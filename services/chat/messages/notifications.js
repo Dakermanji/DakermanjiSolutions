@@ -7,7 +7,10 @@ import {
 	NOTIFICATION_PRIORITIES,
 	NOTIFICATION_TYPES,
 } from '../../../constants/notifications.js';
-import { createNotificationIfNotExists } from '../../notifications/appNotifications.js';
+import {
+	createNotificationIfNotExists,
+	dismissNotificationsByEntityTypes,
+} from '../../notifications/appNotifications.js';
 import { getChatMessageOpenUrl } from '../../notifications/links.js';
 
 function getMessagePreview(body) {
@@ -21,6 +24,14 @@ function getMentionRecipientIds(message, senderUserId) {
 			.map((mention) => mention.userId)
 			.filter((userId) => userId && userId !== senderUserId),
 	)];
+}
+
+export function dismissMessageNotifications(messageId) {
+	return dismissNotificationsByEntityTypes([
+		NOTIFICATION_ENTITY_TYPES.CHAT_MESSAGE_MENTION,
+		NOTIFICATION_ENTITY_TYPES.CHAT_MESSAGE_REPLY,
+		NOTIFICATION_ENTITY_TYPES.CHAT_MESSAGE_MODERATION,
+	], messageId);
 }
 
 /**

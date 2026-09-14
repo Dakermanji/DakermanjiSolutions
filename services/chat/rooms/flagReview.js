@@ -9,6 +9,7 @@ import { recordRoomActivity } from './activity.js';
 import { findOpenableRoomConversation } from './access.js';
 import { canChatMemberManage } from './permissions.js';
 import { notifyRoomMessageModeration } from './notifications.js';
+import { dismissMessageNotifications } from '../messages/notifications.js';
 
 export const ROOM_FLAG_REVIEW_RESULT = Object.freeze({
 	OK: 'ok',
@@ -267,6 +268,10 @@ async function reviewFlaggedMessage({
 		},
 	});
 
+	if (moderationAction === 'deleted') {
+		await dismissMessageNotifications(message.message_id);
+	}
+
 	await notifyRoomMessageModeration({
 		room: access.room,
 		message,
@@ -326,6 +331,10 @@ async function reviewPendingModerationMessage({
 			moderationReason: message.moderation_reason || null,
 		},
 	});
+
+	if (moderationAction === 'hidden') {
+		await dismissMessageNotifications(message.message_id);
+	}
 
 	await notifyRoomMessageModeration({
 		room: access.room,

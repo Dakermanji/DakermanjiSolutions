@@ -170,6 +170,33 @@ export async function dismissNotification(notificationId, recipientUserId) {
 	return isUpdated;
 }
 
+export async function dismissNotificationsByEntityTypes(entityTypes, entityId) {
+	const normalizedEntityTypes = [...new Set(
+		(Array.isArray(entityTypes) ? entityTypes : [])
+			.map((entityType) => truncateText(
+				normalizeRequiredText(entityType),
+				NOTIFICATION_LIMITS.ENTITY_TYPE_MAX_LENGTH,
+			))
+			.filter(Boolean),
+	)];
+	const normalizedEntityId = normalizeRequiredText(entityId);
+
+	if (normalizedEntityTypes.length === 0 || !normalizedEntityId) {
+		return 0;
+	}
+
+	const recipientUserIds = await AppNotificationsModel.dismissByEntityTypes(
+		normalizedEntityTypes,
+		normalizedEntityId,
+	);
+
+	if (recipientUserIds.length > 0) {
+		await emitNotificationUnreadCountsChanged(recipientUserIds);
+	}
+
+	return recipientUserIds.length;
+}
+
 /**
  * Respond to one actionable notification.
  *
@@ -251,6 +278,7 @@ export default {
 	createNotificationIfNotExists,
 	createNotification,
 	dismissNotification,
+	dismissNotificationsByEntityTypes,
 	listNotifications,
 	markNotificationRead,
 	markNotificationsRead,

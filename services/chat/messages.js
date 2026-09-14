@@ -20,6 +20,7 @@ export {
 export {
 	notifyMessageMentions,
 	notifyMessageReply,
+	dismissMessageNotifications,
 } from './messages/notifications.js';
 export {
 	checkMessageProfanity,
@@ -63,6 +64,7 @@ import {
 import {
 	notifyMessageMentions,
 	notifyMessageReply,
+	dismissMessageNotifications,
 } from './messages/notifications.js';
 import {
 	checkMessageProfanity,
@@ -109,6 +111,7 @@ export default {
 	toggleMessageReaction,
 	notifyMessageMentions,
 	notifyMessageReply,
+	dismissMessageNotifications,
 	normalizeMentionUsername,
 	shouldReviewMessageProfanity,
 	findOpenableFriendConversation,

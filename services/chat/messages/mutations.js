@@ -10,6 +10,7 @@ import {
 	getMutationWindowMs,
 	normalizeMessageBody,
 } from './utils.js';
+import { dismissMessageNotifications } from './notifications.js';
 
 async function findWritableConversationForMutation({
 	kind,
@@ -100,10 +101,16 @@ export async function deleteOwnMessage({
 		return null;
 	}
 
-	return ChatMessagesModel.deleteOwnConversationMessage({
+	const deletedMessage = await ChatMessagesModel.deleteOwnConversationMessage({
 		conversationId: conversation.conversation_id,
 		messageId,
 		senderUserId,
 		windowMs: getMutationWindowMs(kind),
 	});
+
+	if (deletedMessage) {
+		await dismissMessageNotifications(deletedMessage.id);
+	}
+
+	return deletedMessage;
 }

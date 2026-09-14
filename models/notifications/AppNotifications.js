@@ -156,6 +156,10 @@ export async function createIfNotExists({
 				AND existing_notification.entity_type IS NOT DISTINCT FROM $5::varchar(80)
 				AND existing_notification.entity_id IS NOT DISTINCT FROM $6::uuid
 				AND existing_notification.responded_at IS NULL
+				AND (
+					existing_notification.expires_at IS NULL
+					OR existing_notification.expires_at > NOW()
+				)
 		)
 		RETURNING ${baseFieldsSQL};
 	`;
@@ -330,6 +334,34 @@ export async function dismiss(notificationId, recipientUserId) {
 }
 
 /**
+ * Dismiss unresolved notifications for one entity across selected entity types.
+ *
+ * @param {Array<string>} entityTypes
+ * @param {string} entityId
+ * @returns {Promise<Array<string>>}
+ */
+export async function dismissByEntityTypes(entityTypes, entityId) {
+	if (!Array.isArray(entityTypes) || entityTypes.length === 0 || !entityId) {
+		return [];
+	}
+
+	const q = `
+		UPDATE app_notifications
+		SET
+			read_at = COALESCE(read_at, NOW()),
+			dismissed_at = COALESCE(dismissed_at, NOW()),
+			updated_at = NOW()
+		WHERE entity_type = ANY($1::varchar(80)[])
+			AND entity_id = $2::uuid
+			AND dismissed_at IS NULL
+		RETURNING recipient_user_id;
+	`;
+
+	const rows = await queryRows(q, [entityTypes, entityId]);
+	return rows.map((row) => row.recipient_user_id);
+}
+
+/**
  * Record a response to one actionable notification.
  *
  * @param {string} notificationId
@@ -399,6 +431,7 @@ export default {
 	create,
 	createIfNotExists,
 	dismiss,
+	dismissByEntityTypes,
 	findByIdForRecipient,
 	findByRecipient,
 	markManyAsRead,
