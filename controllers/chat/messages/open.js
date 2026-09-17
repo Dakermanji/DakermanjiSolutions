@@ -6,6 +6,7 @@ import {
 } from '../../../services/chat/messages.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
 import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../../constants/chat.js';
+import { NOTIFICATIONS_REDIRECT } from '../../../constants/notifications.js';
 import {
 	setActiveChatConversation,
 	setFocusedChatMessage,
@@ -27,7 +28,8 @@ export async function openChatMessage(req, res, next) {
 		});
 
 		if (!message) {
-			return res.redirect(CHAT_REDIRECT);
+			req.flash('error', 'notifications:actions.noLongerAvailable');
+			return res.redirect(NOTIFICATIONS_REDIRECT);
 		}
 
 		setActiveChatConversation(req, conversationId);

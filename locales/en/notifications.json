@@ -128,6 +128,8 @@
 	},
 	"item": {
 		"fallbackTitle": "Notification",
-		"fallbackBody": "Open for details"
+		"fallbackBody": "Open for details",
+		"unknownUser": "Deleted user",
+		"unavailableRoom": "Unavailable room"
 	}
 }

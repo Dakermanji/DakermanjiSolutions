@@ -70,11 +70,19 @@
 		<div class="notifications-list" data-notifications-list>
 			<% items.forEach((notification) => { %>
 				<%
+					const actorName = notification.actor.displayName || t('notifications:item.unknownUser');
+					const translationData = {
+						...notification.data,
+						inviteeName: notification.data.inviteeName || actorName,
+						requesterName: notification.data.requesterName || actorName,
+						roomName: notification.data.roomName || t('notifications:item.unavailableRoom'),
+						senderName: notification.data.senderName || actorName,
+					};
 					const title = notification.titleKey
-						? t(notification.titleKey, notification.data)
+						? t(notification.titleKey, translationData)
 						: t('notifications:item.fallbackTitle');
 					const body = notification.bodyKey
-						? t(notification.bodyKey, notification.data)
+						? t(notification.bodyKey, translationData)
 						: notification.actor.displayName || t('notifications:item.fallbackBody');
 					const statusKey = getStatusKey(notification);
 					const actions = Array.isArray(notification.actions) ? notification.actions : [];

@@ -128,6 +128,8 @@
 	},
 	"item": {
 		"fallbackTitle": "إشعار",
-		"fallbackBody": "افتحه للتفاصيل"
+		"fallbackBody": "افتحه للتفاصيل",
+		"unknownUser": "مستخدم محذوف",
+		"unavailableRoom": "غرفة غير متاحة"
 	}
 }
