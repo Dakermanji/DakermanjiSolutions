@@ -5,7 +5,7 @@
 		"title": "Politique de confidentialité",
 		"summary": "La présente politique explique comment Dakermanji Solutions recueille, utilise, communique et protège les renseignements personnels lorsque vous visitez le site ou utilisez ses fonctions de compte, de clavardage, sociales, de contact et de météo.",
 		"lastUpdatedLabel": "Dernière mise à jour :",
-		"lastUpdated": "16 septembre 2026",
+		"lastUpdated": "17 septembre 2026",
 		"contentsLabel": "Sur cette page",
 		"sections": [
 			{
@@ -63,7 +63,8 @@
 					"Google, GitHub ou Discord traite des renseignements lorsque vous choisissez son service de connexion.",
 					"OpenWeather et Open-Meteo reçoivent le lieu ou les coordonnées nécessaires pour retourner la météo demandée.",
 					"Sentry peut recevoir des diagnostics d’erreur et des renseignements connexes sur la requête ou l’appareil pour surveiller la sécurité et la fiabilité.",
-					"Les fournisseurs de courriel, d’hébergement, de base de données et de diffusion de contenu traitent les renseignements nécessaires à la prestation et à l’exploitation du service.",
+					"Web Hosting Canada (WHC) héberge le site et peut traiter les renseignements stockés ou transmis par son infrastructure, notamment les journaux de serveur, les données de compte, le contenu de la base de données et les sauvegardes.",
+					"Les fournisseurs de courriel et de diffusion de contenu traitent les renseignements nécessaires à la prestation et à l’exploitation du service.",
 					"Les autorités ou d’autres parties peuvent recevoir des renseignements lorsque la loi l’exige ou le permet, ou lorsque cela est nécessaire pour protéger les droits, la sécurité et l’intégrité du service."
 				]
 			},
@@ -114,4 +115,3 @@
 		]
 	}
 }
-

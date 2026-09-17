@@ -5,7 +5,7 @@
 		"title": "Privacy Policy",
 		"summary": "This policy explains how Dakermanji Solutions collects, uses, shares, and protects personal information when you visit the website or use its accounts, chat, social, contact, and weather features.",
 		"lastUpdatedLabel": "Last updated:",
-		"lastUpdated": "September 16, 2026",
+		"lastUpdated": "September 17, 2026",
 		"contentsLabel": "On this page",
 		"sections": [
 			{
@@ -63,7 +63,8 @@
 					"Google, GitHub, or Discord processes information when you choose its sign-in service.",
 					"OpenWeather and Open-Meteo receive a place or coordinates needed to return requested weather information.",
 					"Sentry may receive error diagnostics and related request or device information for security and reliability monitoring.",
-					"Email, hosting, database, and content-delivery providers process information needed to deliver and operate the service.",
+					"Web Hosting Canada (WHC) hosts the website and may process information stored or transmitted through its infrastructure, including server logs, account data, database content, and backups.",
+					"Email and content-delivery providers process information needed to deliver and operate the service.",
 					"Authorities or other parties may receive information when disclosure is required or permitted by law, or necessary to protect rights, safety, and service integrity."
 				]
 			},
@@ -114,4 +115,3 @@
 		]
 	}
 }
-
