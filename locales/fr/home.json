@@ -146,24 +146,6 @@
 					"main": "Capture d’écran de l’application de chat"
 				},
 				"link": "chat_app"
-			},
-			"visited_countries": {
-				"title": "Pays Visités",
-				"description": "Suivi et gestion des pays visités avec comptes utilisateurs.",
-				"tech": ["Express", "MySQL", "Bcrypt", "Nodemailer"],
-				"images": {
-					"main": "Capture d’écran de l’application des pays visités"
-				},
-				"link": "visited_countries"
-			},
-			"book_reviews": {
-				"title": "Avis sur les Livres",
-				"description": "Recherche et évaluation de livres via des API externes.",
-				"tech": ["MySQL", "OpenLibrary API"],
-				"images": {
-					"main": "Capture d’écran de l’application d’avis sur les livres"
-				},
-				"link": "books"
 			}
 		},
 		"under_construction": {

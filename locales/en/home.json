@@ -146,24 +146,6 @@
 					"main": "Screenshot of the chat app"
 				},
 				"link": "chat_app"
-			},
-			"visited_countries": {
-				"title": "Visited Countries",
-				"description": "Track and manage visited countries with user accounts.",
-				"tech": ["Express", "MySQL", "Bcrypt", "Nodemailer"],
-				"images": {
-					"main": "Screenshot of the visited countries app"
-				},
-				"link": "visited_countries"
-			},
-			"book_reviews": {
-				"title": "Book Reviews",
-				"description": "Search and review books using external APIs.",
-				"tech": ["MySQL", "OpenLibrary API"],
-				"images": {
-					"main": "Screenshot of the book reviews app"
-				},
-				"link": "books"
 			}
 		},
 		"under_construction": {

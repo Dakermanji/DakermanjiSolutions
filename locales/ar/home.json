@@ -146,24 +146,6 @@
 					"main": "لقطة شاشة لتطبيق الدردشة"
 				},
 				"link": "chat_app"
-			},
-			"visited_countries": {
-				"title": "الدول التي زرتها",
-				"description": "تتبع وإدارة الدول التي تمت زيارتها مع حسابات المستخدمين.",
-				"tech": ["Express", "MySQL", "Bcrypt", "Nodemailer"],
-				"images": {
-					"main": "لقطة شاشة لتطبيق الدول التي زرتها"
-				},
-				"link": "visited_countries"
-			},
-			"book_reviews": {
-				"title": "مراجعات الكتب",
-				"description": "البحث عن الكتب وكتابتها مراجعات باستخدام واجهات برمجة خارجية.",
-				"tech": ["MySQL", "OpenLibrary API"],
-				"images": {
-					"main": "لقطة شاشة لتطبيق مراجعات الكتب"
-				},
-				"link": "books"
 			}
 		},
 		"under_construction": {
