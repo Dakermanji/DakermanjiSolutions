@@ -78,9 +78,6 @@ await i18next
 			// Order of detection
 			order: ['path', 'querystring', 'cookie', 'header'],
 
-			// Cache detected language in cookie
-			caches: ['cookie'],
-
 			// Cookie name
 			lookupCookie: 'lang',
 		},
