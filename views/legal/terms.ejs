@@ -1,0 +1,46 @@
+<!--! views/legal/terms.ejs -->
+<article class="legal-page" aria-labelledby="terms-title">
+	<header class="legal-hero">
+		<p class="legal-kicker"><%= t('legal:terms.kicker') %></p>
+		<h1 id="terms-title"><%= t('legal:terms.title') %></h1>
+		<p class="legal-summary"><%= t('legal:terms.summary') %></p>
+		<p class="legal-updated">
+			<strong><%= t('legal:terms.lastUpdatedLabel') %></strong>
+			<time datetime="2026-09-17"><%= t('legal:terms.lastUpdated') %></time>
+		</p>
+	</header>
+
+	<nav class="legal-toc" aria-label="<%= t('legal:terms.contentsLabel') %>">
+		<h2><%= t('legal:terms.contentsLabel') %></h2>
+		<ul>
+			<% t('legal:terms.sections', { returnObjects: true }).forEach((section) => { %>
+				<li><a href="#<%= section.id %>"><%= section.title %></a></li>
+			<% }) %>
+		</ul>
+	</nav>
+
+	<div class="legal-content">
+		<% t('legal:terms.sections', { returnObjects: true }).forEach((section) => { %>
+			<section id="<%= section.id %>" class="legal-section">
+				<h2><%= section.title %></h2>
+				<% (section.paragraphs || []).forEach((paragraph) => { %>
+					<p><%= paragraph %></p>
+				<% }) %>
+				<% if (section.items?.length) { %>
+					<ul>
+						<% section.items.forEach((item) => { %>
+							<li><%= item %></li>
+						<% }) %>
+					</ul>
+				<% } %>
+				<% if (section.email) { %>
+					<p>
+						<strong><%= section.email.label %></strong>
+						<a href="mailto:dakermanji@gmail.com">dakermanji@gmail.com</a>
+					</p>
+				<% } %>
+			</section>
+		<% }) %>
+	</div>
+</article>
+

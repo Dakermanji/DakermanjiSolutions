@@ -113,5 +113,127 @@
 				]
 			}
 		]
+	},
+	"terms": {
+		"metaTitle": "Terms of Service",
+		"kicker": "Service rules",
+		"title": "Terms of Service",
+		"summary": "These terms govern access to Dakermanji Solutions and its account, social, chat, contact, and weather features. By creating an account or using an interactive feature, you agree to these terms.",
+		"lastUpdatedLabel": "Last updated:",
+		"lastUpdated": "September 17, 2026",
+		"contentsLabel": "On this page",
+		"sections": [
+			{
+				"id": "operator",
+				"title": "1. Service operator",
+				"paragraphs": [
+					"Dakermanji Solutions is the public operating name of Behnam Dakermanji, based in Laval, Québec, Canada. References to “Dakermanji Solutions,” “we,” “us,” or “our” mean Behnam Dakermanji operating under that name."
+				],
+				"email": { "label": "Contact: " }
+			},
+			{
+				"id": "eligibility",
+				"title": "2. Eligibility and acceptance",
+				"paragraphs": [
+					"People of all ages may browse the public portfolio. You must be at least 14 years old to create an account or use interactive features that collect personal information. If the law where you live requires a higher age to consent to these terms, a parent or legal guardian must consent on your behalf.",
+					"You accept these terms when you create an account or use an interactive feature. If you do not accept them, do not create an account or use those features."
+				]
+			},
+			{
+				"id": "accounts",
+				"title": "3. Accounts and security",
+				"items": [
+					"Provide accurate information and keep it reasonably current.",
+					"Protect your password and third-party sign-in accounts, and do not share access to your account.",
+					"Notify us promptly if you suspect unauthorized access or another security issue.",
+					"You are responsible for activity performed through your account to the extent permitted by law.",
+					"Do not impersonate another person, create deceptive accounts, or attempt to bypass an account restriction."
+				]
+			},
+			{
+				"id": "acceptable-use",
+				"title": "4. Acceptable use",
+				"paragraphs": [
+					"Use the service lawfully and respectfully. You must not:"
+				],
+				"items": [
+					"Harass, threaten, exploit, defraud, stalk, or harm another person.",
+					"Post unlawful, hateful, sexually exploitative, privacy-invasive, or otherwise seriously abusive material.",
+					"Share content that infringes intellectual property, privacy, publicity, confidentiality, or other rights.",
+					"Send spam, malware, deceptive links, or unauthorized commercial promotions.",
+					"Probe, disrupt, overload, scrape, reverse engineer, or bypass security, access controls, rate limits, or moderation systems, except where applicable law expressly permits the activity.",
+					"Collect information about other users without authorization or use the service for unlawful surveillance.",
+					"Use automated access unless we have given prior written permission."
+				]
+			},
+			{
+				"id": "content",
+				"title": "5. Your content",
+				"paragraphs": [
+					"You retain ownership of content you submit. You grant us a limited, worldwide, non-exclusive, royalty-free licence to host, store, reproduce, transmit, display, and technically modify that content only as reasonably necessary to operate, secure, moderate, and provide the service. This licence ends when the content is deleted from active systems, subject to reasonable backup, security, and legal retention.",
+					"You represent that you have the rights needed to submit your content and grant this licence. You remain responsible for your content and for deciding what to share with other users."
+				]
+			},
+			{
+				"id": "moderation",
+				"title": "6. Moderation and enforcement",
+				"paragraphs": [
+					"We may investigate reports and use automated or human moderation measures. Where reasonably necessary, we may hide or remove content, limit features, remove users from rooms, suspend or terminate accounts, preserve relevant evidence, or report conduct to appropriate authorities. Room owners and authorized moderators may also manage participation and content within their rooms.",
+					"We aim to apply these measures reasonably, but we are not required to monitor every communication and cannot guarantee that all objectionable content will be identified immediately."
+				]
+			},
+			{
+				"id": "third-parties",
+				"title": "7. Third-party services",
+				"paragraphs": [
+					"The service may rely on or link to third-party services, including sign-in, weather, hosting, email, monitoring, and content-delivery providers. Their own terms and policies may apply to your dealings with them. We are not responsible for third-party services beyond responsibilities that applicable law does not allow us to exclude."
+				]
+			},
+			{
+				"id": "availability",
+				"title": "8. Availability and changes",
+				"paragraphs": [
+					"The service is currently provided without a fee. We may maintain, update, add, remove, suspend, or discontinue features. We do not promise uninterrupted, error-free, or permanently available service. When reasonably possible, we will give appropriate notice of material changes that significantly affect users."
+				]
+			},
+			{
+				"id": "termination",
+				"title": "9. Account termination",
+				"paragraphs": [
+					"You may stop using the service and request account deletion through your profile. We may restrict, suspend, or terminate access when we reasonably believe these terms were violated, the account creates risk or harm, or action is required by law. Where appropriate and legally permitted, we may provide notice or an opportunity to correct the issue.",
+					"Terms that by their nature should survive termination—including provisions concerning ownership, retained records, disclaimers, liability, and disputes—continue to apply."
+				]
+			},
+			{
+				"id": "disclaimers",
+				"title": "10. Disclaimers",
+				"paragraphs": [
+					"The service, portfolio material, weather information, and user content are provided for general informational and demonstration purposes. Weather information may be delayed or inaccurate and must not be relied on for emergencies, safety-critical decisions, or professional advice.",
+					"To the maximum extent permitted by law, the service is provided “as is” and “as available,” without warranties beyond those that cannot legally be excluded."
+				]
+			},
+			{
+				"id": "liability",
+				"title": "11. Limitation of liability",
+				"paragraphs": [
+					"To the maximum extent permitted by applicable law, Dakermanji Solutions is not liable for indirect, incidental, special, consequential, or punitive damages, or for loss of data, opportunity, reputation, or profits arising from use of or inability to use the service. Nothing in these terms excludes or limits liability, warranties, remedies, or consumer rights that cannot lawfully be excluded or limited."
+				]
+			},
+			{
+				"id": "law",
+				"title": "12. Governing law and disputes",
+				"paragraphs": [
+					"These terms are governed by the laws of Québec and the federal laws of Canada applicable there, without depriving you of mandatory protections available under the law where you live. Before starting formal proceedings, please contact us so we can try to resolve the concern informally. Any dispute may be brought before a court that has jurisdiction under applicable law."
+				]
+			},
+			{
+				"id": "changes-contact",
+				"title": "13. Changes and contact",
+				"paragraphs": [
+					"We may update these terms when the service or legal requirements change. The updated date will be revised and material changes will be communicated through an appropriate and reasonably visible method. Continued use after revised terms take effect constitutes acceptance only to the extent permitted by law."
+				],
+				"email": { "label": "Questions about these terms: " }
+			}
+		]
 	}
 }

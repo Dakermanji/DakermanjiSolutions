@@ -668,7 +668,8 @@
 			"main.ejs"
 		],
 		"legal": [
-			"privacy.ejs"
+			"privacy.ejs",
+			"terms.ejs"
 		],
 		"layouts": [
 			"_brandLogo.ejs",

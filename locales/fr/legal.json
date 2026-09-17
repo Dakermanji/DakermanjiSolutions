@@ -113,5 +113,127 @@
 				]
 			}
 		]
+	},
+	"terms": {
+		"metaTitle": "Conditions d’utilisation",
+		"kicker": "Règles du service",
+		"title": "Conditions d’utilisation",
+		"summary": "Les présentes conditions régissent l’accès à Dakermanji Solutions et à ses fonctions de compte, sociales, de clavardage, de contact et de météo. En créant un compte ou en utilisant une fonction interactive, vous acceptez ces conditions.",
+		"lastUpdatedLabel": "Dernière mise à jour :",
+		"lastUpdated": "17 septembre 2026",
+		"contentsLabel": "Sur cette page",
+		"sections": [
+			{
+				"id": "operator",
+				"title": "1. Exploitant du service",
+				"paragraphs": [
+					"Dakermanji Solutions est le nom d’exploitation public de Behnam Dakermanji, établi à Laval, Québec, Canada. Toute mention de « Dakermanji Solutions », « nous », « notre » ou « nos » désigne Behnam Dakermanji exerçant ses activités sous ce nom."
+				],
+				"email": { "label": "Contact : " }
+			},
+			{
+				"id": "eligibility",
+				"title": "2. Admissibilité et acceptation",
+				"paragraphs": [
+					"Les personnes de tout âge peuvent consulter le portfolio public. Vous devez avoir au moins 14 ans pour créer un compte ou utiliser les fonctions interactives qui recueillent des renseignements personnels. Si la loi de votre lieu de résidence exige un âge plus élevé pour accepter ces conditions, un parent ou tuteur légal doit consentir en votre nom.",
+					"Vous acceptez ces conditions lorsque vous créez un compte ou utilisez une fonction interactive. Si vous ne les acceptez pas, ne créez pas de compte et n’utilisez pas ces fonctions."
+				]
+			},
+			{
+				"id": "accounts",
+				"title": "3. Comptes et sécurité",
+				"items": [
+					"Fournissez des renseignements exacts et gardez-les raisonnablement à jour.",
+					"Protégez votre mot de passe et vos comptes de connexion tiers, et ne partagez pas l’accès à votre compte.",
+					"Avisez-nous rapidement si vous soupçonnez un accès non autorisé ou un autre problème de sécurité.",
+					"Vous êtes responsable des activités effectuées par votre compte dans la mesure permise par la loi.",
+					"N’usurpez pas l’identité d’autrui, ne créez pas de comptes trompeurs et ne tentez pas de contourner une restriction."
+				]
+			},
+			{
+				"id": "acceptable-use",
+				"title": "4. Utilisation acceptable",
+				"paragraphs": [
+					"Utilisez le service de manière légale et respectueuse. Il est interdit de :"
+				],
+				"items": [
+					"Harceler, menacer, exploiter, frauder, traquer ou blesser une autre personne.",
+					"Publier du contenu illégal, haineux, sexuellement exploiteur, portant atteinte à la vie privée ou autrement gravement abusif.",
+					"Partager du contenu qui enfreint des droits de propriété intellectuelle, de vie privée, à l’image, de confidentialité ou d’autres droits.",
+					"Envoyer du pourriel, des logiciels malveillants, des liens trompeurs ou des promotions commerciales non autorisées.",
+					"Tester, perturber, surcharger, extraire, rétroconcevoir ou contourner la sécurité, les contrôles d’accès, les limites de débit ou la modération, sauf lorsque la loi le permet expressément.",
+					"Recueillir des renseignements sur d’autres utilisateurs sans autorisation ou utiliser le service pour une surveillance illégale.",
+					"Utiliser un accès automatisé sans notre autorisation écrite préalable."
+				]
+			},
+			{
+				"id": "content",
+				"title": "5. Votre contenu",
+				"paragraphs": [
+					"Vous conservez la propriété du contenu soumis. Vous nous accordez une licence limitée, mondiale, non exclusive et sans redevance pour héberger, stocker, reproduire, transmettre, afficher et modifier techniquement ce contenu uniquement dans la mesure raisonnablement nécessaire pour exploiter, sécuriser, modérer et fournir le service. Cette licence prend fin lorsque le contenu est supprimé des systèmes actifs, sous réserve d’une conservation raisonnable pour les sauvegardes, la sécurité et les obligations légales.",
+					"Vous déclarez disposer des droits nécessaires pour soumettre votre contenu et accorder cette licence. Vous demeurez responsable de votre contenu et de ce que vous choisissez de partager."
+				]
+			},
+			{
+				"id": "moderation",
+				"title": "6. Modération et application",
+				"paragraphs": [
+					"Nous pouvons enquêter sur les signalements et utiliser des mesures de modération automatisées ou humaines. Lorsque cela est raisonnablement nécessaire, nous pouvons masquer ou supprimer du contenu, limiter des fonctions, retirer des utilisateurs de salons, suspendre ou fermer des comptes, préserver des preuves pertinentes ou signaler une conduite aux autorités compétentes. Les propriétaires et modérateurs autorisés peuvent aussi gérer la participation et le contenu de leurs salons.",
+					"Nous cherchons à appliquer ces mesures raisonnablement, mais nous ne sommes pas tenus de surveiller chaque communication et ne pouvons garantir que tout contenu répréhensible sera détecté immédiatement."
+				]
+			},
+			{
+				"id": "third-parties",
+				"title": "7. Services tiers",
+				"paragraphs": [
+					"Le service peut dépendre de services tiers ou y mener, notamment pour la connexion, la météo, l’hébergement, le courriel, la surveillance et la diffusion de contenu. Leurs propres conditions et politiques peuvent s’appliquer. Nous ne sommes pas responsables de ces services au-delà des responsabilités que la loi applicable ne nous permet pas d’exclure."
+				]
+			},
+			{
+				"id": "availability",
+				"title": "8. Disponibilité et modifications",
+				"paragraphs": [
+					"Le service est actuellement offert gratuitement. Nous pouvons entretenir, mettre à jour, ajouter, retirer, suspendre ou abandonner des fonctions. Nous ne promettons pas un service ininterrompu, sans erreur ou disponible en permanence. Lorsque cela est raisonnablement possible, nous donnerons un avis approprié des changements importants qui touchent considérablement les utilisateurs."
+				]
+			},
+			{
+				"id": "termination",
+				"title": "9. Fermeture du compte",
+				"paragraphs": [
+					"Vous pouvez cesser d’utiliser le service et demander la suppression de votre compte dans votre profil. Nous pouvons restreindre, suspendre ou fermer l’accès lorsque nous croyons raisonnablement que ces conditions ont été enfreintes, que le compte crée un risque ou un préjudice, ou que la loi l’exige. Lorsque cela est approprié et permis, nous pouvons donner un avis ou une occasion de corriger le problème.",
+					"Les dispositions qui, par leur nature, doivent survivre à la fermeture — notamment celles concernant la propriété, les dossiers conservés, les exclusions, la responsabilité et les différends — demeurent applicables."
+				]
+			},
+			{
+				"id": "disclaimers",
+				"title": "10. Exclusions",
+				"paragraphs": [
+					"Le service, le contenu du portfolio, les renseignements météo et le contenu des utilisateurs sont fournis à des fins générales d’information et de démonstration. Les renseignements météo peuvent être retardés ou inexacts et ne doivent pas servir aux urgences, aux décisions critiques pour la sécurité ou aux conseils professionnels.",
+					"Dans toute la mesure permise par la loi, le service est fourni « tel quel » et « selon sa disponibilité », sans garantie autre que celles qui ne peuvent légalement être exclues."
+				]
+			},
+			{
+				"id": "liability",
+				"title": "11. Limitation de responsabilité",
+				"paragraphs": [
+					"Dans toute la mesure permise par la loi applicable, Dakermanji Solutions n’est pas responsable des dommages indirects, accessoires, spéciaux, consécutifs ou punitifs, ni de la perte de données, d’occasions, de réputation ou de profits découlant de l’utilisation ou de l’impossibilité d’utiliser le service. Rien dans ces conditions n’exclut ni ne limite une responsabilité, une garantie, un recours ou un droit du consommateur qui ne peut légalement être exclu ou limité."
+				]
+			},
+			{
+				"id": "law",
+				"title": "12. Droit applicable et différends",
+				"paragraphs": [
+					"Ces conditions sont régies par les lois du Québec et les lois fédérales du Canada qui s’y appliquent, sans vous priver des protections obligatoires prévues par la loi de votre lieu de résidence. Avant d’engager une procédure officielle, veuillez nous contacter afin de tenter de résoudre le problème à l’amiable. Tout différend peut être porté devant un tribunal compétent selon la loi applicable."
+				]
+			},
+			{
+				"id": "changes-contact",
+				"title": "13. Modifications et contact",
+				"paragraphs": [
+					"Nous pouvons modifier ces conditions lorsque le service ou les exigences légales changent. La date sera révisée et les changements importants seront annoncés d’une manière appropriée et raisonnablement visible. L’utilisation continue après l’entrée en vigueur des nouvelles conditions constitue une acceptation seulement dans la mesure permise par la loi."
+				],
+				"email": { "label": "Questions sur ces conditions : " }
+			}
+		]
 	}
 }
