@@ -23,6 +23,8 @@
 	},
 	"footer": {
 		"rights": "All rights reserved.",
+		"legal": "Legal information",
+		"privacy": "Privacy Policy",
 		"backToTop": "Back to top"
 	},
 	"tooSmall": {

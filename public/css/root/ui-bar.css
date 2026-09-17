@@ -283,6 +283,13 @@ footer p {
 	margin-top: 4px;
 }
 
+.footer-legal {
+	display: flex;
+	justify-content: center;
+	gap: 0.75rem;
+	font-size: 0.85rem;
+}
+
 footer a {
 	text-decoration: none;
 	transition: color var(--transition-time-method);

@@ -23,6 +23,8 @@
 	},
 	"footer": {
 		"rights": "Tous droits réservés.",
+		"legal": "Informations juridiques",
+		"privacy": "Politique de confidentialité",
 		"backToTop": "Retour en haut"
 	},
 	"tooSmall": {
