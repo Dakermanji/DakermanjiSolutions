@@ -24,7 +24,12 @@ const contentSecurityPolicy = {
 	directives: {
 		defaultSrc: ["'self'"],
 		baseUri: ["'none'"],
-		connectSrc: ["'self'", socketOrigin],
+		connectSrc: [
+			"'self'",
+			socketOrigin,
+			'https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css.map',
+			'https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js.map',
+		],
 		fontSrc: [
 			"'self'",
 			'data:',
