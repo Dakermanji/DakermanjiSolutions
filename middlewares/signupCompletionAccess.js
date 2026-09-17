@@ -14,6 +14,7 @@ const ALLOWED_PREFIXES = [
 	'/auth/set-username',
 	'/auth/signout',
 	'/avatar',
+	'/legal',
 	'/language',
 	'/theme',
 ];

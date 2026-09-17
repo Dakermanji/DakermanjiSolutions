@@ -391,3 +391,18 @@
 .modal-body .form-text {
 	color: var(--color-text-muted);
 }
+
+.legal-acceptance {
+	margin-top: 1rem;
+}
+
+.legal-acceptance a {
+	color: var(--color-secondary);
+	text-decoration: none;
+	transition: color var(--transition-time-method);
+}
+
+.legal-acceptance a:hover,
+.legal-acceptance a:focus-visible {
+	color: var(--color-secondary-hover);
+}

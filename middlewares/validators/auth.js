@@ -22,6 +22,10 @@ const ERROR_PREFIX = 'auth:error.';
 const MAX_PASSWORD_LENGTH = 1024;
 const MAX_AVATAR_SEED_LENGTH = 96;
 
+function acceptedLegalDocuments(value) {
+	return value === 'accepted';
+}
+
 function normalizeOptionalAvatarSeed(value) {
 	const avatarSeed = normalizeText(value);
 
@@ -136,6 +140,9 @@ export function validateCompleteLocalSignup(req, res, next) {
 
 	if (password !== confirmPassword)
 		errors.push(`${ERROR_PREFIX}password_mismatch`);
+
+	if (!acceptedLegalDocuments(req.body?.legalAcceptance))
+		errors.push(`${ERROR_PREFIX}legal_acceptance_required`);
 
 	validateProfileFields({
 		avatarSeed,
@@ -252,6 +259,9 @@ export function validateSetUsername(req, res, next) {
 
 	if (!validateNoProfanity(username))
 		errors.push(`${ERROR_PREFIX}username_profanity`);
+
+	if (!acceptedLegalDocuments(req.body?.legalAcceptance))
+		errors.push(`${ERROR_PREFIX}legal_acceptance_required`);
 
 	validateProfileFields({
 		avatarSeed,
