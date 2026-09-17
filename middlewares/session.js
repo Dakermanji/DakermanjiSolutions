@@ -25,6 +25,7 @@ import env from '../config/dotenv.js';
 import pool from '../config/database.js';
 
 const PgStore = connectPgSimple(session);
+export const SESSION_COOKIE_NAME = 'ds.sid';
 
 export const sessionMiddleware = session({
 	/**
@@ -45,7 +46,7 @@ export const sessionMiddleware = session({
 	 * Custom name avoids the default `connect.sid`
 	 * and makes the app cookie easier to identify.
 	 */
-	name: 'ds.sid',
+	name: SESSION_COOKIE_NAME,
 
 	/**
 	 * Secret used to sign the session ID cookie

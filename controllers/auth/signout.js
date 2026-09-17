@@ -1,6 +1,7 @@
 //! controllers/auth/signout.js
 
 import logger from '../../config/logger.js';
+import { SESSION_COOKIE_NAME } from '../../middlewares/session.js';
 
 /**
  * Sign out the current user.
@@ -40,7 +41,7 @@ export async function signout(req, res) {
 					return res.redirect('/');
 				}
 
-				res.clearCookie('connect.sid');
+				res.clearCookie(SESSION_COOKIE_NAME);
 
 				req.sessionStore.generate(req);
 				req.flash('success', 'auth:signout.success');
