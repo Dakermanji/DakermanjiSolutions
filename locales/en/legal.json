@@ -1,0 +1,117 @@
+{
+	"privacy": {
+		"metaTitle": "Privacy Policy",
+		"kicker": "Your privacy",
+		"title": "Privacy Policy",
+		"summary": "This policy explains how Dakermanji Solutions collects, uses, shares, and protects personal information when you visit the website or use its accounts, chat, social, contact, and weather features.",
+		"lastUpdatedLabel": "Last updated:",
+		"lastUpdated": "September 16, 2026",
+		"contentsLabel": "On this page",
+		"sections": [
+			{
+				"id": "responsibility",
+				"title": "1. Who is responsible",
+				"paragraphs": [
+					"Dakermanji Solutions is the public operating name of Behnam Dakermanji, based in Laval, Québec, Canada. Behnam Dakermanji is responsible for protecting personal information and acts as the Privacy Officer."
+				],
+				"email": { "label": "Privacy contact: " }
+			},
+			{
+				"id": "information",
+				"title": "2. Information we collect",
+				"paragraphs": [
+					"We collect only the information reasonably needed to operate, secure, and improve the services you choose to use."
+				],
+				"items": [
+					"Account and profile information, including your email address, username, chosen avatar, country, language, and theme preference.",
+					"Authentication information, including a securely hashed password or an account identifier supplied by Google, GitHub, or Discord when you use those sign-in methods. We do not receive your third-party password.",
+					"Content and activity you provide, including contact messages, chat messages, notes, reactions, reports, room activity, friendships, blocks, invitations, and notifications.",
+					"Security and technical information, including session identifiers, IP address, browser or device user-agent, sign-in events, timestamps, and error diagnostics.",
+					"Weather information you request, including a searched place or coordinates supplied by your browser when you choose current location."
+				]
+			},
+			{
+				"id": "purposes",
+				"title": "3. Why we use information",
+				"items": [
+					"Create and manage accounts, authenticate users, and recover or delete accounts.",
+					"Provide profiles, social connections, private notes, chat rooms, messages, moderation, notifications, contact, and weather features.",
+					"Remember language and appearance preferences.",
+					"Prevent abuse, investigate security events, enforce service rules, and maintain reliability.",
+					"Respond to questions, privacy requests, and legal obligations."
+				]
+			},
+			{
+				"id": "cookies",
+				"title": "4. Cookies and similar technologies",
+				"paragraphs": [
+					"We currently use essential or preference technologies only. We do not use advertising cookies or audience analytics cookies."
+				],
+				"items": [
+					"The ds.sid cookie keeps your session secure and, when you sign in, keeps you authenticated. It normally expires after one day and is renewed while you remain active.",
+					"Language and theme preferences remember how you want the website displayed.",
+					"Temporary security values support CSRF protection and third-party sign-in flows."
+				]
+			},
+			{
+				"id": "sharing",
+				"title": "5. Service providers and disclosures",
+				"paragraphs": [
+					"We do not sell personal information. Information is disclosed only when needed to provide a requested feature, protect the service, comply with law, or operate through a service provider. Depending on the feature, information may be processed outside Québec or Canada."
+				],
+				"items": [
+					"Google, GitHub, or Discord processes information when you choose its sign-in service.",
+					"OpenWeather and Open-Meteo receive a place or coordinates needed to return requested weather information.",
+					"Sentry may receive error diagnostics and related request or device information for security and reliability monitoring.",
+					"Email, hosting, database, and content-delivery providers process information needed to deliver and operate the service.",
+					"Authorities or other parties may receive information when disclosure is required or permitted by law, or necessary to protect rights, safety, and service integrity."
+				]
+			},
+			{
+				"id": "visibility",
+				"title": "6. What other users can see",
+				"paragraphs": [
+					"Your username, avatar, and selected country may be visible to other signed-in users where social and chat features require them. Messages and room activity are visible to their intended participants and, where necessary, authorized room moderators. Private notes are intended to be visible only to you. Do not submit information you do not want the relevant participants to see."
+				]
+			},
+			{
+				"id": "retention",
+				"title": "7. Retention and deletion",
+				"paragraphs": [
+					"Account information and user content are generally kept while your account is active. You can request account deletion from your profile. Deletion removes the account and associated records where the service is designed to do so. Limited records may be retained when reasonably necessary for security, fraud prevention, backup integrity, dispute resolution, or legal compliance, and are then deleted or de-identified when no longer required.",
+					"Session cookies normally expire after one day. Verification, recovery, invitation, and similar temporary records expire according to their operational security periods."
+				]
+			},
+			{
+				"id": "security",
+				"title": "8. Security",
+				"paragraphs": [
+					"We use administrative, technical, and organizational safeguards appropriate to the information involved, including password hashing, access controls, secure session settings, CSRF protection, security headers, validation, and activity monitoring. No internet service can guarantee absolute security."
+				]
+			},
+			{
+				"id": "children",
+				"title": "9. Children and minimum age",
+				"paragraphs": [
+					"People of all ages may view the public portfolio pages. You must be at least 14 years old to create an account or use features that collect personal information. We do not knowingly collect personal information directly from a child under 14 without consent from a parent or legal guardian. If you believe this has occurred, contact the Privacy Officer so the information can be reviewed and removed as appropriate."
+				]
+			},
+			{
+				"id": "rights",
+				"title": "10. Your privacy rights",
+				"paragraphs": [
+					"Subject to applicable law, you may ask whether we hold personal information about you, request access or correction, withdraw consent where applicable, ask questions, or make a complaint. You may also change available profile preferences or request account deletion through the website. We may need to verify your identity before completing a request."
+				],
+				"email": { "label": "Send privacy requests to: " }
+			},
+			{
+				"id": "changes",
+				"title": "11. Changes to this policy",
+				"paragraphs": [
+					"We may update this policy when the service or legal requirements change. The updated date will be revised, and notice of material changes will be provided through an appropriate and reasonably visible method."
+				]
+			}
+		]
+	}
+}
+

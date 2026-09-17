@@ -1,0 +1,117 @@
+{
+	"privacy": {
+		"metaTitle": "Politique de confidentialité",
+		"kicker": "Votre vie privée",
+		"title": "Politique de confidentialité",
+		"summary": "La présente politique explique comment Dakermanji Solutions recueille, utilise, communique et protège les renseignements personnels lorsque vous visitez le site ou utilisez ses fonctions de compte, de clavardage, sociales, de contact et de météo.",
+		"lastUpdatedLabel": "Dernière mise à jour :",
+		"lastUpdated": "16 septembre 2026",
+		"contentsLabel": "Sur cette page",
+		"sections": [
+			{
+				"id": "responsibility",
+				"title": "1. Personne responsable",
+				"paragraphs": [
+					"Dakermanji Solutions est le nom d’exploitation public de Behnam Dakermanji, établi à Laval, Québec, Canada. Behnam Dakermanji est responsable de la protection des renseignements personnels."
+				],
+				"email": { "label": "Contact pour la vie privée : " }
+			},
+			{
+				"id": "information",
+				"title": "2. Renseignements recueillis",
+				"paragraphs": [
+					"Nous recueillons seulement les renseignements raisonnablement nécessaires pour exploiter, sécuriser et améliorer les services que vous choisissez d’utiliser."
+				],
+				"items": [
+					"Renseignements du compte et du profil, notamment l’adresse courriel, le nom d’utilisateur, l’avatar choisi, le pays, la langue et le thème.",
+					"Renseignements d’authentification, notamment un mot de passe haché de façon sécuritaire ou un identifiant fourni par Google, GitHub ou Discord. Nous ne recevons pas votre mot de passe auprès de ces services.",
+					"Contenu et activités fournis, notamment les messages de contact et de clavardage, les notes, réactions, signalements, activités de salons, relations sociales, blocages, invitations et notifications.",
+					"Renseignements techniques et de sécurité, notamment les identifiants de session, l’adresse IP, l’agent utilisateur du navigateur ou de l’appareil, les événements de connexion, les horodatages et les diagnostics d’erreur.",
+					"Renseignements météo demandés, notamment un lieu recherché ou les coordonnées fournies par votre navigateur lorsque vous choisissez votre position actuelle."
+				]
+			},
+			{
+				"id": "purposes",
+				"title": "3. Raisons de l’utilisation",
+				"items": [
+					"Créer et gérer les comptes, authentifier les utilisateurs et récupérer ou supprimer les comptes.",
+					"Fournir les profils, relations sociales, notes privées, salons, messages, fonctions de modération, notifications, contact et météo.",
+					"Mémoriser les préférences de langue et d’apparence.",
+					"Prévenir les abus, enquêter sur les événements de sécurité, appliquer les règles du service et maintenir sa fiabilité.",
+					"Répondre aux questions, aux demandes relatives à la vie privée et aux obligations légales."
+				]
+			},
+			{
+				"id": "cookies",
+				"title": "4. Témoins et technologies similaires",
+				"paragraphs": [
+					"Nous utilisons actuellement uniquement des technologies essentielles ou de préférence. Nous n’utilisons pas de témoins publicitaires ni de témoins de mesure d’audience."
+				],
+				"items": [
+					"Le témoin ds.sid sécurise votre session et, après connexion, maintient votre authentification. Il expire normalement après une journée et est renouvelé pendant votre activité.",
+					"Les préférences de langue et de thème mémorisent l’affichage souhaité.",
+					"Des valeurs de sécurité temporaires soutiennent la protection CSRF et les connexions par des services tiers."
+				]
+			},
+			{
+				"id": "sharing",
+				"title": "5. Fournisseurs et communications",
+				"paragraphs": [
+					"Nous ne vendons pas les renseignements personnels. Ils sont communiqués seulement pour fournir une fonction demandée, protéger le service, respecter la loi ou exploiter le service avec un fournisseur. Selon la fonction, ils peuvent être traités hors du Québec ou du Canada."
+				],
+				"items": [
+					"Google, GitHub ou Discord traite des renseignements lorsque vous choisissez son service de connexion.",
+					"OpenWeather et Open-Meteo reçoivent le lieu ou les coordonnées nécessaires pour retourner la météo demandée.",
+					"Sentry peut recevoir des diagnostics d’erreur et des renseignements connexes sur la requête ou l’appareil pour surveiller la sécurité et la fiabilité.",
+					"Les fournisseurs de courriel, d’hébergement, de base de données et de diffusion de contenu traitent les renseignements nécessaires à la prestation et à l’exploitation du service.",
+					"Les autorités ou d’autres parties peuvent recevoir des renseignements lorsque la loi l’exige ou le permet, ou lorsque cela est nécessaire pour protéger les droits, la sécurité et l’intégrité du service."
+				]
+			},
+			{
+				"id": "visibility",
+				"title": "6. Ce que les autres utilisateurs voient",
+				"paragraphs": [
+					"Votre nom d’utilisateur, votre avatar et le pays sélectionné peuvent être visibles aux autres utilisateurs connectés lorsque les fonctions sociales et de clavardage l’exigent. Les messages et activités de salons sont visibles à leurs participants prévus et, au besoin, aux modérateurs autorisés. Les notes privées sont destinées à être visibles uniquement par vous. Ne soumettez pas de renseignements que vous ne voulez pas montrer aux participants concernés."
+				]
+			},
+			{
+				"id": "retention",
+				"title": "7. Conservation et suppression",
+				"paragraphs": [
+					"Les renseignements du compte et le contenu sont généralement conservés pendant que le compte est actif. Vous pouvez demander sa suppression dans votre profil. La suppression retire le compte et les dossiers associés lorsque le service est conçu pour le faire. Certains dossiers limités peuvent être conservés lorsque cela est raisonnablement nécessaire pour la sécurité, la prévention de la fraude, l’intégrité des sauvegardes, le règlement de différends ou le respect de la loi, puis supprimés ou dépersonnalisés lorsqu’ils ne sont plus requis.",
+					"Les témoins de session expirent normalement après une journée. Les dossiers temporaires de vérification, de récupération, d’invitation et autres expirent selon leurs périodes de sécurité opérationnelle."
+				]
+			},
+			{
+				"id": "security",
+				"title": "8. Sécurité",
+				"paragraphs": [
+					"Nous utilisons des mesures administratives, techniques et organisationnelles adaptées aux renseignements concernés, notamment le hachage des mots de passe, les contrôles d’accès, des paramètres de session sécurisés, la protection CSRF, des en-têtes de sécurité, la validation et la surveillance des activités. Aucun service Internet ne peut garantir une sécurité absolue."
+				]
+			},
+			{
+				"id": "children",
+				"title": "9. Enfants et âge minimum",
+				"paragraphs": [
+					"Les personnes de tout âge peuvent consulter les pages publiques du portfolio. Vous devez avoir au moins 14 ans pour créer un compte ou utiliser les fonctions qui recueillent des renseignements personnels. Nous ne recueillons pas sciemment de renseignements personnels directement auprès d’un enfant de moins de 14 ans sans le consentement d’un parent ou tuteur légal. Si vous pensez que cela s’est produit, contactez la personne responsable afin que les renseignements soient examinés et supprimés, s’il y a lieu."
+				]
+			},
+			{
+				"id": "rights",
+				"title": "10. Vos droits",
+				"paragraphs": [
+					"Sous réserve des lois applicables, vous pouvez demander si nous détenons des renseignements à votre sujet, demander leur accès ou leur rectification, retirer votre consentement lorsque cela s’applique, poser une question ou déposer une plainte. Vous pouvez aussi modifier les préférences disponibles ou demander la suppression de votre compte sur le site. Nous pourrions devoir vérifier votre identité avant de traiter une demande."
+				],
+				"email": { "label": "Envoyez vos demandes à : " }
+			},
+			{
+				"id": "changes",
+				"title": "11. Modifications de la politique",
+				"paragraphs": [
+					"Nous pouvons modifier cette politique lorsque le service ou les exigences légales changent. La date de mise à jour sera révisée et les changements importants seront annoncés d’une manière appropriée et raisonnablement visible."
+				]
+			}
+		]
+	}
+}
+

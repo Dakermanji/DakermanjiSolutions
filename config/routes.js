@@ -9,6 +9,7 @@
 
 import { Router } from 'express';
 import homeRoutes from '../routes/home.js';
+import legalRoutes from '../routes/legal.js';
 import langRoutes from '../routes/lang.js';
 import authRoutes from '../routes/auth.js';
 import chatRoutes from '../routes/chat.js';
@@ -23,6 +24,9 @@ const router = Router();
 
 // Homepage routes
 router.use('/', homeRoutes);
+
+// Public legal pages
+router.use('/legal', legalRoutes);
 
 // Language switcher routes
 router.use('/language', langRoutes);

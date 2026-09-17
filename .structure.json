@@ -93,6 +93,7 @@
 		"~": [
 			"avatar.js",
 			"home.js",
+			"legal.js",
 			"lang.js",
 			"profile.js",
 			"theme.js"
@@ -105,6 +106,7 @@
 			"common.json",
 			"home.json",
 			"layout.json",
+			"legal.json",
 			"notifications.json",
 			"profile.json",
 			"social.json",
@@ -116,6 +118,7 @@
 			"common.json",
 			"home.json",
 			"layout.json",
+			"legal.json",
 			"notifications.json",
 			"profile.json",
 			"social.json",
@@ -127,6 +130,7 @@
 			"common.json",
 			"home.json",
 			"layout.json",
+			"legal.json",
 			"notifications.json",
 			"profile.json",
 			"social.json",
@@ -291,6 +295,9 @@
 				"main.css",
 				"portfolio.css",
 				"services.css"
+			],
+			"legal": [
+				"main.css"
 			],
 			"modals": [
 				"auth-tabs.css",
@@ -485,6 +492,7 @@
 			"avatar.js",
 			"chat.js",
 			"home.js",
+			"legal.js",
 			"lang.js",
 			"notifications.js",
 			"profile.js",
@@ -658,6 +666,9 @@
 			"_portfolio.ejs",
 			"_services.ejs",
 			"main.ejs"
+		],
+		"legal": [
+			"privacy.ejs"
 		],
 		"layouts": [
 			"_brandLogo.ejs",
