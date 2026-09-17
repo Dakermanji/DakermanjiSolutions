@@ -42,6 +42,11 @@ CREATE TABLE
         -- Preferences
         "theme" "user_theme" NOT NULL DEFAULT 'system',
         "avatar_seed" TEXT NULL,
+        -- Legal acceptance
+        "terms_accepted_at" TIMESTAMPTZ NULL,
+        "terms_version" VARCHAR(10) NULL,
+        "privacy_accepted_at" TIMESTAMPTZ NULL,
+        "privacy_version" VARCHAR(10) NULL,
         -- Activity tracking
         "last_signin_at" TIMESTAMPTZ NULL,
         -- Timestamps

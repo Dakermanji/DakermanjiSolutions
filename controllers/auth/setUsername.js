@@ -2,6 +2,7 @@
 
 import { fail, success } from '../../services/http/response.js';
 import UserModel from '../../models/User.js';
+import { LEGAL_DOCUMENT_VERSIONS } from '../../constants/legal.js';
 
 /**
  * Complete OAuth signup by assigning a unique username.
@@ -41,6 +42,7 @@ export async function setUsername(req, res, next) {
 			username,
 			avatarSeed,
 			countryCode,
+			LEGAL_DOCUMENT_VERSIONS,
 		);
 
 		if (!updateResult.success)

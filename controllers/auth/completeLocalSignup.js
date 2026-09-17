@@ -6,6 +6,7 @@ import AuthTokenModel from '../../models/auth/Token.js';
 import { verifyToken, tokenTypes } from '../../services/auth/verifyToken.js';
 import { hashPassword } from '../../services/auth/password.js';
 import { fail } from '../../services/http/response.js';
+import { LEGAL_DOCUMENT_VERSIONS } from '../../constants/legal.js';
 
 /**
  * Complete local signup after email verification.
@@ -75,6 +76,7 @@ export async function completeLocalSignup(req, res) {
 			hashedPassword,
 			avatarSeed,
 			countryCode,
+			LEGAL_DOCUMENT_VERSIONS,
 		);
 
 		if (!user) {

@@ -45,6 +45,7 @@ export async function completeLocalSignupById(
 	hashedPassword,
 	avatarSeed = null,
 	countryCode = null,
+	legalVersions,
 ) {
 	const lowerCasedUsername = username.toLowerCase();
 
@@ -56,8 +57,12 @@ export async function completeLocalSignupById(
 			hashed_password = $3,
 			avatar_seed = $4,
 			country_code = $5,
+			terms_accepted_at = NOW(),
+			terms_version = $6,
+			privacy_accepted_at = NOW(),
+			privacy_version = $7,
 			updated_at = NOW()
-		WHERE id = $6
+		WHERE id = $8
 			AND username IS NULL
 			AND hashed_password IS NULL
 		RETURNING
@@ -77,6 +82,8 @@ export async function completeLocalSignupById(
 		hashedPassword,
 		avatarSeed,
 		countryCode,
+		legalVersions.terms,
+		legalVersions.privacy,
 		userId,
 	]);
 
@@ -175,6 +182,7 @@ export async function completeOAuthSignupById(
 	username,
 	avatarSeed = null,
 	countryCode = null,
+	legalVersions,
 ) {
 	const lowerCasedUsername = username.toLowerCase();
 
@@ -185,8 +193,12 @@ export async function completeOAuthSignupById(
 			username_normalized = $2,
 			avatar_seed = $3,
 			country_code = $4,
+			terms_accepted_at = NOW(),
+			terms_version = $5,
+			privacy_accepted_at = NOW(),
+			privacy_version = $6,
 			updated_at = NOW()
-		WHERE id = $5
+		WHERE id = $7
 			AND username IS NULL
 		RETURNING
 			id,
@@ -206,6 +218,8 @@ export async function completeOAuthSignupById(
 			lowerCasedUsername,
 			avatarSeed,
 			countryCode,
+			legalVersions.terms,
+			legalVersions.privacy,
 			userId,
 		]);
 

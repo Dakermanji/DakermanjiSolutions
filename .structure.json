@@ -33,6 +33,7 @@
 	},
 	"constants": [
 		"chat.js",
+		"legal.js",
 		"notifications.js"
 	],
 	"controllers": {
