@@ -19,8 +19,13 @@ import profileRoutes from '../routes/profile.js';
 import themeRoutes from '../routes/theme.js';
 import avatarRoutes from '../routes/avatar.js';
 import weatherRoutes from '../routes/weather.js';
+import { dynamicRequestLimiter } from '../middlewares/rateLimit.js';
 
 const router = Router();
+
+// Apply a broad safety ceiling to dynamic application requests.
+// Static assets are served before this router and do not consume the limit.
+router.use(dynamicRequestLimiter);
 
 // Homepage routes
 router.use('/', homeRoutes);

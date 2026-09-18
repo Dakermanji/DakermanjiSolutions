@@ -43,11 +43,18 @@ import { githubCall, githubCallback } from '../controllers/auth/github.js';
 import { discordCall, discordCallback } from '../controllers/auth/discord.js';
 import { setUsername } from '../controllers/auth/setUsername.js';
 import { deleteAccount } from '../controllers/auth/deleteAccount.js';
+import {
+	oauthStartLimiter,
+	passwordResetLimiter,
+	recoveryLimiter,
+	signInLimiter,
+	signupLimiter,
+} from '../middlewares/rateLimit.js';
 
 const router = Router();
 
 // Sign up - Step 1: start local signup (email only)
-router.post('/signup', validateSignupEmail, signupLocal);
+router.post('/signup', signupLimiter, validateSignupEmail, signupLocal);
 
 // Sign up - Step 2: verify email via token (?token=...)
 router.get('/verify-email', validateVerifyEmailQuery, verifyEmail);
@@ -60,7 +67,7 @@ router.post(
 );
 
 // Sign in
-router.post('/signin', validateSignIn, signinLocal);
+router.post('/signin', signInLimiter, validateSignIn, signinLocal);
 
 // Sign out
 router.post('/signout', signout);
@@ -68,6 +75,7 @@ router.post('/signout', signout);
 // Recovery
 router.post(
 	'/recovery',
+	recoveryLimiter,
 	validateRecoveryEmail,
 	validateRecoveryIntent,
 	recovery,
@@ -75,21 +83,26 @@ router.post(
 
 // Reset Password
 router.get('/reset-password', validateResetPasswordQuery, getResetPassword);
-router.post('/reset-password', validateResetPassword, postResetPassword);
+router.post(
+	'/reset-password',
+	passwordResetLimiter,
+	validateResetPassword,
+	postResetPassword,
+);
 
 // Delete Account
 router.get('/delete-account', deleteAccount);
 
 // Google OAuth
-router.get('/google', googleCall);
+router.get('/google', oauthStartLimiter, googleCall);
 router.get('/google/callback', googleCallback);
 
 // GitHub OAuth
-router.get('/github', githubCall);
+router.get('/github', oauthStartLimiter, githubCall);
 router.get('/github/callback', githubCallback);
 
 // Discord OAuth
-router.get('/discord', discordCall);
+router.get('/discord', oauthStartLimiter, discordCall);
 router.get('/discord/callback', discordCallback);
 
 // Set Username

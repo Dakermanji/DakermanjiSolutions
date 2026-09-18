@@ -2,6 +2,7 @@
 
 import { Router } from 'express';
 import { renderHome, sendContactMessage } from '../controllers/home.js';
+import { contactLimiter } from '../middlewares/rateLimit.js';
 
 const router = Router();
 
@@ -16,6 +17,6 @@ const router = Router();
  * Render the homepage.
  */
 router.get('/', renderHome);
-router.post('/contact', sendContactMessage);
+router.post('/contact', contactLimiter, sendContactMessage);
 
 export default router;
