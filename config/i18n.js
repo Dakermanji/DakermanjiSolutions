@@ -18,12 +18,16 @@
  */
 
 import i18next from 'i18next';
-import Backend from 'i18next-fs-backend';
 import i18nextMiddleware from 'i18next-http-middleware';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { SUPPORTED_LANGUAGE_CODES } from './languages.js';
+
+// WHC loads the entry module synchronously, so use the backend's CJS build.
+const require = createRequire(import.meta.url);
+const Backend = require('i18next-fs-backend');
 
 // Recreate __dirname in ESM (not available by default)
 const __filename = fileURLToPath(import.meta.url);
@@ -47,7 +51,7 @@ const NAME_SPACES = [
  * Backend: loads translation files from /locales
  * Detection: determines language from path, querystring, cookie, or header
  */
-await i18next
+const i18nReady = i18next
 	// Load translations from filesystem
 	.use(Backend)
 
@@ -91,5 +95,5 @@ await i18next
 		returnObjects: true,
 	});
 
-// Export initialized instances
-export { i18next, i18nextMiddleware };
+// Export the instances and startup promise without using top-level await.
+export { i18next, i18nextMiddleware, i18nReady };

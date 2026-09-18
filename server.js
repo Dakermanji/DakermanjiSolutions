@@ -16,6 +16,7 @@
 import env from './config/dotenv.js';
 import registerProcessHandlers from './config/process.js';
 import app from './config/express.js';
+import { i18nReady } from './config/i18n.js';
 import logger from './config/logger.js';
 import { testDatabaseConnection } from './config/database.js';
 import configureSocket from './config/socket.js';
@@ -24,14 +25,22 @@ import configureSocket from './config/socket.js';
  * Bootstrap and start the server
  *
  * Steps:
- * 1. Verify database connection
- * 2. Start HTTP server
- * 3. Attach global process error handlers
+ * 1. Initialize translations
+ * 2. Verify database connection
+ * 3. Start HTTP server
+ * 4. Attach global process error handlers
  *
  * If any critical step fails, the process exits.
  */
 async function startServer() {
 	try {
+		/**
+		 * Finish loading translations before accepting requests.
+		 * Keeping this await inside startup lets synchronous hosting loaders
+		 * import the ESM module graph without ERR_REQUIRE_ASYNC_MODULE.
+		 */
+		await i18nReady;
+
 		/**
 		 * Ensure database is reachable before starting the app
 		 *
