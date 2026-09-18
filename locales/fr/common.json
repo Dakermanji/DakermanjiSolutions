@@ -26,6 +26,8 @@
 	"usernameUpdated": "Nom mis à jour.",
 	"error": {
 		"generic": "Une erreur s’est produite. Veuillez réessayer.",
-		"invalid_request": "Requête invalide."
+		"invalid_request": "Requête invalide.",
+		"rate_limited_title": "Trop de requêtes",
+		"rate_limited": "Trop de requêtes. Veuillez patienter avant de réessayer."
 	}
 }

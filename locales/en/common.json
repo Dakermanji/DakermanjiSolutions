@@ -26,6 +26,8 @@
 	"usernameUpdated": "Name updated.",
 	"error": {
 		"generic": "Something went wrong. Please try again.",
-		"invalid_request": "Invalid request."
+		"invalid_request": "Invalid request.",
+		"rate_limited_title": "Too many requests",
+		"rate_limited": "Too many requests. Please wait and try again."
 	}
 }

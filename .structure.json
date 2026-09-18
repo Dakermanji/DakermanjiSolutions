@@ -162,6 +162,7 @@
 			"notFound.js",
 			"parsers.js",
 			"passport.js",
+			"rateLimit.js",
 			"requestLogger.js",
 			"routeAccess.js",
 			"securityHeaders.js",
