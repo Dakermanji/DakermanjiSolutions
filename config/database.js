@@ -9,11 +9,29 @@
  * - Expose a connection test function (used at app startup)
  */
 
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import pg from 'pg';
 import env from './dotenv.js';
 import logger from './logger.js';
 
 const { Pool } = pg;
+
+/**
+ * Build a verified TLS configuration for remote PostgreSQL connections.
+ * The custom CA is optional when the server certificate chains to a system CA.
+ */
+function getSslConfig() {
+	if (!env.DB_SSL) return false;
+
+	const ssl = { rejectUnauthorized: true };
+
+	if (env.DB_SSL_CA_PATH) {
+		ssl.ca = readFileSync(resolve(env.DB_SSL_CA_PATH), 'utf8');
+	}
+
+	return ssl;
+}
 
 /**
  * PostgreSQL connection pool
@@ -32,7 +50,7 @@ const pool = new Pool({
 	/**
 	 * Enable SSL only when required (production / cloud DBs)
 	 */
-	ssl: env.DB_SSL ? { rejectUnauthorized: false } : false,
+	ssl: getSslConfig(),
 });
 
 /**

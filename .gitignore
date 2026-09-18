@@ -37,3 +37,7 @@ coverage/
 
 # Developer Private folder
 .private/
+
+# Certificates
+*.crt
+*.cer

@@ -71,6 +71,9 @@ const env = {
 	/** Whether PostgreSQL SSL is enabled */
 	DB_SSL: optionalEnv('DB_SSL', 'false') === 'true',
 
+	/** Optional CA certificate used to verify the PostgreSQL server */
+	DB_SSL_CA_PATH: optionalEnv('DB_SSL_CA_PATH', ''),
+
 	/** Google OAuth */
 	GOOGLE_CLIENT_ID: requireEnv('GOOGLE_CLIENT_ID'),
 	GOOGLE_CLIENT_SECRET: requireEnv('GOOGLE_CLIENT_SECRET'),
