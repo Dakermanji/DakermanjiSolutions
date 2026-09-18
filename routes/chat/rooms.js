@@ -17,12 +17,13 @@ import memberRoutes from './rooms/members.js';
 import messageRoutes from './rooms/messages.js';
 import moderationRoutes from './rooms/moderation.js';
 import requestRoutes from './rooms/requests.js';
+import { roomSearchLimiter } from '../../middlewares/rateLimit.js';
 
 const router = Router();
 
 router.get('/public', getPublicRooms);
 router.get('/private', getPrivateRooms);
-router.get('/search', searchVisibleRooms);
+router.get('/search', roomSearchLimiter, searchVisibleRooms);
 router.get('/activity', getRoomActivityLogs);
 router.get('/open/:conversationId', openRoomConversation);
 

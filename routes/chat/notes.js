@@ -11,6 +11,7 @@ import {
 	reactToNotesMessage,
 	resetNotesConversation,
 } from '../../controllers/chat/index.js';
+import { messageWriteLimiter } from '../../middlewares/rateLimit.js';
 
 const router = Router();
 
@@ -18,7 +19,7 @@ router.get('/messages', getOlderNotesMessages);
 router.get('/messages/reactions', getNotesMessageReactionUsers);
 router.post('/open', openNotesConversation);
 router.post('/reset', resetNotesConversation);
-router.post('/messages', createNotesChatMessage);
+router.post('/messages', messageWriteLimiter, createNotesChatMessage);
 router.post('/messages/edit', editNotesMessage);
 router.post('/messages/delete', deleteNotesMessage);
 router.post('/messages/react', reactToNotesMessage);

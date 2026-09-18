@@ -11,12 +11,13 @@ import {
 	openRoomChatMessage,
 	reactToRoomChatMessage,
 } from '../../../controllers/chat/index.js';
+import { messageWriteLimiter } from '../../../middlewares/rateLimit.js';
 
 const router = Router();
 
 router.get('/', getOlderRoomMessages);
 router.get('/reactions', getRoomChatMessageReactionUsers);
-router.post('/', createRoomChatMessage);
+router.post('/', messageWriteLimiter, createRoomChatMessage);
 router.post('/edit', editRoomChatMessage);
 router.post('/delete', deleteRoomChatMessage);
 router.post('/flag', flagRoomChatMessage);
