@@ -1,7 +1,10 @@
 #! .gitignore
 
 # Node modules
-node_modules/
+node_modules
+
+# Runtime files
+tmp/
 
 # Logs
 logs
