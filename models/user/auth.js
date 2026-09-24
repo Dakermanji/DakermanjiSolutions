@@ -1,5 +1,6 @@
 //! models/user/auth.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 export async function findByEmailBasic(email) {
@@ -16,12 +17,12 @@ export async function findByEmailBasic(email) {
 
 export async function createLocalPendingUser(email, locale) {
 	const q = `
-		INSERT INTO users (email, locale)
-		VALUES ($1, $2)
+		INSERT INTO users (id, email, locale)
+		VALUES ($1, $2, $3)
 		RETURNING id, email, locale, is_verified, created_at
 	`;
 
-	const rows = await queryRows(q, [email, locale]);
+	const rows = await queryRows(q, [randomUUID(), email, locale]);
 	return rows[0] || null;
 }
 
@@ -156,11 +157,12 @@ export async function updatePasswordById(userId, hashedPassword) {
 export async function createOAuthUser(email, locale = 'en', isVerified = true) {
 	const q = `
 		INSERT INTO users (
+			id,
 			email,
 			locale,
 			is_verified
 		)
-		VALUES ($1, $2, $3)
+		VALUES ($1, $2, $3, $4)
 		RETURNING
 			id,
 			email,
@@ -173,7 +175,7 @@ export async function createOAuthUser(email, locale = 'en', isVerified = true) {
 			avatar_seed;
 	`;
 
-	const rows = await queryRows(q, [email, locale, isVerified]);
+	const rows = await queryRows(q, [randomUUID(), email, locale, isVerified]);
 	return rows[0] ?? null;
 }
 

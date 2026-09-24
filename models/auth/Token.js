@@ -1,5 +1,6 @@
 //! models/auth/Token.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 /**
@@ -21,12 +22,18 @@ import { query, queryRows } from '../../config/database.js';
  */
 export async function createToken(userId, tokenHash, expiresAt, type) {
 	const q = `
-		INSERT INTO auth_tokens (user_id, token_hash, type, expires_at)
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO auth_tokens (id, user_id, token_hash, type, expires_at)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, user_id, type, token_hash, expires_at, used_at, created_at
 	`;
 
-	const rows = await queryRows(q, [userId, tokenHash, type, expiresAt]);
+	const rows = await queryRows(q, [
+		randomUUID(),
+		userId,
+		tokenHash,
+		type,
+		expiresAt,
+	]);
 	return rows[0] || null;
 }
 

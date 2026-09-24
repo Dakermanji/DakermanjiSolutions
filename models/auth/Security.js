@@ -1,5 +1,6 @@
 //! models/auth/Security.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 /**
@@ -89,13 +90,14 @@ async function createIfMissing({ userId = null, identifier = null }) {
 
 	const q = `
 		INSERT INTO auth_security (
+			id,
 			user_id,
 			identifier
 		)
-		VALUES ($1, $2);
+		VALUES ($1, $2, $3);
 	`;
 
-	await query(q, [userId, identifier]);
+	await query(q, [randomUUID(), userId, identifier]);
 }
 
 /**

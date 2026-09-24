@@ -1,5 +1,6 @@
 //! models/auth/SignupSecurity.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 /**
@@ -136,13 +137,14 @@ async function createIfMissing({ ipAddress, email = null }) {
 
 	const q = `
 		INSERT INTO signup_security (
+			id,
 			ip_address,
 			email
 		)
-		VALUES ($1, $2);
+		VALUES ($1, $2, $3);
 	`;
 
-	await query(q, [ipAddress, email]);
+	await query(q, [randomUUID(), ipAddress, email]);
 }
 
 /**

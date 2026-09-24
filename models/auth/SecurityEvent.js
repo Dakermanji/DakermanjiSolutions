@@ -1,5 +1,6 @@
 //! models/auth/SecurityEvent.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 /**
@@ -42,16 +43,17 @@ async function insertAuthEvent({
 }) {
 	const q = `
 		INSERT INTO auth_security_events (
+			id,
 			user_id,
 			identifier,
 			ip_address,
 			event_type,
 			user_agent
 		)
-		VALUES ($1, $2, $3, $4, $5);
+		VALUES ($1, $2, $3, $4, $5, $6);
 	`;
 
-	await query(q, [userId, identifier, ipAddress, eventType, userAgent]);
+	await query(q, [randomUUID(), userId, identifier, ipAddress, eventType, userAgent]);
 }
 
 /**
