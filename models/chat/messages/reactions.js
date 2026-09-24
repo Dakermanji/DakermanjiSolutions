@@ -1,5 +1,6 @@
 //! models/chat/messages/reactions.js
 
+import { randomUUID } from 'node:crypto';
 import pool, { queryRows } from '../../../config/database.js';
 
 /**
@@ -18,11 +19,12 @@ export async function addMessageReaction({
 }) {
 	const q = `
 		INSERT INTO chat_message_reactions (
+			id,
 			message_id,
 			user_id,
 			reaction
 		)
-		VALUES ($1, $2, $3)
+		VALUES ($1, $2, $3, $4)
 		ON CONFLICT ("message_id", "user_id", "reaction")
 			DO NOTHING
 		RETURNING
@@ -33,7 +35,7 @@ export async function addMessageReaction({
 			created_at;
 	`;
 
-	const rows = await queryRows(q, [messageId, userId, reaction]);
+	const rows = await queryRows(q, [randomUUID(), messageId, userId, reaction]);
 	return rows[0] || null;
 }
 
@@ -189,11 +191,12 @@ export async function toggleMessageReaction({
 		const addedRows = await client.query(
 			`
 				INSERT INTO chat_message_reactions (
+					id,
 					message_id,
 					user_id,
 					reaction
 				)
-				VALUES ($1, $2, $3)
+				VALUES ($1, $2, $3, $4)
 				RETURNING
 					id,
 					message_id,
@@ -201,7 +204,7 @@ export async function toggleMessageReaction({
 					reaction,
 					created_at;
 			`,
-			[messageId, userId, reaction],
+			[randomUUID(), messageId, userId, reaction],
 		);
 
 		await client.query('COMMIT');

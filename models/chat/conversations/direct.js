@@ -1,5 +1,6 @@
 //! models/chat/conversations/direct.js
 
+import { randomUUID } from 'node:crypto';
 import pool, { queryRows } from '../../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_ROLES,
@@ -72,28 +73,30 @@ export async function findOrCreateFriendConversation(userAId, userBId) {
 		const conversationRows = await client.query(
 			`
 				INSERT INTO chat_conversations (
+					id,
 					type,
 					created_by_user_id
 				)
-				VALUES ($1, $2)
+				VALUES ($1, $2, $3)
 				RETURNING id, type, created_by_user_id, last_message_id, created_at, updated_at;
 			`,
-			[CHAT_CONVERSATION_TYPES.FRIEND, userAId],
+			[randomUUID(), CHAT_CONVERSATION_TYPES.FRIEND, userAId],
 		);
 		const conversation = conversationRows.rows[0];
 
 		const directRows = await client.query(
 			`
 				INSERT INTO chat_direct_conversations (
+					id,
 					conversation_id,
 					user_one_id,
 					user_two_id
 				)
-				VALUES ($1, $2, $3)
+				VALUES ($1, $2, $3, $4)
 				ON CONFLICT (user_one_id, user_two_id) DO NOTHING
 				RETURNING conversation_id;
 			`,
-			[conversation.id, userOneId, userTwoId],
+			[randomUUID(), conversation.id, userOneId, userTwoId],
 		);
 
 		if (directRows.rowCount === 0) {
@@ -108,16 +111,19 @@ export async function findOrCreateFriendConversation(userAId, userBId) {
 		await client.query(
 			`
 				INSERT INTO chat_conversation_members (
+					id,
 					conversation_id,
 					user_id,
 					role
 				)
 				VALUES
-					($1, $2, $4),
-					($1, $3, $4)
+					($1, $3, $4, $6),
+					($2, $3, $5, $6)
 				ON CONFLICT (conversation_id, user_id) DO NOTHING;
 			`,
 			[
+				randomUUID(),
+				randomUUID(),
 				conversation.id,
 				userAId,
 				userBId,
@@ -134,4 +140,3 @@ export async function findOrCreateFriendConversation(userAId, userBId) {
 		client.release();
 	}
 }
-

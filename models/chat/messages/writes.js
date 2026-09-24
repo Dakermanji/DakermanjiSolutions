@@ -1,5 +1,6 @@
 //! models/chat/messages/writes.js
 
+import { randomUUID } from 'node:crypto';
 import pool, { queryRows } from '../../../config/database.js';
 
 /**
@@ -32,6 +33,7 @@ export async function createConversationMessage({
 		const messageRows = await client.query(
 			`
 				INSERT INTO chat_messages (
+					id,
 					conversation_id,
 					sender_user_id,
 					reply_to_message_id,
@@ -39,10 +41,11 @@ export async function createConversationMessage({
 					moderation_status,
 					moderation_reason
 				)
-				VALUES ($1, $2, $3, $4, $5, $6)
+				VALUES ($1, $2, $3, $4, $5, $6, $7)
 				RETURNING id;
 			`,
 			[
+				randomUUID(),
 				conversationId,
 				senderUserId,
 				replyToMessageId,

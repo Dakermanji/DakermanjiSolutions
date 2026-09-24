@@ -1,5 +1,6 @@
 //! models/chat/conversations/self.js
 
+import { randomUUID } from 'node:crypto';
 import pool, { queryRows } from '../../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_ROLES,
@@ -116,28 +117,30 @@ export async function findOrCreateSelfConversation(userId) {
 		const conversationRows = await client.query(
 			`
 				INSERT INTO chat_conversations (
+					id,
 					type,
 					created_by_user_id
 				)
-				VALUES ($1, $2)
+				VALUES ($1, $2, $3)
 				RETURNING id;
 			`,
-			[CHAT_CONVERSATION_TYPES.SELF, userId],
+			[randomUUID(), CHAT_CONVERSATION_TYPES.SELF, userId],
 		);
 		const conversation = conversationRows.rows[0];
 
 		const directRows = await client.query(
 			`
 				INSERT INTO chat_direct_conversations (
+					id,
 					conversation_id,
 					user_one_id,
 					user_two_id
 				)
-				VALUES ($1, $2, $2)
+				VALUES ($1, $2, $3, $3)
 				ON CONFLICT (user_one_id, user_two_id) DO NOTHING
 				RETURNING conversation_id;
 			`,
-			[conversation.id, userId],
+			[randomUUID(), conversation.id, userId],
 		);
 
 		if (directRows.rowCount === 0) {
@@ -152,14 +155,16 @@ export async function findOrCreateSelfConversation(userId) {
 		await client.query(
 			`
 				INSERT INTO chat_conversation_members (
+					id,
 					conversation_id,
 					user_id,
 					role
 				)
-				VALUES ($1, $2, $3)
+				VALUES ($1, $2, $3, $4)
 				ON CONFLICT (conversation_id, user_id) DO NOTHING;
 			`,
 			[
+				randomUUID(),
 				conversation.id,
 				userId,
 				CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,

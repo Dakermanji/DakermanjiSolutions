@@ -1,5 +1,6 @@
 //! models/chat/messages/flags.js
 
+import { randomUUID } from 'node:crypto';
 import { queryRows } from '../../../config/database.js';
 
 /**
@@ -31,11 +32,13 @@ export async function createMessageFlag({
 		),
 		inserted_flag AS (
 			INSERT INTO chat_message_flags (
+				id,
 				message_id,
 				conversation_id,
 				flagged_by_user_id
 			)
 			SELECT
+				$4,
 				flaggable_message.id,
 				flaggable_message.conversation_id,
 				$3
@@ -84,6 +87,7 @@ export async function createMessageFlag({
 		conversationId,
 		messageId,
 		flaggedByUserId,
+		randomUUID(),
 	]);
 
 	return rows[0] || null;
