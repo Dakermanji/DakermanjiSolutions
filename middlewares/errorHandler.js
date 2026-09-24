@@ -20,6 +20,7 @@ export default function errorHandler(err, req, res, next) {
 		}
 
 		return res.status(403).render('error', {
+			layout: false,
 			status: 403,
 			title: 'Forbidden',
 			message: 'The request could not be verified. Please reload and try again.',
@@ -29,6 +30,7 @@ export default function errorHandler(err, req, res, next) {
 	}
 
 	res.status(status).render('error', {
+		layout: false,
 		status,
 		title: status === 404 ? 'Not Found' : 'Server Error',
 		message:
