@@ -28,6 +28,10 @@ export default function applyMiddlewares(app) {
 	// Log all incoming HTTP requests
 	requestLogger(app);
 
+	// Public assets do not need sessions, user lookups, or navigation queries.
+	// Keep security headers and logging above static serving.
+	staticFiles(app);
+
 	// Parse incoming request bodies (JSON and URL-encoded form data)
 	parsers(app);
 
@@ -51,9 +55,6 @@ export default function applyMiddlewares(app) {
 
 	// Resolve and inject navigation items for the current route
 	navbarMiddleware(app);
-
-	// Enable serving static files such as stylesheets, scripts, and images
-	staticFiles(app);
 
 	// Redirect unauthenticated visitors away from protected routes
 	routeAccess(app);

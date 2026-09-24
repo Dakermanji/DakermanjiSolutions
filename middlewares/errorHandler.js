@@ -4,6 +4,10 @@ import logger from '../config/logger.js';
 import env from '../config/dotenv.js';
 
 export default function errorHandler(err, req, res, next) {
+	if (res.headersSent) {
+		return next(err);
+	}
+
 	const status = err.status || 500;
 
 	logger.error(err.message, { type: 'server' });
