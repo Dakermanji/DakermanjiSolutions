@@ -1,5 +1,6 @@
 //! models/chat/roomJoinRequests/review.js
 
+import { randomUUID } from 'node:crypto';
 import pool, { queryRows } from '../../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_ROLES,
@@ -98,13 +99,14 @@ export async function approvePendingRequestByManager({
 		await client.query(
 			`
 				INSERT INTO chat_conversation_members (
+					id,
 					conversation_id,
 					user_id,
 					role,
 					status,
 					archived_at
 				)
-				VALUES ($1, $2, $3, $4, NULL)
+				VALUES ($1, $2, $3, $4, $5, NULL)
 				ON CONFLICT (conversation_id, user_id)
 				DO UPDATE SET
 					role = EXCLUDED.role,
@@ -113,6 +115,7 @@ export async function approvePendingRequestByManager({
 					updated_at = NOW();
 			`,
 			[
+				randomUUID(),
 				request.conversation_id,
 				request.requested_by_user_id,
 				CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,

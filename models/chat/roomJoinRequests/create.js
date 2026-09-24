@@ -1,5 +1,6 @@
 //! models/chat/roomJoinRequests/create.js
 
+import { randomUUID } from 'node:crypto';
 import { queryRows } from '../../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_STATUSES,
@@ -22,11 +23,13 @@ export async function createPrivateListedRoomRequest({
 }) {
 	const q = `
 		INSERT INTO chat_room_join_requests (
+			id,
 			room_id,
 			requested_by_user_id,
 			status
 		)
 		SELECT
+			$7,
 			cr.id,
 			$2,
 			$5
@@ -73,6 +76,7 @@ export async function createPrivateListedRoomRequest({
 		CHAT_ROOM_JOIN_POLICIES.REQUEST,
 		CHAT_ROOM_JOIN_REQUEST_STATUSES.PENDING,
 		CHAT_CONVERSATION_MEMBER_STATUSES.BANNED,
+		randomUUID(),
 	]);
 
 	return rows[0] || null;

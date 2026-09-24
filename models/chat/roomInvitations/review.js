@@ -1,5 +1,6 @@
 //! models/chat/roomInvitations/review.js
 
+import { randomUUID } from 'node:crypto';
 
 
 import pool, { queryRows } from '../../../config/database.js';
@@ -194,6 +195,8 @@ export async function acceptPendingInvitationForUser({
 
 				INSERT INTO chat_conversation_members (
 
+					id,
+
 					conversation_id,
 
 					user_id,
@@ -206,7 +209,7 @@ export async function acceptPendingInvitationForUser({
 
 				)
 
-				VALUES ($1, $2, $3::chat_member_role, $4::chat_member_status, NULL)
+				VALUES ($1, $2, $3, $4::chat_member_role, $5::chat_member_status, NULL)
 
 				ON CONFLICT (conversation_id, user_id)
 
@@ -223,6 +226,8 @@ export async function acceptPendingInvitationForUser({
 			`,
 
 			[
+
+				randomUUID(),
 
 				invitation.conversation_id,
 

@@ -1,5 +1,6 @@
 //! models/chat/rooms/access.js
 
+import { randomUUID } from 'node:crypto';
 import { queryRows } from '../../../config/database.js';
 import {
 	CHAT_CONVERSATION_MEMBER_ROLES,
@@ -86,12 +87,14 @@ export async function findVisibleRoomConversationForUser(
 export async function joinPublicRoomConversation({ conversationId, userId }) {
 	const q = `
 		INSERT INTO chat_conversation_members (
+			id,
 			conversation_id,
 			user_id,
 			role,
 			archived_at
 		)
 		SELECT
+			$8,
 			cr.conversation_id,
 			$2,
 			$5,
@@ -136,6 +139,7 @@ export async function joinPublicRoomConversation({ conversationId, userId }) {
 		CHAT_CONVERSATION_MEMBER_ROLES.MEMBER,
 		CHAT_CONVERSATION_MEMBER_STATUSES.BANNED,
 		CHAT_CONVERSATION_MEMBER_STATUSES.ACTIVE,
+		randomUUID(),
 	]);
 
 	return rows[0] || null;

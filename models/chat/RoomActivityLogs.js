@@ -1,5 +1,6 @@
 //! models/chat/RoomActivityLogs.js
 
+import { randomUUID } from 'node:crypto';
 import { queryRows } from '../../config/database.js';
 
 const DEFAULT_PAGE = 1;
@@ -63,6 +64,7 @@ export async function createRoomActivityLog({
 }) {
 	const q = `
 		INSERT INTO chat_room_activity_logs (
+			id,
 			room_id,
 			conversation_id,
 			actor_user_id,
@@ -72,11 +74,12 @@ export async function createRoomActivityLog({
 			entity_id,
 			metadata
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		RETURNING ${baseFieldsSQL};
 	`;
 
 	const rows = await queryRows(q, [
+		randomUUID(),
 		roomId,
 		conversationId,
 		actorUserId,

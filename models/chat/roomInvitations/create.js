@@ -1,5 +1,6 @@
 //! models/chat/roomInvitations/create.js
 
+import { randomUUID } from 'node:crypto';
 
 
 import { queryRows } from '../../../config/database.js';
@@ -51,6 +52,7 @@ export async function createRoomInvitation({
 	const q = `
 		WITH created_invitation AS (
 			INSERT INTO chat_room_invitations (
+				id,
 				room_id,
 				invited_user_id,
 				invited_by_user_id,
@@ -58,6 +60,7 @@ export async function createRoomInvitation({
 				expires_at
 			)
 			SELECT
+				$11::uuid,
 				cr.id,
 				$2::uuid,
 				$3::uuid,
@@ -145,6 +148,8 @@ export async function createRoomInvitation({
 
 		CHAT_CONVERSATION_MEMBER_STATUSES.REMOVED,
 
+		randomUUID(),
+
 	]);
 
 
@@ -152,4 +157,3 @@ export async function createRoomInvitation({
 	return rows[0] || null;
 
 }
-
