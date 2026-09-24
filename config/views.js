@@ -21,6 +21,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import expressLayouts from 'express-ejs-layouts';
 
+import { SUPPORTED_LANGUAGES } from './languages.js';
+
 /**
  * Resolve the current file path in ES Modules.
  * Node.js does not provide __dirname by default in ES module mode,
@@ -35,6 +37,26 @@ const __dirname = path.dirname(__filename);
  * @param {import('express').Express} app - Express application instance
  */
 export default function configureViews(app) {
+	// Keep the shared layout renderable even when request middleware fails
+	// before it can populate res.locals. Request-scoped locals override these.
+	Object.assign(app.locals, {
+		t: (key) => key,
+		currentLang: 'en',
+		languages: SUPPORTED_LANGUAGES,
+		user: null,
+		isAuthenticated: false,
+		currentTheme: 'system',
+		currentRoute: '',
+		currentUrl: '/',
+		styles: [],
+		scripts: [],
+		modal: null,
+		navbar: [],
+		userAppsNavbar: [],
+		notificationUnreadCount: 0,
+		notificationPreview: [],
+	});
+
 	// Register EJS as the template engine
 	app.set('view engine', 'ejs');
 
