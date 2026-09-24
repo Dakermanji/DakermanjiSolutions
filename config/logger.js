@@ -153,7 +153,9 @@ const logger = winston.createLogger({
 		 * Sends logs to the terminal.
 		 * This is the primary output for development.
 		 */
-		new winston.transports.Console(),
+		new winston.transports.Console({
+			stderrLevels: ['fatal', 'error'],
+		}),
 	],
 });
 
