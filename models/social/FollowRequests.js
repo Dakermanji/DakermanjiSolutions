@@ -1,5 +1,6 @@
 //! models/social/FollowRequests.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 const BASE_FIELDS = ['id', 'requester_id', 'target_id', 'status', 'created_at'];
@@ -39,14 +40,15 @@ export async function findPending(requesterId, targetId) {
 export async function create({ requesterId, targetId }) {
 	const q = `
 		INSERT INTO user_follow_requests (
+			id,
 			requester_id,
 			target_id
 		)
-		VALUES ($1, $2)
+		VALUES ($1, $2, $3)
 		RETURNING ${baseFieldsSQL}
 	`;
 
-	const rows = await queryRows(q, [requesterId, targetId]);
+	const rows = await queryRows(q, [randomUUID(), requesterId, targetId]);
 	return rows[0] || null;
 }
 

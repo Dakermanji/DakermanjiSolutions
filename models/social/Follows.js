@@ -1,5 +1,6 @@
 //! models/social/Follows.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 const BASE_FIELDS = ['id', 'follower_id', 'followee_id', 'created_at'];
@@ -125,12 +126,12 @@ export async function exists(followerId, followeeId) {
  */
 export async function create(followerId, followeeId) {
 	const q = `
-		INSERT INTO user_follows (follower_id, followee_id)
-		VALUES ($1, $2)
+		INSERT INTO user_follows (id, follower_id, followee_id)
+		VALUES ($1, $2, $3)
 		ON CONFLICT (follower_id, followee_id) DO NOTHING;
 	`;
 
-	const result = await query(q, [followerId, followeeId]);
+	const result = await query(q, [randomUUID(), followerId, followeeId]);
 	return result.rowCount > 0;
 }
 

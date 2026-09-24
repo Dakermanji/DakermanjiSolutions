@@ -1,5 +1,6 @@
 //! models/apiUsage/RequestLog.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 async function countRecentByActor({
@@ -32,6 +33,7 @@ async function insert({
 }) {
 	const q = `
 		INSERT INTO external_api_request_logs (
+			id,
 			user_id,
 			provider,
 			request_key,
@@ -40,10 +42,11 @@ async function insert({
 			response_status,
 			error_code
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7);
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
 	`;
 
 	await query(q, [
+		randomUUID(),
 		userId,
 		provider,
 		requestKey,

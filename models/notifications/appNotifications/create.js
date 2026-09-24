@@ -1,11 +1,12 @@
 //! models/notifications/appNotifications/create.js
 
+import { randomUUID } from 'node:crypto';
 import pool, { queryRows } from '../../../config/database.js';
 import { appNotificationFieldsSQL } from './fields.js';
 
 const insertColumnsSQL = `
 	recipient_user_id, actor_user_id, app_key, type, entity_type, entity_id,
-	title_key, body_key, link_url, data, priority, expires_at
+	title_key, body_key, link_url, data, priority, expires_at, id
 `;
 
 function getCreateValues(notification) {
@@ -22,13 +23,14 @@ function getCreateValues(notification) {
 		notification.data ?? {},
 		notification.priority ?? 'normal',
 		notification.expiresAt ?? null,
+		randomUUID(),
 	];
 }
 
 export async function create(notification) {
 	const q = `
 		INSERT INTO app_notifications (${insertColumnsSQL})
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
 		RETURNING ${appNotificationFieldsSQL};
 	`;
 	const rows = await queryRows(q, getCreateValues(notification));
@@ -47,7 +49,7 @@ export async function createIfNotExists(notification) {
 			$1::uuid, $2::uuid, $3::varchar(32), $4::varchar(80),
 			$5::varchar(80), $6::uuid, $7::varchar(160), $8::varchar(160),
 			$9::varchar(500), $10::jsonb, $11::app_notification_priority,
-			$12::timestamptz
+			$12::timestamptz, $13::uuid
 		WHERE NOT EXISTS (
 			SELECT 1
 			FROM app_notifications existing_notification

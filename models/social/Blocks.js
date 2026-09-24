@@ -1,5 +1,6 @@
 //! models/social/Blocks.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 const BASE_FIELDS = ['id', 'blocker_id', 'blocked_id', 'created_at'];
@@ -74,12 +75,12 @@ export async function exists(blockerId, blockedId) {
  */
 export async function create(blockerId, blockedId) {
 	const q = `
-		INSERT INTO user_blocks (blocker_id, blocked_id)
-		VALUES ($1, $2)
+		INSERT INTO user_blocks (id, blocker_id, blocked_id)
+		VALUES ($1, $2, $3)
 		ON CONFLICT (blocker_id, blocked_id) DO NOTHING;
 	`;
 
-	const result = await query(q, [blockerId, blockedId]);
+	const result = await query(q, [randomUUID(), blockerId, blockedId]);
 	return result.rowCount > 0;
 }
 

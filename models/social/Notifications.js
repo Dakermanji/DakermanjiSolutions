@@ -1,5 +1,6 @@
 //! models/social/Notifications.js
 
+import { randomUUID } from 'node:crypto';
 import { query, queryRows } from '../../config/database.js';
 
 const BASE_FIELDS = [
@@ -40,16 +41,18 @@ export async function create({
 }) {
 	const q = `
 		INSERT INTO user_social_notifications (
+			id,
 			recipient_id,
 			actor_id,
 			type,
 			follow_request_id
 		)
-		VALUES ($1, $2, $3, $4)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING ${baseFieldsSQL}
 	`;
 
 	const rows = await queryRows(q, [
+		randomUUID(),
 		recipientId,
 		actorId,
 		type,
