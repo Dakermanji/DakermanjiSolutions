@@ -27,6 +27,7 @@ import { requireEnv, optionalEnv } from '../utils/config/dotenv.js';
 const env = {
 	/** Current application environment */
 	NODE_ENV: optionalEnv('NODE_ENV', 'development'),
+	REQUEST_TIMING: optionalEnv('REQUEST_TIMING', 'false') === 'true',
 
 	/** Port where the Express server will listen */
 	PORT: Number(optionalEnv('PORT', 3000)),

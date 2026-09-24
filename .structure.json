@@ -164,6 +164,7 @@
 			"passport.js",
 			"rateLimit.js",
 			"requestLogger.js",
+			"requestTiming.js",
 			"routeAccess.js",
 			"securityHeaders.js",
 			"session.js",

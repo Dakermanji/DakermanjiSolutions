@@ -20,6 +20,7 @@ import staticFiles from '../middlewares/staticFiles.js';
 import routeAccess from '../middlewares/routeAccess.js';
 import signupCompletionAccess from '../middlewares/signupCompletionAccess.js';
 import { navbarMiddleware } from '../middlewares/navbar.js';
+import { startRequestTiming, markRequestTiming } from '../middlewares/requestTiming.js';
 
 export default function applyMiddlewares(app) {
 	// Apply security-related HTTP headers first
@@ -31,15 +32,19 @@ export default function applyMiddlewares(app) {
 	// Public assets do not need sessions, user lookups, or navigation queries.
 	// Keep security headers and logging above static serving.
 	staticFiles(app);
+	startRequestTiming(app);
 
 	// Parse incoming request bodies (JSON and URL-encoded form data)
 	parsers(app);
+	markRequestTiming(app, 'parsingMs');
 
 	// Enable session support
 	session(app);
+	markRequestTiming(app, 'sessionMs');
 
 	// Initialize Passport and restore session user
 	passport(app);
+	markRequestTiming(app, 'passportMs');
 
 	// Flash messages
 	flash(app);
@@ -52,9 +57,11 @@ export default function applyMiddlewares(app) {
 
 	// Pass Global locals including Flash
 	locals(app);
+	markRequestTiming(app, 'viewSetupMs');
 
 	// Resolve and inject navigation items for the current route
 	navbarMiddleware(app);
+	markRequestTiming(app, 'navbarMs');
 
 	// Redirect unauthenticated visitors away from protected routes
 	routeAccess(app);
