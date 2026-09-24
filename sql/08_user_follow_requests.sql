@@ -33,7 +33,7 @@ BEGIN
 END$$;
 
 CREATE TABLE IF NOT EXISTS "user_follow_requests" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+	"id" UUID PRIMARY KEY,
 
 	-- user who sends the follow request
 	"requester_id" UUID NOT NULL,

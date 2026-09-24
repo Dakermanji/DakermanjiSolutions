@@ -17,7 +17,7 @@
  */
 CREATE TABLE
     IF NOT EXISTS "user_follows" (
-        "id" UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+        "id" UUID PRIMARY KEY,
         -- user who follows
         "follower_id" UUID NOT NULL,
         -- user being followed

@@ -46,7 +46,7 @@ BEGIN
 	END IF;
 END$$;
 CREATE TABLE IF NOT EXISTS "chat_messages" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 
 	-- message identity
 	"conversation_id" UUID NOT NULL,

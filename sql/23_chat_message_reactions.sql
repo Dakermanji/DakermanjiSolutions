@@ -16,7 +16,7 @@
  */
 
 CREATE TABLE IF NOT EXISTS "chat_message_reactions" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 
 	-- reaction identity
 	"message_id" UUID NOT NULL,

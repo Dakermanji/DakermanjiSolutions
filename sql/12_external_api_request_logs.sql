@@ -37,7 +37,7 @@ END$$;
 -- ALTER TYPE external_api_provider ADD VALUE IF NOT EXISTS 'unsplash';
 
 CREATE TABLE IF NOT EXISTS "external_api_request_logs" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 
 	-- caller identity
 	"user_id" UUID NOT NULL,

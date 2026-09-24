@@ -33,7 +33,7 @@ BEGIN
 END$$;
 
 CREATE TABLE IF NOT EXISTS "app_notifications" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 
 	-- recipient / source
 	"recipient_user_id" UUID NOT NULL,

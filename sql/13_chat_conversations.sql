@@ -34,7 +34,7 @@ BEGIN
 END$$;
 
 CREATE TABLE IF NOT EXISTS "chat_conversations" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 
 	-- conversation shape
 	"type" chat_conversation_type NOT NULL,

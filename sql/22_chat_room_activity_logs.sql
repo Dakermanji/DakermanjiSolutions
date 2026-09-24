@@ -51,7 +51,7 @@ BEGIN
 END$$;
 
 CREATE TABLE IF NOT EXISTS "chat_room_activity_logs" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 
 	-- activity location
 	"room_id" UUID NOT NULL,

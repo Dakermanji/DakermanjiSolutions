@@ -31,7 +31,7 @@ BEGIN
 END$$;
 
 CREATE TABLE IF NOT EXISTS "chat_room_join_requests" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 
 	-- request identity
 	"room_id" UUID NOT NULL,

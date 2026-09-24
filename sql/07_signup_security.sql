@@ -16,7 +16,7 @@
  */
 CREATE TABLE
     IF NOT EXISTS "signup_security" (
-        "id" UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+        "id" UUID PRIMARY KEY,
         /**
          * Source IP address (IPv4 / IPv6)
          */

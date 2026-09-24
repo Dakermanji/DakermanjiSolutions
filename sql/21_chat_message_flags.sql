@@ -32,7 +32,7 @@ BEGIN
 END$$;
 
 CREATE TABLE IF NOT EXISTS "chat_message_flags" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 
 	-- flag identity
 	"message_id" UUID NOT NULL,

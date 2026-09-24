@@ -27,7 +27,7 @@ END$$;
 ALTER TYPE auth_token_type ADD VALUE IF NOT EXISTS 'account_deletion';
 
 CREATE TABLE IF NOT EXISTS "auth_tokens" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 	"user_id" UUID NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE,
 	"token_hash" TEXT NOT NULL,
 	"type" auth_token_type NOT NULL,

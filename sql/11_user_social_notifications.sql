@@ -33,7 +33,7 @@ BEGIN
 END$$;
 
 CREATE TABLE IF NOT EXISTS "user_social_notifications" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+	"id" UUID PRIMARY KEY,
 
 	-- user who receives the notification
 	"recipient_id" UUID NOT NULL,

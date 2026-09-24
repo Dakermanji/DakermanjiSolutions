@@ -15,7 +15,7 @@
  */
 
 CREATE TABLE IF NOT EXISTS "chat_direct_conversations" (
-	"id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" UUID PRIMARY KEY,
 
 	-- direct conversation identity
 	"conversation_id" UUID NOT NULL,

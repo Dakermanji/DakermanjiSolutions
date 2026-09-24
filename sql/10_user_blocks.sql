@@ -16,7 +16,7 @@
  */
 CREATE TABLE
     IF NOT EXISTS "user_blocks" (
-        "id" UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+        "id" UUID PRIMARY KEY,
         -- user who performs the block
         "blocker_id" UUID NOT NULL,
         -- user being blocked

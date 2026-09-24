@@ -15,7 +15,7 @@
  */
 CREATE TABLE
     IF NOT EXISTS "auth_security" (
-        "id" UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+        "id" UUID PRIMARY KEY,
         -- Link to user (nullable for unknown users)
         "user_id" UUID NULL,
         -- Identifier used during auth attempts: email / username

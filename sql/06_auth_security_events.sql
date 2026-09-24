@@ -13,7 +13,7 @@
  */
 CREATE TABLE
     IF NOT EXISTS "auth_security_events" (
-        "id" UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+        "id" UUID PRIMARY KEY,
         -- link to user when appliable
         "user_id" UUID NULL,
         -- Identifier used during the event
