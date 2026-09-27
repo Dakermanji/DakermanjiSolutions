@@ -1,185 +1,172 @@
 # Dakermanji Solutions
 
-Dakermanji Solutions is a personal showcase website and full-stack Express/EJS playground. It started as a portfolio, but the codebase now also explores production-style account flows: local auth, OAuth, profile settings, social relationships, language/theme preferences, and token-based email confirmations.
+A multilingual portfolio and server-rendered web application with user accounts, social connections, real-time chat, private notes, room collaboration, notifications, and weather tools.
 
-The app is intentionally server-rendered. EJS handles views, Bootstrap handles the UI layer, PostgreSQL stores account/session data, and Passport powers local and OAuth authentication.
+**Live website:** [dakermanji.com](https://dakermanji.com/)
 
-## Stack
+## Features
 
-- Node.js and Express
-- EJS with `express-ejs-layouts`
-- Bootstrap and Bootstrap Icons
-- PostgreSQL through `pg`
-- Passport local, Google, GitHub, and Discord strategies
-- `express-session` with `connect-pg-simple`
-- i18next filesystem translations
-- Nodemailer for auth and account emails
-- Helmet, Morgan, Winston, and optional Sentry
-- DiceBear avatars and `flag-icons`
+- **Public website:** portfolio, services, contact form, and legal pages.
+- **Localization:** Arabic, English, and French, including right-to-left layouts.
+- **Preferences:** system, light, and dark themes; preferred language.
+- **Accounts:** email signup and verification, bcrypt passwords, password recovery, Google/GitHub/Discord sign-in, and OAuth account linking.
+- **Profile:** username, country, DiceBear avatars, login methods, and email-confirmed account deletion.
+- **Social:** follow requests, followers, followees, blocking, and live updates.
+- **Chat:** direct conversations, private self-notes, rooms, join requests, invitations, message reactions, mentions, message flags, and room activity logs.
+- **Notifications:** an application inbox, unread badges, previews, and real-time updates.
+- **Weather:** city search, five-day forecasts, metric/imperial units, localized locations, and optional Unsplash backgrounds.
 
-## Current Features
+## Technology
 
-### Public Site
+Node.js 20+, Express 5, EJS, Bootstrap, PostgreSQL, Passport, Socket.IO, and i18next. Sessions are stored in PostgreSQL through `connect-pg-simple`. Nodemailer sends transactional email. Helmet, CSRF protection, and rate limiting protect application requests; Winston, Morgan, optional Sentry, and opt-in request timing provide diagnostics.
 
-- Home page sections for hero, about, services, portfolio, and contact
-- Localized content in Arabic, English, and French
-- Theme preference support for system, light, and dark
-- Language switcher with return-to-current-page behavior
+## Local setup
 
-### Authentication
-
-- Local email-first signup
-- Email verification before completing local signup
-- Username completion for OAuth users
-- Password hashing with bcrypt
-- Password reset through short-lived email tokens
-- Google, GitHub, and Discord OAuth sign-in
-- OAuth account linking from Profile
-- Route guards for authenticated users and incomplete signup users
-
-### Profile
-
-- Account overview with editable username and country
-- DiceBear avatar picker with style, background color, and refresh support
-- Password status with add/change password modal
-- Connected login methods for Email, Google, GitHub, and Discord
-- Preferences for theme and preferred language
-- Danger Zone account deletion flow:
-    - type `delete_{username}` first
-    - receive a short-lived email confirmation token
-    - confirm deletion from the email link
-
-### Social Layer
-
-- Follow requests
-- Followers and followees
-- Blocking
-- Notifications
-
-## Requirements
-
-- Node.js 20 or newer
-- PostgreSQL
-- SMTP credentials for outgoing emails
-- OAuth application credentials for Google, GitHub, and Discord
-
-## Setup
-
-Install dependencies:
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-Create `.env` from the example:
+The postinstall script applies the checked-in dependency patches using `patch-package`; keep the `patches/` directory when deploying.
+
+### 2. Configure the environment
+
+Copy `.env.example` to `.env`:
 
 ```bash
 cp .env.example .env
 ```
 
-Fill the required values:
+PowerShell equivalent:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Edit the example values before starting. Configuration is defined in `config/dotenv.js` and loaded through `utils/config/dotenv.js`. Existing process environment variables take precedence over `.env`. `.env.production` is not automatically selected by the current loader.
+
+| Group | Variables | Notes |
+| --- | --- | --- |
+| Application | `NODE_ENV`, `PORT`, `CLIENT_URL` | Local defaults are development, port 3000, and `http://localhost:3000`. |
+| Sessions | `SESSION_SECRET` | Required; use a long random secret. |
+| PostgreSQL | `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Password is required. Use the actual database host and credentials. |
+| Database TLS | `DB_SSL`, `DB_SSL_CA_PATH` | Set `DB_SSL=false` for a local database without TLS. For TLS, use `true`; provide a CA path only when needed. Certificate verification remains enabled. |
+| Email | `EMAIL_ADMIN`, `EMAIL_PASSWORD`, `EMAIL_SERVICE`, `EMAIL_HOST`, `EMAIL_PORT` | The first five are required by configuration. The SMTP transport uses host, port, and credentials; port 465 enables implicit TLS. |
+| OAuth | `GOOGLE_*`, `GITHUB_*`, `DISCORD_*` | Each provider requires `CLIENT_ID`, `CLIENT_SECRET`, and `CALLBACK_URL`. |
+| Weather | `OPENWEATHER_API_KEY` | Required to retrieve forecasts. City search uses Open-Meteo geocoding. |
+| Backgrounds | `UNSPLASH_ACCESS_KEY` | Optional; enables weather photo backgrounds. |
+| Monitoring | `SENTRY_DSN` | Optional; leave empty when unused. |
+| Diagnostics | `REQUEST_TIMING` | Defaults to `false`; enable temporarily with exactly `true`. |
+
+The `{CLIENT_URL}` text in `.env.example` is a placeholder, not automatic variable expansion. Replace each callback with a complete URL:
 
 ```env
-SESSION_SECRET=some_very_long_secret_more_than_32_characters
-DB_PASSWORD=your_password
-EMAIL_ADMIN=your_email@domain.com
-EMAIL_PASSWORD=your_app_password
-EMAIL_SERVICE=your_email_provider
-EMAIL_HOST=your_smtp_host
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
 GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback
-GITHUB_CLIENT_ID=...
-GITHUB_CLIENT_SECRET=...
 GITHUB_CALLBACK_URL=http://localhost:3000/auth/github/callback
-DISCORD_CLIENT_ID=...
-DISCORD_CLIENT_SECRET=...
 DISCORD_CALLBACK_URL=http://localhost:3000/auth/discord/callback
 ```
 
-Create the database and run the SQL files in order:
+Replace the example SMTP port with a numeric port, and clear the example Sentry DSN if unused. Do not commit real credentials or `.env` files.
 
-```txt
-sql/01_session.sql
-sql/02_users.sql
-sql/03_user_providers.sql
-sql/04_auth_tokens.sql
-sql/05_auth_security.sql
-sql/06_auth_security_events.sql
-sql/07_signup_security.sql
-sql/08_user_follow_requests.sql
-sql/09_user_follows.sql
-sql/10_user_blocks.sql
-sql/11_user_social_notifications.sql
+### 3. Initialize PostgreSQL
+
+Create the database and an application database user. For a **fresh database**, execute all numbered scripts in `sql/` in ascending order, from `01_session.sql` through `24_chat_message_mentions.sql`:
+
+```bash
+for file in sql/[0-9][0-9]_*.sql; do
+  psql -h localhost -U YOUR_DB_USER -d YOUR_DB_NAME -v ON_ERROR_STOP=1 -f "$file" || break
+done
 ```
 
-Start the development server:
+Use your database connection details. These commands do not read the application's `.env` automatically. A database administration UI can also execute the files in order.
+
+Scripts cover sessions, accounts and security, social relationships, API usage logs, chat, rooms, notifications, reactions, and mentions. The session table must exist before startup. This repository has no migration runner; review schema changes and back up an existing database before applying SQL updates. Certificate files in `sql/` are not SQL scripts.
+
+### 4. Run the application
 
 ```bash
 npm run dev
 ```
 
-Start without watch mode:
+Open `http://localhost:3000`. To run without watch mode:
 
 ```bash
 npm start
 ```
 
-## Environment
+Both commands preload `instrument.js` for Sentry initialization. Startup waits for translations and checks PostgreSQL connectivity before listening. The SMTP connection is verified separately and reports failures in the logs.
 
-The normalized runtime config lives in `config/dotenv.js`. Values come from `.env`.
+There is currently no `npm test` script. Verify affected flows manually after changes, including sign-in, protected pages, and any changed real-time features.
 
-Important groups:
+## Production deployment
 
-- App: `PORT`, `NODE_ENV`, `CLIENT_URL`
-- Session: `SESSION_SECRET`
-- PostgreSQL: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_SSL`
-- Email: `EMAIL_ADMIN`, `EMAIL_PASSWORD`, `EMAIL_SERVICE`, `EMAIL_HOST`, `EMAIL_PORT`
-- OAuth: Google, GitHub, and Discord client IDs/secrets/callback URLs
-- Monitoring: `SENTRY_DSN`
+1. Provision PostgreSQL and apply the required schema scripts.
+2. Deploy the application source, assets, translations, dependency patches, and package lockfile. Install dependencies with `npm ci`.
+3. Set `NODE_ENV=production`, the public HTTPS `CLIENT_URL`, session secret, database settings, email credentials, and provider credentials in the hosting environment.
+4. Register the production callback URLs with the corresponding OAuth providers:
 
-## Architecture
+   | Provider | Callback |
+   | --- | --- |
+   | Google | `https://dakermanji.com/auth/google/callback` |
+   | GitHub | `https://dakermanji.com/auth/github/callback` |
+   | Discord | `https://dakermanji.com/auth/discord/callback` |
 
-The project follows a simple separation:
+   The configured callback must match what the app sends. If using `www`, configure that hostname consistently. Keep development and production provider configuration separate where necessary.
+5. Start the application with `npm start`, or configure the hosting Node.js loader to use `server.js`. A loader that starts `server.js` directly must also preload `instrument.js` if Sentry instrumentation is wanted.
+6. Verify HTTPS, sign-in, email delivery, protected pages, and Socket.IO connections. Restart the running app after code or environment changes.
 
-- `controllers/`: request and response handling
-- `routes/`: route definitions and middleware wiring
-- `services/`: business logic and reusable flows
-- `models/`: database access
-- `middlewares/`: Express app middleware
-- `views/`: EJS pages, layouts, modals, and partials
-- `public/`: CSS, JS, images, favicons
-- `locales/`: i18next namespace JSON files
-- `sql/`: database schema setup scripts
+The Express app trusts one proxy hop, and production session cookies require HTTPS. Ensure the hosting proxy arrangement matches that configuration. Socket.IO uses the same HTTP server and PostgreSQL-backed session middleware; verify the host supports its polling and WebSocket traffic. Multi-process real-time deployment requires additional coordination beyond the current in-process Socket.IO setup.
 
-`.structure.json` is maintained as the project map.
+For cPanel/CloudLinux hosting, use the application's **Setup Node.js App** environment settings and its displayed virtual-environment activation command before running Node commands in the terminal. Paths and Node versions depend on the hosting account. Saving a local file does not deploy it.
 
-## Auth Flow Notes
+## Performance diagnostics
 
-Token-based flows store only hashed tokens in the database. Current token types:
+Public files are served before sessions and user/navigation queries, while retaining security headers and request logging.
 
-- `signup_verification`
-- `password_reset`
-- `account_deletion`
+To diagnose slow dynamic requests, set this in the running application's environment and restart:
 
-Account deletion uses a shorter token lifetime than the default auth token lifetime.
+```env
+REQUEST_TIMING=true
+```
 
-OAuth is centralized through `services/auth/oauth.js`, with provider-specific Passport setup kept in `config/passport/strategies`.
+Open the affected page, then inspect the application-root log:
 
-## Localization
+```bash
+tail -n 30 request-timing.log
+```
 
-Supported language codes are defined in `config/languages.js`:
+An `enabled` entry confirms initialization. Completed requests record `parsingMs`, `sessionMs`, `passportMs`, `viewSetupMs`, `navbarMs`, `routeAndResponseMs`, and `totalMs`, plus timestamp, HTTP method, and status. URLs, cookies, and user data are excluded. The final stage includes downstream route handling and response completion, not just controller execution.
 
-- `ar`
-- `en`
-- `fr`
+These measurements start after static-file middleware; they do not include time spent waiting in the hosting proxy before Express receives the request, and they do not instrument Socket.IO traffic. Compare them with the matching browser request's Network timing. A quick standalone `SELECT 1` does not establish that all application queries or the live connection pool are fast.
 
-Translation namespaces are configured in `config/i18n.js`. Profile-specific strings live in `locales/{lang}/profile.json`.
+Set `REQUEST_TIMING=false` and restart after diagnosis. The diagnostic file is ignored by Git and has no automatic rotation. Console log locations depend on the hosting provider; stdout is not necessarily captured in `stderr.log`.
 
-## Notes
+## Project layout
 
-This project is still evolving. Some features are intentionally built as foundations for later work, especially Profile widgets, richer account linking, activity summaries, and future showcase project integrations.
+| Directory | Purpose |
+| --- | --- |
+| `config/` | Application bootstrap configuration, database, Passport, Socket.IO, localization, and logging |
+| `constants/` | Shared application constants |
+| `controllers/` | HTTP request and response handling |
+| `routes/` | Feature route registration |
+| `services/` | Business logic, external APIs, and live event handling |
+| `models/` | PostgreSQL access |
+| `middlewares/` | Sessions, authorization, CSRF, validation, navigation data, and diagnostics |
+| `views/` | EJS pages, layouts, and partials |
+| `public/` | Browser assets and `robots.txt` |
+| `locales/` | Arabic, English, and French translation namespaces |
+| `sql/` | Ordered database schema scripts |
+| `patches/` | Dependency patches applied during installation |
 
-## Author
+`.structure.json` is the maintained file map; register new source files there.
 
-Developed by Behnam Dakermanji.
+## Authentication and crawling notes
+
+Email verification, password reset, and account deletion store hashed tokens in the database. Shared OAuth account handling lives in `services/auth/oauth.js`, with provider setup in `config/passport/strategies/`. Protected application pages require authentication, and users with incomplete signup are routed through account completion.
+
+`public/robots.txt` is served at `/robots.txt`. It leaves public pages and their rendering assets crawlable and asks crawlers to skip authentication, private application routes, and Socket.IO. It is not access control or a guarantee that a URL will never appear in search results. No sitemap is currently provided.
+
+## Author and license
+
+Developed by Behnam Dakermanji. Licensed under the MIT license; see `LICENSE`.
