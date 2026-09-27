@@ -143,7 +143,11 @@
 				"title": "Expertise Pro",
 				"description": "Built a driving-services website in five languages, with lesson and SAAQ exam car rental booking requests, plus Stripe and PayPal checkout for Montreal car rentals.",
 				"tech": ["Express", "EJS", "MySQL", "Stripe", "PayPal"],
-				"images": {},
+				"images": {
+					"main": "Frame from the AI-generated homepage video on Expertise Pro depicting a driving lesson",
+					"services": "Expertise Pro services showing driving improvement lessons, SAAQ exam car rentals, and partner-school driving courses",
+					"booking": "Expertise Pro booking form with service selection, contact details, region, and preferred date, time, and language"
+				},
 				"link": "https://expertise-pro.ca/"
 			},
 			"weather": {

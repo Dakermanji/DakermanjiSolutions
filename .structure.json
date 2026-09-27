@@ -357,6 +357,17 @@
 			],
 			"home": {
 				"portfolio": {
+					"expertise_pro": [
+						"booking_ar.jpg",
+						"booking_en.jpg",
+						"booking_fr.jpg",
+						"main_ar.jpg",
+						"main_en.jpg",
+						"main_fr.jpg",
+						"services_ar.jpg",
+						"services_en.jpg",
+						"services_fr.jpg"
+					],
 					"chiens_royaux": [
 						"collection_harnesses_leashes_ar.jpg",
 						"collection_harnesses_leashes_en.jpg",

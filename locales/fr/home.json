@@ -143,7 +143,11 @@
 				"title": "Expertise Pro",
 				"description": "Création d’un site en cinq langues pour réserver des leçons et demander une voiture pour l’examen SAAQ, avec paiement Stripe et PayPal pour les locations à Montréal.",
 				"tech": ["Express", "EJS", "MySQL", "Stripe", "PayPal"],
-				"images": {},
+				"images": {
+					"main": "Image extraite de la vidéo générée par IA sur la page d’accueil d’Expertise Pro, représentant une leçon de conduite",
+					"services": "Services d’Expertise Pro : leçons de perfectionnement, location de voitures pour l’examen SAAQ et cours dans une école partenaire",
+					"booking": "Formulaire de réservation Expertise Pro avec choix du service, coordonnées, région, date, heure et langue souhaitées"
+				},
 				"link": "https://expertise-pro.ca/"
 			},
 			"weather": {

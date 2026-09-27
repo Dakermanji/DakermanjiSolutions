@@ -143,7 +143,11 @@
 				"title": "Expertise Pro",
 				"description": "طوّرت موقعًا بخمس لغات لطلبات حجز دروس القيادة وسيارات امتحان SAAQ، مع دمج Stripe وPayPal لدفع حجوزات السيارات في مونتريال.",
 				"tech": ["Express", "EJS", "MySQL", "Stripe", "PayPal"],
-				"images": {},
+				"images": {
+					"main": "لقطة من فيديو مولّد بالذكاء الاصطناعي على الصفحة الرئيسية لموقع Expertise Pro تصوّر درس قيادة",
+					"services": "خدمات Expertise Pro تشمل دروس تحسين القيادة وتأجير سيارات لامتحان SAAQ ودورات لدى مدرسة شريكة",
+					"booking": "نموذج حجز Expertise Pro مع اختيار الخدمة وبيانات التواصل والمنطقة والتاريخ والوقت واللغة المفضلة"
+				},
 				"link": "https://expertise-pro.ca/"
 			},
 			"weather": {
