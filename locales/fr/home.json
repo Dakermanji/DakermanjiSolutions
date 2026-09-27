@@ -130,8 +130,8 @@
 		"items": {
 			"weather": {
 				"title": "Application Météo",
-				"description": "Prévisions météo en temps réel via des API externes.",
-				"tech": ["Express", "EJS", "Weather API"],
+				"description": "Consultez les prévisions sur cinq jours, recherchez une ville et choisissez Celsius ou Fahrenheit, dans trois langues.",
+				"tech": ["Express", "EJS", "OpenWeather"],
 				"images": {
 					"main": "Capture d’écran de l’application météo affichant la météo de Toronto",
 					"city_search": "Capture d’écran de la recherche de ville pour Toronto dans l’application météo"
@@ -140,12 +140,12 @@
 			},
 			"chat_app": {
 				"title": "Application de Chat",
-				"description": "Messagerie en temps réel avec authentification et sockets.",
-				"tech": ["Express", "Socket.io", "MySQL", "Bcrypt"],
+				"description": "Échangez en temps réel avec des salons partagés, des notes privées, des réactions et des notifications.",
+				"tech": ["Express", "Socket.IO", "PostgreSQL", "Passport"],
 				"images": {
 					"main": "Capture d’écran de l’application de chat"
 				},
-				"link": "chat_app"
+				"link": "chat"
 			}
 		},
 		"under_construction": {
@@ -153,7 +153,8 @@
 			"alt": "Illustration d’un ouvrier avec un panneau en construction",
 			"soon": "Bientôt disponible"
 		},
-		"view": "Voir",
+		"view": "Essayer",
+		"login_required": "Connectez-vous pour essayer cette application.",
 		"see_more_btn": "Voir Plus"
 	},
 	"contact": {

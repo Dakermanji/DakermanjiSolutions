@@ -130,8 +130,8 @@
 		"items": {
 			"weather": {
 				"title": "تطبيق الطقس",
-				"description": "توقعات الطقس في الوقت الحقيقي باستخدام واجهات برمجة خارجية.",
-				"tech": ["Express", "EJS", "Weather API"],
+				"description": "استكشف توقعات خمسة أيام مع البحث عن المدن والتبديل بين مئوية وفهرنهايت، بواجهة تدعم ثلاث لغات.",
+				"tech": ["Express", "EJS", "OpenWeather"],
 				"images": {
 					"main": "لقطة شاشة لتطبيق الطقس تعرض طقس دبي",
 					"city_search": "لقطة شاشة لبحث المدينة عن دبي في تطبيق الطقس"
@@ -140,12 +140,12 @@
 			},
 			"chat_app": {
 				"title": "تطبيق الدردشة",
-				"description": "مراسلة فورية مع نظام تسجيل دخول واستخدام WebSockets.",
-				"tech": ["Express", "Socket.io", "MySQL", "Bcrypt"],
+				"description": "تواصل عبر المراسلة الفورية وغرف الدردشة المشتركة، مع ملاحظات خاصة وتفاعلات وإشعارات.",
+				"tech": ["Express", "Socket.IO", "PostgreSQL", "Passport"],
 				"images": {
 					"main": "لقطة شاشة لتطبيق الدردشة"
 				},
-				"link": "chat_app"
+				"link": "chat"
 			}
 		},
 		"under_construction": {
@@ -153,7 +153,8 @@
 			"alt": "رسم توضيحي لعامل بناء مع لافتة قيد الإنشاء",
 			"soon": "قريبًا"
 		},
-		"view": "عرض",
+		"view": "جرّب التطبيق",
+		"login_required": "سجّل الدخول لتجربة التطبيق.",
 		"see_more_btn": "عرض المزيد"
 	},
 	"contact": {

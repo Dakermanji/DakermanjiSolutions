@@ -130,8 +130,8 @@
 		"items": {
 			"weather": {
 				"title": "Weather App",
-				"description": "Real-time weather forecasts using external APIs.",
-				"tech": ["Express", "EJS", "Weather API"],
+				"description": "Explore five-day forecasts with city search, Celsius and Fahrenheit, and support for three languages.",
+				"tech": ["Express", "EJS", "OpenWeather"],
 				"images": {
 					"main": "Screenshot of the weather app showing Toronto weather",
 					"city_search": "Screenshot of the weather app city search for Toronto"
@@ -140,12 +140,12 @@
 			},
 			"chat_app": {
 				"title": "Chat App",
-				"description": "Real-time messaging with authentication and sockets.",
-				"tech": ["Express", "Socket.io", "MySQL", "Bcrypt"],
+				"description": "Stay connected with live messaging, shared chat rooms, private notes, reactions, and notifications.",
+				"tech": ["Express", "Socket.IO", "PostgreSQL", "Passport"],
 				"images": {
 					"main": "Screenshot of the chat app"
 				},
-				"link": "chat_app"
+				"link": "chat"
 			}
 		},
 		"under_construction": {
@@ -153,7 +153,8 @@
 			"alt": "Cute construction worker illustration with an under construction sign",
 			"soon": "Coming soon"
 		},
-		"view": "View",
+		"view": "Try App",
+		"login_required": "Sign in to try this app.",
 		"see_more_btn": "See More"
 	},
 	"contact": {
