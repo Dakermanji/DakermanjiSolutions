@@ -24,6 +24,7 @@ export default function configureLocals(app) {
 		// Authenticated user from Passport session
 		res.locals.user = req.user ?? null;
 		res.locals.isAuthenticated = req.isAuthenticated?.() ?? false;
+		res.locals.appReturnTo = req.session.appReturnTo || '/';
 		res.locals.currentTheme = getThemePreference(req);
 
 		// Current route path for active navbar state

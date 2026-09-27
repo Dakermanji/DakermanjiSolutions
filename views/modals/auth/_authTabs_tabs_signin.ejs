@@ -6,6 +6,7 @@
 	aria-labelledby="auth-signin-tab"
 >
 	<form action="/auth/signin" method="POST" novalidate>
+		<input type="hidden" name="returnTo" value="<%= appReturnTo %>" />
 		<%- include('../../partials/_csrf') %>
 		<div class="mb-3">
 			<label for="authsignin-identifier" class="form-label">

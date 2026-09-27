@@ -70,8 +70,15 @@
 								<% } %>
 
 								<div class="mt-auto mx-auto">
+									<% if (!isAuthenticated) { %>
+										<p class="small text-center mb-2"><%= portfolio.login_required %></p>
+									<% } %>
 									<a
 										href="/<%= item.link %>"
+										<% if (!isAuthenticated) { %>
+											data-bs-toggle="modal" data-bs-target="#authModal"
+											data-app-return-to="/<%= item.link %>"
+										<% } %>
 										class="btn btn-action-secondary px-4"
 										aria-label="<%= `${portfolio.view} - ${item.title}` %>"
 									>
