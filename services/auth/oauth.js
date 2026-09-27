@@ -1,6 +1,7 @@
 //! services/auth/oauth.js
 
 import UserModel from '../../models/User.js';
+import { appReturnTo } from './returnTo.js';
 import AuthSecurityModel from '../../models/auth/Security.js';
 import UserProviderModel from '../../models/user/provider.js';
 import { getLocale, setLangCookie } from '../i18n/locale.js';
@@ -27,7 +28,7 @@ function normalizeOAuthEmail(email) {
 }
 
 function getOAuthRedirect(req) {
-	const redirectTo = req.session.oauthReturnTo === '/profile' ? '/profile' : '/';
+	const redirectTo = req.session.oauthReturnTo === '/profile' ? '/profile' : appReturnTo(req.session.oauthReturnTo);
 
 	delete req.session.oauthReturnTo;
 	delete req.session.oauthIntent;
@@ -224,6 +225,7 @@ export function handleOAuthCallback(req, res, next, err, user) {
 		setLangCookie(res, lang);
 
 		if (!user.username) {
+			req.session.appReturnTo = appReturnTo(redirectTo);
 			req.flash('modal', 'complete_signup_oauth');
 			return res.redirect('/');
 		}

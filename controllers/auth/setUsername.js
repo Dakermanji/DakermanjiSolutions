@@ -2,6 +2,7 @@
 
 import { fail, success } from '../../services/http/response.js';
 import UserModel from '../../models/User.js';
+import { appReturnTo } from '../../services/auth/returnTo.js';
 import { LEGAL_DOCUMENT_VERSIONS } from '../../constants/legal.js';
 
 /**
@@ -53,7 +54,9 @@ export async function setUsername(req, res, next) {
 		Object.assign(req.user, updateResult.user);
 
 		// notify success after completing OAuth signup
-		return success(req, res, `auth:signup.completed`);
+		const destination = appReturnTo(req.session.appReturnTo);
+		delete req.session.appReturnTo;
+		return success(req, res, `auth:signup.completed`, { to: destination });
 	} catch (error) {
 		next(error);
 	}

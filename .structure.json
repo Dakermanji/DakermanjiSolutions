@@ -516,6 +516,7 @@
 			"email.js",
 			"emailContent.js",
 			"oauth.js",
+			"returnTo.js",
 			"password.js",
 			"recovery.js",
 			"resetPassword.js",

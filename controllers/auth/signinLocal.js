@@ -1,6 +1,7 @@
 //! controllers/auth/signinLocal.js
 
 import passport from 'passport';
+import { appReturnTo } from '../../services/auth/returnTo.js';
 
 import { SUPPORTED_LANGUAGE_SET } from '../../config/languages.js';
 import { setLangCookie } from '../../services/i18n/locale.js';
@@ -20,7 +21,7 @@ import { setLangCookie } from '../../services/i18n/locale.js';
  */
 function handleSigninFailure(req, res, info) {
 	req.flash('error', info?.message || 'auth:error.invalid_credentials');
-	req.flash('modal', 'login');
+	req.flash('modal', 'signin');
 
 	res.redirect('/');
 }
@@ -39,6 +40,7 @@ function handleSigninFailure(req, res, info) {
  * @returns {void}
  */
 function handleSigninSuccess(req, res, next, user) {
+	const destination = appReturnTo(req.session.appReturnTo);
 	req.logIn(user, (loginErr) => {
 		if (loginErr) {
 			return next(loginErr);
@@ -46,7 +48,7 @@ function handleSigninSuccess(req, res, next, user) {
 
 		setLangCookie(res, user?.locale);
 
-		return res.redirect('/');
+		return res.redirect(destination);
 	});
 }
 
@@ -68,6 +70,7 @@ function handleSigninSuccess(req, res, next, user) {
  * @returns {Promise<void>}
  */
 export async function signinLocal(req, res, next) {
+	req.session.appReturnTo = appReturnTo(req.body.returnTo);
 	passport.authenticate('local', (err, user, info) => {
 		if (err) {
 			return next(err);

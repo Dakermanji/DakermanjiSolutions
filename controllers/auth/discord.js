@@ -1,6 +1,7 @@
 //! controllers/auth/discord.js
 
 import passport from 'passport';
+import { appReturnTo } from '../../services/auth/returnTo.js';
 
 import { handleOAuthCallback } from '../../services/auth/oauth.js';
 
@@ -17,6 +18,7 @@ import { handleOAuthCallback } from '../../services/auth/oauth.js';
  * @returns {void}
  */
 export function discordCall(req, res, next) {
+	if (!req.isAuthenticated?.()) req.session.oauthReturnTo = appReturnTo(req.query.returnTo);
 	req.session.oauthLocale = req.language || req.resolvedLanguage || 'en';
 
 	if (req.isAuthenticated?.() && req.query?.returnTo === 'profile') {
