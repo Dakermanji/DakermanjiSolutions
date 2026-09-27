@@ -357,6 +357,17 @@
 			],
 			"home": {
 				"portfolio": {
+					"chiens_royaux": [
+						"collection_harnesses_leashes_ar.jpg",
+						"collection_harnesses_leashes_en.jpg",
+						"collection_harnesses_leashes_fr.jpg",
+						"main_ar.jpg",
+						"main_en.jpg",
+						"main_fr.jpg",
+						"track_ar.jpg",
+						"track_en.jpg",
+						"track_fr.jpg"
+					],
 					"book_reviews": [
 						"main_ar.jpg",
 						"main_en.jpg",

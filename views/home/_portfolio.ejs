@@ -14,13 +14,14 @@
 				<% Object.entries(portfolio.items || {}).forEach(([key, item]) => { %>
 					<%
 						if (!item) return;
+						const isExternal = typeof item.link === 'string' && item.link.startsWith('https://');
+						const projectHref = isExternal ? item.link : `/${item.link}`;
+						const buttonLabel = isExternal ? portfolio.visit_website : portfolio.view;
 
 						const images = item.images && typeof item.images === 'object' && !Array.isArray(item.images)
 							? Object.entries(item.images)
 							: [];
-						const imageEntries = images.length
-							? images
-							: [['main', item.title]];
+						const imageEntries = images;
 					%>
 
 					<div class="col-12 col-md-6 col-lg-4 col-xl-3 portfolio-item">
@@ -43,6 +44,11 @@
 										<%= index === 0 ? '' : 'aria-hidden="true"' %>
 									/>
 								<% }) %>
+								<% if (!imageEntries.length) { %>
+									<div class="d-flex h-100 align-items-center justify-content-center" aria-hidden="true">
+										<i class="bi bi-window display-1"></i>
+									</div>
+								<% } %>
 
 								<% if (imageEntries.length > 1) { %>
 									<div class="portfolio-dots" aria-hidden="true">
@@ -70,19 +76,19 @@
 								<% } %>
 
 								<div class="mt-auto mx-auto">
-									<% if (!isAuthenticated) { %>
+									<% if (!isAuthenticated && !isExternal) { %>
 										<p class="small text-center mb-2"><%= portfolio.login_required %></p>
 									<% } %>
 									<a
-										href="/<%= item.link %>"
-										<% if (!isAuthenticated) { %>
+										href="<%= projectHref %>"
+										<% if (!isAuthenticated && !isExternal) { %>
 											data-bs-toggle="modal" data-bs-target="#authModal"
 											data-app-return-to="/<%= item.link %>"
 										<% } %>
 										class="btn btn-action-secondary px-4"
-										aria-label="<%= `${portfolio.view} - ${item.title}` %>"
+										aria-label="<%= `${buttonLabel} - ${item.title}` %>"
 									>
-										<%= portfolio.view %>
+										<%= buttonLabel %>
 									</a>
 								</div>
 							</div>

@@ -128,6 +128,24 @@
 	"portfolio": {
 		"title": "أعمالي",
 		"items": {
+			"chiens_royaux": {
+				"title": "Chiens Royaux",
+				"description": "قدّمت الدعم التقني طوال مشروع متجر Shopify، وساعدت العميل على تحويل فكرته إلى متجر إلكتروني.",
+				"tech": ["Shopify"],
+				"images": {
+					"main": "الصفحة الرئيسية لمتجر Chiens Royaux تعرض صور كلاب ورابطًا لمجموعات المنتجات",
+					"track": "نموذج تتبع الطلب في Chiens Royaux مع حقول رقم الطلب والبريد الإلكتروني والهاتف",
+					"collection_harnesses_leashes": "مجموعة صدريات ومقاود الكلاب في Chiens Royaux مع الأسعار وفلاتر التوفر وخيارات الترتيب"
+				},
+				"link": "https://chiensroyaux.com/"
+			},
+			"expertise_pro": {
+				"title": "Expertise Pro",
+				"description": "طوّرت موقعًا بخمس لغات لطلبات حجز دروس القيادة وسيارات امتحان SAAQ، مع دمج Stripe وPayPal لدفع حجوزات السيارات في مونتريال.",
+				"tech": ["Express", "EJS", "MySQL", "Stripe", "PayPal"],
+				"images": {},
+				"link": "https://expertise-pro.ca/"
+			},
 			"weather": {
 				"title": "تطبيق الطقس",
 				"description": "استكشف توقعات خمسة أيام مع البحث عن المدن والتبديل بين مئوية وفهرنهايت، بواجهة تدعم ثلاث لغات.",
@@ -154,6 +172,7 @@
 			"soon": "قريبًا"
 		},
 		"view": "جرّب التطبيق",
+		"visit_website": "زيارة الموقع",
 		"login_required": "سجّل الدخول لتجربة التطبيق.",
 		"see_more_btn": "عرض المزيد"
 	},

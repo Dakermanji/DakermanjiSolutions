@@ -128,6 +128,24 @@
 	"portfolio": {
 		"title": "Mes Projets",
 		"items": {
+			"chiens_royaux": {
+				"title": "Chiens Royaux",
+				"description": "Accompagnement informatique tout au long d’un projet de boutique Shopify pour aider le client à concrétiser sa boutique en ligne.",
+				"tech": ["Shopify"],
+				"images": {
+					"main": "Page d’accueil de la boutique Chiens Royaux présentant des chiens et un lien vers les collections",
+					"track": "Formulaire de suivi de commande Chiens Royaux avec champs pour le numéro de commande, le courriel et le téléphone",
+					"collection_harnesses_leashes": "Collection de harnais et laisses Chiens Royaux avec prix, filtres de disponibilité et options de tri"
+				},
+				"link": "https://chiensroyaux.com/"
+			},
+			"expertise_pro": {
+				"title": "Expertise Pro",
+				"description": "Création d’un site en cinq langues pour réserver des leçons et demander une voiture pour l’examen SAAQ, avec paiement Stripe et PayPal pour les locations à Montréal.",
+				"tech": ["Express", "EJS", "MySQL", "Stripe", "PayPal"],
+				"images": {},
+				"link": "https://expertise-pro.ca/"
+			},
 			"weather": {
 				"title": "Application Météo",
 				"description": "Consultez les prévisions sur cinq jours, recherchez une ville et choisissez Celsius ou Fahrenheit, dans trois langues.",
@@ -154,6 +172,7 @@
 			"soon": "Bientôt disponible"
 		},
 		"view": "Essayer",
+		"visit_website": "Visiter le site",
 		"login_required": "Connectez-vous pour essayer cette application.",
 		"see_more_btn": "Voir Plus"
 	},

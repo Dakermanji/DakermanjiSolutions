@@ -128,6 +128,24 @@
 	"portfolio": {
 		"title": "My Work",
 		"items": {
+			"chiens_royaux": {
+				"title": "Chiens Royaux",
+				"description": "Provided IT support throughout a Shopify store project, helping the client bring their online shop to life.",
+				"tech": ["Shopify"],
+				"images": {
+					"main": "Chiens Royaux storefront homepage featuring dogs and a link to product collections",
+					"track": "Chiens Royaux order tracking form with order number, email, and phone fields",
+					"collection_harnesses_leashes": "Chiens Royaux harnesses and leashes collection with product prices, availability filters, and sorting"
+				},
+				"link": "https://chiensroyaux.com/"
+			},
+			"expertise_pro": {
+				"title": "Expertise Pro",
+				"description": "Built a driving-services website in five languages, with lesson and SAAQ exam car rental booking requests, plus Stripe and PayPal checkout for Montreal car rentals.",
+				"tech": ["Express", "EJS", "MySQL", "Stripe", "PayPal"],
+				"images": {},
+				"link": "https://expertise-pro.ca/"
+			},
 			"weather": {
 				"title": "Weather App",
 				"description": "Explore five-day forecasts with city search, Celsius and Fahrenheit, and support for three languages.",
@@ -154,6 +172,7 @@
 			"soon": "Coming soon"
 		},
 		"view": "Try App",
+		"visit_website": "Visit Website",
 		"login_required": "Sign in to try this app.",
 		"see_more_btn": "See More"
 	},
