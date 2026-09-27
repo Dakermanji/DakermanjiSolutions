@@ -264,7 +264,8 @@
 	],
 	"public": {
 		"~": [
-			"robots.txt"
+			"robots.txt",
+			"site.webmanifest"
 		],
 		"css": {
 			"chat": {
@@ -488,6 +489,7 @@
 				"csrf.js",
 				"dropdownMenu.js",
 				"flash.js",
+				"install.js",
 				"modals.js",
 				"notifications.js",
 				"social.js",
