@@ -1,0 +1,14 @@
+# Public pages and their styles, scripts, and images remain crawlable.
+# These rules guide crawlers; authentication protects private content.
+User-agent: *
+Disallow: /auth/
+Disallow: /chat
+Disallow: /notifications
+Disallow: /social
+Disallow: /profile
+Disallow: /weather
+Disallow: /language
+Disallow: /theme
+Disallow: /avatar
+Disallow: /contact
+Disallow: /socket.io/

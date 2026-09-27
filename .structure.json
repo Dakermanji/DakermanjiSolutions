@@ -263,6 +263,9 @@
 		"passport-oauth2+1.8.0.patch"
 	],
 	"public": {
+		"~": [
+			"robots.txt"
+		],
 		"css": {
 			"chat": {
 				"conversation": [
