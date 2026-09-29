@@ -617,6 +617,9 @@
 			"live.js",
 			"links.js"
 		],
+		"presence": [
+			"state.js"
+		],
 		"profile": [
 			"account.js",
 			"deletion.js",
@@ -660,6 +663,9 @@
 		"22_chat_room_activity_logs.sql",
 		"23_chat_message_reactions.sql",
 		"24_chat_message_mentions.sql"
+	],
+	"tests": [
+		"presence-state.test.js"
 	],
 	"utils": {
 		"config": [
