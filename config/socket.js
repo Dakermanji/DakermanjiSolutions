@@ -17,6 +17,7 @@ import {
 	setNotificationSocketServer,
 } from '../services/notifications/live.js';
 import UserModel from '../models/User.js';
+import { createPresenceSocketService } from '../services/presence/live.js';
 
 /**
  * Attach Socket.IO to the HTTP server.
@@ -26,6 +27,8 @@ import UserModel from '../models/User.js';
  */
 export default function configureSocket(server) {
 	const io = new Server(server);
+	const presence = createPresenceSocketService(io);
+	server.once('close', presence.stop);
 
 	io.engine.use(sessionMiddleware);
 
@@ -52,6 +55,7 @@ export default function configureSocket(server) {
 	});
 
 	io.on('connection', (socket) => {
+		presence.register(socket);
 		socket.join(getSocialUserRoom(socket.data.userId));
 		socket.join(getChatUserRoom(socket.data.userId));
 		socket.join(getNotificationUserRoom(socket.data.userId));

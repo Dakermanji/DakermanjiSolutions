@@ -34,7 +34,8 @@
 	"constants": [
 		"chat.js",
 		"legal.js",
-		"notifications.js"
+		"notifications.js",
+		"presence.js"
 	],
 	"controllers": {
 		"auth": [
@@ -618,6 +619,7 @@
 			"links.js"
 		],
 		"presence": [
+			"live.js",
 			"state.js"
 		],
 		"profile": [
@@ -664,9 +666,12 @@
 		"23_chat_message_reactions.sql",
 		"24_chat_message_mentions.sql"
 	],
-	"tests": [
-		"presence-state.test.js"
-	],
+	"tests": {
+		"presence": [
+			"live.test.js",
+			"state.test.js"
+		]
+	},
 	"utils": {
 		"config": [
 			"dotenv.js"

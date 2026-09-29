@@ -1,5 +1,7 @@
 //! services/presence/state.js
 
+import { PRESENCE_STATUSES, PRESENCE_SELECTABLE_STATUSES } from '../../constants/presence.js';
+
 export const PRESENCE_IDLE_TIMEOUT_MS = 5 * 60 * 1000;
 
 /**
@@ -13,12 +15,12 @@ export function createPresenceState({ now = Date.now } = {}) {
 
 	function getStatus(userId) {
 		const user = users.get(userId);
-		if (!user || user.connections.size === 0) return 'offline';
+		if (!user || user.connections.size === 0) return PRESENCE_STATUSES.OFFLINE;
 		if (user.manualStatus) return user.manualStatus;
 		const cutoff = now() - PRESENCE_IDLE_TIMEOUT_MS;
 		return [...user.connections.values()].some((activity) => activity > cutoff)
-			? 'online'
-			: 'away';
+			? PRESENCE_STATUSES.ONLINE
+			: PRESENCE_STATUSES.AWAY;
 	}
 
 	function connect(userId, connectionId) {
@@ -51,12 +53,12 @@ export function createPresenceState({ now = Date.now } = {}) {
 	}
 
 	function setStatus(userId, connectionId, status) {
-		if (!['online', 'away', 'busy'].includes(status)) return false;
+		if (!PRESENCE_SELECTABLE_STATUSES.includes(status)) return false;
 		const user = users.get(userId);
 		if (!user?.connections.has(connectionId)) return false;
-		user.manualStatus = status === 'online' ? null : status;
+		user.manualStatus = status === PRESENCE_STATUSES.ONLINE ? null : status;
 		// Explicitly choosing Online is itself activity.
-		if (status === 'online') user.connections.set(connectionId, now());
+		if (status === PRESENCE_STATUSES.ONLINE) user.connections.set(connectionId, now());
 		return true;
 	}
 
