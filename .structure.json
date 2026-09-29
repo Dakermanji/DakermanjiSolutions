@@ -491,6 +491,7 @@
 				"install.js",
 				"modals.js",
 				"notifications.js",
+				"presence.js",
 				"social.js",
 				"theme.js",
 				"themeInit.js",
@@ -668,6 +669,7 @@
 	],
 	"tests": {
 		"presence": [
+			"browser.test.js",
 			"live.test.js",
 			"state.test.js"
 		]
