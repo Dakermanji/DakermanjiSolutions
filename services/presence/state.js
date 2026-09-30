@@ -1,8 +1,10 @@
 //! services/presence/state.js
 
-import { PRESENCE_STATUSES, PRESENCE_SELECTABLE_STATUSES } from '../../constants/presence.js';
-
-export const PRESENCE_IDLE_TIMEOUT_MS = 5 * 60 * 1000;
+import {
+	PRESENCE_IDLE_TIMEOUT_MS,
+	PRESENCE_STATUSES,
+	PRESENCE_SELECTABLE_STATUSES,
+} from '../../constants/presence.js';
 
 /**
  * Process-local presence state. Callers supply authenticated user/socket IDs.
@@ -15,10 +17,13 @@ export function createPresenceState({ now = Date.now } = {}) {
 
 	function getStatus(userId) {
 		const user = users.get(userId);
-		if (!user || user.connections.size === 0) return PRESENCE_STATUSES.OFFLINE;
+		if (!user || user.connections.size === 0)
+			return PRESENCE_STATUSES.OFFLINE;
 		if (user.manualStatus) return user.manualStatus;
 		const cutoff = now() - PRESENCE_IDLE_TIMEOUT_MS;
-		return [...user.connections.values()].some((activity) => activity > cutoff)
+		return [...user.connections.values()].some(
+			(activity) => activity > cutoff,
+		)
 			? PRESENCE_STATUSES.ONLINE
 			: PRESENCE_STATUSES.AWAY;
 	}
@@ -58,7 +63,8 @@ export function createPresenceState({ now = Date.now } = {}) {
 		if (!user?.connections.has(connectionId)) return false;
 		user.manualStatus = status === PRESENCE_STATUSES.ONLINE ? null : status;
 		// Explicitly choosing Online is itself activity.
-		if (status === PRESENCE_STATUSES.ONLINE) user.connections.set(connectionId, now());
+		if (status === PRESENCE_STATUSES.ONLINE)
+			user.connections.set(connectionId, now());
 		return true;
 	}
 
@@ -67,5 +73,12 @@ export function createPresenceState({ now = Date.now } = {}) {
 		return [...users.keys()];
 	}
 
-	return { connect, disconnect, recordActivity, setStatus, getStatus, getConnectedUserIds };
+	return {
+		connect,
+		disconnect,
+		recordActivity,
+		setStatus,
+		getStatus,
+		getConnectedUserIds,
+	};
 }

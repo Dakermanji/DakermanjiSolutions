@@ -1,13 +1,18 @@
-import { PRESENCE_STATUSES } from '../../constants/presence.js';
+import {
+	PRESENCE_STATUSES,
+	PRESENCE_IDLE_TIMEOUT_MS,
+} from '../../constants/presence.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createPresenceState, PRESENCE_IDLE_TIMEOUT_MS } from '../../services/presence/state.js';
+import { createPresenceState } from '../../services/presence/state.js';
 
 function setup() {
 	let time = 0;
 	return {
 		state: createPresenceState({ now: () => time }),
-		advance: (milliseconds) => { time += milliseconds; },
+		advance: (milliseconds) => {
+			time += milliseconds;
+		},
 	};
 }
 
@@ -46,7 +51,10 @@ for (const status of [PRESENCE_STATUSES.AWAY, PRESENCE_STATUSES.BUSY]) {
 		assert.equal(state.getStatus('user'), status);
 		state.disconnect('user', 'second');
 		assert.equal(state.getStatus('user'), status);
-		assert.equal(state.disconnect('user', 'first'), PRESENCE_STATUSES.OFFLINE);
+		assert.equal(
+			state.disconnect('user', 'first'),
+			PRESENCE_STATUSES.OFFLINE,
+		);
 	});
 }
 
@@ -67,10 +75,16 @@ test('invalid choices and unknown connections cannot mutate presence', () => {
 	for (const status of [PRESENCE_STATUSES.OFFLINE, null, {}, 'BUSY']) {
 		assert.equal(state.setStatus('user', 'tab', status), false);
 	}
-	assert.equal(state.setStatus('user', 'unknown', PRESENCE_STATUSES.BUSY), false);
+	assert.equal(
+		state.setStatus('user', 'unknown', PRESENCE_STATUSES.BUSY),
+		false,
+	);
 	assert.equal(state.recordActivity('user', 'unknown'), false);
 	assert.equal(state.recordActivity('unknown', 'tab'), false);
-	assert.equal(state.setStatus('unknown', 'tab', PRESENCE_STATUSES.BUSY), false);
+	assert.equal(
+		state.setStatus('unknown', 'tab', PRESENCE_STATUSES.BUSY),
+		false,
+	);
 	assert.equal(state.disconnect('user', 'unknown'), PRESENCE_STATUSES.ONLINE);
 	assert.equal(state.getStatus('unknown'), PRESENCE_STATUSES.OFFLINE);
 });

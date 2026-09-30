@@ -1,20 +1,24 @@
 //! services/presence/live.js
 
-import { PRESENCE_STATUSES } from '../../constants/presence.js';
+import {
+	PRESENCE_STATUSES,
+	PRESENCE_CHECK_INTERVAL_MS,
+} from '../../constants/presence.js';
 import { createPresenceState } from './state.js';
-
-export const PRESENCE_CHECK_INTERVAL_MS = 15_000;
 
 export function getPresenceUserRoom(userId) {
 	return `presence:user:${userId}`;
 }
 
 /** Owns presence for one Socket.IO server; broadcasts only to the user's sockets. */
-export function createPresenceSocketService(io, {
-	state = createPresenceState(),
-	schedule = setInterval,
-	cancel = clearInterval,
-} = {}) {
+export function createPresenceSocketService(
+	io,
+	{
+		state = createPresenceState(),
+		schedule = setInterval,
+		cancel = clearInterval,
+	} = {},
+) {
 	const publishedStatuses = new Map();
 	let timer = null;
 
@@ -23,7 +27,8 @@ export function createPresenceSocketService(io, {
 		if (publishedStatuses.get(userId) === status) return;
 		publishedStatuses.set(userId, status);
 		io.to(getPresenceUserRoom(userId)).emit('presence:changed', { status });
-		if (status === PRESENCE_STATUSES.OFFLINE) publishedStatuses.delete(userId);
+		if (status === PRESENCE_STATUSES.OFFLINE)
+			publishedStatuses.delete(userId);
 	}
 
 	function stop() {
@@ -38,7 +43,9 @@ export function createPresenceSocketService(io, {
 		state.connect(userId, socket.id);
 		// A new tab needs a snapshot even when the user's status did not change.
 		if (publishedStatuses.get(userId) === state.getStatus(userId)) {
-			socket.emit('presence:changed', { status: state.getStatus(userId) });
+			socket.emit('presence:changed', {
+				status: state.getStatus(userId),
+			});
 		} else {
 			publish(userId);
 		}
