@@ -13,13 +13,13 @@
 <% const notificationPreviewItems = Array.isArray(safeNotificationPreview) ? safeNotificationPreview : []; %>
 
 <li class="nav-item dropdown">
-	<button id="presenceStatus" type="button" class="nav-link border-0 bg-transparent has-tooltip presence-trigger"
+	<button id="presenceStatus" type="button" class="nav-link border-0 bg-transparent presence-trigger"
 		data-presence-trigger data-bs-toggle="dropdown" aria-expanded="false"
 		data-offline-status="<%= presenceStatuses.OFFLINE %>"
 		data-status-labels="<%= JSON.stringify(Object.fromEntries(Object.values(presenceStatuses).map(status => [status, t('presence.statuses.' + status)]))) %>"
-		data-bs-title="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>"
 		aria-label="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>" aria-describedby="presenceFeedback">
-		<span class="presence-dot" data-presence-dot data-status="<%= presenceStatuses.OFFLINE %>" aria-hidden="true"></span>
+		<span class="presence-dot has-tooltip" data-presence-dot data-status="<%= presenceStatuses.OFFLINE %>"
+			data-bs-title="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>" aria-hidden="true"></span>
 	</button>
 	<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="presenceStatus">
 		<% presenceSelectableStatuses.forEach((status) => { %>

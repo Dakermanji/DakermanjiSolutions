@@ -14,12 +14,13 @@ function setup({ available = true } = {}) {
 	const reports = [];
 	const changes = [];
 	const tooltipUpdates = [];
+	const dropdownCloses = [];
 	const choices = [PRESENCE_STATUSES.ONLINE, PRESENCE_STATUSES.AWAY, PRESENCE_STATUSES.BUSY].map((status) => ({
 		dataset: { presenceChoice: status }, disabled: true,
 		setAttribute(name, value) { this[name] = value; },
 		addEventListener(event, handler) { this.click = handler; },
 	}));
-	const dot = { dataset: { status: PRESENCE_STATUSES.OFFLINE } };
+	const dot = { dataset: { status: PRESENCE_STATUSES.OFFLINE }, setAttribute(name, value) { this[name] = value; } };
 	const selector = {
 		dataset: { offlineStatus: PRESENCE_STATUSES.OFFLINE, statusLabels: JSON.stringify({ online: 'Available', offline: 'Offline', away: 'Away', busy: 'Busy' }) },
 		setAttribute(name, value) { this[name] = value; },
@@ -42,13 +43,22 @@ function setup({ available = true } = {}) {
 		addEventListener: (event, handler) => documentHandlers.set(event, handler),
 	};
 	const window = {
-		bootstrap: { Tooltip: { getInstance: () => ({ setContent: (content) => tooltipUpdates.push(content['.tooltip-inner']) }) } },
+		bootstrap: {
+			Tooltip: { getInstance: (element) => {
+				assert.equal(element, dot);
+				return { setContent: (content) => tooltipUpdates.push(content['.tooltip-inner']) };
+			} },
+			Dropdown: { getInstance: (element) => {
+				assert.equal(element, selector);
+				return { hide: () => dropdownCloses.push(true) };
+			} },
+		},
 		io: available ? () => socket : undefined,
 		addEventListener: (event, handler) => windowHandlers.set(event, handler),
 	};
 	vm.runInNewContext(source, { window, document, performance: { now: () => time } });
 	return {
-		socket, document, reports, documentHandlers, selector, feedback, changes, choices, dot, tooltipUpdates,
+		socket, document, reports, documentHandlers, selector, feedback, changes, choices, dot, tooltipUpdates, dropdownCloses,
 		receive(event, payload) { handlers.get(event)(payload); },
 		choose(status) { choices.find((choice) => choice.dataset.presenceChoice === status).click(); },
 		connect() { socket.connected = true; handlers.get('connect')(); },
@@ -112,10 +122,11 @@ test('selector follows server status and sends manual choices with acknowledgeme
 	assert.equal(h.choices[0].disabled, false);
 	assert.equal(h.dot.dataset.status, PRESENCE_STATUSES.ONLINE);
 	assert.equal(h.selector['aria-label'], 'Available');
-	assert.equal(h.selector['data-bs-title'], 'Available');
+	assert.equal(h.dot['data-bs-title'], 'Available');
 	assert.equal(h.tooltipUpdates.at(-1), 'Available');
 	assert.equal(h.choices.some((choice) => choice.dataset.presenceChoice === PRESENCE_STATUSES.OFFLINE), false);
 	h.choose(PRESENCE_STATUSES.BUSY);
+	assert.equal(h.dropdownCloses.length, 1);
 	assert.equal(h.choices[0].disabled, true);
 	assert.equal(h.changes[0].event, 'presence:set');
 	assert.equal(h.changes[0].payload.status, PRESENCE_STATUSES.BUSY);

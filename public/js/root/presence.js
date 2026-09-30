@@ -20,8 +20,8 @@
 		currentStatus = status;
 		if (dot) dot.dataset.status = status;
 		selector.setAttribute('aria-label', labels[status]);
-		selector.setAttribute('data-bs-title', labels[status]);
-		window.bootstrap?.Tooltip.getInstance(selector)?.setContent({ '.tooltip-inner': labels[status] });
+		dot?.setAttribute('data-bs-title', labels[status]);
+		if (dot) window.bootstrap?.Tooltip.getInstance(dot)?.setContent({ '.tooltip-inner': labels[status] });
 		choices.forEach((choice) => choice.setAttribute('aria-pressed', String(choice.dataset.presenceChoice === status)));
 	}
 
@@ -51,6 +51,7 @@
 	selector?.addEventListener('show.bs.dropdown', () => window.AppTooltips?.hideAll());
 	choices.forEach((choice) => choice.addEventListener('click', () => {
 		if (!socket.connected || !ready) return showDisconnected();
+		window.bootstrap?.Dropdown?.getInstance(selector)?.hide();
 		const status = choice.dataset.presenceChoice;
 		const version = ++requestVersion;
 		disableChoices(true);
