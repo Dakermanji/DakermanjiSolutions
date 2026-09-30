@@ -1,6 +1,7 @@
 //! controllers/social/followers.js
 
 import UserFollowsModel from '../../models/social/Follows.js';
+import { presenceState } from '../../services/presence/state.js';
 
 /**
  * Return users following the signed-in user.
@@ -25,6 +26,7 @@ export async function getFollowers(req, res, next) {
 		const followers =
 			await UserFollowsModel.findFollowersByFollowee(followeeId);
 
+		res.set('Cache-Control', 'no-store');
 		res.json({
 			ok: true,
 			followers: followers.map(serializeFollower),
@@ -57,6 +59,7 @@ function serializeFollower(follower) {
 
 	return {
 		id: follower.follower_id,
+		status: presenceState.getStatus(follower.follower_id),
 		username: follower.follower_username,
 		email: follower.follower_email,
 		is_mutual: follower.is_mutual,

@@ -85,3 +85,6 @@ export function createPresenceState({ now = Date.now } = {}) {
 		getConnectedUserIds,
 	};
 }
+
+// Shared by the socket service and authenticated HTTP list responses.
+export const presenceState = createPresenceState();

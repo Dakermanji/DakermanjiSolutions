@@ -5,7 +5,7 @@ import {
 	PRESENCE_CHECK_INTERVAL_MS,
 	PRESENCE_SELECTABLE_STATUSES,
 } from '../../constants/presence.js';
-import { createPresenceState } from './state.js';
+import { presenceState } from './state.js';
 
 export function getPresenceUserRoom(userId) {
 	return `presence:user:${userId}`;
@@ -18,7 +18,7 @@ export function createPresenceSocketService(
 		loadPreference,
 		savePreference,
 		onError = () => {},
-		state = createPresenceState(),
+		state = presenceState,
 		schedule = setInterval,
 		cancel = clearInterval,
 	} = {},

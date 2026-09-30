@@ -29,6 +29,11 @@ export async function findFolloweesByFollower(followerId) {
 		INNER JOIN users u
 			ON u.id = uf.followee_id
 		WHERE uf.follower_id = $1
+			AND NOT EXISTS (
+				SELECT 1 FROM user_blocks b
+				WHERE (b.blocker_id = uf.follower_id AND b.blocked_id = uf.followee_id)
+					OR (b.blocker_id = uf.followee_id AND b.blocked_id = uf.follower_id)
+			)
 		ORDER BY uf.created_at DESC;
 	`;
 
@@ -74,6 +79,11 @@ export async function findFollowersByFollowee(followeeId) {
 		INNER JOIN users u
 			ON u.id = uf.follower_id
 		WHERE uf.followee_id = $1
+			AND NOT EXISTS (
+				SELECT 1 FROM user_blocks b
+				WHERE (b.blocker_id = uf.follower_id AND b.blocked_id = uf.followee_id)
+					OR (b.blocker_id = uf.followee_id AND b.blocked_id = uf.follower_id)
+			)
 		ORDER BY uf.created_at DESC;
 	`;
 
