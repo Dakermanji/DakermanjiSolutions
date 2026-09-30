@@ -7,6 +7,7 @@ import UserBlocksModel from '../../models/social/Blocks.js';
 import UserFollowsModel from '../../models/social/Follows.js';
 import { getUserAvatarProfile } from '../avatar/dicebear.js';
 import { findReadableChatConversation } from './authorization.js';
+import { presenceState } from '../presence/state.js';
 
 function formatFriendConversation(conversation) {
 	const friendName =
@@ -26,6 +27,7 @@ function formatFriendConversation(conversation) {
 		},
 		friend: {
 			id: conversation.friend_id,
+			status: presenceState.getStatus(conversation.friend_id),
 			username: conversation.friend_username,
 			email: conversation.friend_email,
 			countryCode: conversation.friend_country_code,

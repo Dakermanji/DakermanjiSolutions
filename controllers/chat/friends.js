@@ -22,6 +22,7 @@ import {
 export async function getFriendChats(req, res, next) {
 	try {
 		const conversations = await listFriendConversations(req.user.id);
+		res.set('Cache-Control', 'no-store');
 		return res.json({
 			ok: true,
 			conversations,
