@@ -445,6 +445,7 @@
 					"messages-reply.js",
 					"messages.js",
 					"panels.js",
+					"roomPresence.js",
 					"read-state.js",
 					"renderer-actions.js",
 					"renderer-content.js",
@@ -673,6 +674,7 @@
 			"browser.test.js",
 			"chat.test.js",
 			"live.test.js",
+			"room.test.js",
 			"social.test.js",
 			"state.test.js"
 		]

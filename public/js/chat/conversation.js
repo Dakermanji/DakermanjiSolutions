@@ -28,6 +28,10 @@
 			chatPage,
 			typingIndicator,
 		});
+	const roomPresence = window.ChatConversationRoomPresence?.createRoomPresenceController({
+		panel: document.querySelector('[data-chat-members-panel]'),
+		conversationId: chatPage.dataset.activeConversationId,
+	});
 	const sidePanels = window.ChatConversationPanels.createSidePanelController({
 		composer,
 		composerNotice,
@@ -158,6 +162,7 @@
 		toggle?.addEventListener('click', () => {
 			const shouldShowPanel = panel?.hidden !== false;
 			sidePanels.setActiveSidePanel(shouldShowPanel ? panelName : null);
+			roomPresence?.sync();
 			if (shouldShowPanel) {
 				void onOpen?.();
 			}

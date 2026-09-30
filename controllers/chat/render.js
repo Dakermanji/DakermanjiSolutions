@@ -194,6 +194,7 @@ export async function renderChat(req, res, next) {
 						'chat/conversation-page/activity',
 						'chat/conversation-page/flagReview',
 						'chat/main-page/leaveRoom',
+						'chat/conversation-page/roomPresence',
 						'chat/conversation',
 					],
 					activeConversation: activeRoomConversation,
