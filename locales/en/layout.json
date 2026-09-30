@@ -1,4 +1,15 @@
 {
+	"presence": {
+		"label": "Your status",
+		"connecting": "Connecting…",
+		"error": "Could not update your status. Please try again.",
+		"statuses": {
+			"online": "Available",
+			"offline": "Offline",
+			"away": "Away",
+			"busy": "Busy"
+		}
+	},
 	"title": "Welcome",
 	"nav": {
 		"home": "Home",
