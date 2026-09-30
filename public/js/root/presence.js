@@ -39,6 +39,10 @@
 
 	socket.on('disconnect', showDisconnected);
 	socket.on('connect_error', showDisconnected);
+	socket.on('presence:error', () => {
+		showDisconnected();
+		if (feedback) feedback.textContent = feedback.dataset.error;
+	});
 
 	function showDisconnected() {
 		ready = false;

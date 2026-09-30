@@ -9,8 +9,8 @@ import {
 /**
  * Process-local presence state. Callers supply authenticated user/socket IDs.
  * The injected clock lets inactivity be tested without waiting in real time.
- * Manual choices last until the final connection closes; persistent preferences
- * will be restored by the socket layer when persistence is introduced.
+ * The socket layer restores the saved preference on the first connection.
+ * In-memory state is released when the final connection closes.
  */
 export function createPresenceState({ now = Date.now } = {}) {
 	const users = new Map();
@@ -28,10 +28,13 @@ export function createPresenceState({ now = Date.now } = {}) {
 			: PRESENCE_STATUSES.AWAY;
 	}
 
-	function connect(userId, connectionId) {
+	function connect(userId, connectionId, preference = PRESENCE_STATUSES.ONLINE) {
 		let user = users.get(userId);
 		if (!user) {
-			user = { connections: new Map(), manualStatus: null };
+			user = {
+				connections: new Map(),
+				manualStatus: [PRESENCE_STATUSES.AWAY, PRESENCE_STATUSES.BUSY].includes(preference) ? preference : null,
+			};
 			users.set(userId, user);
 		}
 		// Registering the same socket twice must not count as new activity.

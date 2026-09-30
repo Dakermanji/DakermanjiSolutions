@@ -18,6 +18,7 @@ import {
 } from '../services/notifications/live.js';
 import UserModel from '../models/User.js';
 import { createPresenceSocketService } from '../services/presence/live.js';
+import logger from './logger.js';
 
 /**
  * Attach Socket.IO to the HTTP server.
@@ -27,7 +28,11 @@ import { createPresenceSocketService } from '../services/presence/live.js';
  */
 export default function configureSocket(server) {
 	const io = new Server(server);
-	const presence = createPresenceSocketService(io);
+	const presence = createPresenceSocketService(io, {
+		loadPreference: UserModel.findPresencePreference,
+		savePreference: UserModel.updatePresencePreference,
+		onError: (error, userId) => logger.warning('Presence preference synchronization failed', { type: 'presence', userId, error }),
+	});
 	server.once('close', presence.stop);
 
 	io.engine.use(sessionMiddleware);

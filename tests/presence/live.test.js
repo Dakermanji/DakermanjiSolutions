@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { createPresenceSocketService } from '../../services/presence/live.js';
 import { createPresenceState } from '../../services/presence/state.js';
 
-function setup() {
+function setup(storage = new Map(), overrides = {}) {
 	let time = 0;
 	let tick;
 	let starts = 0;
@@ -23,6 +23,9 @@ function setup() {
 		},
 		{
 			state,
+			loadPreference: async (userId) => storage.get(userId) || PRESENCE_STATUSES.ONLINE,
+			savePreference: async (userId, status) => { storage.set(userId, status); },
+			...overrides,
 			schedule: (callback, delay) => {
 				assert.equal(delay, PRESENCE_CHECK_INTERVAL_MS);
 				tick = callback;
@@ -34,11 +37,11 @@ function setup() {
 			},
 		},
 	);
-	function connect(id, userId = 'user') {
+	async function connect(id, userId = 'user') {
 		const handlers = new Map();
 		const snapshots = [];
 		const rooms = [];
-		service.register({
+		await service.register({
 			id,
 			data: { userId },
 			join: (room) => rooms.push(room),
@@ -65,9 +68,9 @@ function setup() {
 	};
 }
 
-test('sends initial snapshots, publishes inactivity once, and restores Online on activity', () => {
+test('sends initial snapshots, publishes inactivity once, and restores Online on activity', async () => {
 	const h = setup();
-	const first = h.connect('first');
+	const first = await h.connect('first');
 	assert.deepEqual(first.rooms, ['presence:user:user']);
 	assert.deepEqual(h.events, [
 		{
@@ -76,7 +79,7 @@ test('sends initial snapshots, publishes inactivity once, and restores Online on
 			payload: { status: PRESENCE_STATUSES.ONLINE },
 		},
 	]);
-	const second = h.connect('second');
+	const second = await h.connect('second');
 	assert.deepEqual(second.snapshots, [
 		{
 			event: 'presence:changed',
@@ -94,12 +97,12 @@ test('sends initial snapshots, publishes inactivity once, and restores Online on
 	assert.deepEqual(h.counts(), { starts: 1, stops: 0 });
 });
 
-test('uses authenticated identity and validates manual choices and acknowledgements', () => {
+test('uses authenticated identity and validates manual choices and acknowledgements', async () => {
 	const h = setup();
-	const socket = h.connect('tab');
-	h.connect('other-tab', 'other');
+	const socket = await h.connect('tab');
+	await h.connect('other-tab', 'other');
 	let reply;
-	socket.send(
+	await socket.send(
 		'presence:set',
 		{ userId: 'other', status: PRESENCE_STATUSES.BUSY },
 		(value) => {
@@ -109,7 +112,7 @@ test('uses authenticated identity and validates manual choices and acknowledgeme
 	assert.deepEqual(reply, { ok: true, status: PRESENCE_STATUSES.BUSY });
 	assert.equal(h.state.getStatus('other'), PRESENCE_STATUSES.ONLINE);
 	assert.equal(h.events.at(-1).room, 'presence:user:user');
-	socket.send('presence:activity');
+	await socket.send('presence:activity');
 	h.advance(PRESENCE_IDLE_TIMEOUT_MS);
 	h.tick();
 	assert.equal(h.state.getStatus('user'), PRESENCE_STATUSES.BUSY);
@@ -119,13 +122,13 @@ test('uses authenticated identity and validates manual choices and acknowledgeme
 		{ status: PRESENCE_STATUSES.OFFLINE },
 		{ status: {} },
 	]) {
-		socket.send('presence:set', payload, (value) => {
+		await socket.send('presence:set', payload, (value) => {
 			reply = value;
 		});
 		assert.deepEqual(reply, { ok: false, status: PRESENCE_STATUSES.BUSY });
 	}
-	assert.doesNotThrow(() =>
-		socket.send(
+	await assert.doesNotReject(async () =>
+		await socket.send(
 			'presence:set',
 			{ status: PRESENCE_STATUSES.ONLINE },
 			'invalid callback',
@@ -134,20 +137,20 @@ test('uses authenticated identity and validates manual choices and acknowledgeme
 	assert.equal(h.state.getStatus('user'), PRESENCE_STATUSES.ONLINE);
 });
 
-test('disconnects preserve other tabs and stop the timer only after the last user leaves', () => {
+test('disconnects preserve other tabs and stop the timer only after the last user leaves', async () => {
 	const h = setup();
-	const first = h.connect('first');
-	const second = h.connect('second');
-	const other = h.connect('other', 'other');
-	first.send('disconnect');
+	const first = await h.connect('first');
+	const second = await h.connect('second');
+	const other = await h.connect('other', 'other');
+	await first.send('disconnect');
 	assert.equal(h.state.getStatus('user'), PRESENCE_STATUSES.ONLINE);
-	second.send('disconnect');
+	await second.send('disconnect');
 	assert.equal(h.state.getStatus('user'), PRESENCE_STATUSES.OFFLINE);
 	assert.deepEqual(h.counts(), { starts: 1, stops: 0 });
-	other.send('disconnect');
+	await other.send('disconnect');
 	assert.deepEqual(h.counts(), { starts: 1, stops: 1 });
 	assert.deepEqual(h.state.getConnectedUserIds(), []);
-	h.connect('reconnected');
+	await h.connect('reconnected');
 	assert.equal(h.events.at(-1).payload.status, PRESENCE_STATUSES.ONLINE);
 	assert.deepEqual(h.counts(), { starts: 2, stops: 1 });
 	h.service.stop();
@@ -155,11 +158,80 @@ test('disconnects preserve other tabs and stop the timer only after the last use
 	assert.deepEqual(h.counts(), { starts: 2, stops: 2 });
 });
 
-test('does not register unauthenticated sockets', () => {
+test('does not register unauthenticated sockets', async () => {
 	const h = setup();
-	const socket = h.connect('anonymous', null);
+	const socket = await h.connect('anonymous', null);
 	assert.equal(socket.handlers.size, 0);
 	assert.deepEqual(socket.rooms, []);
 	assert.deepEqual(h.events, []);
 	assert.deepEqual(h.counts(), { starts: 0, stops: 0 });
+});
+
+for (const status of [PRESENCE_STATUSES.AWAY, PRESENCE_STATUSES.BUSY]) {
+	test(`saved ${status} survives the final disconnect and a new server instance`, async () => {
+		const storage = new Map();
+		const firstServer = setup(storage);
+		const first = await firstServer.connect('first');
+		await first.send('presence:set', { status });
+		assert.equal(storage.get('user'), status);
+		await first.send('disconnect');
+		assert.equal(firstServer.state.getStatus('user'), PRESENCE_STATUSES.OFFLINE);
+		await firstServer.connect('refresh');
+		assert.equal(firstServer.state.getStatus('user'), status);
+		const nextServer = setup(storage);
+		const next = await nextServer.connect('after-restart');
+		assert.equal(nextServer.state.getStatus('user'), status);
+		await next.send('presence:set', { status: PRESENCE_STATUSES.ONLINE });
+		assert.equal(storage.get('user'), PRESENCE_STATUSES.ONLINE);
+		nextServer.advance(PRESENCE_IDLE_TIMEOUT_MS);
+		nextServer.tick();
+		assert.equal(nextServer.state.getStatus('user'), PRESENCE_STATUSES.AWAY);
+		assert.equal(storage.get('user'), PRESENCE_STATUSES.ONLINE);
+	});
+}
+
+test('failed writes leave the current preference unchanged and report failure', async () => {
+	const errors = [];
+	const storage = new Map([['user', PRESENCE_STATUSES.BUSY]]);
+	const h = setup(storage, {
+		savePreference: async () => { throw new Error('Unavailable'); },
+		onError: (error) => errors.push(error),
+	});
+	const socket = await h.connect('tab');
+	let reply;
+	await socket.send('presence:set', { status: PRESENCE_STATUSES.ONLINE }, (result) => { reply = result; });
+	assert.deepEqual(reply, { ok: false, status: PRESENCE_STATUSES.BUSY });
+	assert.equal(h.state.getStatus('user'), PRESENCE_STATUSES.BUSY);
+	assert.equal(storage.get('user'), PRESENCE_STATUSES.BUSY);
+	assert.equal(errors.length, 1);
+});
+
+test('failed reads do not announce Available or start a presence timer', async () => {
+	const h = setup(new Map(), { loadPreference: async () => { throw new Error('Unavailable'); } });
+	const socket = await h.connect('tab');
+	assert.equal(h.state.getStatus('user'), PRESENCE_STATUSES.OFFLINE);
+	assert.equal(h.events.length, 0);
+	assert.equal(socket.snapshots[0].event, 'presence:error');
+	assert.deepEqual(h.counts(), { starts: 0, stops: 0 });
+});
+
+test('a reconnect waits for an in-flight preference save', async () => {
+	const storage = new Map();
+	let release;
+	let started;
+	const saving = new Promise((resolve) => { started = resolve; });
+	const h = setup(storage, { savePreference: async (userId, status) => {
+		started();
+		await new Promise((resolve) => { release = resolve; });
+		storage.set(userId, status);
+	} });
+	const first = await h.connect('first');
+	const update = first.send('presence:set', { status: PRESENCE_STATUSES.BUSY });
+	await saving;
+	const disconnect = first.send('disconnect');
+	const reconnect = h.connect('next');
+	release();
+	await Promise.all([update, disconnect, reconnect]);
+	assert.equal(h.state.getStatus('user'), PRESENCE_STATUSES.BUSY);
+	assert.equal(h.events.at(-1).payload.status, PRESENCE_STATUSES.BUSY);
 });
