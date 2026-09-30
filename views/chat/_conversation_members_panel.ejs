@@ -5,6 +5,8 @@
 		class="chat-members-panel"
 		aria-labelledby="chat-members-title"
 		data-chat-members-panel
+		data-presence-url="/chat/rooms/members/presence"
+		data-presence-labels="<%= JSON.stringify(Object.fromEntries(Object.values(presenceStatuses).map(status => [status, t('presence.statuses.' + status)]))) %>"
 		hidden
 	>
 		<header class="chat-members-header">
@@ -87,6 +89,7 @@
 									].filter((item) => item.show) : []; %>
 									<% const hasRowActions = canShowSocialAction || memberActionForms.length > 0; %>
 									<li class="chat-member-item <%= hasRowActions ? 'chat-management-member-item' : '' %>">
+										<span class="chat-member-avatar-wrap">
 										<span
 											class="chat-member-avatar"
 											style="background-color: <%= member.avatar?.background || '' %>;"
@@ -97,6 +100,13 @@
 											<% } else { %>
 												<%= getMemberName(member).slice(0, 1).toUpperCase() %>
 											<% } %>
+										</span>
+										<span class="presence-dot chat-member-presence has-tooltip"
+											data-chat-member-presence="<%= member.id %>"
+											data-status="<%= presenceStatuses.OFFLINE %>"
+											data-bs-title="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>"
+											aria-label="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>"
+											role="img" tabindex="0"></span>
 										</span>
 
 										<div class="chat-member-body">
