@@ -14,6 +14,38 @@ import {
 import { emitChatRoomMembershipChanged } from '../../services/chat/live.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import { setActiveChatConversation } from './session.js';
+import { findOpenableRoomConversation } from '../../services/chat/rooms/access.js';
+import { listRoomMembers, listRoomManagementMembers } from '../../services/chat/rooms/members.js';
+import { canChatMemberManage } from '../../services/chat/rooms/permissions.js';
+import { presenceState } from '../../services/presence/state.js';
+import { PRESENCE_STATUSES } from '../../constants/presence.js';
+
+export async function getRoomMemberPresence(req, res, next) {
+	const conversationId = String(req.query.conversationId || '').trim();
+	if (!isValidUuid(conversationId)) return res.status(400).json({ ok: false });
+
+	try {
+		const room = await findOpenableRoomConversation(conversationId, req.user.id);
+		if (!room) return res.status(403).json({ ok: false });
+
+		const canManage = canChatMemberManage(room.member_role, room.member_status);
+		const members = canManage
+			? await listRoomManagementMembers(conversationId, req.user.id)
+			: await listRoomMembers(conversationId, req.user.id);
+		res.set('Cache-Control', 'no-store');
+		return res.json({
+			ok: true,
+			members: members.map((member) => ({
+				id: member.id,
+				status: member.social.isBlocked || member.social.isBlocking
+					? PRESENCE_STATUSES.OFFLINE
+					: presenceState.getStatus(member.id),
+			})),
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
 
 const ROOM_MEMBER_ACTIONS = Object.freeze({
 	promote: {
