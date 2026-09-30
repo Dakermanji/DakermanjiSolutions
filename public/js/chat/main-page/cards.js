@@ -5,6 +5,7 @@
 	const { renderEmptyState } = window.ChatMainUtils;
 
 	function renderFriendChats(sectionBody, conversations) {
+		sectionBody.querySelectorAll('.has-tooltip').forEach((element) => window.AppTooltips?.reset(element));
 		sectionBody.replaceChildren();
 
 		if (conversations.length === 0) {
@@ -24,6 +25,7 @@
 		}
 
 		sectionBody.appendChild(list);
+		window.AppTooltips?.initIn(sectionBody);
 	}
 
 	function renderRooms(sectionBody, rooms, pendingRequests = []) {
@@ -268,6 +270,9 @@
 			friend.email ||
 			sectionBody.dataset.friendFallbackLabel ||
 			'Friend';
+		const presenceLabels = JSON.parse(sectionBody.dataset.presenceLabels || '{}');
+		const status = Object.hasOwn(presenceLabels, friend.status) ? friend.status : 'offline';
+		const statusLabel = presenceLabels[status] || 'Offline';
 
 		const form = document.createElement('form');
 		form.className = 'chat-friend-form';
@@ -285,7 +290,7 @@
 		button.dataset.conversationId = conversation.id || '';
 		button.setAttribute(
 			'aria-label',
-			`${sectionBody.dataset.openLabel}: ${friendName}`,
+			`${sectionBody.dataset.openLabel}: ${friendName}, ${statusLabel}`,
 		);
 
 		const avatar = document.createElement('span');
@@ -300,6 +305,16 @@
 		} else {
 			avatar.textContent = friendName.slice(0, 1).toUpperCase();
 		}
+		const avatarWrap = document.createElement('span');
+		avatarWrap.className = 'chat-friend-avatar-wrap';
+		avatarWrap.appendChild(avatar);
+		const statusDot = document.createElement('span');
+		statusDot.className = 'presence-dot chat-friend-presence has-tooltip';
+		statusDot.dataset.status = status;
+		statusDot.dataset.bsTitle = statusLabel;
+		statusDot.setAttribute('aria-label', statusDot.dataset.bsTitle);
+		statusDot.setAttribute('role', 'img');
+		avatarWrap.appendChild(statusDot);
 
 		const content = document.createElement('span');
 		content.className = 'chat-friend-content';
@@ -324,7 +339,7 @@
 		icon.className = 'bi bi-chevron-right chat-friend-open';
 		icon.setAttribute('aria-hidden', 'true');
 
-		button.append(avatar, content, unreadBadge, icon);
+		button.append(avatarWrap, content, unreadBadge, icon);
 
 		form.append(input, button);
 
