@@ -12,6 +12,28 @@
 <% const notificationBadgeCount = Number(safeNotificationUnreadCount || 0); %>
 <% const notificationPreviewItems = Array.isArray(safeNotificationPreview) ? safeNotificationPreview : []; %>
 
+<li class="nav-item dropdown">
+	<button id="presenceStatus" type="button" class="nav-link border-0 bg-transparent has-tooltip presence-trigger"
+		data-presence-trigger data-bs-toggle="dropdown" aria-expanded="false"
+		data-offline-status="<%= presenceStatuses.OFFLINE %>"
+		data-status-labels="<%= JSON.stringify(Object.fromEntries(Object.values(presenceStatuses).map(status => [status, t('presence.statuses.' + status)]))) %>"
+		data-bs-title="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>"
+		aria-label="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>" aria-describedby="presenceFeedback">
+		<span class="presence-dot" data-presence-dot data-status="<%= presenceStatuses.OFFLINE %>" aria-hidden="true"></span>
+	</button>
+	<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="presenceStatus">
+		<% presenceSelectableStatuses.forEach((status) => { %>
+			<li><button type="button" class="dropdown-item d-flex align-items-center gap-2"
+				data-presence-choice="<%= status %>" aria-pressed="false" disabled>
+				<span class="presence-dot" data-status="<%= status %>" aria-hidden="true"></span>
+				<%= t('presence.statuses.' + status) %>
+			</button></li>
+		<% }) %>
+	</ul>
+	<span id="presenceFeedback" class="visually-hidden" role="status" aria-live="polite"
+		data-presence-feedback data-error="<%= t('presence.error') %>" data-connecting="<%= t('presence.connecting') %>"><%= t('presence.connecting') %></span>
+</li>
+
 <li class="nav-item ">
 	<a
 	class="nav-link has-tooltip <%= currentRoute === '/profile' ? 'active' : '' %>"
