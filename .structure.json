@@ -671,6 +671,7 @@
 	"tests": {
 		"presence": [
 			"browser.test.js",
+			"chat.test.js",
 			"live.test.js",
 			"social.test.js",
 			"state.test.js"

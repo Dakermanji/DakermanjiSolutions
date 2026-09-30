@@ -17,6 +17,36 @@
 
 	function createChatSectionsController({ lazySections }) {
 		let refreshTimeout = null;
+		let friendPresenceTimer = null;
+		let friendPresenceLoading = false;
+		let friendSectionCollapse = null;
+		let friendSectionBody = null;
+
+		function friendsVisible() {
+			return document.visibilityState === 'visible'
+				&& friendSectionCollapse?.classList.contains('show');
+		}
+
+		function stopFriendPresenceTimer() {
+			window.clearInterval(friendPresenceTimer);
+			friendPresenceTimer = null;
+		}
+
+		async function refreshFriendPresence() {
+			if (!friendsVisible() || friendPresenceLoading || !friendSectionBody) return;
+			friendPresenceLoading = true;
+			try {
+				await loadChatSection(friendSectionBody, { force: true, onlyVisible: true });
+			} finally {
+				friendPresenceLoading = false;
+			}
+		}
+
+		function startFriendPresenceTimer() {
+			stopFriendPresenceTimer();
+			if (!friendsVisible()) return;
+			friendPresenceTimer = window.setInterval(refreshFriendPresence, 60_000);
+		}
 
 		function init() {
 			for (const sectionCollapse of lazySections) {
@@ -24,18 +54,33 @@
 				const sectionBody = getSectionBody(sectionId);
 
 				if (!sectionBody) continue;
+				if (sectionId === 'friends') {
+					friendSectionCollapse = sectionCollapse;
+					friendSectionBody = sectionBody;
+					sectionCollapse.addEventListener('shown.bs.collapse', () => {
+						startFriendPresenceTimer();
+						void refreshFriendPresence();
+					});
+					sectionCollapse.addEventListener('hide.bs.collapse', stopFriendPresenceTimer);
+				}
 
 				sectionCollapse.addEventListener('show.bs.collapse', () => {
-					void loadChatSection(sectionBody);
+					if (sectionId !== 'friends') void loadChatSection(sectionBody);
 				});
 
 				if (sectionCollapse.classList.contains('show')) {
 					void loadChatSection(sectionBody);
+					if (sectionId === 'friends') startFriendPresenceTimer();
 				}
 			}
+			document.addEventListener('visibilitychange', () => {
+				startFriendPresenceTimer();
+				if (friendsVisible()) void refreshFriendPresence();
+			});
 		}
 
-		async function loadChatSection(sectionBody, { force = false } = {}) {
+		async function loadChatSection(sectionBody, { force = false, onlyVisible = false } = {}) {
+			if (onlyVisible && !friendsVisible()) return;
 			if (!sectionBody || (!force && sectionBody.dataset.loaded === 'true')) {
 				return;
 			}
@@ -57,6 +102,7 @@
 				}
 
 				const payload = await response.json();
+				if (onlyVisible && !friendsVisible()) return;
 				const sectionId = sectionBody.dataset.chatSectionBody;
 
 				if (!payload?.ok) {
@@ -73,7 +119,7 @@
 				renderRoomSection(sectionBody, payload);
 			} catch (error) {
 				console.error('Failed to load chat section', error);
-				renderMessage(sectionBody, sectionBody.dataset.errorLabel);
+				if (!onlyVisible) renderMessage(sectionBody, sectionBody.dataset.errorLabel);
 			}
 		}
 
