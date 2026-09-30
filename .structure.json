@@ -672,6 +672,7 @@
 		"presence": [
 			"browser.test.js",
 			"live.test.js",
+			"social.test.js",
 			"state.test.js"
 		]
 	},

@@ -3,6 +3,7 @@
 	class="offcanvas <%= currentLang === 'ar' ? 'offcanvas-end' : 'offcanvas-start' %>"
 	tabindex="-1"
 	id="socialPanel"
+	data-presence-labels="<%= JSON.stringify(Object.fromEntries(Object.values(presenceStatuses).map(status => [status, t('presence.statuses.' + status)]))) %>"
 	aria-labelledby="socialPanelLabel"
 >
 	<div class="offcanvas-header">
