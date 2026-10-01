@@ -621,8 +621,10 @@
 			"links.js"
 		],
 		"presence": [
+			"audience.js",
 			"live.js",
-			"state.js"
+			"state.js",
+			"watch.js"
 		],
 		"profile": [
 			"account.js",
@@ -676,7 +678,8 @@
 			"live.test.js",
 			"room.test.js",
 			"social.test.js",
-			"state.test.js"
+			"state.test.js",
+			"watch.test.js"
 		]
 	},
 	"utils": {

@@ -18,6 +18,7 @@ export function createPresenceSocketService(
 		loadPreference,
 		savePreference,
 		onError = () => {},
+		publishPeers = () => {},
 		state = presenceState,
 		schedule = setInterval,
 		cancel = clearInterval,
@@ -45,6 +46,7 @@ export function createPresenceSocketService(
 		if (publishedStatuses.get(userId) === status) return;
 		publishedStatuses.set(userId, status);
 		io.to(getPresenceUserRoom(userId)).emit('presence:changed', { status });
+		void publishPeers(userId, status);
 		if (status === PRESENCE_STATUSES.OFFLINE)
 			publishedStatuses.delete(userId);
 	}

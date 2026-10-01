@@ -18,6 +18,8 @@ import {
 } from '../services/notifications/live.js';
 import UserModel from '../models/User.js';
 import { createPresenceSocketService } from '../services/presence/live.js';
+import { createPresenceWatchService } from '../services/presence/watch.js';
+import { resolvePresenceAudience } from '../services/presence/audience.js';
 import logger from './logger.js';
 
 /**
@@ -28,7 +30,12 @@ import logger from './logger.js';
  */
 export default function configureSocket(server) {
 	const io = new Server(server);
+	const watchers = createPresenceWatchService({
+		resolveAudience: resolvePresenceAudience,
+		onError: (error, userId) => logger.warning('Presence audience lookup failed', { type: 'presence', userId, error }),
+	});
 	const presence = createPresenceSocketService(io, {
+		publishPeers: watchers.publish,
 		loadPreference: UserModel.findPresencePreference,
 		savePreference: UserModel.updatePresencePreference,
 		onError: (error, userId) => logger.warning('Presence preference synchronization failed', { type: 'presence', userId, error }),
@@ -60,6 +67,7 @@ export default function configureSocket(server) {
 	});
 
 	io.on('connection', (socket) => {
+		watchers.register(socket);
 		presence.register(socket);
 		socket.join(getSocialUserRoom(socket.data.userId));
 		socket.join(getChatUserRoom(socket.data.userId));
