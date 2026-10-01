@@ -17,8 +17,7 @@
 
 	function createChatSectionsController({ lazySections }) {
 		let refreshTimeout = null;
-		let friendPresenceTimer = null;
-		let friendPresenceLoading = false;
+		let friendPresenceSocket = null;
 		let friendSectionCollapse = null;
 		let friendSectionBody = null;
 
@@ -27,28 +26,37 @@
 				&& friendSectionCollapse?.classList.contains('show');
 		}
 
-		function stopFriendPresenceTimer() {
-			window.clearInterval(friendPresenceTimer);
-			friendPresenceTimer = null;
-		}
-
-		async function refreshFriendPresence() {
-			if (!friendsVisible() || friendPresenceLoading || !friendSectionBody) return;
-			friendPresenceLoading = true;
-			try {
-				await loadChatSection(friendSectionBody, { force: true, onlyVisible: true });
-			} finally {
-				friendPresenceLoading = false;
+		function updateFriendPresence(userId, status) {
+			if (!friendsVisible()) return;
+			const labels = JSON.parse(friendSectionBody.dataset.presenceLabels || '{}');
+			for (const dot of friendSectionBody.querySelectorAll('[data-chat-friend-presence]')) {
+				if (dot.dataset.chatFriendPresence !== userId) continue;
+				const resolved = Object.hasOwn(labels, status) ? status : 'offline';
+				dot.dataset.status = resolved;
+				dot.dataset.bsTitle = labels[resolved];
+				dot.setAttribute('aria-label', labels[resolved]);
+				window.bootstrap?.Tooltip.getInstance(dot)?.setContent({ '.tooltip-inner': labels[resolved] });
 			}
 		}
 
-		function startFriendPresenceTimer() {
-			stopFriendPresenceTimer();
-			if (!friendsVisible()) return;
-			friendPresenceTimer = window.setInterval(refreshFriendPresence, 60_000);
+		function watchFriends() {
+			if (!friendPresenceSocket?.connected || !friendsVisible()) return;
+			friendPresenceSocket.emit('presence:watch', { scope: 'chat-friends' }, (result) => {
+				if (!result?.ok || !friendsVisible()) return;
+				for (const item of result.statuses || []) updateFriendPresence(item.userId, item.status);
+			});
+		}
+
+		function unwatchFriends() {
+			friendPresenceSocket?.emit('presence:unwatch');
 		}
 
 		function init() {
+			if (typeof window.io === 'function') {
+				friendPresenceSocket = window.io({ withCredentials: true });
+				friendPresenceSocket.on('connect', watchFriends);
+				friendPresenceSocket.on('presence:peer:changed', (payload) => updateFriendPresence(payload?.userId, payload?.status));
+			}
 			for (const sectionCollapse of lazySections) {
 				const sectionId = sectionCollapse.dataset.chatSectionCollapse;
 				const sectionBody = getSectionBody(sectionId);
@@ -58,10 +66,9 @@
 					friendSectionCollapse = sectionCollapse;
 					friendSectionBody = sectionBody;
 					sectionCollapse.addEventListener('shown.bs.collapse', () => {
-						startFriendPresenceTimer();
-						void refreshFriendPresence();
+						void loadChatSection(sectionBody, { force: true, onlyVisible: true });
 					});
-					sectionCollapse.addEventListener('hide.bs.collapse', stopFriendPresenceTimer);
+					sectionCollapse.addEventListener('hide.bs.collapse', unwatchFriends);
 				}
 
 				sectionCollapse.addEventListener('show.bs.collapse', () => {
@@ -70,12 +77,12 @@
 
 				if (sectionCollapse.classList.contains('show')) {
 					void loadChatSection(sectionBody);
-					if (sectionId === 'friends') startFriendPresenceTimer();
+					if (sectionId === 'friends') watchFriends();
 				}
 			}
 			document.addEventListener('visibilitychange', () => {
-				startFriendPresenceTimer();
-				if (friendsVisible()) void refreshFriendPresence();
+				if (friendsVisible()) void loadChatSection(friendSectionBody, { force: true, onlyVisible: true });
+				else unwatchFriends();
 			});
 		}
 
@@ -140,6 +147,7 @@
 				sectionBody.dataset.unreadLabel,
 			);
 			renderFriendChats(sectionBody, payload.conversations);
+			watchFriends();
 		}
 
 		function renderRoomSection(sectionBody, payload) {

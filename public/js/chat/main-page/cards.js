@@ -310,6 +310,7 @@
 		avatarWrap.appendChild(avatar);
 		const statusDot = document.createElement('span');
 		statusDot.className = 'presence-dot chat-friend-presence has-tooltip';
+		statusDot.dataset.chatFriendPresence = friend.id || '';
 		statusDot.dataset.status = status;
 		statusDot.dataset.bsTitle = statusLabel;
 		statusDot.setAttribute('aria-label', statusDot.dataset.bsTitle);
