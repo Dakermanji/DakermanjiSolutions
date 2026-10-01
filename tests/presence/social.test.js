@@ -10,15 +10,19 @@ function setup() {
 	for (const id of ['socialPanel', 'socialFollowers', 'socialFollowees', 'socialFollowersBody', 'socialFolloweesBody']) {
 		const events = new Map();
 		const classes = new Set();
+		const dots = [];
 		nodes.set(id, { events, classes, dataset: { presenceLabels: JSON.stringify({ online: 'Available', offline: 'Offline', away: 'Away', busy: 'Busy' }) },
 			classList: { contains: (name) => classes.has(name) },
 			addEventListener: (name, handler) => events.set(name, handler),
+			dots, querySelectorAll: () => dots,
 		});
 	}
-	const timers = new Map();
 	const events = new Map();
-	const calls = [];
-	let timerId = 0;
+	const emitted = [];
+	const socketHandlers = new Map();
+	const socket = { connected: true, on: (name, handler) => socketHandlers.set(name, handler),
+		emit: (name, payload, callback) => { emitted.push({ name, payload }); if (callback) callback({ ok: true, statuses: [{ userId: 'friend', status: 'busy' }] }); },
+	};
 	const document = {
 		visibilityState: 'visible',
 		getElementById: (id) => nodes.get(id),
@@ -26,59 +30,43 @@ function setup() {
 		addEventListener: (name, handler) => events.set(name, handler),
 		createElement: () => ({ dataset: {}, setAttribute(name, value) { this[name] = value; } }),
 	};
-	const window = {
-		setInterval: (callback, delay) => { assert.equal(delay, 60_000); timers.set(++timerId, callback); return timerId; },
-		clearInterval: (id) => timers.delete(id),
-	};
-	const context = vm.createContext({ document, window, console, calls });
+	const window = { io: () => socket };
+	const context = vm.createContext({ document, window, console });
 	vm.runInContext(source, context);
-	vm.runInContext("loadFollowers = async () => { calls.push('followers'); }; loadFollowees = async () => { calls.push('followees'); };", context);
-	return { nodes, timers, document, events, calls, context,
+	return { nodes, document, events, emitted, socketHandlers, context,
 		open() { nodes.get('socialPanel').classes.add('show'); nodes.get('socialFollowers').classes.add('show'); },
-		refresh: () => vm.runInContext('refreshSocialPresence()', context),
 	};
 }
 
-test('requests presence only for a visible, open Followers or Following section', async () => {
+test('watches an open list, applies snapshot and live changes, then unwatches', () => {
 	const h = setup();
-	await h.refresh();
-	assert.deepEqual(h.calls, []);
+	const dot = { dataset: { socialPresence: 'friend', status: 'offline' }, setAttribute(name, value) { this[name] = value; } };
+	h.nodes.get('socialFollowersBody').dots.push(dot);
 	h.open();
-	await h.refresh();
-	assert.deepEqual(h.calls, ['followers']);
-	h.document.visibilityState = 'hidden';
-	await h.refresh();
-	assert.equal(h.calls.length, 1);
-	h.document.visibilityState = 'visible';
-	h.nodes.get('socialFollowers').classes.delete('show');
-	h.nodes.get('socialFollowees').classes.add('show');
-	await h.refresh();
-	assert.deepEqual(h.calls, ['followers', 'followees']);
-	h.nodes.get('socialPanel').classes.delete('show');
-	await h.refresh();
-	assert.equal(h.calls.length, 2);
+	h.nodes.get('socialFollowers').events.get('shown.bs.collapse')();
+	assert.equal(h.emitted[0].name, 'presence:watch');
+	assert.equal(h.emitted[0].payload.scope, 'social-followers');
+	assert.equal(dot.dataset.status, 'busy');
+	h.socketHandlers.get('presence:peer:changed')({ userId: 'friend', status: 'away' });
+	assert.equal(dot.dataset.status, 'away');
+	h.nodes.get('socialFollowers').events.get('hide.bs.collapse')();
+	assert.equal(h.emitted.at(-1).name, 'presence:unwatch');
 });
 
-test('starts one minute polling and stops when the panel, section, or tab is hidden', () => {
+test('unwatches when the panel or browser tab is hidden', () => {
 	const h = setup();
 	h.open();
-	const shown = h.nodes.get('socialFollowers').events.get('shown.bs.collapse');
-	shown(); shown();
-	assert.equal(h.timers.size, 1);
-	h.nodes.get('socialFollowers').events.get('hide.bs.collapse')();
-	assert.equal(h.timers.size, 0);
-	shown();
 	h.nodes.get('socialPanel').events.get('hide.bs.offcanvas')();
-	assert.equal(h.timers.size, 0);
-	shown();
+	assert.equal(h.emitted.at(-1).name, 'presence:unwatch');
 	h.document.visibilityState = 'hidden';
 	h.events.get('visibilitychange')();
-	assert.equal(h.timers.size, 0);
+	assert.equal(h.emitted.at(-1).name, 'presence:unwatch');
 });
 
 test('status circles include translated tooltips and accessible labels', () => {
 	const h = setup();
-	const dot = vm.runInContext("createSocialPresenceDot('online')", h.context);
+	const dot = vm.runInContext("createSocialPresenceDot('friend', 'online')", h.context);
+	assert.equal(dot.dataset.socialPresence, 'friend');
 	assert.equal(dot.dataset.status, 'online');
 	assert.equal(dot.dataset.bsTitle, 'Available');
 	assert.equal(dot['aria-label'], 'Available');
