@@ -45,6 +45,22 @@
 	font-weight: 700;
 }
 
+.chat-conversation-avatar-wrap {
+	grid-area: avatar;
+	position: relative;
+	display: inline-flex;
+	width: 3.5rem;
+	height: 3.5rem;
+}
+
+.chat-conversation-friend-presence {
+	position: absolute;
+	inset-inline-end: -0.1rem;
+	bottom: -0.1rem;
+	z-index: 1;
+	border: 1px solid var(--bg-section);
+}
+
 .chat-conversation-avatar img {
 	width: 100%;
 	height: 100%;
@@ -109,6 +125,11 @@
 		width: 2.75rem;
 		height: 2.75rem;
 		font-size: 0.9rem;
+	}
+
+	.chat-conversation-avatar-wrap {
+		width: 2.75rem;
+		height: 2.75rem;
 	}
 
 	.chat-conversation-title h1 {

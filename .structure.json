@@ -437,6 +437,7 @@
 					"activity.js",
 					"dates.js",
 					"flagReview.js",
+					"friendPresence.js",
 					"messages-flags.js",
 					"messages-history.js",
 					"messages-mentions.js",
@@ -675,6 +676,7 @@
 		"presence": [
 			"browser.test.js",
 			"chat.test.js",
+			"friend-conversation.test.js",
 			"live.test.js",
 			"room.test.js",
 			"social.test.js",

@@ -32,6 +32,10 @@
 		panel: document.querySelector('[data-chat-members-panel]'),
 		conversationId: chatPage.dataset.activeConversationId,
 	});
+	const friendPresence = window.ChatConversationFriendPresence?.createFriendPresenceController({
+		dot: document.querySelector('[data-chat-conversation-friend-presence]'),
+		conversationId: chatPage.dataset.activeConversationId,
+	});
 	const sidePanels = window.ChatConversationPanels.createSidePanelController({
 		composer,
 		composerNotice,
@@ -146,6 +150,7 @@
 	chatSocket = window.ChatConversationSocket.connectChatSocket();
 	if (chatSocket) {
 		roomPresence?.setSocket(chatSocket);
+		friendPresence?.setSocket(chatSocket);
 		bindChatSocket(chatSocket);
 	}
 
@@ -175,6 +180,7 @@
 
 		socket.on('connect', () => {
 			roomPresence?.sync();
+			friendPresence?.sync();
 			socket.emit('chat:conversation:join', {
 				conversationId: chatPage.dataset.activeConversationId,
 			});

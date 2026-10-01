@@ -67,6 +67,7 @@ export async function renderChat(req, res, next) {
 						'chat/conversation-page/renderer-list',
 						'chat/conversation-page/renderer',
 						'chat/conversation-page/socket',
+						'chat/conversation-page/friendPresence',
 						'chat/conversation-page/panels',
 						'chat/conversation-page/messages-reply',
 						'chat/conversation-page/messages-history',
