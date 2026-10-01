@@ -5,7 +5,6 @@
 		class="chat-members-panel"
 		aria-labelledby="chat-members-title"
 		data-chat-members-panel
-		data-presence-url="/chat/rooms/members/presence"
 		data-presence-labels="<%= JSON.stringify(Object.fromEntries(Object.values(presenceStatuses).map(status => [status, t('presence.statuses.' + status)]))) %>"
 		hidden
 	>

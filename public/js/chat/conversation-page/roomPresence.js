@@ -2,70 +2,50 @@
 
 (() => {
 	function createRoomPresenceController({ panel, conversationId }) {
-		if (!panel || !conversationId) return { sync() {}, stop() {} };
+		if (!panel || !conversationId) return { sync() {}, setSocket() {} };
 		const labels = JSON.parse(panel.dataset.presenceLabels || '{}');
-		let timer = null;
-		let request = null;
+		let socket = null;
 		let generation = 0;
 
 		function visible() {
 			return !panel.hidden && document.visibilityState === 'visible';
 		}
 
-		function applyMembers(members) {
-			const statuses = new Map(members.map((member) => [member.id, member.status]));
+		function update(userId, reported) {
+			if (!visible()) return;
+			const status = Object.hasOwn(labels, reported) ? reported : 'offline';
+			const label = labels[status] || 'Offline';
 			for (const dot of panel.querySelectorAll('[data-chat-member-presence]')) {
-				const reported = statuses.get(dot.dataset.chatMemberPresence);
-				const status = Object.hasOwn(labels, reported) ? reported : 'offline';
-				const label = labels[status] || 'Offline';
+				if (dot.dataset.chatMemberPresence !== userId) continue;
 				dot.dataset.status = status;
 				dot.dataset.bsTitle = label;
 				dot.setAttribute('aria-label', label);
 				window.bootstrap?.Tooltip.getInstance(dot)?.setContent({ '.tooltip-inner': label });
 			}
-			window.AppTooltips?.initIn(panel);
-		}
-
-		async function refresh() {
-			if (!visible() || request) return;
-			const currentGeneration = generation;
-			const controller = new AbortController();
-			request = controller;
-			try {
-				const url = `${panel.dataset.presenceUrl}?conversationId=${encodeURIComponent(conversationId)}`;
-				const response = await fetch(url, {
-					headers: { Accept: 'application/json' },
-					credentials: 'same-origin',
-					signal: controller.signal,
-				});
-				if (!response.ok) throw new Error(`Presence request failed: ${response.status}`);
-				const payload = await response.json();
-				if (!payload?.ok || !Array.isArray(payload.members)) throw new Error('Invalid presence response');
-				if (currentGeneration === generation && visible()) applyMembers(payload.members);
-			} catch (error) {
-				if (error.name !== 'AbortError') console.error('Failed to load room presence', error);
-			} finally {
-				if (request === controller) request = null;
-			}
-		}
-
-		function stop() {
-			generation++;
-			window.clearInterval(timer);
-			timer = null;
-			request?.abort();
-			request = null;
 		}
 
 		function sync() {
-			stop();
-			if (!visible()) return;
-			void refresh();
-			timer = window.setInterval(refresh, 60_000);
+			generation++;
+			if (!socket?.connected || !visible()) {
+				socket?.emit('presence:unwatch');
+				return;
+			}
+			const current = generation;
+			socket.emit('presence:watch', { scope: 'room-members', conversationId }, (result) => {
+				if (current !== generation || !visible() || !result?.ok) return;
+				for (const item of result.statuses || []) update(item.userId, item.status);
+				window.AppTooltips?.initIn(panel);
+			});
+		}
+
+		function setSocket(value) {
+			socket = value;
+			socket?.on('presence:peer:changed', (payload) => update(payload?.userId, payload?.status));
+			if (socket?.connected) sync();
 		}
 
 		document.addEventListener('visibilitychange', sync);
-		return { sync, stop };
+		return { sync, setSocket };
 	}
 
 	window.ChatConversationRoomPresence = { createRoomPresenceController };

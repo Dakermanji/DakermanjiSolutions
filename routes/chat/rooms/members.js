@@ -2,7 +2,6 @@
 
 import { Router } from 'express';
 import {
-	getRoomMemberPresence,
 	banChatRoomMember,
 	deleteChatRoomMemberHistory,
 	demoteChatRoomAdmin,
@@ -15,7 +14,6 @@ import {
 
 const router = Router();
 
-router.get('/presence', getRoomMemberPresence);
 router.post('/promote', promoteChatRoomMember);
 router.post('/demote', demoteChatRoomAdmin);
 router.post('/remove', removeChatRoomMember);

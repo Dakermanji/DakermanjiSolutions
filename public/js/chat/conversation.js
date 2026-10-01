@@ -145,6 +145,7 @@
 
 	chatSocket = window.ChatConversationSocket.connectChatSocket();
 	if (chatSocket) {
+		roomPresence?.setSocket(chatSocket);
 		bindChatSocket(chatSocket);
 	}
 
@@ -173,6 +174,7 @@
 		if (!socket) return;
 
 		socket.on('connect', () => {
+			roomPresence?.sync();
 			socket.emit('chat:conversation:join', {
 				conversationId: chatPage.dataset.activeConversationId,
 			});

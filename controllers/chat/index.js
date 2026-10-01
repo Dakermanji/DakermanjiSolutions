@@ -45,7 +45,6 @@ export {
 	updateChatRoom,
 } from './rooms.js';
 export {
-	getRoomMemberPresence,
 	banChatRoomMember,
 	deleteChatRoomMemberHistory,
 	demoteChatRoomAdmin,
