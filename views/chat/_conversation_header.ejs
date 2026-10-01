@@ -12,15 +12,30 @@
 		</button>
 	</form>
 
-	<span
-		class="chat-conversation-avatar"
-		style="background-color: <%= isRoomConversation ? '' : (friend.avatar?.background || '') %>;"
-		aria-hidden="true"
-	>
-		<% if (!isRoomConversation && friend.avatar?.src) { %>
-			<img src="<%= friend.avatar.src %>" alt="" />
-		<% } else { %>
-			<%= conversationName.slice(0, 1).toUpperCase() %>
+	<span class="chat-conversation-avatar-wrap">
+		<span
+			class="chat-conversation-avatar"
+			style="background-color: <%= isRoomConversation ? '' : (friend.avatar?.background || '') %>;"
+			aria-hidden="true"
+		>
+			<% if (!isRoomConversation && friend.avatar?.src) { %>
+				<img src="<%= friend.avatar.src %>" alt="" />
+			<% } else { %>
+				<%= conversationName.slice(0, 1).toUpperCase() %>
+			<% } %>
+		</span>
+		<% if (!isNotesConversation && !isRoomConversation) { %>
+			<%
+				const friendPresenceStatus = Object.values(presenceStatuses).includes(friend.status)
+					? friend.status : presenceStatuses.OFFLINE;
+				const friendPresenceLabel = t('presence.statuses.' + friendPresenceStatus);
+			%>
+			<span class="presence-dot chat-conversation-friend-presence has-tooltip"
+				data-chat-conversation-friend-presence="<%= friend.id %>"
+				data-presence-labels="<%= JSON.stringify(Object.fromEntries(Object.values(presenceStatuses).map(status => [status, t('presence.statuses.' + status)]))) %>"
+				data-status="<%= friendPresenceStatus %>"
+				data-bs-title="<%= friendPresenceLabel %>"
+				role="img" aria-label="<%= friendPresenceLabel %>" tabindex="0"></span>
 		<% } %>
 	</span>
 

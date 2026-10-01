@@ -17,25 +17,77 @@
 
 	function createChatSectionsController({ lazySections }) {
 		let refreshTimeout = null;
+		let friendPresenceSocket = null;
+		let friendSectionCollapse = null;
+		let friendSectionBody = null;
+
+		function friendsVisible() {
+			return document.visibilityState === 'visible'
+				&& friendSectionCollapse?.classList.contains('show');
+		}
+
+		function updateFriendPresence(userId, status) {
+			if (!friendsVisible()) return;
+			const labels = JSON.parse(friendSectionBody.dataset.presenceLabels || '{}');
+			for (const dot of friendSectionBody.querySelectorAll('[data-chat-friend-presence]')) {
+				if (dot.dataset.chatFriendPresence !== userId) continue;
+				const resolved = Object.hasOwn(labels, status) ? status : 'offline';
+				dot.dataset.status = resolved;
+				dot.dataset.bsTitle = labels[resolved];
+				dot.setAttribute('aria-label', labels[resolved]);
+				window.bootstrap?.Tooltip.getInstance(dot)?.setContent({ '.tooltip-inner': labels[resolved] });
+			}
+		}
+
+		function watchFriends() {
+			if (!friendPresenceSocket?.connected || !friendsVisible()) return;
+			friendPresenceSocket.emit('presence:watch', { scope: 'chat-friends' }, (result) => {
+				if (!result?.ok || !friendsVisible()) return;
+				for (const item of result.statuses || []) updateFriendPresence(item.userId, item.status);
+			});
+		}
+
+		function unwatchFriends() {
+			friendPresenceSocket?.emit('presence:unwatch');
+		}
 
 		function init() {
+			if (typeof window.io === 'function') {
+				friendPresenceSocket = window.io({ withCredentials: true });
+				friendPresenceSocket.on('connect', watchFriends);
+				friendPresenceSocket.on('presence:peer:changed', (payload) => updateFriendPresence(payload?.userId, payload?.status));
+			}
 			for (const sectionCollapse of lazySections) {
 				const sectionId = sectionCollapse.dataset.chatSectionCollapse;
 				const sectionBody = getSectionBody(sectionId);
 
 				if (!sectionBody) continue;
+				if (sectionId === 'friends') {
+					friendSectionCollapse = sectionCollapse;
+					friendSectionBody = sectionBody;
+					sectionCollapse.addEventListener('shown.bs.collapse', () => {
+						void loadChatSection(sectionBody, { force: true, onlyVisible: true });
+					});
+					sectionCollapse.addEventListener('hide.bs.collapse', unwatchFriends);
+				}
 
 				sectionCollapse.addEventListener('show.bs.collapse', () => {
-					void loadChatSection(sectionBody);
+					if (sectionId !== 'friends') void loadChatSection(sectionBody);
 				});
 
 				if (sectionCollapse.classList.contains('show')) {
 					void loadChatSection(sectionBody);
+					if (sectionId === 'friends') watchFriends();
 				}
 			}
+			document.addEventListener('visibilitychange', () => {
+				if (friendsVisible()) void loadChatSection(friendSectionBody, { force: true, onlyVisible: true });
+				else unwatchFriends();
+			});
 		}
 
-		async function loadChatSection(sectionBody, { force = false } = {}) {
+		async function loadChatSection(sectionBody, { force = false, onlyVisible = false } = {}) {
+			if (onlyVisible && !friendsVisible()) return;
 			if (!sectionBody || (!force && sectionBody.dataset.loaded === 'true')) {
 				return;
 			}
@@ -57,6 +109,7 @@
 				}
 
 				const payload = await response.json();
+				if (onlyVisible && !friendsVisible()) return;
 				const sectionId = sectionBody.dataset.chatSectionBody;
 
 				if (!payload?.ok) {
@@ -73,7 +126,7 @@
 				renderRoomSection(sectionBody, payload);
 			} catch (error) {
 				console.error('Failed to load chat section', error);
-				renderMessage(sectionBody, sectionBody.dataset.errorLabel);
+				if (!onlyVisible) renderMessage(sectionBody, sectionBody.dataset.errorLabel);
 			}
 		}
 
@@ -94,6 +147,7 @@
 				sectionBody.dataset.unreadLabel,
 			);
 			renderFriendChats(sectionBody, payload.conversations);
+			watchFriends();
 		}
 
 		function renderRoomSection(sectionBody, payload) {

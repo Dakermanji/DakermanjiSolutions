@@ -166,6 +166,7 @@
 								data-open-label="<%= t('chat:openChat') %>"
 								data-friend-fallback-label="<%= t('chat:friendFallback') %>"
 								data-open-url="/chat/friends/open"
+								data-presence-labels="<%= JSON.stringify(Object.fromEntries(Object.values(presenceStatuses).map(status => [status, t('presence.statuses.' + status)]))) %>"
 							<% } %>
 						<% } %>
 					>

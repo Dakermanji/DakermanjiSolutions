@@ -28,6 +28,14 @@
 			chatPage,
 			typingIndicator,
 		});
+	const roomPresence = window.ChatConversationRoomPresence?.createRoomPresenceController({
+		panel: document.querySelector('[data-chat-members-panel]'),
+		conversationId: chatPage.dataset.activeConversationId,
+	});
+	const friendPresence = window.ChatConversationFriendPresence?.createFriendPresenceController({
+		dot: document.querySelector('[data-chat-conversation-friend-presence]'),
+		conversationId: chatPage.dataset.activeConversationId,
+	});
 	const sidePanels = window.ChatConversationPanels.createSidePanelController({
 		composer,
 		composerNotice,
@@ -141,6 +149,8 @@
 
 	chatSocket = window.ChatConversationSocket.connectChatSocket();
 	if (chatSocket) {
+		roomPresence?.setSocket(chatSocket);
+		friendPresence?.setSocket(chatSocket);
 		bindChatSocket(chatSocket);
 	}
 
@@ -158,6 +168,7 @@
 		toggle?.addEventListener('click', () => {
 			const shouldShowPanel = panel?.hidden !== false;
 			sidePanels.setActiveSidePanel(shouldShowPanel ? panelName : null);
+			roomPresence?.sync();
 			if (shouldShowPanel) {
 				void onOpen?.();
 			}
@@ -168,6 +179,8 @@
 		if (!socket) return;
 
 		socket.on('connect', () => {
+			roomPresence?.sync();
+			friendPresence?.sync();
 			socket.emit('chat:conversation:join', {
 				conversationId: chatPage.dataset.activeConversationId,
 			});

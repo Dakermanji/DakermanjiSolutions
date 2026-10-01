@@ -1,4 +1,15 @@
 {
+	"presence": {
+		"label": "Votre statut",
+		"connecting": "Connexion…",
+		"error": "Impossible de modifier votre statut. Veuillez réessayer.",
+		"statuses": {
+			"online": "Disponible",
+			"offline": "Hors ligne",
+			"away": "Absent",
+			"busy": "Occupé"
+		}
+	},
 	"title": "Bienvenue",
 	"nav": {
 		"home": "Accueil",

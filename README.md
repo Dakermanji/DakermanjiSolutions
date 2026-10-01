@@ -13,8 +13,11 @@ A multilingual portfolio and server-rendered web application with user accounts,
 - **Profile:** username, country, DiceBear avatars, login methods, and email-confirmed account deletion.
 - **Social:** follow requests, followers, followees, blocking, and live updates.
 - **Chat:** direct conversations, private self-notes, rooms, join requests, invitations, message reactions, mentions, message flags, and room activity logs.
+- **Presence:** Available, Away, Busy, and Offline indicators in the navbar, social lists, Chat Friends, friend conversations, and room member lists.
 - **Notifications:** an application inbox, unread badges, previews, and real-time updates.
 - **Weather:** city search, five-day forecasts, metric/imperial units, localized locations, and optional Unsplash backgrounds.
+
+Available is automatic while connected and active. Inactivity changes it to Away after five minutes; users can also choose Away or Busy manually. Offline is automatic when disconnected and cannot be selected. Manual choices survive reconnects and server restarts. Open social, Chat Friends, and room member lists receive live status changes through Socket.IO, as does the open friend conversation header.
 
 ## Technology
 
@@ -81,7 +84,9 @@ done
 
 Use your database connection details. These commands do not read the application's `.env` automatically. A database administration UI can also execute the files in order.
 
-Scripts cover sessions, accounts and security, social relationships, API usage logs, chat, rooms, notifications, reactions, and mentions. The session table must exist before startup. This repository has no migration runner; review schema changes and back up an existing database before applying SQL updates. Certificate files in `sql/` are not SQL scripts.
+Numbered scripts cover sessions, accounts and security, social relationships, API usage logs, chat, rooms, notifications, reactions, and mentions. The session table must exist before startup. This repository has no migration runner; review schema changes and back up an existing database before applying SQL updates. Certificate files in `sql/` are not SQL scripts.
+
+After scripts 01–24, run `sql/z_alter.sql` for both fresh and existing databases before starting this version. It adds `users.presence_status`, defaulting existing and new accounts to Available (`online`). Only manual choices are saved; automatic Away and Offline never overwrite the saved preference.
 
 ### 4. Run the application
 
@@ -97,7 +102,7 @@ npm start
 
 Both commands preload `instrument.js` for Sentry initialization. Startup waits for translations and checks PostgreSQL connectivity before listening. The SMTP connection is verified separately and reports failures in the logs.
 
-There is currently no `npm test` script. Verify affected flows manually after changes, including sign-in, protected pages, and any changed real-time features.
+There is currently no `npm test` script. Run the presence tests with `node --test tests/presence/*.test.js`, and verify affected flows manually after changes, including sign-in, protected pages, and any changed real-time features.
 
 ## Production deployment
 

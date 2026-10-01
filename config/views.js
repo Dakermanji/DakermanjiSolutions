@@ -22,6 +22,7 @@ import { fileURLToPath } from 'url';
 import expressLayouts from 'express-ejs-layouts';
 
 import { SUPPORTED_LANGUAGES } from './languages.js';
+import { PRESENCE_STATUSES, PRESENCE_SELECTABLE_STATUSES } from '../constants/presence.js';
 
 /**
  * Resolve the current file path in ES Modules.
@@ -40,6 +41,8 @@ export default function configureViews(app) {
 	// Keep the shared layout renderable even when request middleware fails
 	// before it can populate res.locals. Request-scoped locals override these.
 	Object.assign(app.locals, {
+		presenceStatuses: PRESENCE_STATUSES,
+		presenceSelectableStatuses: PRESENCE_SELECTABLE_STATUSES,
 		t: (key) => key,
 		currentLang: 'en',
 		languages: SUPPORTED_LANGUAGES,

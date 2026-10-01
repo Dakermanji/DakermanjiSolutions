@@ -34,7 +34,8 @@
 	"constants": [
 		"chat.js",
 		"legal.js",
-		"notifications.js"
+		"notifications.js",
+		"presence.js"
 	],
 	"controllers": {
 		"auth": [
@@ -436,6 +437,7 @@
 					"activity.js",
 					"dates.js",
 					"flagReview.js",
+					"friendPresence.js",
 					"messages-flags.js",
 					"messages-history.js",
 					"messages-mentions.js",
@@ -444,6 +446,7 @@
 					"messages-reply.js",
 					"messages.js",
 					"panels.js",
+					"roomPresence.js",
 					"read-state.js",
 					"renderer-actions.js",
 					"renderer-content.js",
@@ -490,6 +493,7 @@
 				"install.js",
 				"modals.js",
 				"notifications.js",
+				"presence.js",
 				"social.js",
 				"theme.js",
 				"themeInit.js",
@@ -617,6 +621,12 @@
 			"live.js",
 			"links.js"
 		],
+		"presence": [
+			"audience.js",
+			"live.js",
+			"state.js",
+			"watch.js"
+		],
 		"profile": [
 			"account.js",
 			"deletion.js",
@@ -659,8 +669,21 @@
 		"21_chat_message_flags.sql",
 		"22_chat_room_activity_logs.sql",
 		"23_chat_message_reactions.sql",
-		"24_chat_message_mentions.sql"
+		"24_chat_message_mentions.sql",
+		"z_alter.sql"
 	],
+	"tests": {
+		"presence": [
+			"browser.test.js",
+			"chat.test.js",
+			"friend-conversation.test.js",
+			"live.test.js",
+			"room.test.js",
+			"social.test.js",
+			"state.test.js",
+			"watch.test.js"
+		]
+	},
 	"utils": {
 		"config": [
 			"dotenv.js"

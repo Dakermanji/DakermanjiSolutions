@@ -10,8 +10,60 @@ const followersCollapse = document.getElementById('socialFollowers');
 const followersBody = document.getElementById('socialFollowersBody');
 const socialPanel = document.getElementById('socialPanel');
 const socialCountBadges = document.querySelectorAll('[data-social-count]');
+const socialPresenceLabels = JSON.parse(socialPanel?.dataset.presenceLabels || '{}');
+let socialSocket = null;
+
+function isSocialPresenceVisible() {
+	return document.visibilityState === 'visible' && socialPanel?.classList.contains('show');
+}
+
+function updateSocialPresence(userId, status) {
+	for (const body of [followersBody, followeesBody]) {
+		for (const dot of body?.querySelectorAll('[data-social-presence]') || []) {
+			if (dot.dataset.socialPresence !== userId) continue;
+			const resolved = Object.hasOwn(socialPresenceLabels, status) ? status : 'offline';
+			dot.dataset.status = resolved;
+			dot.dataset.bsTitle = socialPresenceLabels[resolved];
+			dot.setAttribute('aria-label', socialPresenceLabels[resolved]);
+			window.bootstrap?.Tooltip.getInstance(dot)?.setContent({ '.tooltip-inner': socialPresenceLabels[resolved] });
+		}
+	}
+}
+
+function watchSocialPresence() {
+	if (!socialSocket?.connected || !isSocialPresenceVisible()) return;
+	const section = getOpenSocialSection();
+	if (!['followers', 'followees'].includes(section)) return;
+	socialSocket.emit('presence:watch', { scope: `social-${section}` }, (result) => {
+		if (!result?.ok || !isSocialPresenceVisible() || getOpenSocialSection() !== section) return;
+		for (const item of result.statuses || []) updateSocialPresence(item.userId, item.status);
+	});
+}
+
+function unwatchSocialPresence() {
+	socialSocket?.emit('presence:unwatch');
+}
+
+for (const collapse of [followersCollapse, followeesCollapse]) {
+	collapse?.addEventListener('hide.bs.collapse', unwatchSocialPresence);
+	collapse?.addEventListener('shown.bs.collapse', watchSocialPresence);
+}
+
+document.addEventListener('visibilitychange', () => {
+	if (isSocialPresenceVisible()) {
+		const section = getOpenSocialSection();
+		if (section === 'followers') void loadFollowers(true);
+		if (section === 'followees') void loadFollowees(true);
+	} else unwatchSocialPresence();
+});
 
 if (socialPanel) {
+	socialPanel.addEventListener('shown.bs.offcanvas', () => {
+		const section = getOpenSocialSection();
+		if (section === 'followers') void loadFollowers(true);
+		if (section === 'followees') void loadFollowees(true);
+	});
+	socialPanel.addEventListener('hide.bs.offcanvas', unwatchSocialPresence);
 	socialPanel.addEventListener('show.bs.offcanvas', () => {
 		void loadSocialCounts();
 	});
@@ -141,10 +193,10 @@ async function loadBlockedUsers() {
 	}
 }
 
-async function loadFollowees() {
+async function loadFollowees(quiet = false) {
 	const url = followeesBody.dataset.url;
 
-	renderLoadingState(followeesBody);
+	if (!quiet) renderLoadingState(followeesBody);
 
 	try {
 		const response = await fetch(url, {
@@ -164,18 +216,20 @@ async function loadFollowees() {
 			throw new Error('Invalid followees payload');
 		}
 
+		if (quiet && (!isSocialPresenceVisible() || getOpenSocialSection() !== 'followees')) return;
 		updateSocialCount('following', payload.followees.length);
 		renderFollowees(payload.followees);
+		if (isSocialPresenceVisible() && getOpenSocialSection() === 'followees') watchSocialPresence();
 	} catch (error) {
 		console.error('Failed to load followees', error);
-		renderMessage(followeesBody, followeesBody.dataset.errorLabel);
+		if (!quiet) renderMessage(followeesBody, followeesBody.dataset.errorLabel);
 	}
 }
 
-async function loadFollowers() {
+async function loadFollowers(quiet = false) {
 	const url = followersBody.dataset.url;
 
-	renderLoadingState(followersBody);
+	if (!quiet) renderLoadingState(followersBody);
 
 	try {
 		const response = await fetch(url, {
@@ -195,11 +249,13 @@ async function loadFollowers() {
 			throw new Error('Invalid followers payload');
 		}
 
+		if (quiet && (!isSocialPresenceVisible() || getOpenSocialSection() !== 'followers')) return;
 		updateSocialCount('followers', payload.followers.length);
 		renderFollowers(payload.followers);
+		if (isSocialPresenceVisible() && getOpenSocialSection() === 'followers') watchSocialPresence();
 	} catch (error) {
 		console.error('Failed to load followers', error);
-		renderMessage(followersBody, followersBody.dataset.errorLabel);
+		if (!quiet) renderMessage(followersBody, followersBody.dataset.errorLabel);
 	}
 }
 
@@ -233,6 +289,11 @@ function connectSocialSocket() {
 
 	const socket = window.io({
 		withCredentials: true,
+	});
+	socialSocket = socket;
+	socket.on('connect', watchSocialPresence);
+	socket.on('presence:peer:changed', (payload) => {
+		if (isSocialPresenceVisible()) updateSocialPresence(payload?.userId, payload?.status);
 	});
 
 	socket.on('social:counts:changed', () => {
@@ -315,6 +376,7 @@ function renderBlockedUsers(blockedUsers) {
 }
 
 function renderFollowees(followees) {
+	followeesBody.querySelectorAll('.has-tooltip').forEach((element) => window.AppTooltips?.reset(element));
 	followeesBody.replaceChildren();
 
 	if (followees.length === 0) {
@@ -334,6 +396,7 @@ function renderFollowees(followees) {
 }
 
 function renderFollowers(followers) {
+	followersBody.querySelectorAll('.has-tooltip').forEach((element) => window.AppTooltips?.reset(element));
 	followersBody.replaceChildren();
 
 	if (followers.length === 0) {
@@ -436,7 +499,7 @@ function createFolloweeItem(followee) {
 		userName.tabIndex = 0;
 	}
 
-	title.appendChild(userName);
+	title.append(createSocialPresenceDot(followee.id, followee.status), userName);
 
 	const meta = document.createElement('div');
 	meta.className = 'small text-body-secondary mt-1';
@@ -475,7 +538,7 @@ function createFollowerItem(follower) {
 		userName.tabIndex = 0;
 	}
 
-	title.appendChild(userName);
+	title.append(createSocialPresenceDot(follower.id, follower.status), userName);
 
 	const meta = document.createElement('div');
 	meta.className = 'small text-body-secondary mt-1';
@@ -495,6 +558,20 @@ function createFollowerItem(follower) {
 	}
 
 	return item;
+}
+
+function createSocialPresenceDot(userId, status) {
+	const dot = document.createElement('span');
+	dot.className = 'presence-dot has-tooltip me-2';
+	dot.dataset.socialPresence = userId;
+	if (Object.hasOwn(socialPresenceLabels, status)) {
+		dot.dataset.status = status;
+		dot.dataset.bsTitle = socialPresenceLabels[status];
+		dot.setAttribute('aria-label', socialPresenceLabels[status]);
+	}
+	dot.setAttribute('role', 'img');
+	dot.tabIndex = 0;
+	return dot;
 }
 
 function buildNotificationTitleParts(notification) {

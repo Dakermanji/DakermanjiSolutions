@@ -77,7 +77,7 @@
 
     <!-- Static Scripts -->
     <% const staticScripts = ['csrf', 'theme', 'dropdownMenu', 'tooltips', 'modals', 'flash', 'backToTop'] %>
-    <% if (user) staticScripts.push('social', 'chat', 'notifications') %>
+    <% if (user) staticScripts.push('social', 'chat', 'notifications', 'presence') %>
     <% if (user) { %>
     <script src="/socket.io/socket.io.js" defer></script>
     <% } %>
