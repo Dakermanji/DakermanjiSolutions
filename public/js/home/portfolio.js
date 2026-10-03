@@ -228,7 +228,8 @@
 		);
 
 		let itemsPerRow = 0;
-		let visibleCount = 0;
+		let visibleRows = 1;
+		let gridWidth = portfolioGrid.clientWidth;
 
 		/**
 		 * Detect how many items fit in one row
@@ -252,6 +253,7 @@
 		 * Apply visibility to items
 		 */
 		function updateVisibility() {
+			const visibleCount = Math.min(visibleRows * itemsPerRow, items.length);
 			items.forEach((item, index) => {
 				item.classList.toggle('is-hidden', index >= visibleCount);
 			});
@@ -262,17 +264,14 @@
 
 		/**
 		 * Initialize grid:
-		 * - show only one row
 		 * - calculate items per row dynamically
+		 * - preserve the number of rows the visitor has revealed
 		 */
 		function initPortfolioRows() {
 			// Reset (ensure accurate measurement)
 			items.forEach((item) => item.classList.remove('is-hidden'));
 
 			itemsPerRow = getItemsPerRow();
-
-			// Show only first row initially
-			visibleCount = Math.min(itemsPerRow, items.length);
 
 			updateVisibility();
 		}
@@ -281,15 +280,21 @@
 		 * Show more button → reveal next row
 		 */
 		showMoreBtn.addEventListener('click', () => {
-			visibleCount = Math.min(visibleCount + itemsPerRow, items.length);
+			visibleRows += 1;
 
 			updateVisibility();
 		});
 
 		/**
-		 * Recalculate layout on resize (debounced)
+		 * Recalculate when the grid width changes. Mobile browser chrome can
+		 * trigger height-only resize events while scrolling.
 		 */
-		window.addEventListener('resize', debounce(initPortfolioRows));
+		window.addEventListener('resize', debounce(() => {
+			const nextWidth = portfolioGrid.clientWidth;
+			if (nextWidth === gridWidth) return;
+			gridWidth = nextWidth;
+			initPortfolioRows();
+		}));
 
 		// Initial setup
 		initPortfolioRows();
