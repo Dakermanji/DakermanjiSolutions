@@ -18,8 +18,11 @@
 		data-offline-status="<%= presenceStatuses.OFFLINE %>"
 		data-status-labels="<%= JSON.stringify(Object.fromEntries(Object.values(presenceStatuses).map(status => [status, t('presence.statuses.' + status)]))) %>"
 		aria-label="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>" aria-describedby="presenceFeedback">
-		<span class="presence-dot has-tooltip" data-presence-dot data-status="<%= presenceStatuses.OFFLINE %>"
-			data-bs-title="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>" aria-hidden="true"></span>
+		<span class="nav-icon">
+			<span class="presence-dot has-tooltip" data-presence-dot data-status="<%= presenceStatuses.OFFLINE %>"
+				data-bs-title="<%= t('presence.statuses.' + presenceStatuses.OFFLINE) %>" aria-hidden="true"></span>
+		</span>
+		<span class="nav-text" data-presence-text><%= t('presence.statuses.' + presenceStatuses.OFFLINE) %></span>
 	</button>
 	<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="presenceStatus">
 		<% presenceSelectableStatuses.forEach((status) => { %>

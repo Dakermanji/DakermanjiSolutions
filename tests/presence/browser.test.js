@@ -21,6 +21,7 @@ function setup({ available = true } = {}) {
 		addEventListener(event, handler) { this.click = handler; },
 	}));
 	const dot = { dataset: { status: PRESENCE_STATUSES.OFFLINE }, setAttribute(name, value) { this[name] = value; } };
+	const statusText = { textContent: 'Offline' };
 	const selector = {
 		dataset: { offlineStatus: PRESENCE_STATUSES.OFFLINE, statusLabels: JSON.stringify({ online: 'Available', offline: 'Offline', away: 'Away', busy: 'Busy' }) },
 		setAttribute(name, value) { this[name] = value; },
@@ -37,7 +38,7 @@ function setup({ available = true } = {}) {
 		},
 	};
 	const document = {
-		querySelector: (query) => query === '[data-presence-trigger]' ? selector : query === '[data-presence-dot]' ? dot : feedback,
+		querySelector: (query) => query === '[data-presence-trigger]' ? selector : query === '[data-presence-dot]' ? dot : query === '[data-presence-text]' ? statusText : feedback,
 		querySelectorAll: () => choices,
 		visibilityState: 'visible',
 		addEventListener: (event, handler) => documentHandlers.set(event, handler),
@@ -58,7 +59,7 @@ function setup({ available = true } = {}) {
 	};
 	vm.runInNewContext(source, { window, document, performance: { now: () => time } });
 	return {
-		socket, document, reports, documentHandlers, selector, feedback, changes, choices, dot, tooltipUpdates, dropdownCloses,
+		socket, document, reports, documentHandlers, selector, feedback, changes, choices, dot, statusText, tooltipUpdates, dropdownCloses,
 		receive(event, payload) { handlers.get(event)(payload); },
 		choose(status) { choices.find((choice) => choice.dataset.presenceChoice === status).click(); },
 		connect() { socket.connected = true; handlers.get('connect')(); },
@@ -121,6 +122,7 @@ test('selector follows server status and sends manual choices with acknowledgeme
 	h.receive('presence:changed', { status: PRESENCE_STATUSES.ONLINE });
 	assert.equal(h.choices[0].disabled, false);
 	assert.equal(h.dot.dataset.status, PRESENCE_STATUSES.ONLINE);
+	assert.equal(h.statusText.textContent, 'Available');
 	assert.equal(h.selector['aria-label'], 'Available');
 	assert.equal(h.dot['data-bs-title'], 'Available');
 	assert.equal(h.tooltipUpdates.at(-1), 'Available');
@@ -133,10 +135,12 @@ test('selector follows server status and sends manual choices with acknowledgeme
 	h.changes[0].callback(null, { ok: true, status: PRESENCE_STATUSES.BUSY });
 	assert.equal(h.choices[0].disabled, false);
 	assert.equal(h.dot.dataset.status, PRESENCE_STATUSES.BUSY);
+	assert.equal(h.statusText.textContent, 'Busy');
 	assert.equal(h.tooltipUpdates.at(-1), 'Busy');
 	assert.equal(h.choices.find((choice) => choice.dataset.presenceChoice === PRESENCE_STATUSES.BUSY)['aria-pressed'], 'true');
 	h.receive('presence:changed', { status: PRESENCE_STATUSES.AWAY });
 	assert.equal(h.dot.dataset.status, PRESENCE_STATUSES.AWAY);
+	assert.equal(h.statusText.textContent, 'Away');
 });
 
 test('failed choices restore confirmed status and stale acknowledgements cannot undo disconnects', () => {
@@ -151,6 +155,7 @@ test('failed choices restore confirmed status and stale acknowledgements cannot 
 	h.socket.connected = false;
 	h.receive('disconnect');
 	assert.equal(h.dot.dataset.status, PRESENCE_STATUSES.OFFLINE);
+	assert.equal(h.statusText.textContent, 'Offline');
 	assert.equal(h.choices[0].disabled, true);
 	h.connect();
 	h.changes[1].callback(null, { ok: true, status: PRESENCE_STATUSES.AWAY });

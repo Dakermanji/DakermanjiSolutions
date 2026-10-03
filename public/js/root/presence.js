@@ -8,6 +8,7 @@
 	let lastReportedAt = -Infinity;
 	const selector = document.querySelector('[data-presence-trigger]');
 	const dot = document.querySelector('[data-presence-dot]');
+	const statusText = document.querySelector('[data-presence-text]');
 	const choices = document.querySelectorAll('[data-presence-choice]');
 	const labels = JSON.parse(selector?.dataset.statusLabels || '{}');
 	const feedback = document.querySelector('[data-presence-feedback]');
@@ -19,6 +20,7 @@
 		if (!selector || !Object.hasOwn(labels, status)) return;
 		currentStatus = status;
 		if (dot) dot.dataset.status = status;
+		if (statusText) statusText.textContent = labels[status];
 		selector.setAttribute('aria-label', labels[status]);
 		dot?.setAttribute('data-bs-title', labels[status]);
 		if (dot) window.bootstrap?.Tooltip.getInstance(dot)?.setContent({ '.tooltip-inner': labels[status] });

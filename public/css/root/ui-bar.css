@@ -252,6 +252,12 @@ nav .brand {
 	justify-content: center;
 }
 
+.presence-trigger .nav-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
 .presence-dot {
 	display: inline-block;
 	width: 12px;
@@ -363,6 +369,17 @@ footer a:hover {
 }
 
 @media (max-width: 991.98px) {
+	.presence-trigger {
+		width: 100%;
+		justify-content: flex-start;
+		gap: 1rem;
+		padding-inline: 1rem;
+	}
+
+	.presence-trigger .nav-icon {
+		justify-content: flex-start;
+	}
+
 	nav .nav-link {
 		padding-left: 1rem;
 		padding-right: 1rem;
