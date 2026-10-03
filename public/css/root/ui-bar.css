@@ -9,6 +9,40 @@ nav .brand {
 	align-items: center;
 }
 
+.navbar-brand-actions {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	min-width: 0;
+}
+
+.navbar-brand-actions .navbar-brand {
+	margin: 0;
+}
+
+.navbar-install-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	border: 0;
+	border-radius: var(--radius-sm);
+	background: transparent;
+	color: var(--ui-bar-text);
+}
+
+.navbar-install-button:hover,
+.navbar-install-button:focus-visible {
+	background: var(--color-primary-hover);
+}
+
+.navbar-install-button[hidden] {
+	display: none !important;
+}
+
 .nav-icon {
 	position: relative;
 	display: inline-block;

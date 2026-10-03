@@ -8,7 +8,7 @@
  * Behavior:
  * - Regular tooltips work on all screen sizes
  * - Tooltips inside specific responsive containers
- *   only work above a defined breakpoint
+ *   only work above a defined breakpoint unless marked data-tooltip-always
  *
  * Notes:
  * - Designed for Bootstrap 5
@@ -85,7 +85,7 @@ function resetTooltip(el) {
  *
  * Rules:
  * - Tooltips inside responsive containers are skipped
- *   when the viewport is below the minimum width
+ *   when the viewport is below the minimum width, except icon-only controls
  * - All other tooltips are initialized normally
  *
  * Can be reused for dynamically injected content.
@@ -99,7 +99,7 @@ function initTooltipsIn(scope = document) {
 		const insideResponsiveContainer =
 			isInsideResponsiveTooltipContainer(el);
 
-		if (insideResponsiveContainer && !responsiveTooltipsEnabled()) {
+		if (insideResponsiveContainer && !responsiveTooltipsEnabled() && !el.hasAttribute('data-tooltip-always')) {
 			return;
 		}
 
@@ -115,11 +115,11 @@ function initTooltipsIn(scope = document) {
  *
  * This is used when the viewport becomes too small,
  * so those tooltips do not remain active where text
- * is already visible beside the icons.
+ * is already visible beside the icons. Always-on tooltips are preserved.
  */
 function destroyResponsiveContainerTooltips() {
 	RESPONSIVE_TOOLTIP_CONTAINERS.forEach((selector) => {
-		document.querySelectorAll(`${selector} .has-tooltip`).forEach((el) => {
+		document.querySelectorAll(`${selector} .has-tooltip:not([data-tooltip-always])`).forEach((el) => {
 			const instance = bootstrap.Tooltip.getInstance(el);
 			instance?.dispose();
 		});
