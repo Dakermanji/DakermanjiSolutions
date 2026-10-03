@@ -3,9 +3,9 @@
 		"metaTitle": "Privacy Policy",
 		"kicker": "Your privacy",
 		"title": "Privacy Policy",
-		"summary": "This policy explains how Dakermanji Solutions collects, uses, shares, and protects personal information when you visit the website or use its accounts, chat, social, contact, and weather features.",
+		"summary": "Dakermanji Solutions is a portfolio and demonstration website. This policy explains how we handle personal information, including chat messages stored as readable text and data that may be removed during site resets.",
 		"lastUpdatedLabel": "Last updated:",
-		"lastUpdated": "September 17, 2026",
+		"lastUpdated": "October 2, 2026",
 		"contentsLabel": "On this page",
 		"sections": [
 			{
@@ -79,7 +79,8 @@
 				"id": "retention",
 				"title": "7. Retention and deletion",
 				"paragraphs": [
-					"Account information and user content are generally kept while your account is active. You can request account deletion from your profile. Deletion removes the account and associated records where the service is designed to do so. Limited records may be retained when reasonably necessary for security, fraud prevention, backup integrity, dispute resolution, or legal compliance, and are then deleted or de-identified when no longer required.",
+					"This is a portfolio and demonstration website, not a permanent storage service. We may reset features or remove accounts, chats, and other user content at any time for testing, maintenance, or changes to the demonstration, subject to applicable law. We do not guarantee a minimum retention period. Do not rely on the site as the only copy of important information.",
+					"You can request account deletion from your profile. Deletion removes the account and associated records where the service is designed to do so. Deleting an individual chat message hides it from normal chat views, but its text remains in the database until the underlying record is permanently removed. Limited records or backups may be retained when reasonably necessary for security, fraud prevention, backup integrity, dispute resolution, or legal compliance, and are then deleted or de-identified when no longer required.",
 					"Session cookies normally expire after one day. Verification, recovery, invitation, and similar temporary records expire according to their operational security periods."
 				]
 			},
@@ -87,7 +88,8 @@
 				"id": "security",
 				"title": "8. Security",
 				"paragraphs": [
-					"We use administrative, technical, and organizational safeguards appropriate to the information involved, including password hashing, access controls, secure session settings, CSRF protection, security headers, validation, and activity monitoring. No internet service can guarantee absolute security."
+					"We use administrative, technical, and organizational safeguards appropriate to the information involved, including password hashing, access controls, secure session settings, CSRF protection, security headers, validation, and activity monitoring. No internet service can guarantee absolute security.",
+					"Private chats are restricted to their intended participants through the website, but chat and private-note message bodies are stored as readable text in the database. They are not end-to-end encrypted or encrypted by the application before storage. People with authorized access to the database or its backups, including the site operator or hosting provider, may be able to read them. Do not share passwords, financial details, or other sensitive information in chat."
 				]
 			},
 			{
@@ -118,9 +120,9 @@
 		"metaTitle": "Terms of Service",
 		"kicker": "Service rules",
 		"title": "Terms of Service",
-		"summary": "These terms govern access to Dakermanji Solutions and its account, social, chat, contact, and weather features. By creating an account or using an interactive feature, you agree to these terms.",
+		"summary": "These terms govern use of this portfolio and demonstration website and its interactive features. By creating an account or using an interactive feature, you agree to these terms.",
 		"lastUpdatedLabel": "Last updated:",
-		"lastUpdated": "September 17, 2026",
+		"lastUpdated": "October 2, 2026",
 		"contentsLabel": "On this page",
 		"sections": [
 			{
@@ -193,7 +195,8 @@
 				"id": "availability",
 				"title": "8. Availability and changes",
 				"paragraphs": [
-					"The service is currently provided without a fee. We may maintain, update, add, remove, suspend, or discontinue features. We do not promise uninterrupted, error-free, or permanently available service. When reasonably possible, we will give appropriate notice of material changes that significantly affect users."
+					"The service is currently provided without a fee. We may maintain, update, add, remove, suspend, or discontinue features. We do not promise uninterrupted, error-free, or permanently available service. When reasonably possible, we will give appropriate notice of material changes that significantly affect users.",
+					"This is a portfolio and demonstration website. Accounts, chats, notes, and other user content are not intended for permanent storage. We may reset the site or remove stored user data at any time for testing, maintenance, or changes to the demonstration, subject to applicable law. Keep your own copy of anything important."
 				]
 			},
 			{

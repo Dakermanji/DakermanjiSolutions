@@ -3,9 +3,9 @@
 		"metaTitle": "Politique de confidentialité",
 		"kicker": "Votre vie privée",
 		"title": "Politique de confidentialité",
-		"summary": "La présente politique explique comment Dakermanji Solutions recueille, utilise, communique et protège les renseignements personnels lorsque vous visitez le site ou utilisez ses fonctions de compte, de clavardage, sociales, de contact et de météo.",
+		"summary": "Dakermanji Solutions est un site portfolio et de démonstration. Cette politique explique comment nous traitons les renseignements personnels, notamment les messages de clavardage stockés sous forme lisible et les données qui peuvent être supprimées lors de réinitialisations du site.",
 		"lastUpdatedLabel": "Dernière mise à jour :",
-		"lastUpdated": "17 septembre 2026",
+		"lastUpdated": "2 octobre 2026",
 		"contentsLabel": "Sur cette page",
 		"sections": [
 			{
@@ -79,7 +79,8 @@
 				"id": "retention",
 				"title": "7. Conservation et suppression",
 				"paragraphs": [
-					"Les renseignements du compte et le contenu sont généralement conservés pendant que le compte est actif. Vous pouvez demander sa suppression dans votre profil. La suppression retire le compte et les dossiers associés lorsque le service est conçu pour le faire. Certains dossiers limités peuvent être conservés lorsque cela est raisonnablement nécessaire pour la sécurité, la prévention de la fraude, l’intégrité des sauvegardes, le règlement de différends ou le respect de la loi, puis supprimés ou dépersonnalisés lorsqu’ils ne sont plus requis.",
+					"Ce site est un portfolio et une démonstration, et non un service de stockage permanent. Nous pouvons réinitialiser des fonctions ou supprimer des comptes, des clavardages et d’autres contenus des utilisateurs à tout moment pour les essais, la maintenance ou l’évolution de la démonstration, sous réserve du droit applicable. Nous ne garantissons aucune durée minimale de conservation. Ne comptez pas sur ce site comme seule copie de renseignements importants.",
+					"Vous pouvez demander la suppression de votre compte dans votre profil. Cette suppression retire le compte et les dossiers associés lorsque le service est conçu pour le faire. La suppression d’un message de clavardage individuel le masque dans les vues normales, mais son texte reste dans la base de données jusqu’à la suppression définitive de l’enregistrement sous-jacent. Certains dossiers ou sauvegardes peuvent être conservés lorsque cela est raisonnablement nécessaire pour la sécurité, la prévention de la fraude, l’intégrité des sauvegardes, le règlement de différends ou le respect de la loi, puis supprimés ou dépersonnalisés lorsqu’ils ne sont plus requis.",
 					"Les témoins de session expirent normalement après une journée. Les dossiers temporaires de vérification, de récupération, d’invitation et autres expirent selon leurs périodes de sécurité opérationnelle."
 				]
 			},
@@ -87,7 +88,8 @@
 				"id": "security",
 				"title": "8. Sécurité",
 				"paragraphs": [
-					"Nous utilisons des mesures administratives, techniques et organisationnelles adaptées aux renseignements concernés, notamment le hachage des mots de passe, les contrôles d’accès, des paramètres de session sécurisés, la protection CSRF, des en-têtes de sécurité, la validation et la surveillance des activités. Aucun service Internet ne peut garantir une sécurité absolue."
+					"Nous utilisons des mesures administratives, techniques et organisationnelles adaptées aux renseignements concernés, notamment le hachage des mots de passe, les contrôles d’accès, des paramètres de session sécurisés, la protection CSRF, des en-têtes de sécurité, la validation et la surveillance des activités. Aucun service Internet ne peut garantir une sécurité absolue.",
+					"Les clavardages privés sont réservés à leurs participants dans le site, mais le contenu des messages de clavardage et des notes privées est stocké sous forme lisible dans la base de données. Il n’est ni chiffré de bout en bout ni chiffré par l’application avant le stockage. Les personnes disposant d’un accès autorisé à la base de données ou à ses sauvegardes, notamment l’exploitant du site ou l’hébergeur, peuvent être en mesure de le lire. Ne partagez pas de mots de passe, de renseignements financiers ou d’autres données sensibles dans le clavardage."
 				]
 			},
 			{
@@ -118,9 +120,9 @@
 		"metaTitle": "Conditions d’utilisation",
 		"kicker": "Règles du service",
 		"title": "Conditions d’utilisation",
-		"summary": "Les présentes conditions régissent l’accès à Dakermanji Solutions et à ses fonctions de compte, sociales, de clavardage, de contact et de météo. En créant un compte ou en utilisant une fonction interactive, vous acceptez ces conditions.",
+		"summary": "Les présentes conditions régissent l’utilisation de ce site portfolio et de démonstration ainsi que de ses fonctions interactives. En créant un compte ou en utilisant une fonction interactive, vous acceptez ces conditions.",
 		"lastUpdatedLabel": "Dernière mise à jour :",
-		"lastUpdated": "17 septembre 2026",
+		"lastUpdated": "2 octobre 2026",
 		"contentsLabel": "Sur cette page",
 		"sections": [
 			{
@@ -193,7 +195,8 @@
 				"id": "availability",
 				"title": "8. Disponibilité et modifications",
 				"paragraphs": [
-					"Le service est actuellement offert gratuitement. Nous pouvons entretenir, mettre à jour, ajouter, retirer, suspendre ou abandonner des fonctions. Nous ne promettons pas un service ininterrompu, sans erreur ou disponible en permanence. Lorsque cela est raisonnablement possible, nous donnerons un avis approprié des changements importants qui touchent considérablement les utilisateurs."
+					"Le service est actuellement offert gratuitement. Nous pouvons entretenir, mettre à jour, ajouter, retirer, suspendre ou abandonner des fonctions. Nous ne promettons pas un service ininterrompu, sans erreur ou disponible en permanence. Lorsque cela est raisonnablement possible, nous donnerons un avis approprié des changements importants qui touchent considérablement les utilisateurs.",
+					"Ce site est un portfolio et une démonstration. Les comptes, les clavardages, les notes et les autres contenus des utilisateurs ne sont pas destinés à un stockage permanent. Nous pouvons réinitialiser le site ou supprimer les données stockées des utilisateurs à tout moment pour les essais, la maintenance ou l’évolution de la démonstration, sous réserve du droit applicable. Conservez votre propre copie de tout contenu important."
 				]
 			},
 			{
