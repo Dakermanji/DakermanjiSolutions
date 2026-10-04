@@ -74,7 +74,7 @@ Replace the example SMTP port with a numeric port, and clear the example Sentry 
 
 ### 3. Initialize PostgreSQL
 
-Create the database and an application database user. For a **fresh database**, execute all numbered scripts in `sql/` in ascending order, from `01_session.sql` through `24_chat_message_mentions.sql`:
+Create the database and an application database user. For a **fresh database**, execute all numbered scripts in `sql/` in ascending order, from `01_session.sql` through `29_kanban_task_events.sql`:
 
 ```bash
 for file in sql/[0-9][0-9]_*.sql; do
@@ -84,9 +84,9 @@ done
 
 Use your database connection details. These commands do not read the application's `.env` automatically. A database administration UI can also execute the files in order.
 
-Numbered scripts cover sessions, accounts and security, social relationships, API usage logs, chat, rooms, notifications, reactions, and mentions. The session table must exist before startup. This repository has no migration runner; review schema changes and back up an existing database before applying SQL updates. Certificate files in `sql/` are not SQL scripts.
+Numbered scripts cover sessions, accounts and security, social relationships, API usage logs, chat, rooms, notifications, reactions, mentions, and Kanban tables. The session table must exist before startup. This repository has no migration runner; review schema changes and back up an existing database before applying SQL updates. Certificate files in `sql/` are not SQL scripts. For an existing database that already has scripts 01–24, apply scripts 25–29 in order.
 
-After scripts 01–24, run `sql/z_alter.sql` for both fresh and existing databases before starting this version. It adds `users.presence_status`, defaulting existing and new accounts to Available (`online`). Only manual choices are saved; automatic Away and Offline never overwrite the saved preference.
+After the numbered scripts, run `sql/z_alter.sql` for both fresh and existing databases before starting this version. It adds `users.presence_status`, defaulting existing and new accounts to Available (`online`). Only manual choices are saved; automatic Away and Offline never overwrite the saved preference.
 
 ### 4. Run the application
 

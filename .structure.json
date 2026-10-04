@@ -616,6 +616,9 @@
 		"i18n": [
 			"locale.js"
 		],
+		"kanban": [
+			"permissions.js"
+		],
 		"notifications": [
 			"appNotifications.js",
 			"live.js",
@@ -670,9 +673,17 @@
 		"22_chat_room_activity_logs.sql",
 		"23_chat_message_reactions.sql",
 		"24_chat_message_mentions.sql",
+		"25_kanban_projects.sql",
+		"26_kanban_project_members.sql",
+		"27_kanban_tasks.sql",
+		"28_kanban_task_messages.sql",
+		"29_kanban_task_events.sql",
 		"z_alter.sql"
 	],
 	"tests": {
+		"kanban": [
+			"permissions.test.js"
+		],
 		"presence": [
 			"browser.test.js",
 			"chat.test.js",
