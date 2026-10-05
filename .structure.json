@@ -533,6 +533,7 @@
 			"avatar.js",
 			"chat.js",
 			"home.js",
+			"kanban.js",
 			"legal.js",
 			"lang.js",
 			"notifications.js",

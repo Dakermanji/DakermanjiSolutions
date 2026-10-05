@@ -23,6 +23,11 @@ export const navbar = {
 			label: 'nav.weather',
 			icon: 'bi-cloud-sun-fill',
 		},
+		{
+			link: '/kanban',
+			label: 'nav.kanban',
+			icon: 'bi-kanban-fill',
+		},
 	],
 	index: [
 		{

@@ -13,6 +13,7 @@ import legalRoutes from '../routes/legal.js';
 import langRoutes from '../routes/lang.js';
 import authRoutes from '../routes/auth.js';
 import chatRoutes from '../routes/chat.js';
+import kanbanRoutes from '../routes/kanban.js';
 import notificationsRoutes from '../routes/notifications.js';
 import socialRoutes from '../routes/social.js';
 import profileRoutes from '../routes/profile.js';
@@ -41,6 +42,9 @@ router.use('/auth', authRoutes);
 
 // Chat routes
 router.use('/chat', chatRoutes);
+
+// Kanban project routes
+router.use('/kanban', kanbanRoutes);
 
 // Notification routes
 router.use('/notifications', notificationsRoutes);

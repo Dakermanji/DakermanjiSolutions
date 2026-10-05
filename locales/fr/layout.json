@@ -20,6 +20,7 @@
 		"contact": "Contact",
 		"chat": "Chat",
 		"weather": "Météo",
+		"kanban": "Kanban",
 		"notifications": "Notifications",
 		"unreadNotifications": "{{count}} notifications non lues",
 		"profile": "Profil",
