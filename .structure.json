@@ -148,6 +148,7 @@
 			"auth.js",
 			"chat.js",
 			"common.js",
+			"kanban.js",
 			"notifications.js",
 			"social.js",
 			"token.js",
