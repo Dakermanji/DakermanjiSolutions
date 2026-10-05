@@ -230,6 +230,7 @@
 			]
 		},
 		"kanban": [
+			"Members.js",
 			"Projects.js"
 		],
 		"notifications": {
