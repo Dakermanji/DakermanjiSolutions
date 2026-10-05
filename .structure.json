@@ -111,6 +111,7 @@
 			"chat.json",
 			"common.json",
 			"home.json",
+			"kanban.json",
 			"layout.json",
 			"legal.json",
 			"notifications.json",
@@ -123,6 +124,7 @@
 			"chat.json",
 			"common.json",
 			"home.json",
+			"kanban.json",
 			"layout.json",
 			"legal.json",
 			"notifications.json",
@@ -135,6 +137,7 @@
 			"chat.json",
 			"common.json",
 			"home.json",
+			"kanban.json",
 			"layout.json",
 			"legal.json",
 			"notifications.json",
@@ -312,6 +315,9 @@
 				"main.css",
 				"portfolio.css",
 				"services.css"
+			],
+			"kanban": [
+				"main.css"
 			],
 			"legal": [
 				"main.css"
@@ -740,6 +746,11 @@
 			"_portfolio.ejs",
 			"_services.ejs",
 			"main.ejs"
+		],
+		"kanban": [
+			"_create_project_modal.ejs",
+			"project.ejs",
+			"projects.ejs"
 		],
 		"legal": [
 			"privacy.ejs",

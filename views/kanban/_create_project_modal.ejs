@@ -1,0 +1,62 @@
+<!--! views/kanban/_create_project_modal.ejs -->
+<div
+	class="modal fade"
+	id="createKanbanProjectModal"
+	tabindex="-1"
+	aria-labelledby="createKanbanProjectModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="createKanbanProjectModalLabel">
+					<%= t('kanban:createProject') %>
+				</h5>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="<%= t('common:close') %>"
+				></button>
+			</div>
+			<form method="POST" action="/kanban">
+				<%- include('../partials/_csrf') %>
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="project-name" class="form-label">
+							<%= t('kanban:projectName') %>
+						</label>
+						<input
+							id="project-name"
+							name="name"
+							type="text"
+							maxlength="<%= projectLimits.NAME_MAX_LENGTH %>"
+							required
+							class="form-control"
+						/>
+					</div>
+					<div>
+						<label for="project-description" class="form-label">
+							<%= t('kanban:description') %>
+						</label>
+						<textarea
+							id="project-description"
+							name="description"
+							maxlength="<%= projectLimits.DESCRIPTION_MAX_LENGTH %>"
+							rows="4"
+							class="form-control"
+						></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<%= t('common:cancel') %>
+					</button>
+					<button type="submit" class="btn btn-action">
+						<%= t('kanban:create') %>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

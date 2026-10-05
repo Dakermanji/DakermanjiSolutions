@@ -1,5 +1,6 @@
 //! controllers/kanban/projects.js
 
+import { KANBAN_PROJECT_LIMITS } from '../../constants/kanban.js';
 import {
 	listInvitationsForUser,
 	listProjectInvitationRequests,
@@ -19,9 +20,10 @@ export async function renderProjects(req, res, next) {
 		]);
 		return res.render('kanban/projects', {
 			titleKey: 'kanban:title',
-			styles: ['kanban/main'],
+			styles: ['modals/main', 'kanban/main'],
 			projects,
 			invitations,
+			projectLimits: KANBAN_PROJECT_LIMITS,
 		});
 	} catch (error) {
 		return next(error);

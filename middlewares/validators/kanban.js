@@ -37,7 +37,10 @@ export function validateCreateProject(req, res, next) {
 	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
 	const result = parseProjectInput(req.body);
 	if (!result.valid) {
-		return fail(req, res, 'kanban:error.invalidProject', { to: '/kanban' });
+		return fail(req, res, 'kanban:error.invalidProject', {
+			to: '/kanban',
+			modal: 'kanban_project',
+		});
 	}
 	req.kanbanProjectInput = {
 		...result.values,

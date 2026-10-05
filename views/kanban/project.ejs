@@ -1,0 +1,25 @@
+<!--! views/kanban/project.ejs -->
+<section class="kanban-page" aria-labelledby="project-title">
+	<a href="/kanban" class="kanban-back"><%= t('kanban:allProjects') %></a>
+	<header class="kanban-header">
+		<div>
+			<h1 id="project-title"><%= project.name %></h1>
+			<% if (project.description) { %>
+				<p><%= project.description %></p>
+			<% } %>
+		</div>
+		<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+	</header>
+
+	<section class="kanban-panel" aria-labelledby="project-members-title">
+		<h2 id="project-members-title"><%= t('kanban:members') %></h2>
+		<ul class="kanban-member-list">
+			<% members.forEach((member) => { %>
+				<li>
+					<span><%= member.username || (project.role === 'owner' ? member.email : t('kanban:member')) %></span>
+					<span class="badge text-bg-secondary"><%= t(`kanban:roles.${member.role}`) %></span>
+				</li>
+			<% }) %>
+		</ul>
+	</section>
+</section>

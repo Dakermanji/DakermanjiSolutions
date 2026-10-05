@@ -35,6 +35,7 @@
 		profile_password: { id: 'profilePasswordModal' },
 		profile_delete_account: { id: 'profileDeleteAccountModal' },
 		chat_room: { id: 'chatRoomModal' },
+		kanban_project: { id: 'createKanbanProjectModal' },
 	};
 
 	const target = MODALS[modalName];

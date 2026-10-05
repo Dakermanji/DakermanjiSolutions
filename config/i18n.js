@@ -39,6 +39,7 @@ const NAME_SPACES = [
 	'legal',
 	'common',
 	'chat',
+	'kanban',
 	'notifications',
 	'social',
 	'profile',

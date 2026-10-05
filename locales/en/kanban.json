@@ -1,0 +1,23 @@
+{
+	"title": "Kanban",
+	"projectsDescription": "Organize projects and work with your team.",
+	"yourProjects": "Your projects",
+	"noProjects": "You are not part of a project yet.",
+	"createProject": "Create a project",
+	"projectName": "Project name",
+	"description": "Description",
+	"create": "Create project",
+	"projectCreated": "Project created.",
+	"allProjects": "All projects",
+	"members": "Members",
+	"member": "Member",
+	"roles": {
+		"owner": "Owner",
+		"admin": "Admin",
+		"editor": "Editor",
+		"observer": "Observer"
+	},
+	"error": {
+		"invalidProject": "Enter a valid project name and description."
+	}
+}

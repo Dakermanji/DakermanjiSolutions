@@ -1,0 +1,23 @@
+{
+	"title": "كانبان",
+	"projectsDescription": "نظّم مشاريعك وتعاون مع فريقك.",
+	"yourProjects": "مشاريعك",
+	"noProjects": "لست عضوًا في أي مشروع بعد.",
+	"createProject": "إنشاء مشروع",
+	"projectName": "اسم المشروع",
+	"description": "الوصف",
+	"create": "إنشاء المشروع",
+	"projectCreated": "تم إنشاء المشروع.",
+	"allProjects": "كل المشاريع",
+	"members": "الأعضاء",
+	"member": "عضو",
+	"roles": {
+		"owner": "المالك",
+		"admin": "مسؤول",
+		"editor": "محرر",
+		"observer": "مراقب"
+	},
+	"error": {
+		"invalidProject": "أدخل اسمًا ووصفًا صالحين للمشروع."
+	}
+}

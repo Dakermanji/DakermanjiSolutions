@@ -1,0 +1,76 @@
+/*! public/css/kanban/main.css */
+
+.kanban-page {
+	padding-block: 2rem 4rem;
+}
+
+.kanban-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+.kanban-header p {
+	max-width: 60ch;
+}
+
+.kanban-panel {
+	padding: 1.25rem;
+	border: 1px solid var(--border-subtle);
+	border-radius: 1rem;
+	background: var(--bg-section);
+}
+
+.kanban-panel h2 {
+	font-size: 1.25rem;
+}
+
+.kanban-project-list,
+.kanban-member-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.kanban-project-list li,
+.kanban-member-list li {
+	padding-block: .75rem;
+	border-bottom: 1px solid var(--border-subtle);
+}
+
+.kanban-project-list li:last-child,
+.kanban-member-list li:last-child {
+	border-bottom: 0;
+}
+
+.kanban-project-list a {
+	font-weight: 600;
+	margin-inline-end: .5rem;
+}
+
+.kanban-project-list p {
+	margin: .3rem 0 0;
+	overflow-wrap: anywhere;
+}
+
+.kanban-member-list li {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: .75rem;
+}
+
+.kanban-back {
+	display: inline-block;
+	margin-bottom: 1rem;
+}
+
+@media (max-width: 720px) {
+	.kanban-header {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+}
