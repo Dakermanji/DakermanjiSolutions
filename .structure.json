@@ -229,6 +229,9 @@
 				"review.js"
 			]
 		},
+		"kanban": [
+			"Projects.js"
+		],
 		"notifications": {
 			"appNotifications": [
 				"create.js",
