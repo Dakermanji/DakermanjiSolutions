@@ -68,17 +68,18 @@ export function parseInvitationInput(input) {
 }
 
 export function validateInviteMember(req, res, next) {
-	if (!isValidUuid(req.params?.projectId)) return res.sendStatus(404);
+	const projectId = req.body?.projectId;
+	if (!isValidUuid(projectId)) return res.sendStatus(404);
 	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
 	const result = parseInvitationInput(req.body);
 	if (!result.valid) {
 		return fail(req, res, 'kanban:error.invalidInvitation', {
-			to: `/kanban/${req.params.projectId}`,
+			to: `/kanban/${projectId}`,
 		});
 	}
 	req.kanbanInvitationInput = {
 		...result.values,
-		projectId: req.params.projectId,
+		projectId,
 		ownerUserId: req.user.id,
 	};
 	return next();

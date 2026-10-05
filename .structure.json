@@ -75,6 +75,9 @@
 				"session.js"
 			]
 		},
+		"kanban": [
+			"projects.js"
+		],
 		"notifications": [
 			"main.js"
 		],
