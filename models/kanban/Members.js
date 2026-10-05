@@ -2,11 +2,12 @@
 
 import { randomUUID } from 'node:crypto';
 import pool, { queryRows } from '../../config/database.js';
+import { KANBAN_INVITATION_EXPIRY_DAYS } from '../../constants/kanban.js';
 
 /**
  * Record the same request for a matching or unmatched identifier. Never return
  * recipient lookup details to the caller. Open requests are reused until their
- * seven-day expiry, including requests the recipient privately declined.
+ * configured expiry, including requests the recipient privately declined.
  */
 export async function createInvitationRequest({
 	projectId,
@@ -49,8 +50,9 @@ export async function createInvitationRequest({
 		await client.query(
 			`INSERT INTO kanban_project_invitations
 			 (id, project_id, invitee_user_id, inviter_user_id,
-			  requested_identifier, role)
-			 VALUES ($1, $2, $3, $4, $5, $6)
+			  requested_identifier, role, expires_at)
+			 VALUES ($1, $2, $3, $4, $5, $6,
+			         NOW() + ($7::integer * INTERVAL '1 day'))
 			 ON CONFLICT (project_id, requested_identifier)
 			 WHERE status IN ('pending', 'declined') DO NOTHING`,
 			[
@@ -60,6 +62,7 @@ export async function createInvitationRequest({
 				ownerUserId,
 				identifier,
 				role,
+				KANBAN_INVITATION_EXPIRY_DAYS,
 			],
 		);
 		await client.query('COMMIT');

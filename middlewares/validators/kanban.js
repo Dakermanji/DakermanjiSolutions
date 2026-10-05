@@ -1,10 +1,8 @@
 //! middlewares/validators/kanban.js
 
 import { fail } from '../../services/http/response.js';
+import { KANBAN_PROJECT_LIMITS } from '../../constants/kanban.js';
 import { isValidUuid } from './common.js';
-
-export const PROJECT_NAME_MAX_LENGTH = 160;
-export const PROJECT_DESCRIPTION_MAX_LENGTH = 2000;
 
 export function parseProjectInput(input) {
 	const source = input && typeof input === 'object' && !Array.isArray(input)
@@ -20,8 +18,8 @@ export function parseProjectInput(input) {
 	return {
 		values: { name, description },
 		valid: (source.description == null || typeof source.description === 'string') &&
-			name.length > 0 && name.length <= PROJECT_NAME_MAX_LENGTH &&
-			description.length <= PROJECT_DESCRIPTION_MAX_LENGTH,
+			name.length > 0 && name.length <= KANBAN_PROJECT_LIMITS.NAME_MAX_LENGTH &&
+			description.length <= KANBAN_PROJECT_LIMITS.DESCRIPTION_MAX_LENGTH,
 	};
 }
 

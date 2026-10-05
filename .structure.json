@@ -33,6 +33,7 @@
 	},
 	"constants": [
 		"chat.js",
+		"kanban.js",
 		"legal.js",
 		"notifications.js",
 		"presence.js"

@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS kanban_project_invitations (
     status VARCHAR(16) NOT NULL DEFAULT 'pending'
         CHECK (status IN ('pending', 'accepted', 'declined', 'cancelled', 'expired')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    expires_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '7 days'),
+    expires_at TIMESTAMPTZ NOT NULL,
     responded_at TIMESTAMPTZ,
     cancelled_at TIMESTAMPTZ,
     CONSTRAINT kanban_invitation_expiry_after_creation
