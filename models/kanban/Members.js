@@ -151,7 +151,11 @@ export async function respondToInvitation({ invitationId, userId, accept }) {
 	}
 }
 
-export async function cancelInvitationRequest({ invitationId, projectId, ownerUserId }) {
+export async function cancelInvitationRequest({
+	invitationId,
+	projectId,
+	ownerUserId,
+}) {
 	const rows = await queryRows(
 		`UPDATE kanban_project_invitations i
 		 SET status = 'cancelled', cancelled_at = NOW()
@@ -166,7 +170,12 @@ export async function cancelInvitationRequest({ invitationId, projectId, ownerUs
 	return rows.length > 0;
 }
 
-export async function changeMemberRole({ projectId, ownerUserId, targetUserId, role }) {
+export async function changeMemberRole({
+	projectId,
+	ownerUserId,
+	targetUserId,
+	role,
+}) {
 	const client = await pool.connect();
 	try {
 		await client.query('BEGIN');
