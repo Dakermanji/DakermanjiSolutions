@@ -72,3 +72,14 @@ export function listProjectMembers(projectId, viewerUserId) {
 		[projectId, viewerUserId],
 	);
 }
+
+export async function archiveProject({ projectId, ownerUserId }) {
+	const rows = await queryRows(
+		`UPDATE kanban_projects
+		 SET archived_at = NOW(), updated_at = NOW()
+		 WHERE id = $1 AND owner_user_id = $2 AND archived_at IS NULL
+		 RETURNING id`,
+		[projectId, ownerUserId],
+	);
+	return rows.length > 0;
+}
