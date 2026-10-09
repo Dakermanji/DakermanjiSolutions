@@ -10,6 +10,7 @@ export async function inviteProjectMember(req, res, next) {
 			self: 'kanban:error.inviteSelf',
 			blocked: 'kanban:error.inviteeBlocked',
 			already_member: 'kanban:error.alreadyMember',
+			already_requested: 'kanban:error.invitationAlreadyRequested',
 		};
 		req.flash(
 			errorKeys[result] ? 'error' : 'success',

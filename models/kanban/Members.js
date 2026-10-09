@@ -7,7 +7,7 @@ import { KANBAN_INVITATION_EXPIRY_DAYS } from '../../constants/kanban.js';
 /**
  * Record the same request for a matching or unmatched identifier. Only return
  * specific states already visible to the owner: self, current member, or a user
- * they blocked. Open requests are reused until their configured expiry,
+ * they blocked. Open requests are kept until their configured expiry,
  * including requests the recipient privately declined.
  */
 export async function createInvitationRequest({
@@ -70,7 +70,7 @@ export async function createInvitationRequest({
 			   AND status IN ('pending', 'declined') AND expires_at <= NOW()`,
 			[projectId, identifier],
 		);
-		await client.query(
+		const invitation = await client.query(
 			`INSERT INTO kanban_project_invitations
 			 (id, project_id, invitee_user_id, inviter_user_id,
 			  requested_identifier, role, expires_at)
@@ -90,7 +90,7 @@ export async function createInvitationRequest({
 			],
 		);
 		await client.query('COMMIT');
-		return 'requested';
+		return invitation.rowCount ? 'requested' : 'already_requested';
 	} catch (error) {
 		await client.query('ROLLBACK');
 		throw error;

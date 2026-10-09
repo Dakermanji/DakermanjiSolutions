@@ -43,6 +43,7 @@
 		"inviteSelf": "Vous êtes déjà propriétaire de ce projet.",
 		"inviteeBlocked": "Débloquez cet utilisateur avant de l’inviter.",
 		"alreadyMember": "Cet utilisateur est déjà membre du projet.",
+		"invitationAlreadyRequested": "Une demande d’invitation pour ce nom d’utilisateur ou cette adresse courriel est déjà en cours.",
 		"invitationUnavailable": "Cette invitation n’est plus disponible."
 	}
 }
