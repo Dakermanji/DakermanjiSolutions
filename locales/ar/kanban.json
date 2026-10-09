@@ -26,6 +26,8 @@
 	"deleteProjectMessage": "سيُخفى المشروع عن جميع الأعضاء. ستُحفظ مهامه ومناقشاته لإمكانية استعادته لاحقًا.",
 	"allProjects": "كل المشاريع",
 	"members": "الأعضاء",
+	"projectActivity": "سجل نشاط المشروع",
+	"noProjectActivity": "لا يوجد نشاط للمشروع بعد.",
 	"member": "عضو",
 	"inviteMember": "دعوة عضو",
 	"usernameOrEmail": "اسم المستخدم أو البريد الإلكتروني",
@@ -37,6 +39,21 @@
 		"admin": "مسؤول",
 		"editor": "محرر",
 		"observer": "مراقب"
+	},
+	"events": {
+		"formerMember": "عضو سابق",
+		"actions": {
+			"created": "أنشأ المشروع.",
+			"edited": "عدّل المشروع.",
+			"archived": "أرشف المشروع.",
+			"restored": "استعاد المشروع.",
+			"invitation_accepted": "قبل دعوة.",
+			"invitation_expired": "انتهت صلاحية دعوة.",
+			"member_joined": "انضم إلى المشروع.",
+			"member_role_changed": "غيّر دور أحد الأعضاء.",
+			"member_removed": "أزال أحد الأعضاء.",
+			"ownership_transferred": "نقل ملكية المشروع."
+		}
 	},
 	"error": {
 		"invalidProject": "أدخل اسمًا ووصفًا صالحين للمشروع.",

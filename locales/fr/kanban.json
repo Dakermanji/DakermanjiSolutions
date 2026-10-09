@@ -26,6 +26,8 @@
 	"deleteProjectMessage": "Le projet sera masqué pour tous les membres. Ses tâches et discussions seront conservées pour une éventuelle restauration.",
 	"allProjects": "Tous les projets",
 	"members": "Membres",
+	"projectActivity": "Activité du projet",
+	"noProjectActivity": "Aucune activité pour le moment.",
 	"member": "Membre",
 	"inviteMember": "Inviter un membre",
 	"usernameOrEmail": "Nom d’utilisateur ou courriel",
@@ -37,6 +39,21 @@
 		"admin": "Administrateur",
 		"editor": "Éditeur",
 		"observer": "Observateur"
+	},
+	"events": {
+		"formerMember": "Ancien membre",
+		"actions": {
+			"created": "a créé le projet.",
+			"edited": "a modifié le projet.",
+			"archived": "a archivé le projet.",
+			"restored": "a restauré le projet.",
+			"invitation_accepted": "a accepté une invitation.",
+			"invitation_expired": "Une invitation a expiré.",
+			"member_joined": "a rejoint le projet.",
+			"member_role_changed": "a modifié le rôle d’un membre.",
+			"member_removed": "a retiré un membre.",
+			"ownership_transferred": "a transféré la propriété du projet."
+		}
 	},
 	"error": {
 		"invalidProject": "Saisissez un nom et une description de projet valides.",

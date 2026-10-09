@@ -26,6 +26,7 @@ export function listProjectEvents({ projectId, limit = 50 }) {
 		 FROM kanban_project_events e
 		 LEFT JOIN users actor ON actor.id = e.actor_user_id
 		 WHERE e.project_id = $1
+		   AND e.action NOT IN ('invitation_requested', 'invitation_cancelled')
 		 ORDER BY e.created_at DESC, e.id DESC
 		 LIMIT $2`,
 		[projectId, limit],

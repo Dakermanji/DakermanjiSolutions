@@ -41,6 +41,7 @@
 
 .kanban-project-list,
 .kanban-invitation-list,
+.kanban-event-list,
 .kanban-member-list {
 	list-style: none;
 	padding: 0;
@@ -49,6 +50,7 @@
 
 .kanban-project-list li,
 .kanban-invitation-list li,
+.kanban-event-list li,
 .kanban-member-list li {
 	padding-block: .75rem;
 	border-bottom: 1px solid var(--border-subtle);
@@ -56,6 +58,7 @@
 
 .kanban-project-list li:last-child,
 .kanban-invitation-list li:last-child,
+.kanban-event-list li:last-child,
 .kanban-member-list li:last-child {
 	border-bottom: 0;
 }
@@ -85,6 +88,13 @@
 	flex-wrap: wrap;
 	justify-content: space-between;
 	gap: .75rem;
+}
+
+.kanban-event-list li {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: .5rem 1rem;
 }
 
 .kanban-back {
