@@ -33,3 +33,16 @@ export async function acceptProjectInvitation(req, res, next) {
 		return next(error);
 	}
 }
+
+export async function declineProjectInvitation(req, res, next) {
+	try {
+		const declined = await respondToInvitation(req.kanbanInvitationResponse);
+		req.flash(
+			declined ? 'success' : 'error',
+			declined ? 'kanban:invitationDeclined' : 'kanban:error.invitationUnavailable',
+		);
+		return res.redirect('/kanban');
+	} catch (error) {
+		return next(error);
+	}
+}

@@ -109,3 +109,14 @@ export function validateAcceptInvitation(req, res, next) {
 	};
 	return next();
 }
+
+export function validateDeclineInvitation(req, res, next) {
+	if (!isValidUuid(req.body?.invitationId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	req.kanbanInvitationResponse = {
+		invitationId: req.body.invitationId,
+		userId: req.user.id,
+		accept: false,
+	};
+	return next();
+}

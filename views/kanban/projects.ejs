@@ -36,6 +36,7 @@
 								<%- include('../partials/_csrf') %>
 								<input type="hidden" name="invitationId" value="<%= invitation.id %>" />
 								<button type="submit" class="btn btn-action btn-sm"><%= t('kanban:acceptInvitation') %></button>
+								<button type="submit" formaction="/kanban/invitations/decline" class="btn btn-outline-secondary btn-sm"><%= t('kanban:declineInvitation') %></button>
 							</form>
 						</div>
 					</li>

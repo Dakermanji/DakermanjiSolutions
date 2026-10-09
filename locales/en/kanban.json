@@ -7,6 +7,8 @@
 	"invitationExpires": "Expires {{date}}",
 	"acceptInvitation": "Accept",
 	"invitationAccepted": "Invitation accepted. You can now open the project.",
+	"declineInvitation": "Decline",
+	"invitationDeclined": "Invitation declined.",
 	"noProjects": "You are not part of a project yet.",
 	"createProject": "Create a project",
 	"projectName": "Project name",
