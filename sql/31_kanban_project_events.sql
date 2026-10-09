@@ -4,14 +4,14 @@ CREATE TABLE IF NOT EXISTS kanban_project_events (
     id UUID PRIMARY KEY,
     project_id UUID NOT NULL REFERENCES kanban_projects(id) ON DELETE CASCADE,
     actor_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    action VARCHAR(40) NOT NULL CHECK (action IN (
-        'created', 'edited', 'archived', 'restored',
-        'invitation_requested', 'invitation_cancelled',
-        'member_joined', 'member_role_changed', 'member_removed',
-        'ownership_transferred'
-    )),
-    -- Invitation details must describe the request without revealing whether
-    -- the identifier matched an account or whether the recipient declined.
+    action VARCHAR(40) NOT NULL
+        CONSTRAINT kanban_project_events_action_check CHECK (action IN (
+            'created', 'edited', 'archived', 'restored',
+            'invitation_accepted', 'invitation_expired',
+            'member_joined', 'member_role_changed', 'member_removed',
+            'ownership_transferred'
+        )),
+    -- Invitation events must not store submitted identifiers or decline state.
     details JSONB NOT NULL DEFAULT '{}'::jsonb
         CHECK (jsonb_typeof(details) = 'object'),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

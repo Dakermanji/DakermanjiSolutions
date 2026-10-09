@@ -19,16 +19,15 @@ export async function createProjectEvent({
 	return rows[0] || null;
 }
 
-export function listProjectEvents({ projectId, includeInvitationEvents = false, limit = 50 }) {
+export function listProjectEvents({ projectId, limit = 50 }) {
 	return queryRows(
 		`SELECT e.id, e.project_id, e.actor_user_id, actor.username AS actor_username,
 		        e.action, e.details, e.created_at
 		 FROM kanban_project_events e
 		 LEFT JOIN users actor ON actor.id = e.actor_user_id
 		 WHERE e.project_id = $1
-		   AND ($2::boolean OR e.action NOT IN ('invitation_requested', 'invitation_cancelled'))
 		 ORDER BY e.created_at DESC, e.id DESC
-		 LIMIT $3`,
-		[projectId, includeInvitationEvents, limit],
+		 LIMIT $2`,
+		[projectId, limit],
 	);
 }

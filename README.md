@@ -84,7 +84,7 @@ done
 
 Use your database connection details. These commands do not read the application's `.env` automatically. A database administration UI can also execute the files in order.
 
-Numbered scripts cover sessions, accounts and security, social relationships, API usage logs, chat, rooms, notifications, reactions, mentions, and Kanban tables. The session table must exist before startup. This repository has no migration runner; review schema changes and back up an existing database before applying SQL updates. Certificate files in `sql/` are not SQL scripts. For an existing database, apply any missing numbered scripts in order before using Kanban invitations.
+Numbered scripts cover sessions, accounts and security, social relationships, API usage logs, chat, rooms, notifications, reactions, mentions, and Kanban tables. The session table must exist before startup. This repository has no migration runner; review schema changes and back up an existing database before applying SQL updates. Certificate files in `sql/` are not SQL scripts. For an existing database, apply any missing numbered scripts in order before using Kanban features.
 
 After the numbered scripts, run `sql/z_alter.sql` for both fresh and existing databases before starting this version. It adds `users.presence_status`, defaulting existing and new accounts to Available (`online`). Only manual choices are saved; automatic Away and Offline never overwrite the saved preference.
 

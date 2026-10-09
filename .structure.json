@@ -638,7 +638,8 @@
 			"locale.js"
 		],
 		"kanban": [
-			"permissions.js"
+			"permissions.js",
+			"projectEvents.js"
 		],
 		"notifications": [
 			"appNotifications.js",
