@@ -10,12 +10,11 @@ import {
 	listProjectInvitationRequests,
 } from '../../models/kanban/Members.js';
 import {
-	archiveProject,
 	findProjectForUser,
 	listProjectMembers,
 	listProjectsForUser,
 } from '../../models/kanban/Projects.js';
-import { createProjectWithLog } from '../../services/kanban/projects.js';
+import { archiveProjectWithLog, createProjectWithLog } from '../../services/kanban/projects.js';
 
 export async function renderProjects(req, res, next) {
 	try {
@@ -50,7 +49,7 @@ export async function createKanbanProject(req, res, next) {
 
 export async function archiveKanbanProject(req, res, next) {
 	try {
-		const archived = await archiveProject(req.kanbanArchiveInput);
+		const archived = await archiveProjectWithLog(req.kanbanArchiveInput);
 		req.flash(
 			archived ? 'success' : 'error',
 			archived ? 'kanban:projectArchived' : 'kanban:error.archiveFailed',

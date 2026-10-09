@@ -1,8 +1,8 @@
 //! services/kanban/projects.js
 
 import pool from '../../config/database.js';
-import { createProject } from '../../models/kanban/Projects.js';
-import { recordProjectCreated } from './projectEvents.js';
+import { archiveProject, createProject } from '../../models/kanban/Projects.js';
+import { recordProjectArchived, recordProjectCreated } from './projectEvents.js';
 
 export async function createProjectWithLog(input) {
 	const client = await pool.connect();
@@ -15,6 +15,24 @@ export async function createProjectWithLog(input) {
 		}, client);
 		await client.query('COMMIT');
 		return project;
+	} catch (error) {
+		await client.query('ROLLBACK');
+		throw error;
+	} finally {
+		client.release();
+	}
+}
+
+export async function archiveProjectWithLog(input) {
+	const client = await pool.connect();
+	try {
+		await client.query('BEGIN');
+		const archived = await archiveProject(input, client);
+		if (archived) {
+			await recordProjectArchived(input, client);
+		}
+		await client.query('COMMIT');
+		return archived;
 	} catch (error) {
 		await client.query('ROLLBACK');
 		throw error;
