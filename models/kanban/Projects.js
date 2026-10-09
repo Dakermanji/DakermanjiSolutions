@@ -46,9 +46,7 @@ export async function findProjectForUser(projectId, userId) {
 
 export function listProjectMembers(projectId, viewerUserId) {
 	return queryRows(
-		`SELECT m.user_id, m.role, m.joined_at, u.username,
-		        CASE WHEN viewer.role = 'owner' AND p.owner_user_id = viewer.user_id
-		             THEN u.email ELSE NULL END AS email
+		`SELECT m.user_id, m.role, m.joined_at, u.username, u.email
 		 FROM kanban_project_members viewer
 		 JOIN kanban_projects p ON p.id = viewer.project_id
 		 JOIN kanban_project_members m ON m.project_id = viewer.project_id

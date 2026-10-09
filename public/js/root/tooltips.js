@@ -9,6 +9,7 @@
  * - Regular tooltips work on all screen sizes
  * - Tooltips inside specific responsive containers
  *   only work above a defined breakpoint unless marked data-tooltip-always
+ * - Elements marked data-tooltip-mobile only get tooltips at 720px or below
  *
  * Notes:
  * - Designed for Bootstrap 5
@@ -21,6 +22,7 @@
  * Matches Bootstrap's lg breakpoint behavior.
  */
 const TOOLTIP_MIN_WIDTH = 992;
+const MOBILE_TOOLTIP_MEDIA = window.matchMedia('(max-width: 720px)');
 
 /**
  * Containers whose tooltips should only be enabled
@@ -80,6 +82,23 @@ function resetTooltip(el) {
 	instance?.dispose();
 }
 
+function updateMobileTooltips(scope = document) {
+	scope.querySelectorAll('[data-tooltip-mobile]').forEach((el) => {
+		if (MOBILE_TOOLTIP_MEDIA.matches) {
+			el.classList.add('has-tooltip');
+			el.tabIndex = 0;
+			bootstrap.Tooltip.getOrCreateInstance(el, {
+				trigger: 'hover focus',
+				delay: { show: 1000, hide: 0 },
+			});
+		} else {
+			resetTooltip(el);
+			el.classList.remove('has-tooltip');
+			el.removeAttribute('tabindex');
+		}
+	});
+}
+
 /**
  * Initializes Bootstrap tooltips within a given DOM scope.
  *
@@ -93,6 +112,7 @@ function resetTooltip(el) {
  * @param {Document|Element} scope - Root element to scan for tooltips
  */
 function initTooltipsIn(scope = document) {
+	updateMobileTooltips(scope);
 	const nodes = scope.querySelectorAll('.has-tooltip');
 
 	nodes.forEach((el) => {
@@ -146,6 +166,7 @@ initTooltipsIn(document);
 
 // Update responsive-container tooltips on resize
 window.addEventListener('resize', updateResponsiveTooltipState);
+MOBILE_TOOLTIP_MEDIA.addEventListener('change', () => updateMobileTooltips(document));
 
 window.AppTooltips = {
 	hideAll: hideAllTooltips,

@@ -48,7 +48,12 @@
 		<ul class="kanban-member-list">
 			<% members.forEach((member) => { %>
 				<li>
-					<span><%= member.username || (project.role === 'owner' ? member.email : t('kanban:member')) %></span>
+					<div class="kanban-member-identity">
+						<span<% if (member.username && member.email) { %> data-tooltip-mobile data-bs-title="<%= member.email %>"<% } %>><%= member.username || member.email || t('kanban:member') %></span>
+						<% if (member.username && member.email) { %>
+							<span class="kanban-member-email" dir="ltr"><%= member.email %></span>
+						<% } %>
+					</div>
 					<span class="badge text-bg-secondary"><%= t(`kanban:roles.${member.role}`) %></span>
 				</li>
 			<% }) %>

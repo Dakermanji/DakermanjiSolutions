@@ -105,6 +105,19 @@
 	gap: .75rem;
 }
 
+.kanban-member-identity {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: .25rem .75rem;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.kanban-member-email {
+	color: var(--color-text-muted);
+}
+
 .kanban-event-list li {
 	display: flex;
 	justify-content: space-between;
@@ -121,5 +134,9 @@
 	.kanban-header {
 		align-items: flex-start;
 		flex-direction: column;
+	}
+
+	.kanban-member-email {
+		display: none;
 	}
 }
