@@ -50,6 +50,28 @@
 			<% }) %>
 		</ul>
 	</section>
+	<% if (project.role === 'owner') { %>
+		<section class="kanban-panel mt-4" aria-labelledby="project-invitations-title">
+			<h2 id="project-invitations-title"><%= t('kanban:invitationRequests') %></h2>
+			<% if (invitations.length === 0) { %>
+				<p><%= t('kanban:noInvitationRequests') %></p>
+			<% } else { %>
+				<ul class="kanban-invitation-list">
+					<% invitations.forEach((invitation) => { %>
+						<li>
+							<div class="kanban-project-row">
+								<strong dir="ltr" class="text-break"><%= invitation.requested_identifier %></strong>
+								<span class="badge text-bg-secondary"><%= t(`kanban:roles.${invitation.role}`) %></span>
+							</div>
+							<time datetime="<%= new Date(invitation.expires_at).toISOString() %>">
+								<%= t('kanban:invitationExpires', { date: new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(invitation.expires_at)) }) %>
+							</time>
+						</li>
+					<% }) %>
+				</ul>
+			<% } %>
+		</section>
+	<% } %>
 </section>
 
 <% if (project.role === 'owner') { %>

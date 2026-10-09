@@ -4,6 +4,8 @@
 	"yourProjects": "Vos projets",
 	"yourInvitations": "Vos invitations",
 	"noInvitations": "Vous n’avez aucune invitation en attente.",
+	"invitationRequests": "Demandes d’invitation",
+	"noInvitationRequests": "Aucune demande d’invitation en cours.",
 	"invitationExpires": "Expire le {{date}}",
 	"acceptInvitation": "Accepter",
 	"invitationAccepted": "Invitation acceptée. Vous pouvez maintenant ouvrir le projet.",

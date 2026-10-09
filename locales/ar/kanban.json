@@ -4,6 +4,8 @@
 	"yourProjects": "مشاريعك",
 	"yourInvitations": "دعواتك",
 	"noInvitations": "ليس لديك دعوات معلّقة.",
+	"invitationRequests": "طلبات الدعوة",
+	"noInvitationRequests": "لا توجد طلبات دعوة مفتوحة.",
 	"invitationExpires": "تنتهي في {{date}}",
 	"acceptInvitation": "قبول",
 	"invitationAccepted": "قُبلت الدعوة. يمكنك الآن فتح المشروع.",

@@ -4,6 +4,8 @@
 	"yourProjects": "Your projects",
 	"yourInvitations": "Your invitations",
 	"noInvitations": "You have no pending invitations.",
+	"invitationRequests": "Invitation requests",
+	"noInvitationRequests": "No open invitation requests.",
 	"invitationExpires": "Expires {{date}}",
 	"acceptInvitation": "Accept",
 	"invitationAccepted": "Invitation accepted. You can now open the project.",
