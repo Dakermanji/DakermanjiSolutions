@@ -68,6 +68,21 @@
 	margin-inline-end: .5rem;
 }
 
+.kanban-project-list a,
+.kanban-back {
+	color: var(--color-secondary);
+	text-decoration: none;
+	transition: color var(--transition-time-method);
+}
+
+.kanban-project-list a:hover,
+.kanban-project-list a:focus-visible,
+.kanban-back:hover,
+.kanban-back:focus-visible {
+	color: var(--color-secondary-hover);
+	text-decoration: none;
+}
+
 .kanban-project-row,
 .kanban-project-actions {
 	display: flex;
