@@ -5,9 +5,10 @@ import pool, { queryRows } from '../../config/database.js';
 import { KANBAN_INVITATION_EXPIRY_DAYS } from '../../constants/kanban.js';
 
 /**
- * Record the same request for a matching or unmatched identifier. Never return
- * recipient lookup details to the caller. Open requests are reused until their
- * configured expiry, including requests the recipient privately declined.
+ * Record the same request for a matching or unmatched identifier. Only return
+ * specific states already visible to the owner: self, current member, or a user
+ * they blocked. Open requests are reused until their configured expiry,
+ * including requests the recipient privately declined.
  */
 export async function createInvitationRequest({
 	projectId,
@@ -19,14 +20,48 @@ export async function createInvitationRequest({
 	try {
 		await client.query('BEGIN');
 		const owner = await client.query(
-			`SELECT id FROM kanban_projects
-			 WHERE id = $1 AND owner_user_id = $2 AND archived_at IS NULL
-			 FOR UPDATE`,
+			`SELECT p.id, u.username_normalized, lower(u.email) AS email
+			 FROM kanban_projects p
+			 JOIN users u ON u.id = p.owner_user_id
+			 WHERE p.id = $1 AND p.owner_user_id = $2 AND p.archived_at IS NULL
+			 FOR UPDATE OF p`,
 			[projectId, ownerUserId],
 		);
 		if (!owner.rowCount) {
 			await client.query('ROLLBACK');
-			return false;
+			return 'not_owner';
+		}
+		if (
+			identifier === owner.rows[0].username_normalized ||
+			identifier === owner.rows[0].email
+		) {
+			await client.query('ROLLBACK');
+			return 'self';
+		}
+
+		const recipient = await client.query(
+			`SELECT u.id, u.is_verified, u.is_blocked,
+			   EXISTS (
+			     SELECT 1 FROM kanban_project_members m
+			     WHERE m.project_id = $2 AND m.user_id = u.id
+			   ) AS already_member,
+			   EXISTS (
+			     SELECT 1 FROM user_blocks b
+			     WHERE b.blocker_id = $3 AND b.blocked_id = u.id
+			   ) AS blocked_by_owner,
+			   EXISTS (
+			     SELECT 1 FROM user_blocks b
+			     WHERE b.blocker_id = u.id AND b.blocked_id = $3
+			   ) AS blocks_owner
+			 FROM users u
+			 WHERE (u.username_normalized = $1 OR lower(u.email) = $1)
+			 LIMIT 1 FOR KEY SHARE OF u`,
+			[identifier, projectId, ownerUserId],
+		);
+		const matchedUser = recipient.rows[0];
+		if (matchedUser?.blocked_by_owner || matchedUser?.already_member) {
+			await client.query('ROLLBACK');
+			return matchedUser.blocked_by_owner ? 'blocked' : 'already_member';
 		}
 
 		await client.query(
@@ -34,18 +69,6 @@ export async function createInvitationRequest({
 			 WHERE project_id = $1 AND requested_identifier = $2
 			   AND status IN ('pending', 'declined') AND expires_at <= NOW()`,
 			[projectId, identifier],
-		);
-
-		const recipient = await client.query(
-			`SELECT u.id FROM users u
-			 WHERE (u.username_normalized = $1 OR lower(u.email) = $1)
-			   AND u.is_verified = TRUE AND u.is_blocked = FALSE
-			   AND NOT EXISTS (
-			     SELECT 1 FROM kanban_project_members m
-			     WHERE m.project_id = $2 AND m.user_id = u.id
-			   )
-			 LIMIT 1 FOR KEY SHARE OF u`,
-			[identifier, projectId],
 		);
 		await client.query(
 			`INSERT INTO kanban_project_invitations
@@ -58,7 +81,8 @@ export async function createInvitationRequest({
 			[
 				randomUUID(),
 				projectId,
-				recipient.rows[0]?.id || null,
+				matchedUser?.is_verified && !matchedUser.is_blocked &&
+					!matchedUser.blocks_owner ? matchedUser.id : null,
 				ownerUserId,
 				identifier,
 				role,
@@ -66,7 +90,7 @@ export async function createInvitationRequest({
 			],
 		);
 		await client.query('COMMIT');
-		return true;
+		return 'requested';
 	} catch (error) {
 		await client.query('ROLLBACK');
 		throw error;

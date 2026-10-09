@@ -30,6 +30,9 @@
 	"error": {
 		"invalidProject": "Saisissez un nom et une description de projet valides.",
 		"archiveFailed": "Impossible de supprimer ce projet.",
-		"invalidInvitation": "Saisissez un nom d’utilisateur ou un courriel et un rôle valides."
+		"invalidInvitation": "Saisissez un nom d’utilisateur ou un courriel et un rôle valides.",
+		"inviteSelf": "Vous êtes déjà propriétaire de ce projet.",
+		"inviteeBlocked": "Débloquez cet utilisateur avant de l’inviter.",
+		"alreadyMember": "Cet utilisateur est déjà membre du projet."
 	}
 }

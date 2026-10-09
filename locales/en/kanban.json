@@ -30,6 +30,9 @@
 	"error": {
 		"invalidProject": "Enter a valid project name and description.",
 		"archiveFailed": "Could not delete this project.",
-		"invalidInvitation": "Enter a valid username or email and role."
+		"invalidInvitation": "Enter a valid username or email and role.",
+		"inviteSelf": "You are already the owner of this project.",
+		"inviteeBlocked": "Unblock this user before inviting them.",
+		"alreadyMember": "This user is already a member of the project."
 	}
 }
