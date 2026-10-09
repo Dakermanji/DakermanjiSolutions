@@ -1,0 +1,32 @@
+<!--! views/kanban/activity.ejs -->
+<section class="kanban-page" aria-labelledby="project-activity-title">
+	<a href="/kanban/<%= project.id %>" class="kanban-back"><%= t('kanban:backToProject') %></a>
+	<header class="kanban-header">
+		<div>
+			<h1 id="project-activity-title"><%= t('kanban:projectActivity') %></h1>
+			<p dir="auto"><%= project.name %></p>
+		</div>
+	</header>
+
+	<section class="kanban-panel" aria-labelledby="project-activity-title">
+		<% if (events.length === 0) { %>
+			<p><%= t('kanban:noProjectActivity') %></p>
+		<% } else { %>
+			<ul class="kanban-event-list">
+				<% events.forEach((event) => { %>
+					<li>
+						<div>
+							<% if (event.action !== 'invitation_expired') { %>
+								<strong><%= event.actor_username || t(event.actor_user_id ? 'kanban:member' : 'kanban:events.formerMember') %></strong>
+							<% } %>
+							<span><%= t(`kanban:events.actions.${event.action}`) %></span>
+						</div>
+						<time datetime="<%= new Date(event.created_at).toISOString() %>">
+							<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(event.created_at)) %>
+						</time>
+					</li>
+				<% }) %>
+			</ul>
+		<% } %>
+	</section>
+</section>

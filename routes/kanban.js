@@ -10,6 +10,7 @@ import {
 	archiveKanbanProject,
 	createKanbanProject,
 	renderProject,
+	renderProjectActivity,
 	renderProjects,
 } from '../controllers/kanban/projects.js';
 import {
@@ -29,6 +30,7 @@ router.post('/archive', validateArchiveProject, archiveKanbanProject);
 router.post('/invitations', validateInviteMember, inviteProjectMember);
 router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvitation);
 router.post('/invitations/decline', validateDeclineInvitation, declineProjectInvitation);
+router.get('/:projectId/activity', validateProjectId, renderProjectActivity);
 router.get('/:projectId', validateProjectId, renderProject);
 
 export default router;

@@ -10,6 +10,10 @@
 		</div>
 		<div class="kanban-project-actions">
 			<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+			<a href="/kanban/<%= project.id %>/activity" class="btn btn-outline-secondary btn-sm">
+				<i class="bi bi-clock-history" aria-hidden="true"></i>
+				<%= t('kanban:projectActivity') %>
+			</a>
 			<% if (project.role === 'owner') { %>
 				<button
 					type="button"
@@ -72,28 +76,6 @@
 			<% } %>
 		</section>
 	<% } %>
-	<section class="kanban-panel mt-4" aria-labelledby="project-events-title">
-		<h2 id="project-events-title"><%= t('kanban:projectActivity') %></h2>
-		<% if (events.length === 0) { %>
-			<p><%= t('kanban:noProjectActivity') %></p>
-		<% } else { %>
-			<ul class="kanban-event-list">
-				<% events.forEach((event) => { %>
-					<li>
-						<div>
-							<% if (event.action !== 'invitation_expired') { %>
-								<strong><%= event.actor_username || t(event.actor_user_id ? 'kanban:member' : 'kanban:events.formerMember') %></strong>
-							<% } %>
-							<span><%= t(`kanban:events.actions.${event.action}`) %></span>
-						</div>
-						<time datetime="<%= new Date(event.created_at).toISOString() %>">
-							<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(event.created_at)) %>
-						</time>
-					</li>
-				<% }) %>
-			</ul>
-		<% } %>
-	</section>
 </section>
 
 <% if (project.role === 'owner') { %>

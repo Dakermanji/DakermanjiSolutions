@@ -65,14 +65,12 @@ export async function renderProject(req, res, next) {
 	try {
 		const project = await findProjectForUser(req.params.projectId, req.user.id);
 		if (!project) return res.sendStatus(404);
-		const [members, invitations, events] = await Promise.all([
+		const [members, invitations] = await Promise.all([
 			listProjectMembers(project.id, req.user.id),
 			project.role === 'owner'
 				? listProjectInvitationRequests(project.id, req.user.id)
 				: [],
-			listProjectEventsForMember({ projectId: project.id, userId: req.user.id }),
 		]);
-		if (events === null) return res.sendStatus(404);
 		return res.render('kanban/project', {
 			titleKey: 'kanban:title',
 			styles: ['modals/main', 'kanban/main'],
@@ -80,8 +78,27 @@ export async function renderProject(req, res, next) {
 			project,
 			members,
 			invitations,
-			events,
 			invitationLimits: KANBAN_INVITATION_LIMITS,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function renderProjectActivity(req, res, next) {
+	try {
+		const project = await findProjectForUser(req.params.projectId, req.user.id);
+		if (!project) return res.sendStatus(404);
+		const events = await listProjectEventsForMember({
+			projectId: project.id,
+			userId: req.user.id,
+		});
+		if (events === null) return res.sendStatus(404);
+		return res.render('kanban/activity', {
+			titleKey: 'kanban:projectActivity',
+			styles: ['kanban/main'],
+			project,
+			events,
 		});
 	} catch (error) {
 		return next(error);
