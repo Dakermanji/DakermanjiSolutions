@@ -27,7 +27,20 @@
 	</header>
 
 	<section class="kanban-panel" aria-labelledby="project-members-title">
-		<h2 id="project-members-title"><%= t('kanban:members') %></h2>
+		<div class="kanban-section-heading">
+			<h2 id="project-members-title"><%= t('kanban:members') %></h2>
+			<% if (project.role === 'owner') { %>
+				<button
+					type="button"
+					class="btn btn-action btn-sm"
+					data-bs-toggle="modal"
+					data-bs-target="#inviteKanbanMemberModal"
+				>
+					<i class="bi bi-person-plus" aria-hidden="true"></i>
+					<%= t('kanban:inviteMember') %>
+				</button>
+			<% } %>
+		</div>
 		<ul class="kanban-member-list">
 			<% members.forEach((member) => { %>
 				<li>
@@ -41,4 +54,5 @@
 
 <% if (project.role === 'owner') { %>
 	<%- include('_archive_project_modal') %>
+	<%- include('_invite_member_modal') %>
 <% } %>

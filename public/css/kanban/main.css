@@ -27,6 +27,14 @@
 	font-size: 1.25rem;
 }
 
+.kanban-section-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: .75rem;
+}
+
 .kanban-project-list,
 .kanban-member-list {
 	list-style: none;
