@@ -8,6 +8,10 @@
 	"description": "الوصف",
 	"create": "إنشاء المشروع",
 	"projectCreated": "تم إنشاء المشروع.",
+	"projectArchived": "تمت إزالة المشروع من قائمة مشاريعك.",
+	"deleteProject": "حذف المشروع",
+	"deleteProjectNamed": "حذف المشروع {{name}}",
+	"deleteProjectMessage": "سيُخفى المشروع عن جميع الأعضاء. ستُحفظ مهامه ومناقشاته لإمكانية استعادته لاحقًا.",
 	"allProjects": "كل المشاريع",
 	"members": "الأعضاء",
 	"member": "عضو",
@@ -18,6 +22,7 @@
 		"observer": "مراقب"
 	},
 	"error": {
-		"invalidProject": "أدخل اسمًا ووصفًا صالحين للمشروع."
+		"invalidProject": "أدخل اسمًا ووصفًا صالحين للمشروع.",
+		"archiveFailed": "تعذّر حذف هذا المشروع."
 	}
 }

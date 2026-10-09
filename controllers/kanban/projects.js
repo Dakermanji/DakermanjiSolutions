@@ -6,6 +6,7 @@ import {
 	listProjectInvitationRequests,
 } from '../../models/kanban/Members.js';
 import {
+	archiveProject,
 	createProject,
 	findProjectForUser,
 	listProjectMembers,
@@ -21,6 +22,7 @@ export async function renderProjects(req, res, next) {
 		return res.render('kanban/projects', {
 			titleKey: 'kanban:title',
 			styles: ['modals/main', 'kanban/main'],
+			scripts: ['kanban/archiveProject'],
 			projects,
 			invitations,
 			projectLimits: KANBAN_PROJECT_LIMITS,
@@ -40,6 +42,19 @@ export async function createKanbanProject(req, res, next) {
 	}
 }
 
+export async function archiveKanbanProject(req, res, next) {
+	try {
+		const archived = await archiveProject(req.kanbanArchiveInput);
+		req.flash(
+			archived ? 'success' : 'error',
+			archived ? 'kanban:projectArchived' : 'kanban:error.archiveFailed',
+		);
+		return res.redirect('/kanban');
+	} catch (error) {
+		return next(error);
+	}
+}
+
 export async function renderProject(req, res, next) {
 	try {
 		const project = await findProjectForUser(req.params.projectId, req.user.id);
@@ -52,7 +67,8 @@ export async function renderProject(req, res, next) {
 		]);
 		return res.render('kanban/project', {
 			titleKey: 'kanban:title',
-			styles: ['kanban/main'],
+			styles: ['modals/main', 'kanban/main'],
+			scripts: ['kanban/archiveProject'],
 			project,
 			members,
 			invitations,

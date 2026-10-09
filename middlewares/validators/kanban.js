@@ -54,6 +54,16 @@ export function validateProjectId(req, res, next) {
 	return next();
 }
 
+export function validateArchiveProject(req, res, next) {
+	if (!isValidUuid(req.body?.projectId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	req.kanbanArchiveInput = {
+		projectId: req.body.projectId,
+		ownerUserId: req.user.id,
+	};
+	return next();
+}
+
 export function parseInvitationInput(input) {
 	const source = input && typeof input === 'object' && !Array.isArray(input)
 		? input

@@ -8,6 +8,10 @@
 	"description": "Description",
 	"create": "Create project",
 	"projectCreated": "Project created.",
+	"projectArchived": "Project deleted from your project list.",
+	"deleteProject": "Delete project",
+	"deleteProjectNamed": "Delete project {{name}}",
+	"deleteProjectMessage": "This hides the project from all members. Its tasks and discussions are kept for recovery.",
 	"allProjects": "All projects",
 	"members": "Members",
 	"member": "Member",
@@ -18,6 +22,7 @@
 		"observer": "Observer"
 	},
 	"error": {
-		"invalidProject": "Enter a valid project name and description."
+		"invalidProject": "Enter a valid project name and description.",
+		"archiveFailed": "Could not delete this project."
 	}
 }

@@ -8,6 +8,10 @@
 	"description": "Description",
 	"create": "Créer le projet",
 	"projectCreated": "Projet créé.",
+	"projectArchived": "Le projet a été retiré de votre liste de projets.",
+	"deleteProject": "Supprimer le projet",
+	"deleteProjectNamed": "Supprimer le projet {{name}}",
+	"deleteProjectMessage": "Le projet sera masqué pour tous les membres. Ses tâches et discussions seront conservées pour une éventuelle restauration.",
 	"allProjects": "Tous les projets",
 	"members": "Membres",
 	"member": "Membre",
@@ -18,6 +22,7 @@
 		"observer": "Observateur"
 	},
 	"error": {
-		"invalidProject": "Saisissez un nom et une description de projet valides."
+		"invalidProject": "Saisissez un nom et une description de projet valides.",
+		"archiveFailed": "Impossible de supprimer ce projet."
 	}
 }
