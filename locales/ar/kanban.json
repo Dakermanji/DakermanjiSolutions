@@ -16,6 +16,11 @@
 	"allProjects": "كل المشاريع",
 	"members": "الأعضاء",
 	"member": "عضو",
+	"inviteMember": "دعوة عضو",
+	"usernameOrEmail": "اسم المستخدم أو البريد الإلكتروني",
+	"role": "الدور",
+	"chooseRole": "اختر دورًا",
+	"sendInvitation": "إرسال طلب الدعوة",
 	"roles": {
 		"owner": "المالك",
 		"admin": "مسؤول",

@@ -16,6 +16,11 @@
 	"allProjects": "All projects",
 	"members": "Members",
 	"member": "Member",
+	"inviteMember": "Invite member",
+	"usernameOrEmail": "Username or email",
+	"role": "Role",
+	"chooseRole": "Choose a role",
+	"sendInvitation": "Send invitation request",
 	"roles": {
 		"owner": "Owner",
 		"admin": "Admin",

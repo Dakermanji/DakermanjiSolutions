@@ -1,0 +1,62 @@
+<!--! views/kanban/_invite_member_modal.ejs -->
+<div
+	class="modal fade"
+	id="inviteKanbanMemberModal"
+	tabindex="-1"
+	aria-labelledby="inviteKanbanMemberModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="inviteKanbanMemberModalLabel">
+					<%= t('kanban:inviteMember') %>
+				</h5>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="<%= t('common:close') %>"
+				></button>
+			</div>
+			<form method="POST" action="/kanban/invitations">
+				<%- include('../partials/_csrf') %>
+				<input type="hidden" name="projectId" value="<%= project.id %>" />
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="invite-identifier" class="form-label">
+							<%= t('kanban:usernameOrEmail') %>
+						</label>
+						<input
+							id="invite-identifier"
+							name="identifier"
+							type="text"
+							maxlength="<%= invitationLimits.IDENTIFIER_MAX_LENGTH %>"
+							required
+							class="form-control"
+						/>
+					</div>
+					<div>
+						<label for="invite-role" class="form-label">
+							<%= t('kanban:role') %>
+						</label>
+						<select id="invite-role" name="role" class="form-select" required>
+							<option value="" selected disabled><%= t('kanban:chooseRole') %></option>
+							<% ['admin', 'editor', 'observer'].forEach((role) => { %>
+								<option value="<%= role %>"><%= t(`kanban:roles.${role}`) %></option>
+							<% }) %>
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<%= t('common:cancel') %>
+					</button>
+					<button type="submit" class="btn btn-action">
+						<%= t('kanban:sendInvitation') %>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

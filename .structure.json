@@ -754,6 +754,7 @@
 		"kanban": [
 			"_archive_project_modal.ejs",
 			"_create_project_modal.ejs",
+			"_invite_member_modal.ejs",
 			"project.ejs",
 			"projects.ejs"
 		],
