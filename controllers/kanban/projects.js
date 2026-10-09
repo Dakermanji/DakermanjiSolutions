@@ -5,6 +5,7 @@ import {
 	KANBAN_PROJECT_LIMITS,
 } from '../../constants/kanban.js';
 import {
+	listDeclinedInvitationsForUser,
 	listInvitationsForUser,
 	listProjectInvitationRequests,
 } from '../../models/kanban/Members.js';
@@ -18,9 +19,10 @@ import {
 
 export async function renderProjects(req, res, next) {
 	try {
-		const [projects, invitations] = await Promise.all([
+		const [projects, invitations, declinedInvitations] = await Promise.all([
 			listProjectsForUser(req.user.id),
 			listInvitationsForUser(req.user.id),
+			listDeclinedInvitationsForUser(req.user.id),
 		]);
 		return res.render('kanban/projects', {
 			titleKey: 'kanban:title',
@@ -28,6 +30,7 @@ export async function renderProjects(req, res, next) {
 			scripts: ['kanban/archiveProject'],
 			projects,
 			invitations,
+			declinedInvitations,
 			projectLimits: KANBAN_PROJECT_LIMITS,
 		});
 	} catch (error) {

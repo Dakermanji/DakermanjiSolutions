@@ -11,6 +11,8 @@
 	"invitationAccepted": "قُبلت الدعوة. يمكنك الآن فتح المشروع.",
 	"declineInvitation": "رفض",
 	"invitationDeclined": "رُفضت الدعوة.",
+	"declinedInvitations": "الدعوات المرفوضة",
+	"declinedInvitationsHelp": "لا يزال بإمكانك قبول هذه الدعوات قبل انتهاء صلاحيتها.",
 	"noProjects": "لست عضوًا في أي مشروع بعد.",
 	"createProject": "إنشاء مشروع",
 	"projectName": "اسم المشروع",

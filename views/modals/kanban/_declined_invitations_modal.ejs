@@ -1,0 +1,45 @@
+<!--! views/modals/kanban/_declined_invitations_modal.ejs -->
+<div
+	class="modal fade"
+	id="declinedKanbanInvitationsModal"
+	tabindex="-1"
+	aria-labelledby="declinedKanbanInvitationsModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="declinedKanbanInvitationsModalLabel">
+					<%= t('kanban:declinedInvitations') %>
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('common:close') %>"></button>
+			</div>
+			<div class="modal-body">
+				<p><%= t('kanban:declinedInvitationsHelp') %></p>
+				<ul class="kanban-invitation-list">
+					<% declinedInvitations.forEach((invitation) => { %>
+						<li>
+							<div class="kanban-project-row">
+								<div>
+									<strong dir="auto"><%= invitation.project_name %></strong>
+									<span class="badge text-bg-secondary"><%= t(`kanban:roles.${invitation.role}`) %></span>
+									<time class="d-block" datetime="<%= new Date(invitation.expires_at).toISOString() %>">
+										<%= t('kanban:invitationExpires', { date: new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(invitation.expires_at)) }) %>
+									</time>
+								</div>
+								<form method="POST" action="/kanban/invitations/accept">
+									<%- include('../../partials/_csrf') %>
+									<input type="hidden" name="invitationId" value="<%= invitation.id %>" />
+									<button type="submit" class="btn btn-action btn-sm"><%= t('kanban:acceptInvitation') %></button>
+								</form>
+							</div>
+						</li>
+					<% }) %>
+				</ul>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common:close') %></button>
+			</div>
+		</div>
+	</div>
+</div>

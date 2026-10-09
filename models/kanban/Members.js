@@ -99,21 +99,29 @@ export async function createInvitationRequest({
 	}
 }
 
-export function listInvitationsForUser(userId) {
+function listInvitationsForUserWithStatus(userId, status) {
 	return queryRows(
 		`SELECT i.id, i.role, i.created_at, i.expires_at,
 		        p.name AS project_name
 		 FROM kanban_project_invitations i
 		 JOIN kanban_projects p ON p.id = i.project_id
-		 WHERE i.invitee_user_id = $1 AND i.status = 'pending'
+		 WHERE i.invitee_user_id = $1 AND i.status = $2
 		   AND i.expires_at > NOW() AND p.archived_at IS NULL
 		   AND NOT EXISTS (
 		     SELECT 1 FROM kanban_project_members m
 		     WHERE m.project_id = i.project_id AND m.user_id = $1
 		   )
 		 ORDER BY i.created_at DESC`,
-		[userId],
+		[userId, status],
 	);
+}
+
+export function listInvitationsForUser(userId) {
+	return listInvitationsForUserWithStatus(userId, 'pending');
+}
+
+export function listDeclinedInvitationsForUser(userId) {
+	return listInvitationsForUserWithStatus(userId, 'declined');
 }
 
 /** The owner sees their submitted input, not recipient or delivery state. */
@@ -141,10 +149,11 @@ export async function respondToInvitation({ invitationId, userId, accept }) {
 			 FROM kanban_project_invitations i
 			 JOIN kanban_projects p ON p.id = i.project_id
 			 WHERE i.id = $1 AND i.invitee_user_id = $2
-			   AND i.status = 'pending' AND i.expires_at > NOW()
+			   AND (i.status = 'pending' OR ($3::boolean AND i.status = 'declined'))
+			   AND i.expires_at > NOW()
 			   AND p.archived_at IS NULL
 			 FOR UPDATE OF i`,
-			[invitationId, userId],
+			[invitationId, userId, accept],
 		);
 		const invitation = rows[0];
 		if (!invitation) {
@@ -161,8 +170,10 @@ export async function respondToInvitation({ invitationId, userId, accept }) {
 		const response = await client.query(
 			`UPDATE kanban_project_invitations
 			 SET status = $1, responded_at = NOW()
-			 WHERE id = $2 AND status = 'pending' AND expires_at > NOW()`,
-			[accept ? 'accepted' : 'declined', invitationId],
+			 WHERE id = $2
+			   AND (status = 'pending' OR ($3::boolean AND status = 'declined'))
+			   AND expires_at > NOW()`,
+			[accept ? 'accepted' : 'declined', invitationId, accept],
 		);
 		if (!response.rowCount) {
 			await client.query('ROLLBACK');

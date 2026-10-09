@@ -17,7 +17,14 @@
 	</header>
 
 	<section class="kanban-panel kanban-invitations" aria-labelledby="kanban-invitations-title">
-		<h2 id="kanban-invitations-title"><%= t('kanban:yourInvitations') %></h2>
+		<div class="kanban-section-heading">
+			<h2 id="kanban-invitations-title"><%= t('kanban:yourInvitations') %></h2>
+			<% if (declinedInvitations.length > 0) { %>
+				<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#declinedKanbanInvitationsModal">
+					<%= t('kanban:declinedInvitations') %>
+				</button>
+			<% } %>
+		</div>
 		<% if (invitations.length === 0) { %>
 			<p><%= t('kanban:noInvitations') %></p>
 		<% } else { %>
@@ -83,6 +90,9 @@
 </section>
 
 <%- include('../modals/kanban/_create_project_modal') %>
+<% if (declinedInvitations.length > 0) { %>
+	<%- include('../modals/kanban/_declined_invitations_modal') %>
+<% } %>
 <% if (projects.some((project) => project.role === 'owner')) { %>
 	<%- include('../modals/kanban/_archive_project_modal') %>
 <% } %>

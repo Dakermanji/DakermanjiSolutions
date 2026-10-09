@@ -11,6 +11,8 @@
 	"invitationAccepted": "Invitation acceptée. Vous pouvez maintenant ouvrir le projet.",
 	"declineInvitation": "Refuser",
 	"invitationDeclined": "Invitation refusée.",
+	"declinedInvitations": "Invitations refusées",
+	"declinedInvitationsHelp": "Vous pouvez encore accepter ces invitations avant leur expiration.",
 	"noProjects": "Vous ne participez à aucun projet pour le moment.",
 	"createProject": "Créer un projet",
 	"projectName": "Nom du projet",
