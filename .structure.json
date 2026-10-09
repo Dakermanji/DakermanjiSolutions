@@ -752,9 +752,6 @@
 			"main.ejs"
 		],
 		"kanban": [
-			"_archive_project_modal.ejs",
-			"_create_project_modal.ejs",
-			"_invite_member_modal.ejs",
 			"project.ejs",
 			"projects.ejs"
 		],
@@ -797,6 +794,11 @@
 				"_room_search_modal.ejs"
 			],
 			"dashboard": [],
+			"kanban": [
+				"_archive_project_modal.ejs",
+				"_create_project_modal.ejs",
+				"_invite_member_modal.ejs"
+			],
 			"profile": [
 				"_avatar_modal.ejs",
 				"_delete_account_modal.ejs",

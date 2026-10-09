@@ -1,4 +1,4 @@
-<!--! views/kanban/_create_project_modal.ejs -->
+<!--! views/modals/kanban/_create_project_modal.ejs -->
 <div
 	class="modal fade"
 	id="createKanbanProjectModal"
@@ -20,7 +20,7 @@
 				></button>
 			</div>
 			<form method="POST" action="/kanban">
-				<%- include('../partials/_csrf') %>
+				<%- include('../../partials/_csrf') %>
 				<div class="modal-body">
 					<div class="mb-3">
 						<label for="project-name" class="form-label">

@@ -1,4 +1,4 @@
-<!--! views/kanban/_archive_project_modal.ejs -->
+<!--! views/modals/kanban/_archive_project_modal.ejs -->
 <div
 	class="modal fade"
 	id="archiveKanbanProjectModal"
@@ -20,7 +20,7 @@
 				></button>
 			</div>
 			<form method="POST" action="/kanban/archive">
-				<%- include('../partials/_csrf') %>
+				<%- include('../../partials/_csrf') %>
 				<input type="hidden" name="projectId" data-archive-project-id />
 				<div class="modal-body">
 					<p><%= t('kanban:deleteProjectMessage') %></p>

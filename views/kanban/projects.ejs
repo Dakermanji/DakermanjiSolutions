@@ -53,7 +53,7 @@
 	</section>
 </section>
 
-<%- include('_create_project_modal') %>
+<%- include('../modals/kanban/_create_project_modal') %>
 <% if (projects.some((project) => project.role === 'owner')) { %>
-	<%- include('_archive_project_modal') %>
+	<%- include('../modals/kanban/_archive_project_modal') %>
 <% } %>

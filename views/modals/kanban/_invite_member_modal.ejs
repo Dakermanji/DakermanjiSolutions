@@ -1,4 +1,4 @@
-<!--! views/kanban/_invite_member_modal.ejs -->
+<!--! views/modals/kanban/_invite_member_modal.ejs -->
 <div
 	class="modal fade"
 	id="inviteKanbanMemberModal"
@@ -20,7 +20,7 @@
 				></button>
 			</div>
 			<form method="POST" action="/kanban/invitations">
-				<%- include('../partials/_csrf') %>
+				<%- include('../../partials/_csrf') %>
 				<input type="hidden" name="projectId" value="<%= project.id %>" />
 				<div class="modal-body">
 					<div class="mb-3">
