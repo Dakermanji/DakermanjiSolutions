@@ -50,6 +50,15 @@
 	margin-inline-end: .5rem;
 }
 
+.kanban-project-row,
+.kanban-project-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: .75rem;
+}
+
 .kanban-project-list p {
 	margin: .3rem 0 0;
 	overflow-wrap: anywhere;

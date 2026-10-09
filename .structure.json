@@ -493,6 +493,9 @@
 				"mouseTrailAndFollower.js",
 				"portfolio.js"
 			],
+			"kanban": [
+				"archiveProject.js"
+			],
 			"notifications": [
 				"main.js"
 			],
@@ -748,6 +751,7 @@
 			"main.ejs"
 		],
 		"kanban": [
+			"_archive_project_modal.ejs",
 			"_create_project_modal.ejs",
 			"project.ejs",
 			"projects.ejs"

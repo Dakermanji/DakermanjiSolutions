@@ -24,8 +24,25 @@
 			<ul class="kanban-project-list">
 				<% projects.forEach((project) => { %>
 					<li>
-						<a href="/kanban/<%= project.id %>"><%= project.name %></a>
-						<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+						<div class="kanban-project-row">
+							<div>
+								<a href="/kanban/<%= project.id %>"><%= project.name %></a>
+								<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+							</div>
+							<% if (project.role === 'owner') { %>
+								<button
+								type="button"
+								class="btn btn-outline-danger btn-sm"
+								data-bs-toggle="modal"
+								data-bs-target="#archiveKanbanProjectModal"
+								data-project-id="<%= project.id %>"
+								data-project-name="<%= project.name %>"
+								aria-label="<%= t('kanban:deleteProjectNamed', { name: project.name }) %>"
+							>
+								<i class="bi bi-trash" aria-hidden="true"></i>
+							</button>
+							<% } %>
+						</div>
 						<% if (project.description) { %>
 							<p><%= project.description %></p>
 						<% } %>
@@ -37,3 +54,6 @@
 </section>
 
 <%- include('_create_project_modal') %>
+<% if (projects.some((project) => project.role === 'owner')) { %>
+	<%- include('_archive_project_modal') %>
+<% } %>

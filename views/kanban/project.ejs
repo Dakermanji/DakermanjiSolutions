@@ -8,7 +8,22 @@
 				<p><%= project.description %></p>
 			<% } %>
 		</div>
-		<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+		<div class="kanban-project-actions">
+			<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+			<% if (project.role === 'owner') { %>
+				<button
+					type="button"
+					class="btn btn-outline-danger btn-sm"
+					data-bs-toggle="modal"
+					data-bs-target="#archiveKanbanProjectModal"
+					data-project-id="<%= project.id %>"
+					data-project-name="<%= project.name %>"
+				>
+					<i class="bi bi-trash" aria-hidden="true"></i>
+					<%= t('kanban:deleteProject') %>
+				</button>
+			<% } %>
+		</div>
 	</header>
 
 	<section class="kanban-panel" aria-labelledby="project-members-title">
@@ -23,3 +38,7 @@
 		</ul>
 	</section>
 </section>
+
+<% if (project.role === 'owner') { %>
+	<%- include('_archive_project_modal') %>
+<% } %>

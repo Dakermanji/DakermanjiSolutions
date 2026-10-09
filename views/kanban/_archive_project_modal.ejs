@@ -1,0 +1,40 @@
+<!--! views/kanban/_archive_project_modal.ejs -->
+<div
+	class="modal fade"
+	id="archiveKanbanProjectModal"
+	tabindex="-1"
+	aria-labelledby="archiveKanbanProjectModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="archiveKanbanProjectModalLabel">
+					<%= t('kanban:deleteProject') %>
+				</h5>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="<%= t('common:close') %>"
+				></button>
+			</div>
+			<form method="POST" action="/kanban/archive">
+				<%- include('../partials/_csrf') %>
+				<input type="hidden" name="projectId" data-archive-project-id />
+				<div class="modal-body">
+					<p><%= t('kanban:deleteProjectMessage') %></p>
+					<p class="fw-semibold mb-0" data-archive-project-name></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<%= t('common:cancel') %>
+					</button>
+					<button type="submit" class="btn btn-danger">
+						<%= t('kanban:deleteProject') %>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
