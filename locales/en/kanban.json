@@ -9,6 +9,7 @@
 	"create": "Create project",
 	"projectCreated": "Project created.",
 	"projectArchived": "Project deleted from your project list.",
+	"invitationRequestSubmitted": "If possible, your invitation request has been sent.",
 	"deleteProject": "Delete project",
 	"deleteProjectNamed": "Delete project {{name}}",
 	"deleteProjectMessage": "This hides the project from all members. Its tasks and discussions are kept for recovery.",
@@ -23,6 +24,7 @@
 	},
 	"error": {
 		"invalidProject": "Enter a valid project name and description.",
-		"archiveFailed": "Could not delete this project."
+		"archiveFailed": "Could not delete this project.",
+		"invalidInvitation": "Enter a valid username or email and role."
 	}
 }

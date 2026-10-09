@@ -9,6 +9,7 @@
 	"create": "إنشاء المشروع",
 	"projectCreated": "تم إنشاء المشروع.",
 	"projectArchived": "تمت إزالة المشروع من قائمة مشاريعك.",
+	"invitationRequestSubmitted": "إذا أمكن، فقد أُرسل طلب الدعوة الخاص بك.",
 	"deleteProject": "حذف المشروع",
 	"deleteProjectNamed": "حذف المشروع {{name}}",
 	"deleteProjectMessage": "سيُخفى المشروع عن جميع الأعضاء. ستُحفظ مهامه ومناقشاته لإمكانية استعادته لاحقًا.",
@@ -23,6 +24,7 @@
 	},
 	"error": {
 		"invalidProject": "أدخل اسمًا ووصفًا صالحين للمشروع.",
-		"archiveFailed": "تعذّر حذف هذا المشروع."
+		"archiveFailed": "تعذّر حذف هذا المشروع.",
+		"invalidInvitation": "أدخل اسم مستخدم أو بريدًا إلكترونيًا ودورًا صالحين."
 	}
 }
