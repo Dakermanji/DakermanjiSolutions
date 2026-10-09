@@ -27,6 +27,10 @@
 	font-size: 1.25rem;
 }
 
+.kanban-invitations {
+	margin-bottom: 1.5rem;
+}
+
 .kanban-section-heading {
 	display: flex;
 	align-items: center;
@@ -36,6 +40,7 @@
 }
 
 .kanban-project-list,
+.kanban-invitation-list,
 .kanban-member-list {
 	list-style: none;
 	padding: 0;
@@ -43,12 +48,14 @@
 }
 
 .kanban-project-list li,
+.kanban-invitation-list li,
 .kanban-member-list li {
 	padding-block: .75rem;
 	border-bottom: 1px solid var(--border-subtle);
 }
 
 .kanban-project-list li:last-child,
+.kanban-invitation-list li:last-child,
 .kanban-member-list li:last-child {
 	border-bottom: 0;
 }

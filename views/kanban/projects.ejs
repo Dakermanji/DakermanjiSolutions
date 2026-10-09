@@ -16,6 +16,27 @@
 		</button>
 	</header>
 
+	<section class="kanban-panel kanban-invitations" aria-labelledby="kanban-invitations-title">
+		<h2 id="kanban-invitations-title"><%= t('kanban:yourInvitations') %></h2>
+		<% if (invitations.length === 0) { %>
+			<p><%= t('kanban:noInvitations') %></p>
+		<% } else { %>
+			<ul class="kanban-invitation-list">
+				<% invitations.forEach((invitation) => { %>
+					<li>
+						<div class="kanban-project-row">
+							<strong dir="auto"><%= invitation.project_name %></strong>
+							<span class="badge text-bg-secondary"><%= t(`kanban:roles.${invitation.role}`) %></span>
+						</div>
+						<time datetime="<%= new Date(invitation.expires_at).toISOString() %>">
+							<%= t('kanban:invitationExpires', { date: new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(invitation.expires_at)) }) %>
+						</time>
+					</li>
+				<% }) %>
+			</ul>
+		<% } %>
+	</section>
+
 	<section class="kanban-panel" aria-labelledby="kanban-projects-title">
 		<h2 id="kanban-projects-title"><%= t('kanban:yourProjects') %></h2>
 		<% if (projects.length === 0) { %>
