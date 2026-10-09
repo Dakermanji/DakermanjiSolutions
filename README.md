@@ -74,7 +74,7 @@ Replace the example SMTP port with a numeric port, and clear the example Sentry 
 
 ### 3. Initialize PostgreSQL
 
-Create the database and an application database user. For a **fresh database**, execute all numbered scripts in `sql/` in ascending order, from `01_session.sql` through `30_kanban_project_invitations.sql`:
+Create the database and an application database user. For a **fresh database**, execute all numbered scripts in `sql/` in ascending order, from `01_session.sql` through `31_kanban_project_events.sql`:
 
 ```bash
 for file in sql/[0-9][0-9]_*.sql; do
