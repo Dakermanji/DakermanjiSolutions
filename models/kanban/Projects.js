@@ -1,33 +1,23 @@
 //! models/kanban/Projects.js
 
 import { randomUUID } from 'node:crypto';
-import pool, { queryRows } from '../../config/database.js';
+import { queryRows } from '../../config/database.js';
 
-export async function createProject({ ownerUserId, name, description }) {
-	const client = await pool.connect();
+export async function createProject({ ownerUserId, name, description }, db) {
 	const id = randomUUID();
-	try {
-		await client.query('BEGIN');
-		const { rows } = await client.query(
-			`INSERT INTO kanban_projects
-			 (id, name, description, owner_user_id, created_by_user_id)
-			 VALUES ($1, $2, $3, $4, $4)
-			 RETURNING id, name, description`,
-			[id, name, description, ownerUserId],
-		);
-		await client.query(
-			`INSERT INTO kanban_project_members (project_id, user_id, role)
-			 VALUES ($1, $2, 'owner')`,
-			[id, ownerUserId],
-		);
-		await client.query('COMMIT');
-		return rows[0];
-	} catch (error) {
-		await client.query('ROLLBACK');
-		throw error;
-	} finally {
-		client.release();
-	}
+	const { rows } = await db.query(
+		`INSERT INTO kanban_projects
+		 (id, name, description, owner_user_id, created_by_user_id)
+		 VALUES ($1, $2, $3, $4, $4)
+		 RETURNING id, name, description`,
+		[id, name, description, ownerUserId],
+	);
+	await db.query(
+		`INSERT INTO kanban_project_members (project_id, user_id, role)
+		 VALUES ($1, $2, 'owner')`,
+		[id, ownerUserId],
+	);
+	return rows[0];
 }
 
 export function listProjectsForUser(userId) {

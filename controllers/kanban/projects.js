@@ -11,11 +11,11 @@ import {
 } from '../../models/kanban/Members.js';
 import {
 	archiveProject,
-	createProject,
 	findProjectForUser,
 	listProjectMembers,
 	listProjectsForUser,
 } from '../../models/kanban/Projects.js';
+import { createProjectWithLog } from '../../services/kanban/projects.js';
 
 export async function renderProjects(req, res, next) {
 	try {
@@ -40,7 +40,7 @@ export async function renderProjects(req, res, next) {
 
 export async function createKanbanProject(req, res, next) {
 	try {
-		const project = await createProject(req.kanbanProjectInput);
+		const project = await createProjectWithLog(req.kanbanProjectInput);
 		req.flash('success', 'kanban:projectCreated');
 		return res.redirect(`/kanban/${project.id}`);
 	} catch (error) {

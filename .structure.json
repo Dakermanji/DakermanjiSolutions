@@ -639,7 +639,8 @@
 		],
 		"kanban": [
 			"permissions.js",
-			"projectEvents.js"
+			"projectEvents.js",
+			"projects.js"
 		],
 		"notifications": [
 			"appNotifications.js",
