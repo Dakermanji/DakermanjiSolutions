@@ -1,7 +1,7 @@
 //! routes/kanban.js
 
 import { Router } from 'express';
-import { inviteProjectMember } from '../controllers/kanban/members.js';
+import { acceptProjectInvitation, inviteProjectMember } from '../controllers/kanban/members.js';
 import {
 	archiveKanbanProject,
 	createKanbanProject,
@@ -10,6 +10,7 @@ import {
 } from '../controllers/kanban/projects.js';
 import {
 	validateArchiveProject,
+	validateAcceptInvitation,
 	validateCreateProject,
 	validateInviteMember,
 	validateProjectId,
@@ -21,6 +22,7 @@ router.get('/', renderProjects);
 router.post('/', validateCreateProject, createKanbanProject);
 router.post('/archive', validateArchiveProject, archiveKanbanProject);
 router.post('/invitations', validateInviteMember, inviteProjectMember);
+router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvitation);
 router.get('/:projectId', validateProjectId, renderProject);
 
 export default router;

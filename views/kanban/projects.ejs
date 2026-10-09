@@ -25,12 +25,19 @@
 				<% invitations.forEach((invitation) => { %>
 					<li>
 						<div class="kanban-project-row">
-							<strong dir="auto"><%= invitation.project_name %></strong>
-							<span class="badge text-bg-secondary"><%= t(`kanban:roles.${invitation.role}`) %></span>
+							<div>
+								<strong dir="auto"><%= invitation.project_name %></strong>
+								<span class="badge text-bg-secondary"><%= t(`kanban:roles.${invitation.role}`) %></span>
+								<time class="d-block" datetime="<%= new Date(invitation.expires_at).toISOString() %>">
+									<%= t('kanban:invitationExpires', { date: new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(invitation.expires_at)) }) %>
+								</time>
+							</div>
+							<form method="POST" action="/kanban/invitations/accept">
+								<%- include('../partials/_csrf') %>
+								<input type="hidden" name="invitationId" value="<%= invitation.id %>" />
+								<button type="submit" class="btn btn-action btn-sm"><%= t('kanban:acceptInvitation') %></button>
+							</form>
 						</div>
-						<time datetime="<%= new Date(invitation.expires_at).toISOString() %>">
-							<%= t('kanban:invitationExpires', { date: new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(invitation.expires_at)) }) %>
-						</time>
 					</li>
 				<% }) %>
 			</ul>

@@ -5,6 +5,8 @@
 	"yourInvitations": "Vos invitations",
 	"noInvitations": "Vous n’avez aucune invitation en attente.",
 	"invitationExpires": "Expire le {{date}}",
+	"acceptInvitation": "Accepter",
+	"invitationAccepted": "Invitation acceptée. Vous pouvez maintenant ouvrir le projet.",
 	"noProjects": "Vous ne participez à aucun projet pour le moment.",
 	"createProject": "Créer un projet",
 	"projectName": "Nom du projet",
@@ -36,6 +38,7 @@
 		"invalidInvitation": "Saisissez un nom d’utilisateur ou un courriel et un rôle valides.",
 		"inviteSelf": "Vous êtes déjà propriétaire de ce projet.",
 		"inviteeBlocked": "Débloquez cet utilisateur avant de l’inviter.",
-		"alreadyMember": "Cet utilisateur est déjà membre du projet."
+		"alreadyMember": "Cet utilisateur est déjà membre du projet.",
+		"invitationUnavailable": "Cette invitation n’est plus disponible."
 	}
 }

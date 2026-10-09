@@ -5,6 +5,8 @@
 	"yourInvitations": "دعواتك",
 	"noInvitations": "ليس لديك دعوات معلّقة.",
 	"invitationExpires": "تنتهي في {{date}}",
+	"acceptInvitation": "قبول",
+	"invitationAccepted": "قُبلت الدعوة. يمكنك الآن فتح المشروع.",
 	"noProjects": "لست عضوًا في أي مشروع بعد.",
 	"createProject": "إنشاء مشروع",
 	"projectName": "اسم المشروع",
@@ -36,6 +38,7 @@
 		"invalidInvitation": "أدخل اسم مستخدم أو بريدًا إلكترونيًا ودورًا صالحين.",
 		"inviteSelf": "أنت مالك هذا المشروع بالفعل.",
 		"inviteeBlocked": "أزل الحظر عن هذا المستخدم قبل دعوته.",
-		"alreadyMember": "هذا المستخدم عضو في المشروع بالفعل."
+		"alreadyMember": "هذا المستخدم عضو في المشروع بالفعل.",
+		"invitationUnavailable": "لم تعد هذه الدعوة متاحة."
 	}
 }
