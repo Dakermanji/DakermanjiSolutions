@@ -20,7 +20,7 @@ export async function createInvitationRequest({
 	try {
 		await client.query('BEGIN');
 		const owner = await client.query(
-			`SELECT p.id, u.username_normalized, lower(u.email) AS email
+			`SELECT p.id, p.name, u.username_normalized, lower(u.email) AS email
 			 FROM kanban_projects p
 			 JOIN users u ON u.id = p.owner_user_id
 			 WHERE p.id = $1 AND p.owner_user_id = $2 AND p.archived_at IS NULL
@@ -77,7 +77,8 @@ export async function createInvitationRequest({
 			 VALUES ($1, $2, $3, $4, $5, $6,
 			         NOW() + ($7::integer * INTERVAL '1 day'))
 			 ON CONFLICT (project_id, requested_identifier)
-			 WHERE status IN ('pending', 'declined') DO NOTHING`,
+			 WHERE status IN ('pending', 'declined') DO NOTHING
+			 RETURNING id, invitee_user_id, expires_at`,
 			[
 				randomUUID(),
 				projectId,
@@ -90,7 +91,13 @@ export async function createInvitationRequest({
 			],
 		);
 		await client.query('COMMIT');
-		return invitation.rowCount ? 'requested' : 'already_requested';
+		return invitation.rowCount
+			? {
+				status: 'requested',
+				invitation: invitation.rows[0],
+				projectName: owner.rows[0].name,
+			}
+			: 'already_requested';
 	} catch (error) {
 		await client.query('ROLLBACK');
 		throw error;

@@ -638,6 +638,7 @@
 			"locale.js"
 		],
 		"kanban": [
+			"invitations.js",
 			"permissions.js",
 			"projectEvents.js",
 			"projects.js"

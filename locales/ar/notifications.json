@@ -36,6 +36,7 @@
 		"openRoom": "فتح الغرفة",
 		"acceptInvitation": "قبول الدعوة",
 		"rejectInvitation": "رفض الدعوة",
+		"ignoreInvitation": "تجاهل الدعوة",
 		"acceptInvitationSuccess": "تم قبول الدعوة.",
 		"acceptInvitationError": "تعذر قبول هذه الدعوة.",
 		"rejectInvitationSuccess": "تم رفض الدعوة.",
@@ -49,6 +50,10 @@
 		"noLongerAvailable": "لم يعد إجراء هذا الإشعار متاحًا."
 	},
 	"types": {
+		"kanbanProjectInvitation": {
+			"title": "دعوة إلى مشروع",
+			"body": "تمت دعوتك للانضمام إلى {{projectName}}."
+		},
 		"chatRoomInvitation": {
 			"title": "دعوة إلى غرفة",
 			"body": "تمت دعوتك للانضمام إلى {{roomName}}."

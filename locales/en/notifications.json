@@ -36,6 +36,7 @@
 		"openRoom": "Open room",
 		"acceptInvitation": "Accept invitation",
 		"rejectInvitation": "Reject invitation",
+		"ignoreInvitation": "Ignore invitation",
 		"acceptInvitationSuccess": "Invitation accepted.",
 		"acceptInvitationError": "Could not accept this invitation.",
 		"rejectInvitationSuccess": "Invitation rejected.",
@@ -49,6 +50,10 @@
 		"noLongerAvailable": "This notification action is no longer available."
 	},
 	"types": {
+		"kanbanProjectInvitation": {
+			"title": "Project invitation",
+			"body": "You were invited to join {{projectName}}."
+		},
 		"chatRoomInvitation": {
 			"title": "Room invitation",
 			"body": "You were invited to join {{roomName}}."
