@@ -80,6 +80,10 @@
 			"projects.js"
 		],
 		"notifications": [
+			"actions.js",
+			"chat.js",
+			"common.js",
+			"kanban.js",
 			"main.js"
 		],
 		"social": [

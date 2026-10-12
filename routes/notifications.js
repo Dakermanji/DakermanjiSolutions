@@ -4,9 +4,11 @@ import { Router } from 'express';
 import {
 	acceptChatRoomInvitation,
 	approveChatRoomJoinRequest,
-	dismissAppNotification,
 	rejectChatRoomInvitation,
 	rejectChatRoomJoinRequest,
+} from '../controllers/notifications/chat.js';
+import {
+	dismissAppNotification,
 	renderNotifications,
 } from '../controllers/notifications/main.js';
 
