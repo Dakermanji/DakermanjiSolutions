@@ -102,8 +102,14 @@
 	margin-block: 1.5rem;
 }
 
-.kanban-task-details dd {
+.kanban-task-details dd,
+.kanban-task-description {
 	margin: .25rem 0 0;
+	padding: .65rem .85rem;
+	border: 1px solid var(--border-soft);
+	border-inline-start: 3px solid var(--color-secondary);
+	border-radius: .6rem;
+	background: var(--bg-subsection);
 	overflow-wrap: anywhere;
 }
 

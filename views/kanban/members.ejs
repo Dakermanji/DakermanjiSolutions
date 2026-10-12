@@ -7,7 +7,7 @@
 	<header class="kanban-header">
 		<div>
 			<h1 id="project-members-title"><%= t('kanban:members') %></h1>
-			<p dir="auto"><%= project.name %></p>
+			<p><%= project.name %></p>
 		</div>
 		<% if (project.role === 'owner') { %>
 			<button

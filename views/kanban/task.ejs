@@ -6,8 +6,8 @@
 	</div>
 	<header class="kanban-header">
 		<div>
-			<p dir="auto"><%= task.project_name %></p>
-			<h1 id="task-title" dir="auto"><%= task.title %></h1>
+			<p><%= task.project_name %></p>
+			<h1 id="task-title"><%= task.title %></h1>
 		</div>
 	</header>
 
@@ -20,11 +20,11 @@
 			</div>
 			<div>
 				<dt><%= t('kanban:assignedTo') %></dt>
-				<dd dir="auto"><%= task.assignee_username || task.assignee_email || t('kanban:unassigned') %></dd>
+				<dd><%= task.assignee_username || task.assignee_email || t('kanban:unassigned') %></dd>
 			</div>
 			<div>
 				<dt><%= t('kanban:createdBy') %></dt>
-				<dd dir="auto"><%= task.creator_username || task.creator_email || t('kanban:events.formerMember') %></dd>
+				<dd><%= task.creator_username || task.creator_email || t('kanban:events.formerMember') %></dd>
 			</div>
 			<div>
 				<dt><%= t('kanban:dueDate') %></dt>

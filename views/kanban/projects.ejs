@@ -33,7 +33,7 @@
 					<li>
 						<div class="kanban-project-row">
 							<div>
-								<strong dir="auto"><%= invitation.project_name %></strong>
+								<strong><%= invitation.project_name %></strong>
 								<span class="badge text-bg-secondary"><%= t(`kanban:roles.${invitation.role}`) %></span>
 								<time class="d-block" datetime="<%= new Date(invitation.expires_at).toISOString() %>">
 									<%= t('kanban:invitationExpires', { date: new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(invitation.expires_at)) }) %>
