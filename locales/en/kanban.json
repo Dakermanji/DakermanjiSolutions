@@ -16,6 +16,8 @@
 	"noProjects": "You are not part of a project yet.",
 	"createProject": "Create a project",
 	"createTask": "Create task",
+	"editTask": "Edit task",
+	"saveTask": "Save changes",
 	"taskTitle": "Task title",
 	"taskDetails": "Task details",
 	"status": "Status",

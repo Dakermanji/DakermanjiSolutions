@@ -97,6 +97,7 @@ export function validateEditTask(req, res, next) {
 		typeof req.body.importance !== 'string') {
 		return fail(req, res, 'kanban:error.invalidTask', {
 			to: `/kanban/tasks/${taskId}`,
+			modal: 'kanban_edit_task',
 		});
 	}
 	req.kanbanTaskEditInput = {

@@ -815,6 +815,7 @@
 				"_create_project_modal.ejs",
 				"_create_task_modal.ejs",
 				"_declined_invitations_modal.ejs",
+				"_edit_task_modal.ejs",
 				"_invite_member_modal.ejs"
 			],
 			"profile": [

@@ -38,6 +38,7 @@
 		kanban_project: { id: 'createKanbanProjectModal' },
 		kanban_invite: { id: 'inviteKanbanMemberModal' },
 		kanban_task: { id: 'createKanbanTaskModal' },
+		kanban_edit_task: { id: 'editKanbanTaskModal' },
 	};
 
 	const target = MODALS[modalName];

@@ -9,6 +9,12 @@
 			<p><%= task.project_name %></p>
 			<h1 id="task-title"><%= task.title %></h1>
 		</div>
+		<% if (canEditTask) { %>
+			<button type="button" class="btn btn-action btn-sm" data-bs-toggle="modal" data-bs-target="#editKanbanTaskModal">
+				<i class="bi bi-pencil-square" aria-hidden="true"></i>
+				<%= t('kanban:editTask') %>
+			</button>
+		<% } %>
 	</header>
 
 	<section class="kanban-panel" aria-labelledby="task-details-title">
@@ -61,3 +67,7 @@
 		<p class="kanban-task-description" dir="auto"><%= task.description || t('kanban:noDescription') %></p>
 	</section>
 </section>
+
+<% if (canEditTask) { %>
+	<%- include('../modals/kanban/_edit_task_modal') %>
+<% } %>

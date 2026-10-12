@@ -16,6 +16,8 @@
 	"noProjects": "لست عضوًا في أي مشروع بعد.",
 	"createProject": "إنشاء مشروع",
 	"createTask": "إنشاء مهمة",
+	"editTask": "تعديل المهمة",
+	"saveTask": "حفظ التغييرات",
 	"taskTitle": "عنوان المهمة",
 	"taskDetails": "تفاصيل المهمة",
 	"status": "الحالة",

@@ -16,6 +16,8 @@
 	"noProjects": "Vous ne participez à aucun projet pour le moment.",
 	"createProject": "Créer un projet",
 	"createTask": "Créer une tâche",
+	"editTask": "Modifier la tâche",
+	"saveTask": "Enregistrer les modifications",
 	"taskTitle": "Titre de la tâche",
 	"taskDetails": "Détails de la tâche",
 	"status": "Statut",
