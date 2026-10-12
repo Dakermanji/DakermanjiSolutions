@@ -4,10 +4,12 @@ import { NOTIFICATION_LIMITS, NOTIFICATIONS_REDIRECT } from '../../constants/not
 import {
 	countUnreadNotifications,
 	dismissNotification,
+	getNotificationForRecipient,
 	listNotifications,
-	markNotificationsRead,
+	markNotificationRead,
 } from '../../services/notifications/appNotifications.js';
 import { getNotificationLinkUrl } from '../../services/notifications/links.js';
+import { isValidUuid } from '../../middlewares/validators/common.js';
 import { getNotificationActions } from './actions.js';
 import { getFirstUuidBodyValue } from './common.js';
 
@@ -100,34 +102,10 @@ export async function renderLiveNotifications(req, res, next) {
  */
 export async function renderNotifications(req, res, next) {
 	try {
-		const notifications = await listNotifications(req.user.id);
-		const unreadNotificationIds = notifications
-			.filter((notification) => !notification.read_at)
-			.map((notification) => notification.id);
-		const unreadNotificationIdSet = new Set(unreadNotificationIds);
-
-		if (unreadNotificationIds.length > 0) {
-			await markNotificationsRead(unreadNotificationIds, req.user.id);
-			notifications.forEach((notification) => {
-				if (unreadNotificationIdSet.has(notification.id)) {
-					notification.read_at = new Date();
-				}
-			});
-		}
-
-		const unreadCount = await countUnreadNotifications(req.user.id);
-		res.locals.notificationUnreadCount = unreadCount;
-
-		if (Array.isArray(res.locals.notificationPreview)) {
-			res.locals.notificationPreview = res.locals.notificationPreview.map(
-				(notification) => ({
-					...notification,
-					isRead: unreadNotificationIdSet.has(notification.id)
-						? true
-						: notification.isRead,
-				}),
-			);
-		}
+		const [notifications, unreadCount] = await Promise.all([
+			listNotifications(req.user.id),
+			countUnreadNotifications(req.user.id),
+		]);
 
 		res.render('notifications/main', {
 			titleKey: 'notifications:title',
@@ -138,6 +116,32 @@ export async function renderNotifications(req, res, next) {
 		});
 	} catch (error) {
 		next(error);
+	}
+}
+
+/** Mark one notification as read and open its destination. */
+export async function openAppNotification(req, res, next) {
+	const notificationId = String(req.params.notificationId || '').trim();
+	res.set('Cache-Control', 'private, no-store');
+	if (!isValidUuid(notificationId)) return res.redirect(NOTIFICATIONS_REDIRECT);
+
+	try {
+		const notification = await getNotificationForRecipient(
+			notificationId,
+			req.user.id,
+		);
+		if (
+			!notification
+			|| notification.dismissed_at
+			|| (notification.expires_at && new Date(notification.expires_at) <= new Date())
+		) {
+			return res.redirect(NOTIFICATIONS_REDIRECT);
+		}
+
+		await markNotificationRead(notificationId, req.user.id);
+		return res.redirect(getNotificationLinkUrl(notification));
+	} catch (error) {
+		return next(error);
 	}
 }
 

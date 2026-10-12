@@ -100,6 +100,14 @@ export function listNotifications(recipientUserId, options = {}) {
 	});
 }
 
+/** Find one notification belonging to a user. */
+export function getNotificationForRecipient(notificationId, recipientUserId) {
+	return AppNotificationsModel.findByIdForRecipient(
+		notificationId,
+		recipientUserId,
+	);
+}
+
 /**
  * Count unread visible notifications for one user.
  *

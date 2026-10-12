@@ -33,7 +33,7 @@
 					%>
 					<a
 						class="nav-notifications-item <%= notification.isRead ? '' : 'is-unread' %>"
-						href="<%= notification.linkUrl %>"
+						href="/notifications/open/<%= notification.id %>"
 					>
 						<span class="nav-notifications-item-icon">
 							<i class="bi bi-bell-fill" aria-hidden="true"></i>
