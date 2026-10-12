@@ -57,7 +57,7 @@ export async function createTask({
 export function listTasksForProject(projectId, viewerUserId) {
 	return queryRows(
 		`SELECT t.id, t.project_id, t.title, t.description, t.status,
-		        t.position, t.due_date, t.importance, t.creator_user_id,
+		        t.position, t.due_date::text AS due_date, t.importance, t.creator_user_id,
 		        t.assignee_user_id, t.created_at, t.updated_at,
 		        creator.username AS creator_username,
 		        assignee.username AS assignee_username
@@ -79,7 +79,7 @@ export function listTasksForProject(projectId, viewerUserId) {
 export async function findTaskForMember(taskId, viewerUserId) {
 	const rows = await queryRows(
 		`SELECT t.id, t.project_id, t.title, t.description, t.status,
-		        t.position, t.due_date, t.importance, t.creator_user_id,
+		        t.position, t.due_date::text AS due_date, t.importance, t.creator_user_id,
 		        t.assignee_user_id, t.created_at, t.updated_at,
 		        p.name AS project_name, viewer.role AS viewer_role,
 		        creator.username AS creator_username, creator.email AS creator_email,

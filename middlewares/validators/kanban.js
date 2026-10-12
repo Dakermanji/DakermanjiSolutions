@@ -116,6 +116,11 @@ export function validateProjectId(req, res, next) {
 	return next();
 }
 
+export function validateTaskId(req, res, next) {
+	if (!isValidUuid(req.params?.taskId)) return res.sendStatus(404);
+	return next();
+}
+
 export function validateArchiveProject(req, res, next) {
 	if (!isValidUuid(req.body?.projectId)) return res.sendStatus(404);
 	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);

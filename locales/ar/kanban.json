@@ -17,7 +17,12 @@
 	"createProject": "إنشاء مشروع",
 	"createTask": "إنشاء مهمة",
 	"taskTitle": "عنوان المهمة",
+	"taskDetails": "تفاصيل المهمة",
+	"status": "الحالة",
+	"createdBy": "أنشأها",
 	"dueDate": "تاريخ الاستحقاق",
+	"noDueDate": "دون تاريخ استحقاق",
+	"noDescription": "لا يوجد وصف.",
 	"importance": "الأهمية",
 	"noImportance": "دون أهمية محددة",
 	"importanceLevels": {

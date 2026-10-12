@@ -17,7 +17,12 @@
 	"createProject": "Create a project",
 	"createTask": "Create task",
 	"taskTitle": "Task title",
+	"taskDetails": "Task details",
+	"status": "Status",
+	"createdBy": "Created by",
 	"dueDate": "Due date",
+	"noDueDate": "No due date",
+	"noDescription": "No description.",
 	"importance": "Importance",
 	"noImportance": "No importance",
 	"importanceLevels": {

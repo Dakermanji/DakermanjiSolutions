@@ -1,7 +1,22 @@
 //! controllers/kanban/tasks.js
 
+import { findTaskForMember } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
 import { createTaskForProject } from '../../services/kanban/tasks.js';
+
+export async function renderKanbanTask(req, res, next) {
+	try {
+		const task = await findTaskForMember(req.params.taskId, req.user.id);
+		if (!task) return res.sendStatus(404);
+		return res.render('kanban/task', {
+			titleKey: 'kanban:taskDetails',
+			styles: ['kanban/main'],
+			task,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
 
 export async function createKanbanTask(req, res, next) {
 	const { projectId } = req.kanbanTaskInput;

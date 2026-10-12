@@ -1,0 +1,47 @@
+<!--! views/kanban/task.ejs -->
+<section class="kanban-page" aria-labelledby="task-title">
+	<div class="kanban-context-row">
+		<a href="/kanban/<%= task.project_id %>" class="kanban-back"><%= t('kanban:backToProject') %></a>
+		<span class="badge text-bg-secondary"><%= t(`kanban:roles.${task.viewer_role}`) %></span>
+	</div>
+	<header class="kanban-header">
+		<div>
+			<p dir="auto"><%= task.project_name %></p>
+			<h1 id="task-title" dir="auto"><%= task.title %></h1>
+		</div>
+	</header>
+
+	<section class="kanban-panel" aria-labelledby="task-details-title">
+		<h2 id="task-details-title"><%= t('kanban:taskDetails') %></h2>
+		<dl class="kanban-task-details">
+			<div>
+				<dt><%= t('kanban:status') %></dt>
+				<dd><%= t(`kanban:taskStages.${task.status}`) %></dd>
+			</div>
+			<div>
+				<dt><%= t('kanban:assignedTo') %></dt>
+				<dd dir="auto"><%= task.assignee_username || task.assignee_email || t('kanban:unassigned') %></dd>
+			</div>
+			<div>
+				<dt><%= t('kanban:createdBy') %></dt>
+				<dd dir="auto"><%= task.creator_username || task.creator_email || t('kanban:events.formerMember') %></dd>
+			</div>
+			<div>
+				<dt><%= t('kanban:dueDate') %></dt>
+				<dd>
+					<% if (task.due_date) { %>
+						<time datetime="<%= task.due_date %>"><%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${task.due_date}T00:00:00Z`)) %></time>
+					<% } else { %>
+						<%= t('kanban:noDueDate') %>
+					<% } %>
+				</dd>
+			</div>
+			<div>
+				<dt><%= t('kanban:importance') %></dt>
+				<dd><%= task.importance ? t(`kanban:importanceLevels.${task.importance}`) : t('kanban:noImportance') %></dd>
+			</div>
+		</dl>
+		<h2><%= t('kanban:description') %></h2>
+		<p class="kanban-task-description" dir="auto"><%= task.description || t('kanban:noDescription') %></p>
+	</section>
+</section>

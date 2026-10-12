@@ -84,6 +84,34 @@
 	margin: 0;
 }
 
+.kanban-task-card a {
+	color: var(--color-secondary);
+	text-decoration: none;
+	transition: color var(--transition-time-method);
+}
+
+.kanban-task-card a:hover,
+.kanban-task-card a:focus-visible {
+	color: var(--color-secondary-hover);
+}
+
+.kanban-task-details {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+	margin-block: 1.5rem;
+}
+
+.kanban-task-details dd {
+	margin: .25rem 0 0;
+	overflow-wrap: anywhere;
+}
+
+.kanban-task-description {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
 .kanban-invitations {
 	margin-bottom: 1.5rem;
 }
@@ -208,6 +236,10 @@
 
 	.kanban-member-email {
 		display: none;
+	}
+
+	.kanban-task-details {
+		grid-template-columns: 1fr;
 	}
 }
 

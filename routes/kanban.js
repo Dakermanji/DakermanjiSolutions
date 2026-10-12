@@ -14,7 +14,7 @@ import {
 	renderProjectMembers,
 	renderProjects,
 } from '../controllers/kanban/projects.js';
-import { createKanbanTask } from '../controllers/kanban/tasks.js';
+import { createKanbanTask, renderKanbanTask } from '../controllers/kanban/tasks.js';
 import {
 	validateArchiveProject,
 	validateAcceptInvitation,
@@ -23,6 +23,7 @@ import {
 	validateDeclineInvitation,
 	validateInviteMember,
 	validateProjectId,
+	validateTaskId,
 } from '../middlewares/validators/kanban.js';
 
 const router = Router();
@@ -31,6 +32,7 @@ router.get('/', renderProjects);
 router.post('/', validateCreateProject, createKanbanProject);
 router.post('/archive', validateArchiveProject, archiveKanbanProject);
 router.post('/tasks', validateCreateTask, createKanbanTask);
+router.get('/tasks/:taskId', validateTaskId, renderKanbanTask);
 router.post('/invitations', validateInviteMember, inviteProjectMember);
 router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvitation);
 router.post('/invitations/decline', validateDeclineInvitation, declineProjectInvitation);
