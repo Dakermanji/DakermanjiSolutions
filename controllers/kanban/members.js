@@ -16,7 +16,7 @@ export async function inviteProjectMember(req, res, next) {
 			errorKeys[result] ? 'error' : 'success',
 			errorKeys[result] || 'kanban:invitationRequestSubmitted',
 		);
-		return res.redirect(`/kanban/${req.kanbanInvitationInput.projectId}`);
+		return res.redirect(`/kanban/${req.kanbanInvitationInput.projectId}/members`);
 	} catch (error) {
 		return next(error);
 	}

@@ -757,6 +757,7 @@
 		],
 		"kanban": [
 			"activity.ejs",
+			"members.ejs",
 			"project.ejs",
 			"projects.ejs"
 		],

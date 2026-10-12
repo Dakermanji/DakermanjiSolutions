@@ -87,7 +87,7 @@ export function validateInviteMember(req, res, next) {
 	const result = parseInvitationInput(req.body);
 	if (!result.valid) {
 		return fail(req, res, 'kanban:error.invalidInvitation', {
-			to: `/kanban/${projectId}`,
+			to: `/kanban/${projectId}/members`,
 			modal: 'kanban_invite',
 		});
 	}

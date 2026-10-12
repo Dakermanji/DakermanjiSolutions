@@ -11,6 +11,7 @@ import {
 	createKanbanProject,
 	renderProject,
 	renderProjectActivity,
+	renderProjectMembers,
 	renderProjects,
 } from '../controllers/kanban/projects.js';
 import {
@@ -31,6 +32,7 @@ router.post('/invitations', validateInviteMember, inviteProjectMember);
 router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvitation);
 router.post('/invitations/decline', validateDeclineInvitation, declineProjectInvitation);
 router.get('/:projectId/activity', validateProjectId, renderProjectActivity);
+router.get('/:projectId/members', validateProjectId, renderProjectMembers);
 router.get('/:projectId', validateProjectId, renderProject);
 
 export default router;

@@ -10,6 +10,10 @@
 		</div>
 		<div class="kanban-project-actions">
 			<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+			<a href="/kanban/<%= project.id %>/members" class="btn btn-outline-secondary btn-sm">
+				<i class="bi bi-people" aria-hidden="true"></i>
+				<%= t('kanban:members') %>
+			</a>
 			<a href="/kanban/<%= project.id %>/activity" class="btn btn-outline-secondary btn-sm">
 				<i class="bi bi-clock-history" aria-hidden="true"></i>
 				<%= t('kanban:projectActivity') %>
@@ -29,61 +33,8 @@
 			<% } %>
 		</div>
 	</header>
-
-	<section class="kanban-panel" aria-labelledby="project-members-title">
-		<div class="kanban-section-heading">
-			<h2 id="project-members-title"><%= t('kanban:members') %></h2>
-			<% if (project.role === 'owner') { %>
-				<button
-					type="button"
-					class="btn btn-action btn-sm"
-					data-bs-toggle="modal"
-					data-bs-target="#inviteKanbanMemberModal"
-				>
-					<i class="bi bi-person-plus" aria-hidden="true"></i>
-					<%= t('kanban:inviteMember') %>
-				</button>
-			<% } %>
-		</div>
-		<ul class="kanban-member-list">
-			<% members.forEach((member) => { %>
-				<li>
-					<div class="kanban-member-identity">
-						<span<% if (member.username && member.email) { %> data-tooltip-mobile data-bs-title="<%= member.email %>"<% } %>><%= member.username || member.email || t('kanban:member') %></span>
-						<% if (member.username && member.email) { %>
-							<span class="kanban-member-email" dir="ltr"><%= member.email %></span>
-						<% } %>
-					</div>
-					<span class="badge text-bg-secondary"><%= t(`kanban:roles.${member.role}`) %></span>
-				</li>
-			<% }) %>
-		</ul>
-	</section>
-	<% if (project.role === 'owner') { %>
-		<section class="kanban-panel mt-4" aria-labelledby="project-invitations-title">
-			<h2 id="project-invitations-title"><%= t('kanban:invitationRequests') %></h2>
-			<% if (invitations.length === 0) { %>
-				<p><%= t('kanban:noInvitationRequests') %></p>
-			<% } else { %>
-				<ul class="kanban-invitation-list">
-					<% invitations.forEach((invitation) => { %>
-						<li>
-							<div class="kanban-project-row">
-								<strong dir="ltr" class="text-break"><%= invitation.requested_identifier %></strong>
-								<span class="badge text-bg-secondary"><%= t(`kanban:roles.${invitation.role}`) %></span>
-							</div>
-							<time datetime="<%= new Date(invitation.expires_at).toISOString() %>">
-								<%= t('kanban:invitationExpires', { date: new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(invitation.expires_at)) }) %>
-							</time>
-						</li>
-					<% }) %>
-				</ul>
-			<% } %>
-		</section>
-	<% } %>
 </section>
 
 <% if (project.role === 'owner') { %>
 	<%- include('../modals/kanban/_archive_project_modal') %>
-	<%- include('../modals/kanban/_invite_member_modal') %>
 <% } %>

@@ -65,16 +65,30 @@ export async function renderProject(req, res, next) {
 	try {
 		const project = await findProjectForUser(req.params.projectId, req.user.id);
 		if (!project) return res.sendStatus(404);
+		return res.render('kanban/project', {
+			titleKey: 'kanban:title',
+			styles: ['modals/main', 'kanban/main'],
+			scripts: ['kanban/archiveProject'],
+			project,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function renderProjectMembers(req, res, next) {
+	try {
+		const project = await findProjectForUser(req.params.projectId, req.user.id);
+		if (!project) return res.sendStatus(404);
 		const [members, invitations] = await Promise.all([
 			listProjectMembers(project.id, req.user.id),
 			project.role === 'owner'
 				? listProjectInvitationRequests(project.id, req.user.id)
 				: [],
 		]);
-		return res.render('kanban/project', {
-			titleKey: 'kanban:title',
+		return res.render('kanban/members', {
+			titleKey: 'kanban:members',
 			styles: ['modals/main', 'kanban/main'],
-			scripts: ['kanban/archiveProject'],
 			project,
 			members,
 			invitations,
