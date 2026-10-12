@@ -16,7 +16,23 @@
 		<dl class="kanban-task-details">
 			<div>
 				<dt><%= t('kanban:status') %></dt>
-				<dd><%= t(`kanban:taskStages.${task.status}`) %></dd>
+				<dd>
+					<% if (canChangeStage) { %>
+						<form method="POST" action="/kanban/tasks/stage" class="d-flex flex-wrap gap-2">
+							<%- include('../partials/_csrf') %>
+							<input type="hidden" name="taskId" value="<%= task.id %>">
+							<label for="task-stage" class="visually-hidden"><%= t('kanban:status') %></label>
+							<select id="task-stage" name="status" class="form-select w-auto">
+								<% taskStages.forEach((stage) => { %>
+									<option value="<%= stage %>" <%= stage === task.status ? 'selected' : '' %>><%= t(`kanban:taskStages.${stage}`) %></option>
+								<% }) %>
+							</select>
+							<button type="submit" class="btn btn-action"><%= t('kanban:updateStage') %></button>
+						</form>
+					<% } else { %>
+						<%= t(`kanban:taskStages.${task.status}`) %>
+					<% } %>
+				</dd>
 			</div>
 			<div>
 				<dt><%= t('kanban:assignedTo') %></dt>

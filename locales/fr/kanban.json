@@ -19,6 +19,7 @@
 	"taskTitle": "Titre de la tâche",
 	"taskDetails": "Détails de la tâche",
 	"status": "Statut",
+	"updateStage": "Modifier l’étape",
 	"createdBy": "Créée par",
 	"dueDate": "Date d’échéance",
 	"noDueDate": "Aucune date d’échéance",

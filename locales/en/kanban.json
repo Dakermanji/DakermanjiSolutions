@@ -19,6 +19,7 @@
 	"taskTitle": "Task title",
 	"taskDetails": "Task details",
 	"status": "Status",
+	"updateStage": "Update stage",
 	"createdBy": "Created by",
 	"dueDate": "Due date",
 	"noDueDate": "No due date",

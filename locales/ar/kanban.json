@@ -19,6 +19,7 @@
 	"taskTitle": "عنوان المهمة",
 	"taskDetails": "تفاصيل المهمة",
 	"status": "الحالة",
+	"updateStage": "تحديث المرحلة",
 	"createdBy": "أنشأها",
 	"dueDate": "تاريخ الاستحقاق",
 	"noDueDate": "دون تاريخ استحقاق",

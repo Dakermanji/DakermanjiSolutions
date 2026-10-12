@@ -1,7 +1,9 @@
 //! controllers/kanban/tasks.js
 
+import { KANBAN_TASK_STAGES } from '../../constants/kanban.js';
 import { findTaskForMember } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
+import { canChangeTaskStage } from '../../services/kanban/permissions.js';
 import { changeTaskStage, createTaskForProject } from '../../services/kanban/tasks.js';
 
 export async function renderKanbanTask(req, res, next) {
@@ -12,6 +14,8 @@ export async function renderKanbanTask(req, res, next) {
 			titleKey: 'kanban:taskDetails',
 			styles: ['kanban/main'],
 			task,
+			canChangeStage: canChangeTaskStage(task.viewer_role, req.user.id, task.assignee_user_id),
+			taskStages: Object.values(KANBAN_TASK_STAGES),
 		});
 	} catch (error) {
 		return next(error);
