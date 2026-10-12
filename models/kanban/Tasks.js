@@ -114,6 +114,42 @@ export async function findTaskStageContext(taskId, actorUserId, db) {
 	return rows[0] || null;
 }
 
+export async function findTaskEditContext(taskId, actorUserId, db) {
+	const { rows } = await db.query(
+		`SELECT t.id, t.project_id, t.title, t.description,
+		        t.due_date::text AS due_date, t.importance, actor.role
+		 FROM kanban_projects p
+		 JOIN kanban_tasks t ON t.project_id = p.id
+		 JOIN kanban_project_members actor
+		   ON actor.project_id = p.id AND actor.user_id = $2
+		 WHERE t.id = $1 AND t.archived_at IS NULL
+		   AND p.archived_at IS NULL
+		 FOR UPDATE OF p, t, actor`,
+		[taskId, actorUserId],
+	);
+	return rows[0] || null;
+}
+
+export async function updateTaskDetails({
+	taskId,
+	projectId,
+	title,
+	description,
+	dueDate,
+	importance,
+}, db) {
+	const { rows } = await db.query(
+		`UPDATE kanban_tasks
+		 SET title = $3, description = $4, due_date = $5,
+		     importance = $6, updated_at = NOW()
+		 WHERE id = $1 AND project_id = $2 AND archived_at IS NULL
+		 RETURNING id, project_id, title, description,
+		           due_date::text AS due_date, importance, updated_at`,
+		[taskId, projectId, title, description, dueDate, importance],
+	);
+	return rows[0] || null;
+}
+
 export async function moveTaskToStage({ taskId, projectId, status }, db) {
 	const { rows } = await db.query(
 		`UPDATE kanban_tasks
