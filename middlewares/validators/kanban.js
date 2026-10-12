@@ -25,7 +25,7 @@ function isValidDateOnly(value) {
 	return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
-export function parseTaskInput(input) {
+export function parseTaskDetailsInput(input) {
 	const source = input && typeof input === 'object' && !Array.isArray(input)
 		? input
 		: {};
@@ -41,20 +41,28 @@ export function parseTaskInput(input) {
 	const importance = typeof source.importance === 'string'
 		? source.importance.trim() || null
 		: null;
-	const assigneeUserId = typeof source.assigneeUserId === 'string'
-		? source.assigneeUserId.trim() || null
-		: null;
 
 	return {
-		values: { title, description, dueDate, importance, assigneeUserId },
+		values: { title, description, dueDate, importance },
 		valid: title.length > 0 && title.length <= KANBAN_TASK_LIMITS.TITLE_MAX_LENGTH &&
 			(source.description == null || typeof source.description === 'string') &&
 			description.length <= KANBAN_TASK_LIMITS.DESCRIPTION_MAX_LENGTH &&
 			(source.dueDate == null || typeof source.dueDate === 'string') &&
 			(dueDate === null || isValidDateOnly(dueDate)) &&
 			(source.importance == null || typeof source.importance === 'string') &&
-			(importance === null || TASK_IMPORTANCE.has(importance)) &&
-			(source.assigneeUserId == null || typeof source.assigneeUserId === 'string') &&
+			(importance === null || TASK_IMPORTANCE.has(importance)),
+	};
+}
+
+export function parseTaskInput(input) {
+	const details = parseTaskDetailsInput(input);
+	const assigneeUserId = typeof input?.assigneeUserId === 'string'
+		? input.assigneeUserId.trim() || null
+		: null;
+	return {
+		values: { ...details.values, assigneeUserId },
+		valid: details.valid &&
+			(input?.assigneeUserId == null || typeof input.assigneeUserId === 'string') &&
 			(assigneeUserId === null || isValidUuid(assigneeUserId)),
 	};
 }
@@ -74,6 +82,27 @@ export function validateCreateTask(req, res, next) {
 		...result.values,
 		projectId,
 		creatorUserId: req.user.id,
+	};
+	return next();
+}
+
+export function validateEditTask(req, res, next) {
+	const taskId = req.body?.taskId;
+	if (!isValidUuid(taskId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	const result = parseTaskDetailsInput(req.body);
+	if (!result.valid ||
+		typeof req.body.description !== 'string' ||
+		typeof req.body.dueDate !== 'string' ||
+		typeof req.body.importance !== 'string') {
+		return fail(req, res, 'kanban:error.invalidTask', {
+			to: `/kanban/tasks/${taskId}`,
+		});
+	}
+	req.kanbanTaskEditInput = {
+		...result.values,
+		taskId,
+		actorUserId: req.user.id,
 	};
 	return next();
 }
