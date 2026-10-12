@@ -97,3 +97,36 @@ export async function findTaskForMember(taskId, viewerUserId) {
 	);
 	return rows[0] || null;
 }
+
+export async function findTaskStageContext(taskId, actorUserId, db) {
+	const { rows } = await db.query(
+		`SELECT t.id, t.project_id, t.status, t.assignee_user_id,
+		        actor.role
+		 FROM kanban_projects p
+		 JOIN kanban_tasks t ON t.project_id = p.id
+		 JOIN kanban_project_members actor
+		   ON actor.project_id = p.id AND actor.user_id = $2
+		 WHERE t.id = $1 AND t.archived_at IS NULL
+		   AND p.archived_at IS NULL
+		 FOR UPDATE OF p, t, actor`,
+		[taskId, actorUserId],
+	);
+	return rows[0] || null;
+}
+
+export async function moveTaskToStage({ taskId, projectId, status }, db) {
+	const { rows } = await db.query(
+		`UPDATE kanban_tasks
+		 SET status = $3,
+		     position = (
+		       SELECT COALESCE(MAX(position), -1) + 1
+		       FROM kanban_tasks
+		       WHERE project_id = $2 AND status = $3 AND archived_at IS NULL
+		     ),
+		     updated_at = NOW()
+		 WHERE id = $1 AND project_id = $2 AND archived_at IS NULL
+		 RETURNING id, project_id, status, position, updated_at`,
+		[taskId, projectId, status],
+	);
+	return rows[0] || null;
+}

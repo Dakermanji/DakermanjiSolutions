@@ -6,8 +6,10 @@ import {
 	createTask,
 	findTaskAssigneeMembership,
 	findTaskCreatorMembership,
+	findTaskStageContext,
+	moveTaskToStage,
 } from '../../models/kanban/Tasks.js';
-import { canBeAssigned, canManageTasks } from './permissions.js';
+import { canBeAssigned, canChangeTaskStage, canManageTasks } from './permissions.js';
 
 export async function createTaskForProject(input) {
 	const client = await pool.connect();
@@ -51,6 +53,45 @@ export async function createTaskForProject(input) {
 		}
 		await client.query('COMMIT');
 		return { status: 'created', task };
+	} catch (error) {
+		await client.query('ROLLBACK');
+		throw error;
+	} finally {
+		client.release();
+	}
+}
+
+export async function changeTaskStage({ taskId, actorUserId, status }) {
+	const client = await pool.connect();
+	try {
+		await client.query('BEGIN');
+		const current = await findTaskStageContext(taskId, actorUserId, client);
+		if (!current || !canChangeTaskStage(
+			current.role,
+			actorUserId,
+			current.assignee_user_id,
+		)) {
+			await client.query('ROLLBACK');
+			return { status: 'forbidden', task: null };
+		}
+		if (current.status === status) {
+			await client.query('ROLLBACK');
+			return { status: 'unchanged', task: current };
+		}
+
+		const task = await moveTaskToStage({
+			taskId,
+			projectId: current.project_id,
+			status,
+		}, client);
+		await createTaskEvent({
+			taskId,
+			actorUserId,
+			action: 'status_changed',
+			details: { fromStatus: current.status, toStatus: status },
+		}, client);
+		await client.query('COMMIT');
+		return { status: 'changed', task };
 	} catch (error) {
 		await client.query('ROLLBACK');
 		throw error;
