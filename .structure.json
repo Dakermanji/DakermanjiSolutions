@@ -246,6 +246,7 @@
 			"Members.js",
 			"ProjectEvents.js",
 			"Projects.js",
+			"TaskEvents.js",
 			"Tasks.js"
 		],
 		"notifications": {
@@ -646,7 +647,8 @@
 			"invitations.js",
 			"permissions.js",
 			"projectEvents.js",
-			"projects.js"
+			"projects.js",
+			"tasks.js"
 		],
 		"notifications": [
 			"appNotifications.js",
