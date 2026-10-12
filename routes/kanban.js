@@ -17,6 +17,7 @@ import {
 import {
 	changeKanbanTaskStage,
 	createKanbanTask,
+	editKanbanTask,
 	renderKanbanTask,
 } from '../controllers/kanban/tasks.js';
 import {
@@ -26,6 +27,7 @@ import {
 	validateCreateProject,
 	validateCreateTask,
 	validateDeclineInvitation,
+	validateEditTask,
 	validateInviteMember,
 	validateProjectId,
 	validateTaskId,
@@ -37,6 +39,7 @@ router.get('/', renderProjects);
 router.post('/', validateCreateProject, createKanbanProject);
 router.post('/archive', validateArchiveProject, archiveKanbanProject);
 router.post('/tasks', validateCreateTask, createKanbanTask);
+router.post('/tasks/edit', validateEditTask, editKanbanTask);
 router.post('/tasks/stage', validateChangeTaskStage, changeKanbanTaskStage);
 router.get('/tasks/:taskId', validateTaskId, renderKanbanTask);
 router.post('/invitations', validateInviteMember, inviteProjectMember);

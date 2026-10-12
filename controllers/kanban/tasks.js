@@ -4,7 +4,7 @@ import { KANBAN_TASK_STAGES } from '../../constants/kanban.js';
 import { findTaskForMember } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
 import { canChangeTaskStage } from '../../services/kanban/permissions.js';
-import { changeTaskStage, createTaskForProject } from '../../services/kanban/tasks.js';
+import { changeTaskStage, createTaskForProject, editTaskDetails } from '../../services/kanban/tasks.js';
 
 export async function renderKanbanTask(req, res, next) {
 	try {
@@ -44,6 +44,17 @@ export async function changeKanbanTaskStage(req, res, next) {
 	const { taskId } = req.kanbanTaskStageInput;
 	try {
 		const result = await changeTaskStage(req.kanbanTaskStageInput);
+		if (result.status === 'forbidden') return res.sendStatus(404);
+		return res.redirect(`/kanban/tasks/${taskId}`);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function editKanbanTask(req, res, next) {
+	const { taskId } = req.kanbanTaskEditInput;
+	try {
+		const result = await editTaskDetails(req.kanbanTaskEditInput);
 		if (result.status === 'forbidden') return res.sendStatus(404);
 		return res.redirect(`/kanban/tasks/${taskId}`);
 	} catch (error) {
