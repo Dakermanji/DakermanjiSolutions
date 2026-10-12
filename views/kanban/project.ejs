@@ -13,18 +13,18 @@
 		</div>
 		<div class="kanban-project-actions">
 			<% if (canCreateTask) { %>
-				<button type="button" class="btn btn-action btn-sm" data-bs-toggle="modal" data-bs-target="#createKanbanTaskModal">
+				<button type="button" class="btn btn-action btn-sm" data-bs-toggle="modal" data-bs-target="#createKanbanTaskModal" data-tooltip-mobile data-bs-title="<%= t('kanban:createTask') %>" aria-label="<%= t('kanban:createTask') %>">
 					<i class="bi bi-plus-lg" aria-hidden="true"></i>
-					<%= t('kanban:createTask') %>
+					<span class="kanban-action-label"><%= t('kanban:createTask') %></span>
 				</button>
 			<% } %>
-			<a href="/kanban/<%= project.id %>/members" class="btn btn-outline-secondary btn-sm">
+			<a href="/kanban/<%= project.id %>/members" class="btn btn-outline-secondary btn-sm" data-tooltip-mobile data-bs-title="<%= t('kanban:members') %>" aria-label="<%= t('kanban:members') %>">
 				<i class="bi bi-people" aria-hidden="true"></i>
-				<%= t('kanban:members') %>
+				<span class="kanban-action-label"><%= t('kanban:members') %></span>
 			</a>
-			<a href="/kanban/<%= project.id %>/activity" class="btn btn-outline-secondary btn-sm">
+			<a href="/kanban/<%= project.id %>/activity" class="btn btn-outline-secondary btn-sm" data-tooltip-mobile data-bs-title="<%= t('kanban:projectActivity') %>" aria-label="<%= t('kanban:projectActivity') %>">
 				<i class="bi bi-clock-history" aria-hidden="true"></i>
-				<%= t('kanban:projectActivity') %>
+				<span class="kanban-action-label"><%= t('kanban:projectActivity') %></span>
 			</a>
 			<% if (project.role === 'owner') { %>
 				<button
@@ -34,9 +34,12 @@
 					data-bs-target="#archiveKanbanProjectModal"
 					data-project-id="<%= project.id %>"
 					data-project-name="<%= project.name %>"
+					data-tooltip-mobile
+					data-bs-title="<%= t('kanban:deleteProject') %>"
+					aria-label="<%= t('kanban:deleteProjectNamed', { name: project.name }) %>"
 				>
 					<i class="bi bi-trash" aria-hidden="true"></i>
-					<%= t('kanban:deleteProject') %>
+					<span class="kanban-action-label"><%= t('kanban:deleteProject') %></span>
 				</button>
 			<% } %>
 		</div>
