@@ -30,8 +30,10 @@ export default function configureFlash(app) {
 
 	// Expose flash messages to views
 	app.use((req, res, next) => {
+		// Background JSON requests must not consume a pending page message.
+		const isJsonRequest = req.accepts(['html', 'json']) === 'json';
 		FLASH_TYPES.forEach((type) => {
-			res.locals[type] = req.flash(type);
+			res.locals[type] = isJsonRequest ? [] : req.flash(type);
 		});
 
 		next();

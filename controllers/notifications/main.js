@@ -1,6 +1,6 @@
 //! controllers/notifications/main.js
 
-import { NOTIFICATIONS_REDIRECT } from '../../constants/notifications.js';
+import { NOTIFICATION_LIMITS, NOTIFICATIONS_REDIRECT } from '../../constants/notifications.js';
 import {
 	countUnreadNotifications,
 	dismissNotification,
@@ -46,6 +46,48 @@ function serializeNotification(notification) {
 			displayName: getActorDisplayName(notification),
 		},
 	};
+}
+
+function renderFragment(res, view, locals) {
+	return new Promise((resolve, reject) => {
+		res.render(view, { ...locals, layout: false }, (error, html) => {
+			if (error) reject(error);
+			else resolve(html);
+		});
+	});
+}
+
+/** Render only the notification areas used by the live interface. */
+export async function renderLiveNotifications(req, res, next) {
+	try {
+		const includePage = req.query.page === '1';
+		const [notifications, unreadCount] = await Promise.all([
+			listNotifications(req.user.id, {
+				limit: includePage
+					? NOTIFICATION_LIMITS.PAGE_SIZE
+					: NOTIFICATION_LIMITS.PREVIEW_SIZE,
+			}),
+			countUnreadNotifications(req.user.id),
+		]);
+		const dropdown = await renderFragment(res, 'notifications/_dropdown', {
+			notificationBadgeCount: unreadCount,
+			notificationPreviewItems: notifications
+				.slice(0, NOTIFICATION_LIMITS.PREVIEW_SIZE)
+				.map(serializeNotification),
+			keys: { notifications: req.t('nav.notifications') },
+		});
+		const page = includePage
+			? await renderFragment(res, 'notifications/main', {
+					notifications: notifications.map(serializeNotification),
+				unreadCount,
+			})
+			: null;
+
+		res.set('Cache-Control', 'private, no-store');
+		res.json({ dropdown, page, unreadCount });
+	} catch (error) {
+		next(error);
+	}
 }
 
 /**

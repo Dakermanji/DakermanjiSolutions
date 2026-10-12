@@ -1,19 +1,22 @@
 //! public/js/notifications/main.js
 
-const notificationsPage = document.querySelector('[data-notifications-page]');
-const notificationFilters = document.querySelectorAll('[data-notifications-filter]');
-const notificationItems = document.querySelectorAll('[data-notification-item]');
-const emptyFilterMessage = document.querySelector('[data-notifications-filter-empty]');
+let currentNotificationFilter = 'all';
 
-if (notificationsPage && notificationFilters.length > 0) {
-	for (const filterButton of notificationFilters) {
-		filterButton.addEventListener('click', () => {
-			applyNotificationFilter(filterButton.dataset.notificationsFilter || 'all');
-		});
-	}
-}
+document.addEventListener('click', (event) => {
+	const filterButton = event.target.closest('[data-notifications-filter]');
+	if (!filterButton) return;
+	currentNotificationFilter = filterButton.dataset.notificationsFilter || 'all';
+	applyNotificationFilter(currentNotificationFilter);
+});
+
+window.addEventListener('app:notifications-content:updated', () => {
+	applyNotificationFilter(currentNotificationFilter);
+});
 
 function applyNotificationFilter(filter) {
+	const notificationFilters = document.querySelectorAll('[data-notifications-filter]');
+	const notificationItems = document.querySelectorAll('[data-notification-item]');
+	const emptyFilterMessage = document.querySelector('[data-notifications-filter-empty]');
 	let visibleCount = 0;
 
 	for (const filterButton of notificationFilters) {

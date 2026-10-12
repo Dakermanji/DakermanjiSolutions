@@ -37,7 +37,10 @@ export default function configureLocals(app) {
 		res.locals.email = env.EMAIL_ADMIN;
 
 		// Flash locals:
-		res.locals.modal = req.flash('modal')[0] || null;
+		// Keep modal feedback for the next HTML page when JSON is fetched.
+		res.locals.modal = req.accepts(['html', 'json']) === 'json'
+			? null
+			: req.flash('modal')[0] || null;
 
 		if (req.query?.deleted === 'account') {
 			res.locals.success = [

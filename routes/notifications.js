@@ -9,12 +9,14 @@ import {
 } from '../controllers/notifications/chat.js';
 import {
 	dismissAppNotification,
+	renderLiveNotifications,
 	renderNotifications,
 } from '../controllers/notifications/main.js';
 
 const router = Router();
 
 router.get('/', renderNotifications);
+router.get('/live', renderLiveNotifications);
 router.post('/dismiss', dismissAppNotification);
 router.post('/chat/room-join-request/approve', approveChatRoomJoinRequest);
 router.post('/chat/room-join-request/reject', rejectChatRoomJoinRequest);
