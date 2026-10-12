@@ -245,7 +245,8 @@
 		"kanban": [
 			"Members.js",
 			"ProjectEvents.js",
-			"Projects.js"
+			"Projects.js",
+			"Tasks.js"
 		],
 		"notifications": {
 			"appNotifications": [
