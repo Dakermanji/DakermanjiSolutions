@@ -32,6 +32,13 @@
 	"create": "Créer le projet",
 	"projectCreated": "Projet créé.",
 	"taskCreated": "Tâche créée.",
+	"taskBoard": "Tableau des tâches",
+	"taskStages": {
+		"pending": "En attente",
+		"in_progress": "En cours",
+		"done": "Terminé"
+	},
+	"noTasksInStage": "Aucune tâche à cette étape pour le moment.",
 	"projectArchived": "Le projet a été retiré de votre liste de projets.",
 	"invitationRequestSubmitted": "Si possible, votre demande d’invitation a été envoyée.",
 	"deleteProject": "Supprimer le projet",

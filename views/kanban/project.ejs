@@ -39,6 +39,30 @@
 			<% } %>
 		</div>
 	</header>
+
+	<% const stages = ['pending', 'in_progress', 'done']; %>
+	<div class="kanban-board" role="group" aria-label="<%= t('kanban:taskBoard') %>">
+		<% stages.forEach((stage) => { %>
+			<% const stageTasks = tasks.filter((task) => task.status === stage); %>
+			<section class="kanban-panel kanban-column" aria-labelledby="kanban-stage-<%= stage %>">
+				<div class="kanban-column-heading">
+					<h2 id="kanban-stage-<%= stage %>"><%= t(`kanban:taskStages.${stage}`) %></h2>
+					<span class="badge text-bg-secondary"><%= new Intl.NumberFormat(currentLang || 'en').format(stageTasks.length) %></span>
+				</div>
+				<% if (stageTasks.length === 0) { %>
+					<p class="kanban-column-empty"><%= t('kanban:noTasksInStage') %></p>
+				<% } else { %>
+					<ul class="kanban-task-list">
+						<% stageTasks.forEach((task) => { %>
+							<li class="kanban-task-card">
+								<h3 dir="auto"><%= task.title %></h3>
+							</li>
+						<% }) %>
+					</ul>
+				<% } %>
+			</section>
+		<% }) %>
+	</div>
 </section>
 
 <% if (canCreateTask) { %>

@@ -27,6 +27,50 @@
 	font-size: 1.25rem;
 }
 
+.kanban-board {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.kanban-column {
+	min-width: 0;
+}
+
+.kanban-column-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: .75rem;
+	margin-bottom: 1rem;
+}
+
+.kanban-column-heading h2,
+.kanban-column-empty {
+	margin: 0;
+}
+
+.kanban-task-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: .75rem;
+}
+
+.kanban-task-card {
+	padding: 1rem;
+	border: 1px solid var(--border-subtle);
+	border-radius: .75rem;
+	background: var(--bg-section);
+	overflow-wrap: anywhere;
+}
+
+.kanban-task-card h3 {
+	font-size: 1rem;
+	margin: 0;
+}
+
 .kanban-invitations {
 	margin-bottom: 1.5rem;
 }
@@ -138,5 +182,11 @@
 
 	.kanban-member-email {
 		display: none;
+	}
+}
+
+@media (max-width: 991px) {
+	.kanban-board {
+		grid-template-columns: 1fr;
 	}
 }

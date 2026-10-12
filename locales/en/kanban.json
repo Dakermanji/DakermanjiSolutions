@@ -32,6 +32,13 @@
 	"create": "Create project",
 	"projectCreated": "Project created.",
 	"taskCreated": "Task created.",
+	"taskBoard": "Task board",
+	"taskStages": {
+		"pending": "Pending",
+		"in_progress": "In progress",
+		"done": "Done"
+	},
+	"noTasksInStage": "No tasks in this stage yet.",
 	"projectArchived": "Project deleted from your project list.",
 	"invitationRequestSubmitted": "If possible, your invitation request has been sent.",
 	"deleteProject": "Delete project",

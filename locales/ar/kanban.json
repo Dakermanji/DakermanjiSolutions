@@ -32,6 +32,13 @@
 	"create": "إنشاء المشروع",
 	"projectCreated": "تم إنشاء المشروع.",
 	"taskCreated": "تم إنشاء المهمة.",
+	"taskBoard": "لوحة المهام",
+	"taskStages": {
+		"pending": "قيد الانتظار",
+		"in_progress": "قيد التنفيذ",
+		"done": "مكتمل"
+	},
+	"noTasksInStage": "لا توجد مهام في هذه المرحلة بعد.",
 	"projectArchived": "تمت إزالة المشروع من قائمة مشاريعك.",
 	"invitationRequestSubmitted": "إذا أمكن، فقد أُرسل طلب الدعوة الخاص بك.",
 	"deleteProject": "حذف المشروع",
