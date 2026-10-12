@@ -119,8 +119,8 @@
 			"followBack": "Follow back",
 			"followRequested": "Requested"
 		},
-		"inviteLabel": "Invite by username",
-		"invitePlaceholder": "username"
+		"inviteLabel": "Invite by username or email",
+		"invitePlaceholder": "Username or email"
 	},
 	"activity": {
 		"toggle": "Activity log",

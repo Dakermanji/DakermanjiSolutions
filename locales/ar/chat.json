@@ -122,8 +122,8 @@
 			"followBack": "متابعة بالمقابل",
 			"followRequested": "تم الطلب"
 		},
-		"inviteLabel": "دعوة باسم المستخدم",
-		"invitePlaceholder": "اسم المستخدم"
+		"inviteLabel": "الدعوة باسم المستخدم أو البريد الإلكتروني",
+		"invitePlaceholder": "اسم المستخدم أو البريد الإلكتروني"
 	},
 	"activity": {
 		"toggle": "سجل النشاط",

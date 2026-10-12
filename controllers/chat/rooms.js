@@ -22,7 +22,7 @@ import {
 } from '../../services/chat/rooms.js';
 import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../constants/chat.js';
 import { emitChatRoomMembershipChanged } from '../../services/chat/live.js';
-import { isValidUsername, isValidUuid } from '../../middlewares/validators/common.js';
+import { isValidUuid, parseIdentifier } from '../../middlewares/validators/common.js';
 import {
 	clearActiveChatConversation,
 	setActiveChatConversation,
@@ -309,8 +309,8 @@ export async function cancelPrivateRoomAccessRequest(req, res, next) {
 export async function inviteChatRoomMember(req, res, next) {
 	const conversationId = String(req.body?.conversationId || '').trim();
 	const submittedTargetUserId = String(req.body?.targetUserId || '').trim();
-	const targetUsername = String(req.body?.targetUsername || '').trim();
-	const isUsernameInvite = !isValidUuid(submittedTargetUserId);
+	const targetIdentifier = req.body?.targetIdentifier ?? req.body?.targetUsername;
+	const isIdentifierInvite = !isValidUuid(submittedTargetUserId);
 
 	if (!isValidUuid(conversationId)) {
 		req.flash('error', 'chat:rooms.inviteError');
@@ -319,15 +319,18 @@ export async function inviteChatRoomMember(req, res, next) {
 
 	try {
 		let targetUserId = submittedTargetUserId;
-		let canLogTarget = !isUsernameInvite;
+		let canLogTarget = !isIdentifierInvite;
 
-		if (isUsernameInvite) {
-			if (!isValidUsername(targetUsername)) {
+		if (isIdentifierInvite) {
+			const parsedIdentifier = parseIdentifier(targetIdentifier);
+			if (!parsedIdentifier) {
 				req.flash('error', 'chat:rooms.inviteError');
 				return res.redirect(CHAT_OPEN_REDIRECT);
 			}
 
-			const targetUser = await UserModel.findByUsername(targetUsername);
+			const targetUser = parsedIdentifier.identifierType === 'email'
+				? await UserModel.findByEmailBasic(parsedIdentifier.identifier)
+				: await UserModel.findByUsername(parsedIdentifier.identifier);
 			targetUserId = targetUser?.id || '';
 
 			if (!isValidUuid(targetUserId)) {
@@ -366,7 +369,7 @@ export async function inviteChatRoomMember(req, res, next) {
 
 		setActiveChatConversation(req, conversationId);
 
-		if (isUsernameInvite && ![
+		if (isIdentifierInvite && ![
 			ROOM_INVITATION_RESULT.FORBIDDEN,
 			ROOM_INVITATION_RESULT.INVALID_INPUT,
 			ROOM_INVITATION_RESULT.ROOM_NOT_FOUND,

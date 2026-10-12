@@ -119,8 +119,8 @@
 			"followBack": "Suivre en retour",
 			"followRequested": "Demandé"
 		},
-		"inviteLabel": "Inviter par nom d’utilisateur",
-		"invitePlaceholder": "nom d’utilisateur"
+		"inviteLabel": "Inviter par nom d’utilisateur ou adresse courriel",
+		"invitePlaceholder": "Nom d’utilisateur ou courriel"
 	},
 	"activity": {
 		"toggle": "Journal d’activité",

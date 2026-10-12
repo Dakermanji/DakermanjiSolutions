@@ -22,24 +22,22 @@
 			<form class="chat-members-invite" method="POST" action="/chat/rooms/invitations">
 				<%- include('../partials/_csrf') %>
 				<input type="hidden" name="conversationId" value="<%= conversation.id %>" />
-				<label class="visually-hidden" for="chat-room-invite-username">
+				<label class="visually-hidden" for="chat-room-invite-identifier">
 					<%= t('chat:members.inviteLabel') %>
 				</label>
 				<div class="input-group" dir="ltr">
-					<span class="input-group-text" aria-hidden="true">@</span>
 					<input
-						id="chat-room-invite-username"
+						id="chat-room-invite-identifier"
 						class="form-control"
 						type="text"
-						name="targetUsername"
+						name="targetIdentifier"
 						placeholder="<%= t('chat:members.invitePlaceholder') %>"
 						autocomplete="off"
 						autocapitalize="none"
 						dir="ltr"
 						spellcheck="false"
 						minlength="3"
-						maxlength="20"
-						pattern="[A-Za-z0-9_.-]{3,20}"
+						maxlength="254"
 						required
 					/>
 					<button
