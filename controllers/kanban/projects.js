@@ -14,6 +14,7 @@ import {
 	listProjectMembers,
 	listProjectsForUser,
 } from '../../models/kanban/Projects.js';
+import { listTasksForProject } from '../../models/kanban/Tasks.js';
 import { listProjectEventsForMember } from '../../services/kanban/projectEvents.js';
 import { archiveProjectWithLog, createProjectWithLog } from '../../services/kanban/projects.js';
 
@@ -65,11 +66,13 @@ export async function renderProject(req, res, next) {
 	try {
 		const project = await findProjectForUser(req.params.projectId, req.user.id);
 		if (!project) return res.sendStatus(404);
+		const tasks = await listTasksForProject(project.id, req.user.id);
 		return res.render('kanban/project', {
 			titleKey: 'kanban:title',
 			styles: ['modals/main', 'kanban/main'],
 			scripts: ['kanban/archiveProject'],
 			project,
+			tasks,
 		});
 	} catch (error) {
 		return next(error);
