@@ -57,6 +57,25 @@ export function parseTaskInput(input) {
 	};
 }
 
+export function validateCreateTask(req, res, next) {
+	const projectId = req.body?.projectId;
+	if (!isValidUuid(projectId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	const result = parseTaskInput(req.body);
+	if (!result.valid) {
+		return fail(req, res, 'kanban:error.invalidTask', {
+			to: `/kanban/${projectId}`,
+			modal: 'kanban_task',
+		});
+	}
+	req.kanbanTaskInput = {
+		...result.values,
+		projectId,
+		creatorUserId: req.user.id,
+	};
+	return next();
+}
+
 export function parseProjectInput(input) {
 	const source = input && typeof input === 'object' && !Array.isArray(input)
 		? input

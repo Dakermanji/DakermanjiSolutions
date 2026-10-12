@@ -58,6 +58,7 @@
 	},
 	"error": {
 		"invalidProject": "Enter a valid project name and description.",
+		"invalidTask": "Enter valid task details.",
 		"archiveFailed": "Could not delete this project.",
 		"invalidInvitation": "Enter a valid username or email and role.",
 		"inviteSelf": "You are already the owner of this project.",
