@@ -1,6 +1,9 @@
 <!--! views/kanban/project.ejs -->
 <section class="kanban-page" aria-labelledby="project-title">
-	<a href="/kanban" class="kanban-back"><%= t('kanban:allProjects') %></a>
+	<div class="kanban-context-row">
+		<a href="/kanban" class="kanban-back"><%= t('kanban:allProjects') %></a>
+		<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+	</div>
 	<header class="kanban-header">
 		<div>
 			<h1 id="project-title"><%= project.name %></h1>
@@ -9,7 +12,6 @@
 			<% } %>
 		</div>
 		<div class="kanban-project-actions">
-			<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
 			<% if (canCreateTask) { %>
 				<button type="button" class="btn btn-action btn-sm" data-bs-toggle="modal" data-bs-target="#createKanbanTaskModal">
 					<i class="bi bi-plus-lg" aria-hidden="true"></i>

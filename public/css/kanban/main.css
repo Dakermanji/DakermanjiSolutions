@@ -16,6 +16,19 @@
 	max-width: 60ch;
 }
 
+.kanban-context-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: .75rem;
+	margin-bottom: 1rem;
+}
+
+.kanban-context-row .kanban-back {
+	margin-bottom: 0;
+}
+
 .kanban-panel {
 	padding: 1.25rem;
 	border: 1px solid var(--border-subtle);

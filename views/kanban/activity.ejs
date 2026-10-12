@@ -1,6 +1,9 @@
 <!--! views/kanban/activity.ejs -->
 <section class="kanban-page" aria-labelledby="project-activity-title">
-	<a href="/kanban/<%= project.id %>" class="kanban-back"><%= t('kanban:backToProject') %></a>
+	<div class="kanban-context-row">
+		<a href="/kanban/<%= project.id %>" class="kanban-back"><%= t('kanban:backToProject') %></a>
+		<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+	</div>
 	<header class="kanban-header">
 		<div>
 			<h1 id="project-activity-title"><%= t('kanban:projectActivity') %></h1>
