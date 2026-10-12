@@ -4,6 +4,7 @@ import {
 	KANBAN_INVITATION_LIMITS,
 	KANBAN_PROJECT_LIMITS,
 	KANBAN_TASK_LIMITS,
+	KANBAN_TASK_STAGES,
 } from '../../constants/kanban.js';
 import { KANBAN_ROLES } from '../../services/kanban/permissions.js';
 import { fail } from '../../services/http/response.js';
@@ -16,6 +17,7 @@ const INVITABLE_ROLES = new Set([
 ]);
 
 const TASK_IMPORTANCE = new Set(['high', 'medium', 'low']);
+const TASK_STAGES = new Set(Object.values(KANBAN_TASK_STAGES));
 
 function isValidDateOnly(value) {
 	if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -73,6 +75,20 @@ export function validateCreateTask(req, res, next) {
 		projectId,
 		creatorUserId: req.user.id,
 	};
+	return next();
+}
+
+export function validateChangeTaskStage(req, res, next) {
+	const taskId = req.body?.taskId;
+	if (!isValidUuid(taskId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	const status = req.body?.status;
+	if (!TASK_STAGES.has(status)) {
+		return fail(req, res, 'kanban:error.invalidTaskStage', {
+			to: `/kanban/tasks/${taskId}`,
+		});
+	}
+	req.kanbanTaskStageInput = { taskId, actorUserId: req.user.id, status };
 	return next();
 }
 

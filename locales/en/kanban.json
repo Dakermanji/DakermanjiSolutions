@@ -84,6 +84,7 @@
 	"error": {
 		"invalidProject": "Enter a valid project name and description.",
 		"invalidTask": "Enter valid task details.",
+		"invalidTaskStage": "Choose a valid task stage.",
 		"invalidAssignee": "Choose an owner, admin, or editor from this project.",
 		"archiveFailed": "Could not delete this project.",
 		"invalidInvitation": "Enter a valid username or email and role.",

@@ -84,6 +84,7 @@
 	"error": {
 		"invalidProject": "Saisissez un nom et une description de projet valides.",
 		"invalidTask": "Saisissez des détails de tâche valides.",
+		"invalidTaskStage": "Choisissez une étape valide pour la tâche.",
 		"invalidAssignee": "Choisissez un propriétaire, un administrateur ou un éditeur de ce projet.",
 		"archiveFailed": "Impossible de supprimer ce projet.",
 		"invalidInvitation": "Saisissez un nom d’utilisateur ou un courriel et un rôle valides.",
