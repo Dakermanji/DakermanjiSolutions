@@ -75,3 +75,25 @@ export function listTasksForProject(projectId, viewerUserId) {
 		[projectId, viewerUserId],
 	);
 }
+
+export async function findTaskForMember(taskId, viewerUserId) {
+	const rows = await queryRows(
+		`SELECT t.id, t.project_id, t.title, t.description, t.status,
+		        t.position, t.due_date, t.importance, t.creator_user_id,
+		        t.assignee_user_id, t.created_at, t.updated_at,
+		        p.name AS project_name, viewer.role AS viewer_role,
+		        creator.username AS creator_username, creator.email AS creator_email,
+		        assignee.username AS assignee_username, assignee.email AS assignee_email
+		 FROM kanban_tasks t
+		 JOIN kanban_projects p ON p.id = t.project_id
+		 JOIN kanban_project_members viewer
+		   ON viewer.project_id = t.project_id AND viewer.user_id = $2
+		 LEFT JOIN users creator ON creator.id = t.creator_user_id
+		 LEFT JOIN users assignee ON assignee.id = t.assignee_user_id
+		 WHERE t.id = $1 AND t.archived_at IS NULL
+		   AND p.archived_at IS NULL
+		 LIMIT 1`,
+		[taskId, viewerUserId],
+	);
+	return rows[0] || null;
+}
