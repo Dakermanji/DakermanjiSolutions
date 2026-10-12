@@ -15,6 +15,18 @@
 	"declinedInvitationsHelp": "لا يزال بإمكانك قبول هذه الدعوات قبل انتهاء صلاحيتها.",
 	"noProjects": "لست عضوًا في أي مشروع بعد.",
 	"createProject": "إنشاء مشروع",
+	"createTask": "إنشاء مهمة",
+	"taskTitle": "عنوان المهمة",
+	"dueDate": "تاريخ الاستحقاق",
+	"importance": "الأهمية",
+	"noImportance": "دون أهمية محددة",
+	"importanceLevels": {
+		"high": "عالية",
+		"medium": "متوسطة",
+		"low": "منخفضة"
+	},
+	"assignedTo": "مُسندة إلى",
+	"unassigned": "غير مُسندة",
 	"projectName": "اسم المشروع",
 	"description": "الوصف",
 	"create": "إنشاء المشروع",

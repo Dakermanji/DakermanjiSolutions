@@ -3,6 +3,7 @@
 import {
 	KANBAN_INVITATION_LIMITS,
 	KANBAN_PROJECT_LIMITS,
+	KANBAN_TASK_LIMITS,
 } from '../../constants/kanban.js';
 import {
 	listDeclinedInvitationsForUser,
@@ -16,6 +17,7 @@ import {
 } from '../../models/kanban/Projects.js';
 import { listTasksForProject } from '../../models/kanban/Tasks.js';
 import { listProjectEventsForMember } from '../../services/kanban/projectEvents.js';
+import { canBeAssigned, canManageTasks } from '../../services/kanban/permissions.js';
 import { archiveProjectWithLog, createProjectWithLog } from '../../services/kanban/projects.js';
 
 export async function renderProjects(req, res, next) {
@@ -66,13 +68,20 @@ export async function renderProject(req, res, next) {
 	try {
 		const project = await findProjectForUser(req.params.projectId, req.user.id);
 		if (!project) return res.sendStatus(404);
-		const tasks = await listTasksForProject(project.id, req.user.id);
+		const canCreateTask = canManageTasks(project.role);
+		const [tasks, members] = await Promise.all([
+			listTasksForProject(project.id, req.user.id),
+			canCreateTask ? listProjectMembers(project.id, req.user.id) : [],
+		]);
 		return res.render('kanban/project', {
 			titleKey: 'kanban:title',
 			styles: ['modals/main', 'kanban/main'],
 			scripts: ['kanban/archiveProject'],
 			project,
 			tasks,
+			canCreateTask,
+			assignableMembers: members.filter((member) => canBeAssigned(member.role)),
+			taskLimits: KANBAN_TASK_LIMITS,
 		});
 	} catch (error) {
 		return next(error);

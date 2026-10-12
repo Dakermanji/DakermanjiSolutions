@@ -15,6 +15,18 @@
 	"declinedInvitationsHelp": "You can still accept these invitations before they expire.",
 	"noProjects": "You are not part of a project yet.",
 	"createProject": "Create a project",
+	"createTask": "Create task",
+	"taskTitle": "Task title",
+	"dueDate": "Due date",
+	"importance": "Importance",
+	"noImportance": "No importance",
+	"importanceLevels": {
+		"high": "High",
+		"medium": "Medium",
+		"low": "Low"
+	},
+	"assignedTo": "Assigned to",
+	"unassigned": "Unassigned",
 	"projectName": "Project name",
 	"description": "Description",
 	"create": "Create project",

@@ -15,6 +15,18 @@
 	"declinedInvitationsHelp": "Vous pouvez encore accepter ces invitations avant leur expiration.",
 	"noProjects": "Vous ne participez à aucun projet pour le moment.",
 	"createProject": "Créer un projet",
+	"createTask": "Créer une tâche",
+	"taskTitle": "Titre de la tâche",
+	"dueDate": "Date d’échéance",
+	"importance": "Importance",
+	"noImportance": "Aucune importance",
+	"importanceLevels": {
+		"high": "Élevée",
+		"medium": "Moyenne",
+		"low": "Faible"
+	},
+	"assignedTo": "Attribuée à",
+	"unassigned": "Non attribuée",
 	"projectName": "Nom du projet",
 	"description": "Description",
 	"create": "Créer le projet",

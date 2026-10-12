@@ -10,6 +10,12 @@
 		</div>
 		<div class="kanban-project-actions">
 			<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+			<% if (canCreateTask) { %>
+				<button type="button" class="btn btn-action btn-sm" data-bs-toggle="modal" data-bs-target="#createKanbanTaskModal">
+					<i class="bi bi-plus-lg" aria-hidden="true"></i>
+					<%= t('kanban:createTask') %>
+				</button>
+			<% } %>
 			<a href="/kanban/<%= project.id %>/members" class="btn btn-outline-secondary btn-sm">
 				<i class="bi bi-people" aria-hidden="true"></i>
 				<%= t('kanban:members') %>
@@ -35,6 +41,9 @@
 	</header>
 </section>
 
+<% if (canCreateTask) { %>
+	<%- include('../modals/kanban/_create_task_modal') %>
+<% } %>
 <% if (project.role === 'owner') { %>
 	<%- include('../modals/kanban/_archive_project_modal') %>
 <% } %>

@@ -37,6 +37,7 @@
 		chat_room: { id: 'chatRoomModal' },
 		kanban_project: { id: 'createKanbanProjectModal' },
 		kanban_invite: { id: 'inviteKanbanMemberModal' },
+		kanban_task: { id: 'createKanbanTaskModal' },
 	};
 
 	const target = MODALS[modalName];
