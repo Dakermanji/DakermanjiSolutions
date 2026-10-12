@@ -129,7 +129,6 @@
 
 .chat-members-invite .form-control {
 	border-color: var(--border-soft);
-	background: var(--bg-input);
 	text-align: left;
 }
 
