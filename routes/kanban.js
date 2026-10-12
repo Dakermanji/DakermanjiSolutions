@@ -14,10 +14,12 @@ import {
 	renderProjectMembers,
 	renderProjects,
 } from '../controllers/kanban/projects.js';
+import { createKanbanTask } from '../controllers/kanban/tasks.js';
 import {
 	validateArchiveProject,
 	validateAcceptInvitation,
 	validateCreateProject,
+	validateCreateTask,
 	validateDeclineInvitation,
 	validateInviteMember,
 	validateProjectId,
@@ -28,6 +30,7 @@ const router = Router();
 router.get('/', renderProjects);
 router.post('/', validateCreateProject, createKanbanProject);
 router.post('/archive', validateArchiveProject, archiveKanbanProject);
+router.post('/tasks', validateCreateTask, createKanbanTask);
 router.post('/invitations', validateInviteMember, inviteProjectMember);
 router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvitation);
 router.post('/invitations/decline', validateDeclineInvitation, declineProjectInvitation);

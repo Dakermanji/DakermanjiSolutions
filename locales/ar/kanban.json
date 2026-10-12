@@ -19,6 +19,7 @@
 	"description": "الوصف",
 	"create": "إنشاء المشروع",
 	"projectCreated": "تم إنشاء المشروع.",
+	"taskCreated": "تم إنشاء المهمة.",
 	"projectArchived": "تمت إزالة المشروع من قائمة مشاريعك.",
 	"invitationRequestSubmitted": "إذا أمكن، فقد أُرسل طلب الدعوة الخاص بك.",
 	"deleteProject": "حذف المشروع",
@@ -59,6 +60,7 @@
 	"error": {
 		"invalidProject": "أدخل اسمًا ووصفًا صالحين للمشروع.",
 		"invalidTask": "أدخل تفاصيل صالحة للمهمة.",
+		"invalidAssignee": "اختر مالكًا أو مسؤولًا أو محررًا من هذا المشروع.",
 		"archiveFailed": "تعذّر حذف هذا المشروع.",
 		"invalidInvitation": "أدخل اسم مستخدم أو بريدًا إلكترونيًا ودورًا صالحين.",
 		"inviteSelf": "أنت مالك هذا المشروع بالفعل.",

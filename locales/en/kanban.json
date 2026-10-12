@@ -19,6 +19,7 @@
 	"description": "Description",
 	"create": "Create project",
 	"projectCreated": "Project created.",
+	"taskCreated": "Task created.",
 	"projectArchived": "Project deleted from your project list.",
 	"invitationRequestSubmitted": "If possible, your invitation request has been sent.",
 	"deleteProject": "Delete project",
@@ -59,6 +60,7 @@
 	"error": {
 		"invalidProject": "Enter a valid project name and description.",
 		"invalidTask": "Enter valid task details.",
+		"invalidAssignee": "Choose an owner, admin, or editor from this project.",
 		"archiveFailed": "Could not delete this project.",
 		"invalidInvitation": "Enter a valid username or email and role.",
 		"inviteSelf": "You are already the owner of this project.",

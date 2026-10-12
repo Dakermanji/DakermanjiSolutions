@@ -19,6 +19,7 @@
 	"description": "Description",
 	"create": "Créer le projet",
 	"projectCreated": "Projet créé.",
+	"taskCreated": "Tâche créée.",
 	"projectArchived": "Le projet a été retiré de votre liste de projets.",
 	"invitationRequestSubmitted": "Si possible, votre demande d’invitation a été envoyée.",
 	"deleteProject": "Supprimer le projet",
@@ -59,6 +60,7 @@
 	"error": {
 		"invalidProject": "Saisissez un nom et une description de projet valides.",
 		"invalidTask": "Saisissez des détails de tâche valides.",
+		"invalidAssignee": "Choisissez un propriétaire, un administrateur ou un éditeur de ce projet.",
 		"archiveFailed": "Impossible de supprimer ce projet.",
 		"invalidInvitation": "Saisissez un nom d’utilisateur ou un courriel et un rôle valides.",
 		"inviteSelf": "Vous êtes déjà propriétaire de ce projet.",

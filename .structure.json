@@ -77,7 +77,8 @@
 		},
 		"kanban": [
 			"members.js",
-			"projects.js"
+			"projects.js",
+			"tasks.js"
 		],
 		"notifications": [
 			"actions.js",
