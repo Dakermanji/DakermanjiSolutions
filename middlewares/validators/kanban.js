@@ -3,6 +3,7 @@
 import {
 	KANBAN_INVITATION_LIMITS,
 	KANBAN_PROJECT_LIMITS,
+	KANBAN_TASK_LIMITS,
 } from '../../constants/kanban.js';
 import { KANBAN_ROLES } from '../../services/kanban/permissions.js';
 import { fail } from '../../services/http/response.js';
@@ -13,6 +14,48 @@ const INVITABLE_ROLES = new Set([
 	KANBAN_ROLES.EDITOR,
 	KANBAN_ROLES.OBSERVER,
 ]);
+
+const TASK_IMPORTANCE = new Set(['high', 'medium', 'low']);
+
+function isValidDateOnly(value) {
+	if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+	const date = new Date(`${value}T00:00:00.000Z`);
+	return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
+export function parseTaskInput(input) {
+	const source = input && typeof input === 'object' && !Array.isArray(input)
+		? input
+		: {};
+	const title = typeof source.title === 'string'
+		? source.title.normalize('NFKC').trim()
+		: '';
+	const description = typeof source.description === 'string'
+		? source.description.normalize('NFKC').trim()
+		: '';
+	const dueDate = typeof source.dueDate === 'string'
+		? source.dueDate.trim() || null
+		: null;
+	const importance = typeof source.importance === 'string'
+		? source.importance.trim() || null
+		: null;
+	const assigneeUserId = typeof source.assigneeUserId === 'string'
+		? source.assigneeUserId.trim() || null
+		: null;
+
+	return {
+		values: { title, description, dueDate, importance, assigneeUserId },
+		valid: title.length > 0 && title.length <= KANBAN_TASK_LIMITS.TITLE_MAX_LENGTH &&
+			(source.description == null || typeof source.description === 'string') &&
+			description.length <= KANBAN_TASK_LIMITS.DESCRIPTION_MAX_LENGTH &&
+			(source.dueDate == null || typeof source.dueDate === 'string') &&
+			(dueDate === null || isValidDateOnly(dueDate)) &&
+			(source.importance == null || typeof source.importance === 'string') &&
+			(importance === null || TASK_IMPORTANCE.has(importance)) &&
+			(source.assigneeUserId == null || typeof source.assigneeUserId === 'string') &&
+			(assigneeUserId === null || isValidUuid(assigneeUserId)),
+	};
+}
 
 export function parseProjectInput(input) {
 	const source = input && typeof input === 'object' && !Array.isArray(input)

@@ -10,3 +10,8 @@ export const KANBAN_INVITATION_EXPIRY_DAYS = 7;
 export const KANBAN_INVITATION_LIMITS = Object.freeze({
 	IDENTIFIER_MAX_LENGTH: 320,
 });
+
+export const KANBAN_TASK_LIMITS = Object.freeze({
+	TITLE_MAX_LENGTH: 200,
+	DESCRIPTION_MAX_LENGTH: 10000,
+});
