@@ -59,6 +59,28 @@ const CHAT_ROOM_INVITATION_ACTIONS = Object.freeze([
 	},
 ]);
 
+const KANBAN_PROJECT_INVITATION_ACTIONS = Object.freeze([
+	{
+		key: 'accept',
+		icon: 'bi-check-lg',
+		path: '/kanban/invitations/accept',
+		tooltipKey: 'notifications:actions.acceptInvitation',
+	},
+	{
+		key: 'reject',
+		icon: 'bi-x-circle',
+		path: '/kanban/invitations/decline',
+		tooltipKey: 'notifications:actions.rejectInvitation',
+	},
+]);
+
+const IGNORE_INVITATION_ACTION = Object.freeze({
+	...DISMISS_NOTIFICATION_ACTION,
+	key: 'ignore',
+	icon: 'bi-eye-slash',
+	tooltipKey: 'notifications:actions.ignoreInvitation',
+});
+
 function createRoomOpenActions(notification) {
 	const conversationId = String(notification.data?.conversationId || '').trim();
 
@@ -85,6 +107,18 @@ function getActorDisplayName(notification) {
 
 function getNotificationActions(notification) {
 	let actions = [];
+	if (notification.type === NOTIFICATION_TYPES.KANBAN_PROJECT_INVITATION) {
+		const invitationId = String(notification.entity_id || '').trim();
+		return [
+			...(!notification.responded_at && isValidUuid(invitationId)
+				? KANBAN_PROJECT_INVITATION_ACTIONS.map((action) => ({
+					...action,
+					fields: { invitationId },
+				}))
+				: []),
+			IGNORE_INVITATION_ACTION,
+		];
+	}
 
 	if (notification.type === NOTIFICATION_TYPES.CHAT_ROOM_INVITATION) {
 		actions = notification.responded_at ? [] : CHAT_ROOM_INVITATION_ACTIONS;
