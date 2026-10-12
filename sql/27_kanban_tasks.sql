@@ -8,6 +8,10 @@ CREATE TABLE IF NOT EXISTS kanban_tasks (
     status VARCHAR(16) NOT NULL DEFAULT 'pending'
         CHECK (status IN ('pending', 'in_progress', 'done')),
     position INTEGER NOT NULL DEFAULT 0 CHECK (position >= 0),
+    due_date DATE,
+    importance VARCHAR(6)
+        CONSTRAINT kanban_tasks_importance_check
+        CHECK (importance IN ('high', 'medium', 'low')),
     creator_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
     assignee_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
     archived_at TIMESTAMPTZ,
