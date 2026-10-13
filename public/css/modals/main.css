@@ -259,18 +259,6 @@
 .complete-signup-country__menu {
 	max-height: 14rem;
 	overflow-y: auto;
-	background-color: var(--bg-section);
-	border-color: var(--border-subtle);
-}
-
-.complete-signup-country__option {
-	color: var(--color-text-body);
-}
-
-.complete-signup-country__option:hover,
-.complete-signup-country__option:focus {
-	color: var(--color-text-body);
-	background-color: var(--color-bg);
 }
 
 .complete-signup-country__flag {

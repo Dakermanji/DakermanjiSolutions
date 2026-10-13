@@ -191,7 +191,7 @@ function createCityOption(city, index) {
 	const label = document.createElement('span');
 
 	option.type = 'button';
-	option.className = 'weather-city-option';
+	option.className = 'weather-city-option app-dropdown-option';
 	option.setAttribute('role', 'option');
 	option.addEventListener('click', () => selectCity(city));
 

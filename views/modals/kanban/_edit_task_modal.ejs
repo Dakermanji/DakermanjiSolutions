@@ -24,7 +24,7 @@
 					</div>
 					<div>
 						<label for="edit-task-importance" class="form-label"><%= t('kanban:importance') %></label>
-						<select id="edit-task-importance" name="importance" class="form-select">
+						<select id="edit-task-importance" name="importance" class="form-select" data-app-select>
 							<option value="" <%= !task.importance ? 'selected' : '' %>><%= t('kanban:noImportance') %></option>
 							<% ['high', 'medium', 'low'].forEach((importance) => { %>
 								<option value="<%= importance %>" <%= importance === task.importance ? 'selected' : '' %>><%= t(`kanban:importanceLevels.${importance}`) %></option>

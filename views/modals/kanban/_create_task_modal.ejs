@@ -24,7 +24,7 @@
 					</div>
 					<div class="mb-3">
 						<label for="task-importance" class="form-label"><%= t('kanban:importance') %></label>
-						<select id="task-importance" name="importance" class="form-select">
+						<select id="task-importance" name="importance" class="form-select" data-app-select>
 							<option value=""><%= t('kanban:noImportance') %></option>
 							<% ['high', 'medium', 'low'].forEach((importance) => { %>
 								<option value="<%= importance %>"><%= t(`kanban:importanceLevels.${importance}`) %></option>
@@ -33,7 +33,7 @@
 					</div>
 					<div>
 						<label for="task-assignee" class="form-label"><%= t('kanban:assignedTo') %></label>
-						<select id="task-assignee" name="assigneeUserId" dir="ltr" class="form-select">
+						<select id="task-assignee" name="assigneeUserId" dir="ltr" class="form-select" data-app-select>
 							<option value=""><%= t('kanban:unassigned') %></option>
 							<% assignableMembers.forEach((member) => { %>
 								<option value="<%= member.user_id %>"><%= member.username || member.email %> (<%= t(`kanban:roles.${member.role}`) %>)</option>

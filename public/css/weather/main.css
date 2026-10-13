@@ -142,10 +142,7 @@ main.container:has(.weather-page) {
 	width: 100%;
 	max-height: 16rem;
 	overflow-y: auto;
-	border: 1px solid var(--border-soft);
 	border-radius: var(--radius-sm);
-	background-color: var(--bg-section);
-	box-shadow: var(--shadow-card);
 }
 
 [dir='rtl'] .weather-city-results {
@@ -160,13 +157,8 @@ main.container:has(.weather-page) {
 	gap: 0.65rem;
 	padding: 0.65rem 0.8rem;
 	border: 0;
-	color: var(--color-text-body);
-	background: transparent;
-	text-align: start;
 }
 
-.weather-city-option:hover,
-.weather-city-option:focus,
 .weather-city-option.is-active {
 	background-color: var(--bg-pill-hover);
 }

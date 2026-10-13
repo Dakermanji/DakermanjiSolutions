@@ -28,7 +28,7 @@
 							<%- include('../partials/_csrf') %>
 							<input type="hidden" name="taskId" value="<%= task.id %>">
 							<label for="task-stage" class="visually-hidden"><%= t('kanban:status') %></label>
-							<select id="task-stage" name="status" class="form-select w-auto">
+							<select id="task-stage" name="status" class="form-select w-auto" data-app-select>
 								<% taskStages.forEach((stage) => { %>
 									<option value="<%= stage %>" <%= stage === task.status ? 'selected' : '' %>><%= t(`kanban:taskStages.${stage}`) %></option>
 								<% }) %>

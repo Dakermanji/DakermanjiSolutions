@@ -521,6 +521,7 @@
 				"modals.js",
 				"notifications.js",
 				"presence.js",
+				"selectDropdown.js",
 				"social.js",
 				"theme.js",
 				"themeInit.js",

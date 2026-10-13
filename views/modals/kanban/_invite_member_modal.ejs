@@ -41,7 +41,7 @@
 						<label for="invite-role" class="form-label">
 							<%= t('kanban:role') %>
 						</label>
-						<select id="invite-role" name="role" class="form-select" required>
+						<select id="invite-role" name="role" class="form-select" required data-app-select>
 							<option value="" selected disabled><%= t('kanban:chooseRole') %></option>
 							<% ['admin', 'editor', 'observer'].forEach((role) => { %>
 								<option value="<%= role %>"><%= t(`kanban:roles.${role}`) %></option>

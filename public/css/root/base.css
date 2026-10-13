@@ -173,3 +173,104 @@ h6 {
 .text-body-muted {
 	color: var(--color-text-muted) !important;
 }
+
+/* Shared dropdown surfaces and options */
+.app-dropdown-surface {
+	color: var(--color-text-body);
+	background-color: var(--bg-section);
+	border: 1px solid var(--border-soft);
+	box-shadow: var(--shadow-card);
+}
+
+.app-dropdown-option {
+	position: relative;
+	color: var(--color-text-body);
+	background-color: transparent;
+	text-align: start;
+}
+
+.app-dropdown-option:hover,
+.app-dropdown-option:focus,
+.app-dropdown-option:focus-visible {
+	color: var(--color-text-body);
+	background-color: var(--bg-pill-hover);
+}
+
+.app-dropdown-option.active {
+	color: var(--color-text-body);
+	background-color: var(--bg-subsection);
+}
+
+.app-dropdown-option.active::before {
+	content: '';
+	position: absolute;
+	inset-block: 0;
+	inset-inline-start: 0;
+	width: 3px;
+	background-color: var(--color-secondary);
+}
+
+.app-dropdown-option:disabled {
+	color: var(--color-text-muted);
+	background-color: transparent;
+}
+
+.app-dropdown-option:focus-visible {
+	outline: 2px solid var(--color-secondary);
+	outline-offset: -2px;
+}
+
+.app-select {
+	width: 100%;
+}
+
+.app-select__toggle {
+	position: relative;
+	width: 100%;
+	padding-inline-start: .75rem;
+	padding-inline-end: 2.25rem;
+	color: var(--color-text-body);
+	background-color: var(--bg-subsection);
+	background-image: none;
+	border-color: var(--border-soft);
+	text-align: start;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.app-select__toggle::after {
+	content: '';
+	position: absolute;
+	inset-inline-end: .9rem;
+	top: 50%;
+	width: .5rem;
+	height: .5rem;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform: translateY(-70%) rotate(45deg);
+}
+
+.app-select__toggle:hover,
+.app-select__toggle:focus,
+.app-select__toggle.show {
+	color: var(--color-text-body);
+	background-color: var(--bg-subsection);
+	border-color: var(--color-secondary);
+}
+
+.app-select__toggle:focus {
+	box-shadow: 0 0 0 .2rem var(--color-secondary-beta);
+}
+
+.app-select__menu {
+	min-width: 100%;
+	max-width: min(28rem, calc(100vw - 2rem));
+	max-height: 16rem;
+	overflow-y: auto;
+	overflow-wrap: anywhere;
+}
+
+.app-select__menu .app-dropdown-option {
+	white-space: normal;
+}
