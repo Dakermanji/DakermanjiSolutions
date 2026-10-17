@@ -19,7 +19,8 @@ index a278bc1..937ed06 100644
 -  var safe = (options.unsafe === undefined) ? true : !options.unsafe;
 +	options = options || {};
 +	var safe = options.unsafe === undefined ? true : !options.unsafe;
- 
+-  
++
 -  return function(req, res, next) {
 -    if (req.flash && safe) { return next(); }
 -    req.flash = _flash;

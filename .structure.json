@@ -562,6 +562,9 @@
 			"weather.js"
 		]
 	},
+	"scripts": [
+		"apply-patches.js"
+	],
 	"services": {
 		"apiUsage": [
 			"limits.js",

@@ -31,7 +31,7 @@ Node.js 20+, Express 5, EJS, Bootstrap, PostgreSQL, Passport, Socket.IO, and i18
 npm install
 ```
 
-The postinstall script applies the checked-in dependency patches using `patch-package`; keep the `patches/` directory when deploying.
+The postinstall script applies the checked-in dependency patches using `git apply`. Git must be available during installation; deploy the `patches/` and `scripts/` directories.
 
 ### 2. Configure the environment
 
@@ -107,7 +107,7 @@ There is currently no `npm test` script. Run the presence tests with `node --tes
 ## Production deployment
 
 1. Provision PostgreSQL and apply the required schema scripts.
-2. Deploy the application source, assets, translations, dependency patches, and package lockfile. Install dependencies with `npm ci`.
+2. Deploy the application source, assets, translations, dependency patches, patch script, and package lockfile. Install dependencies with `npm ci` on a host with Git available.
 3. Set `NODE_ENV=production`, the public HTTPS `CLIENT_URL`, session secret, database settings, email credentials, and provider credentials in the hosting environment.
 4. Register the production callback URLs with the corresponding OAuth providers:
 
