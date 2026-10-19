@@ -27,7 +27,11 @@
 						<select id="task-importance" name="importance" class="form-select" data-app-select>
 							<option value=""><%= t('kanban:noImportance') %></option>
 							<% ['high', 'medium', 'low'].forEach((importance) => { %>
-								<option value="<%= importance %>"><%= t(`kanban:importanceLevels.${importance}`) %></option>
+								<option
+									value="<%= importance %>"
+									data-icon-class="<%= importance === 'high' ? 'bi-chevron-double-up' : importance === 'low' ? 'bi-chevron-double-down' : '' %>"
+									data-icon-text="<%= importance === 'medium' ? '=' : '' %>"
+								><%= t(`kanban:importanceLevels.${importance}`) %></option>
 							<% }) %>
 						</select>
 					</div>

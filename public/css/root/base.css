@@ -226,6 +226,9 @@ h6 {
 
 .app-select__toggle {
 	position: relative;
+	display: flex;
+	align-items: center;
+	gap: .5rem;
 	width: 100%;
 	padding-inline-start: .75rem;
 	padding-inline-end: 2.25rem;
@@ -272,5 +275,25 @@ h6 {
 }
 
 .app-select__menu .app-dropdown-option {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
 	white-space: normal;
+}
+
+.app-select__icon,
+.app-select__icon-text {
+	flex: 0 0 1rem;
+	text-align: center;
+}
+
+.app-select__icon-text {
+	font-weight: 700;
+	font-size: 1.1em;
+}
+
+.app-select__label {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }

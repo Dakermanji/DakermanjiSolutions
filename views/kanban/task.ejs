@@ -60,7 +60,14 @@
 			</div>
 			<div>
 				<dt><%= t('kanban:importance') %></dt>
-				<dd><%= task.importance ? t(`kanban:importanceLevels.${task.importance}`) : t('kanban:noImportance') %></dd>
+				<dd class="kanban-task-importance">
+					<% if (task.importance === 'high' || task.importance === 'low') { %>
+						<i class="bi bi-chevron-double-<%= task.importance === 'high' ? 'up' : 'down' %>" aria-hidden="true"></i>
+					<% } else if (task.importance === 'medium') { %>
+						<span class="app-select__icon-text" aria-hidden="true">=</span>
+					<% } %>
+					<%= task.importance ? t(`kanban:importanceLevels.${task.importance}`) : t('kanban:noImportance') %>
+				</dd>
 			</div>
 		</dl>
 		<h2><%= t('kanban:description') %></h2>

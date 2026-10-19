@@ -3,6 +3,25 @@
 (() => {
 	if (!window.bootstrap?.Dropdown) return;
 
+	function showOption(container, option) {
+		const label = document.createElement('span');
+		label.className = 'app-select__label';
+		label.textContent = option.textContent.trim();
+		const iconClass = option.dataset.iconClass;
+		const iconText = option.dataset.iconText;
+		if (!iconClass && !iconText) {
+			container.replaceChildren(label);
+			return;
+		}
+		const icon = document.createElement(iconClass ? 'i' : 'span');
+		icon.className = iconClass
+			? `bi ${iconClass} app-select__icon`
+			: 'app-select__icon-text';
+		if (iconText) icon.textContent = iconText;
+		icon.setAttribute('aria-hidden', 'true');
+		container.replaceChildren(icon, label);
+	}
+
 	document.querySelectorAll('select[data-app-select]').forEach((select) => {
 		const id = select.id;
 		if (!id) return;
@@ -29,7 +48,7 @@
 			const item = document.createElement('button');
 			item.type = 'button';
 			item.className = 'dropdown-item app-dropdown-option';
-			item.textContent = option.textContent.trim();
+			showOption(item, option);
 			item.disabled = option.disabled;
 			item.addEventListener('click', () => {
 				select.value = option.value;
@@ -43,7 +62,9 @@
 		}
 
 		function syncSelection() {
-			toggle.textContent = select.selectedOptions[0]?.textContent.trim() || '';
+			const selectedOption = select.selectedOptions[0];
+			if (selectedOption) showOption(toggle, selectedOption);
+			else toggle.replaceChildren();
 			for (const { option, item } of items) {
 				const selected = option.selected;
 				item.classList.toggle('active', selected);

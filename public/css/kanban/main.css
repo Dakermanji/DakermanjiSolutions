@@ -118,6 +118,17 @@
 	overflow-wrap: anywhere;
 }
 
+.kanban-task-importance {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+}
+
+.kanban-task-importance > .bi,
+.kanban-task-importance > .app-select__icon-text {
+	color: var(--color-secondary);
+}
+
 .kanban-invitations {
 	margin-bottom: 1.5rem;
 }
