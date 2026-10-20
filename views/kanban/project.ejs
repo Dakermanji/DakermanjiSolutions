@@ -60,7 +60,18 @@
 					<ul class="kanban-task-list">
 						<% stageTasks.forEach((task) => { %>
 							<li class="kanban-task-card">
-								<h3><a href="/kanban/tasks/<%= task.id %>"><%= task.title %></a></h3>
+								<div class="kanban-task-card-heading">
+									<h3><a href="/kanban/tasks/<%= task.id %>"><%= task.title %></a></h3>
+									<% if (task.importance) { %>
+										<span class="kanban-task-card-importance has-tooltip" role="img" tabindex="0" aria-label="<%= t(`kanban:importanceLevels.${task.importance}`) %>" data-bs-title="<%= t(`kanban:importanceLevels.${task.importance}`) %>">
+											<% if (task.importance === 'high' || task.importance === 'low') { %>
+												<i class="bi bi-chevron-double-<%= task.importance === 'high' ? 'up' : 'down' %>" aria-hidden="true"></i>
+											<% } else if (task.importance === 'medium') { %>
+												<span class="app-select__icon-text" aria-hidden="true">=</span>
+											<% } %>
+										</span>
+									<% } %>
+								</div>
 							</li>
 						<% }) %>
 					</ul>
