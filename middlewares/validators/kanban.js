@@ -122,6 +122,28 @@ export function validateChangeTaskStage(req, res, next) {
 	return next();
 }
 
+export function validateChangeTaskAssignee(req, res, next) {
+	const taskId = req.body?.taskId;
+	if (!isValidUuid(taskId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	const rawAssignee = req.body?.assigneeUserId;
+	const assigneeUserId = typeof rawAssignee === 'string'
+		? rawAssignee.trim() || null
+		: undefined;
+	if (assigneeUserId === undefined ||
+		(assigneeUserId !== null && !isValidUuid(assigneeUserId))) {
+		return fail(req, res, 'kanban:error.invalidAssignee', {
+			to: `/kanban/tasks/${taskId}`,
+		});
+	}
+	req.kanbanTaskAssignmentInput = {
+		taskId,
+		actorUserId: req.user.id,
+		assigneeUserId,
+	};
+	return next();
+}
+
 export function parseProjectInput(input) {
 	const source = input && typeof input === 'object' && !Array.isArray(input)
 		? input
