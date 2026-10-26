@@ -60,8 +60,11 @@
 	"allProjects": "كل المشاريع",
 	"members": "الأعضاء",
 	"projectActivity": "سجل نشاط المشروع",
+	"taskActivity": "سجل نشاط المهمة",
 	"backToProject": "العودة إلى المشروع",
+	"backToTask": "العودة إلى المهمة",
 	"noProjectActivity": "لا يوجد نشاط للمشروع بعد.",
+	"noTaskActivity": "لا يوجد نشاط للمهمة بعد.",
 	"member": "عضو",
 	"inviteMember": "دعوة عضو",
 	"usernameOrEmail": "اسم المستخدم أو البريد الإلكتروني",
@@ -87,6 +90,19 @@
 			"member_role_changed": "غيّر دور أحد الأعضاء.",
 			"member_removed": "أزال أحد الأعضاء.",
 			"ownership_transferred": "نقل ملكية المشروع."
+		}
+	},
+	"taskEvents": {
+		"reassignmentAlert": "أُعيد إسناد المهمة",
+		"actions": {
+			"created": "أنشأ المهمة.",
+			"edited": "عدّل المهمة.",
+			"assigned": "أسند المهمة.",
+			"reassigned": "أعاد إسناد المهمة.",
+			"unassigned": "أزال المسؤول عن المهمة.",
+			"status_changed": "غيّر مرحلة المهمة.",
+			"archived": "أرشف المهمة.",
+			"restored": "استعاد المهمة."
 		}
 	},
 	"error": {

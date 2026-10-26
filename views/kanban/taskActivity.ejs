@@ -1,0 +1,36 @@
+<!--! views/kanban/taskActivity.ejs -->
+<section class="kanban-page" aria-labelledby="task-activity-title">
+	<div class="kanban-context-row">
+		<a href="/kanban/tasks/<%= task.id %>" class="kanban-back"><%= t('kanban:backToTask') %></a>
+		<span class="badge text-bg-secondary"><%= t(`kanban:roles.${task.viewer_role}`) %></span>
+	</div>
+	<header class="kanban-header">
+		<div>
+			<h1 id="task-activity-title"><%= t('kanban:taskActivity') %></h1>
+			<p><%= task.title %></p>
+		</div>
+	</header>
+
+	<section class="kanban-panel" aria-labelledby="task-activity-title">
+		<% if (events.length === 0) { %>
+			<p><%= t('kanban:noTaskActivity') %></p>
+		<% } else { %>
+			<ul class="kanban-event-list">
+				<% events.forEach((event) => { %>
+					<li>
+						<div>
+							<strong><%= event.actor_username || t(event.actor_user_id ? 'kanban:member' : 'kanban:events.formerMember') %></strong>
+							<% if (event.action === 'reassigned') { %>
+								<span role="img" aria-label="<%= t('kanban:taskEvents.reassignmentAlert') %>">⚠️</span>
+							<% } %>
+							<span><%= t(`kanban:taskEvents.actions.${event.action}`) %></span>
+						</div>
+						<time datetime="<%= new Date(event.created_at).toISOString() %>">
+							<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(event.created_at)) %>
+						</time>
+					</li>
+				<% }) %>
+			</ul>
+		<% } %>
+	</section>
+</section>

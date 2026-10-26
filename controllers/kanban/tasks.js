@@ -8,6 +8,7 @@ import {
 import { findTaskForMember } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
 import { canChangeTaskStage, canManageTasks } from '../../services/kanban/permissions.js';
+import { listTaskEventsForMember } from '../../services/kanban/taskEvents.js';
 import { changeTaskStage, createTaskForProject, editTaskDetails } from '../../services/kanban/tasks.js';
 
 export async function renderKanbanTask(req, res, next) {
@@ -24,6 +25,23 @@ export async function renderKanbanTask(req, res, next) {
 			taskStages: Object.values(KANBAN_TASK_STAGES),
 			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
 			taskLimits: KANBAN_TASK_LIMITS,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function renderKanbanTaskActivity(req, res, next) {
+	try {
+		const result = await listTaskEventsForMember({
+			taskId: req.params.taskId,
+			userId: req.user.id,
+		});
+		if (!result) return res.sendStatus(404);
+		return res.render('kanban/taskActivity', {
+			titleKey: 'kanban:taskActivity',
+			styles: ['kanban/main'],
+			...result,
 		});
 	} catch (error) {
 		return next(error);

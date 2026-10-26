@@ -60,8 +60,11 @@
 	"allProjects": "All projects",
 	"members": "Members",
 	"projectActivity": "Project activity",
+	"taskActivity": "Task activity",
 	"backToProject": "Back to project",
+	"backToTask": "Back to task",
 	"noProjectActivity": "No project activity yet.",
+	"noTaskActivity": "No task activity yet.",
 	"member": "Member",
 	"inviteMember": "Invite member",
 	"usernameOrEmail": "Username or email",
@@ -87,6 +90,19 @@
 			"member_role_changed": "changed a member’s role.",
 			"member_removed": "removed a member.",
 			"ownership_transferred": "transferred project ownership."
+		}
+	},
+	"taskEvents": {
+		"reassignmentAlert": "Task reassigned",
+		"actions": {
+			"created": "created the task.",
+			"edited": "edited the task.",
+			"assigned": "assigned the task.",
+			"reassigned": "reassigned the task.",
+			"unassigned": "removed the task assignee.",
+			"status_changed": "changed the task stage.",
+			"archived": "archived the task.",
+			"restored": "restored the task."
 		}
 	},
 	"error": {

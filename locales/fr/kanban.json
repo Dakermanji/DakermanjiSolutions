@@ -60,8 +60,11 @@
 	"allProjects": "Tous les projets",
 	"members": "Membres",
 	"projectActivity": "Activité du projet",
+	"taskActivity": "Activité de la tâche",
 	"backToProject": "Retour au projet",
+	"backToTask": "Retour à la tâche",
 	"noProjectActivity": "Aucune activité pour le moment.",
+	"noTaskActivity": "Aucune activité pour cette tâche pour le moment.",
 	"member": "Membre",
 	"inviteMember": "Inviter un membre",
 	"usernameOrEmail": "Nom d’utilisateur ou courriel",
@@ -87,6 +90,19 @@
 			"member_role_changed": "a modifié le rôle d’un membre.",
 			"member_removed": "a retiré un membre.",
 			"ownership_transferred": "a transféré la propriété du projet."
+		}
+	},
+	"taskEvents": {
+		"reassignmentAlert": "Tâche réattribuée",
+		"actions": {
+			"created": "a créé la tâche.",
+			"edited": "a modifié la tâche.",
+			"assigned": "a attribué la tâche.",
+			"reassigned": "a réattribué la tâche.",
+			"unassigned": "a retiré la personne responsable de la tâche.",
+			"status_changed": "a changé l’étape de la tâche.",
+			"archived": "a archivé la tâche.",
+			"restored": "a restauré la tâche."
 		}
 	},
 	"error": {

@@ -775,7 +775,8 @@
 			"members.ejs",
 			"project.ejs",
 			"projects.ejs",
-			"task.ejs"
+			"task.ejs",
+			"taskActivity.ejs"
 		],
 		"legal": [
 			"privacy.ejs",
