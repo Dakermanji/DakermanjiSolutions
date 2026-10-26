@@ -9,31 +9,27 @@ import {
 } from '../../constants/notifications.js';
 import { createNotification } from '../notifications/appNotifications.js';
 
-export async function notifyTaskReassigned({
-	taskId,
-	actorUserId,
-	ownerUserId,
-	previousAssigneeUserId,
-	taskTitle,
-}) {
-	const recipients = new Set([ownerUserId, previousAssigneeUserId].filter(Boolean));
-	for (const recipientUserId of recipients) {
+async function sendAssignmentNotifications({ taskId, actorUserId, taskTitle, recipients }) {
+	for (const [recipientUserId, notificationType] of recipients) {
 		try {
+			const isNewAssignee = notificationType === 'assigned';
 			const result = await createNotification({
 				recipientUserId,
 				actorUserId,
 				appKey: NOTIFICATION_APP_KEYS.PROJECTS,
-				type: NOTIFICATION_TYPES.KANBAN_TASK_REASSIGNED,
+				type: isNewAssignee
+					? NOTIFICATION_TYPES.KANBAN_TASK_ASSIGNED
+					: NOTIFICATION_TYPES.KANBAN_TASK_REASSIGNED,
 				entityType: NOTIFICATION_ENTITY_TYPES.KANBAN_TASK,
 				entityId: taskId,
-				titleKey: 'notifications:types.kanbanTaskReassigned.title',
-				bodyKey: 'notifications:types.kanbanTaskReassigned.body',
+				titleKey: `notifications:types.kanbanTask${isNewAssignee ? 'Assigned' : 'Reassigned'}.title`,
+				bodyKey: `notifications:types.kanbanTask${isNewAssignee ? 'Assigned' : 'Reassigned'}.body`,
 				linkUrl: `/kanban/tasks/${taskId}`,
 				data: { taskTitle },
 				priority: NOTIFICATION_PRIORITIES.HIGH,
 			});
 			if (!result.notification) {
-				logger.warning('Kanban reassignment notification was not created', {
+				logger.warning('Kanban task assignment notification was not created', {
 					type: 'kanban',
 					taskId,
 					recipientUserId,
@@ -41,7 +37,7 @@ export async function notifyTaskReassigned({
 				});
 			}
 		} catch (error) {
-			logger.warning('Kanban reassignment notification failed', {
+			logger.warning('Kanban task assignment notification failed', {
 				type: 'kanban',
 				taskId,
 				recipientUserId,
@@ -49,4 +45,26 @@ export async function notifyTaskReassigned({
 			});
 		}
 	}
+}
+
+export function notifyTaskAssigned({ taskId, actorUserId, assigneeUserId, taskTitle }) {
+	const recipients = new Map();
+	if (assigneeUserId) recipients.set(assigneeUserId, 'assigned');
+	return sendAssignmentNotifications({ taskId, actorUserId, taskTitle, recipients });
+}
+
+export function notifyTaskReassigned({
+	taskId,
+	actorUserId,
+	ownerUserId,
+	previousAssigneeUserId,
+	newAssigneeUserId,
+	taskTitle,
+}) {
+	const recipients = new Map();
+	for (const userId of [ownerUserId, previousAssigneeUserId].filter(Boolean)) {
+		recipients.set(userId, 'reassigned');
+	}
+	if (newAssigneeUserId) recipients.set(newAssigneeUserId, 'assigned');
+	return sendAssignmentNotifications({ taskId, actorUserId, taskTitle, recipients });
 }

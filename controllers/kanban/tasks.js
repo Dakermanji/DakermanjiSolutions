@@ -10,8 +10,9 @@ import { findTaskForMember } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
 import { canBeAssigned, canChangeTaskStage, canManageTasks } from '../../services/kanban/permissions.js';
 import { changeTaskAssignee } from '../../services/kanban/taskAssignments.js';
+import { createTaskForProject } from '../../services/kanban/taskCreation.js';
 import { listTaskEventsForMember } from '../../services/kanban/taskEvents.js';
-import { changeTaskStage, createTaskForProject, editTaskDetails } from '../../services/kanban/tasks.js';
+import { changeTaskStage, editTaskDetails } from '../../services/kanban/tasks.js';
 
 export async function renderKanbanTask(req, res, next) {
 	try {

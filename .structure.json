@@ -663,6 +663,7 @@
 			"projectEvents.js",
 			"projects.js",
 			"taskAssignments.js",
+			"taskCreation.js",
 			"taskEvents.js",
 			"taskNotifications.js",
 			"tasks.js"

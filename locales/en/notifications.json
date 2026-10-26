@@ -54,6 +54,10 @@
 			"title": "Project invitation",
 			"body": "You were invited to join {{projectName}}."
 		},
+		"kanbanTaskAssigned": {
+			"title": "Task assigned to you",
+			"body": "You were assigned {{taskTitle}}."
+		},
 		"kanbanTaskReassigned": {
 			"title": "Task reassigned",
 			"body": "{{taskTitle}} was reassigned."

@@ -54,6 +54,10 @@
 			"title": "دعوة إلى مشروع",
 			"body": "تمت دعوتك للانضمام إلى {{projectName}}."
 		},
+		"kanbanTaskAssigned": {
+			"title": "أُسندت إليك مهمة",
+			"body": "أُسندت إليك المهمة {{taskTitle}}."
+		},
 		"kanbanTaskReassigned": {
 			"title": "إعادة إسناد مهمة",
 			"body": "أُعيد إسناد المهمة {{taskTitle}}."

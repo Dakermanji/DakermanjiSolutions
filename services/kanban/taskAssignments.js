@@ -9,7 +9,7 @@ import {
 	updateTaskAssignee,
 } from '../../models/kanban/Tasks.js';
 import { canBeAssigned, canManageTasks } from './permissions.js';
-import { notifyTaskReassigned } from './taskNotifications.js';
+import { notifyTaskAssigned, notifyTaskReassigned } from './taskNotifications.js';
 
 export async function changeTaskAssignee({ taskId, actorUserId, assigneeUserId }) {
 	const client = await pool.connect();
@@ -73,15 +73,25 @@ export async function changeTaskAssignee({ taskId, actorUserId, assigneeUserId }
 	} finally {
 		client.release();
 	}
-	if (result.action === 'reassigned') {
+	if (result.action === 'assigned' || result.action === 'reassigned') {
 		try {
-			await notifyTaskReassigned({
-				taskId,
-				actorUserId,
-				ownerUserId: result.ownerUserId,
-				previousAssigneeUserId: result.previousAssigneeUserId,
-				taskTitle: result.taskTitle,
-			});
+			if (result.action === 'reassigned') {
+				await notifyTaskReassigned({
+					taskId,
+					actorUserId,
+					ownerUserId: result.ownerUserId,
+					previousAssigneeUserId: result.previousAssigneeUserId,
+					newAssigneeUserId: result.task.assignee_user_id,
+					taskTitle: result.taskTitle,
+				});
+			} else {
+				await notifyTaskAssigned({
+					taskId,
+					actorUserId,
+					assigneeUserId: result.task.assignee_user_id,
+					taskTitle: result.taskTitle,
+				});
+			}
 		} catch (error) {
 			logger.warning('Kanban reassignment notification dispatch failed', {
 				type: 'kanban',
