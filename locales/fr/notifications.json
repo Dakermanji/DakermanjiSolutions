@@ -54,6 +54,10 @@
 			"title": "Invitation à un projet",
 			"body": "Vous avez été invité à rejoindre {{projectName}}."
 		},
+		"kanbanTaskReassigned": {
+			"title": "Tâche réattribuée",
+			"body": "La tâche {{taskTitle}} a été réattribuée."
+		},
 		"chatRoomInvitation": {
 			"title": "Invitation à un salon",
 			"body": "Vous avez été invité à rejoindre {{roomName}}."

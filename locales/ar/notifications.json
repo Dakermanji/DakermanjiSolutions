@@ -54,6 +54,10 @@
 			"title": "دعوة إلى مشروع",
 			"body": "تمت دعوتك للانضمام إلى {{projectName}}."
 		},
+		"kanbanTaskReassigned": {
+			"title": "إعادة إسناد مهمة",
+			"body": "أُعيد إسناد المهمة {{taskTitle}}."
+		},
 		"chatRoomInvitation": {
 			"title": "دعوة إلى غرفة",
 			"body": "تمت دعوتك للانضمام إلى {{roomName}}."

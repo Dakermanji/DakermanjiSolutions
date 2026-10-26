@@ -18,6 +18,7 @@ export const NOTIFICATION_PRIORITIES = Object.freeze({
 
 export const NOTIFICATION_TYPES = Object.freeze({
 	KANBAN_PROJECT_INVITATION: 'kanban_project_invitation',
+	KANBAN_TASK_REASSIGNED: 'kanban_task_reassigned',
 	CHAT_ROOM_INVITATION: 'chat_room_invitation',
 	CHAT_ROOM_INVITATION_ACCEPTED: 'chat_room_invitation_accepted',
 	CHAT_ROOM_INVITATION_REJECTED: 'chat_room_invitation_rejected',
@@ -41,6 +42,7 @@ export const NOTIFICATION_TYPES = Object.freeze({
 
 export const NOTIFICATION_ENTITY_TYPES = Object.freeze({
 	KANBAN_PROJECT_INVITATION: 'kanban_project_invitation',
+	KANBAN_TASK: 'kanban_task',
 	CHAT_ROOM_INVITATION: 'chat_room_invitation',
 	CHAT_ROOM_INVITATION_RESULT: 'chat_room_invitation_result',
 	CHAT_ROOM_JOIN_REQUEST: 'chat_room_join_request',
