@@ -95,6 +95,14 @@
 	},
 	"taskEvents": {
 		"reassignmentAlert": "أُعيد إسناد المهمة",
+		"projectActions": {
+			"created": "أنشأ المهمة «{{taskTitle}}».",
+			"done": "وضع المهمة «{{taskTitle}}» في مرحلة مكتمل.",
+			"reassigned": "غيّر المسؤول عن المهمة «{{taskTitle}}».",
+			"unassigned": "أزال المسؤول عن المهمة «{{taskTitle}}».",
+			"archived": "أرشف المهمة «{{taskTitle}}».",
+			"restored": "استعاد المهمة «{{taskTitle}}»."
+		},
 		"actions": {
 			"created": "أنشأ المهمة.",
 			"edited": "عدّل المهمة.",

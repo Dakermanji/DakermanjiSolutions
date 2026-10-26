@@ -22,7 +22,13 @@
 							<% if (event.action !== 'invitation_expired') { %>
 								<strong><%= event.actor_username || t(event.actor_user_id ? 'kanban:member' : 'kanban:events.formerMember') %></strong>
 							<% } %>
-							<span><%= t(`kanban:events.actions.${event.action}`) %></span>
+							<span>
+								<% if (event.event_type === 'task') { %>
+									<%= t(`kanban:taskEvents.projectActions.${event.action}`, { taskTitle: event.task_title }) %>
+								<% } else { %>
+									<%= t(`kanban:events.actions.${event.action}`) %>
+								<% } %>
+							</span>
 						</div>
 						<time datetime="<%= new Date(event.created_at).toISOString() %>">
 							<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(event.created_at)) %>

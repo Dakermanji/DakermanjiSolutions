@@ -95,6 +95,14 @@
 	},
 	"taskEvents": {
 		"reassignmentAlert": "Tâche réattribuée",
+		"projectActions": {
+			"created": "a créé la tâche « {{taskTitle}} ».",
+			"done": "a marqué la tâche « {{taskTitle}} » comme terminée.",
+			"reassigned": "a changé la personne responsable de la tâche « {{taskTitle}} ».",
+			"unassigned": "a retiré la personne responsable de la tâche « {{taskTitle}} ».",
+			"archived": "a archivé la tâche « {{taskTitle}} ».",
+			"restored": "a restauré la tâche « {{taskTitle}} »."
+		},
 		"actions": {
 			"created": "a créé la tâche.",
 			"edited": "a modifié la tâche.",

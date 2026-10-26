@@ -95,6 +95,14 @@
 	},
 	"taskEvents": {
 		"reassignmentAlert": "Task reassigned",
+		"projectActions": {
+			"created": "created task “{{taskTitle}}”.",
+			"done": "marked task “{{taskTitle}}” as done.",
+			"reassigned": "changed the assignee of task “{{taskTitle}}”.",
+			"unassigned": "removed the assignee from task “{{taskTitle}}”.",
+			"archived": "archived task “{{taskTitle}}”.",
+			"restored": "restored task “{{taskTitle}}”."
+		},
 		"actions": {
 			"created": "created the task.",
 			"edited": "edited the task.",
