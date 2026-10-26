@@ -45,6 +45,12 @@ export const isValidPassword = (password) =>
 export const isValidUuid = (value) =>
 	validator.isUUID(String(value ?? ''), 4);
 
+export function isValidDateOnly(value) {
+	if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+	const date = new Date(`${value}T00:00:00.000Z`);
+	return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
 /** Non-empty string */
 export const isNonEmptyString = (value) =>
 	typeof value === 'string' && value.trim().length > 0;

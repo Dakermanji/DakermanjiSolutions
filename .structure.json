@@ -157,16 +157,23 @@
 			"customWords.js",
 			"index.js"
 		],
-		"validators": [
-			"auth.js",
-			"chat.js",
-			"common.js",
-			"kanban.js",
-			"notifications.js",
-			"social.js",
-			"token.js",
-			"weather.js"
-		],
+		"validators": {
+			"kanban": [
+				"invitations.js",
+				"projects.js",
+				"tasks.js"
+			],
+			"~": [
+				"auth.js",
+				"chat.js",
+				"common.js",
+				"kanban.js",
+				"notifications.js",
+				"social.js",
+				"token.js",
+				"weather.js"
+			]
+		},
 		"~": [
 			"csrf.js",
 			"errorHandler.js",
