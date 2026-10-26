@@ -3,10 +3,10 @@
 import {
 	KANBAN_INVITATION_LIMITS,
 	KANBAN_PROJECT_LIMITS,
+	KANBAN_ROLES,
 	KANBAN_TASK_LIMITS,
 	KANBAN_TASK_STAGES,
 } from '../../constants/kanban.js';
-import { KANBAN_ROLES } from '../../services/kanban/permissions.js';
 import { fail } from '../../services/http/response.js';
 import { isValidUuid } from './common.js';
 

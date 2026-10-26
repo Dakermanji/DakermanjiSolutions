@@ -2,6 +2,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { queryRows } from '../../config/database.js';
+import { KANBAN_EVENT_LIMITS } from '../../constants/kanban.js';
 
 export async function createTaskEvent({
 	taskId,
@@ -19,7 +20,11 @@ export async function createTaskEvent({
 	return rows[0];
 }
 
-export function listTaskEvents({ taskId, viewerUserId, limit = 50 }) {
+export function listTaskEvents({
+	taskId,
+	viewerUserId,
+	limit = KANBAN_EVENT_LIMITS.DEFAULT,
+}) {
 	return queryRows(
 		`SELECT e.id, e.task_id, e.actor_user_id,
 		        actor.username AS actor_username,

@@ -2,6 +2,7 @@
 
 import { randomUUID } from 'node:crypto';
 import pool, { queryRows } from '../../config/database.js';
+import { KANBAN_EVENT_LIMITS } from '../../constants/kanban.js';
 
 export async function createProjectEvent({
 	projectId,
@@ -19,7 +20,7 @@ export async function createProjectEvent({
 	return rows[0] || null;
 }
 
-export function listProjectEvents({ projectId, limit = 50 }) {
+export function listProjectEvents({ projectId, limit = KANBAN_EVENT_LIMITS.DEFAULT }) {
 	return queryRows(
 		`SELECT e.id, e.project_id, e.actor_user_id, actor.username AS actor_username,
 		        e.action, e.details, e.created_at

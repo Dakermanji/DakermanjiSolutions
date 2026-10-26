@@ -1,13 +1,11 @@
 //! services/kanban/projectEvents.js
 
+import { KANBAN_EVENT_LIMITS } from '../../constants/kanban.js';
 import {
 	createProjectEvent,
 	listProjectEvents,
 } from '../../models/kanban/ProjectEvents.js';
 import { findProjectForUser } from '../../models/kanban/Projects.js';
-
-const DEFAULT_LIMIT = 50;
-const MAX_LIMIT = 100;
 
 export function recordProjectCreated({ projectId, ownerUserId }, db) {
 	return createProjectEvent({
@@ -44,13 +42,13 @@ export function recordInvitationExpired({ projectId }, db) {
 export async function listProjectEventsForMember({
 	projectId,
 	userId,
-	limit = DEFAULT_LIMIT,
+	limit = KANBAN_EVENT_LIMITS.DEFAULT,
 }) {
 	const project = await findProjectForUser(projectId, userId);
 	if (!project) return null;
 
 	const pageSize = Number.isSafeInteger(limit)
-		? Math.min(Math.max(limit, 1), MAX_LIMIT)
-		: DEFAULT_LIMIT;
+		? Math.min(Math.max(limit, 1), KANBAN_EVENT_LIMITS.MAX)
+		: KANBAN_EVENT_LIMITS.DEFAULT;
 	return listProjectEvents({ projectId, limit: pageSize });
 }

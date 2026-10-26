@@ -1,11 +1,6 @@
 //! services/kanban/permissions.js
 
-export const KANBAN_ROLES = Object.freeze({
-    OWNER: 'owner',
-    ADMIN: 'admin',
-    EDITOR: 'editor',
-    OBSERVER: 'observer',
-});
+import { KANBAN_ROLES } from '../../constants/kanban.js';
 
 const MEMBER_ROLES = new Set(Object.values(KANBAN_ROLES));
 const MANAGER_ROLES = new Set([KANBAN_ROLES.OWNER, KANBAN_ROLES.ADMIN]);
