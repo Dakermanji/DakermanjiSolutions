@@ -39,6 +39,7 @@
 		"low": "Low"
 	},
 	"assignedTo": "Assigned to",
+	"updateAssignee": "Update assignee",
 	"unassigned": "Unassigned",
 	"projectName": "Project name",
 	"description": "Description",

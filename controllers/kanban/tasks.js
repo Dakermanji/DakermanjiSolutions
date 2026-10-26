@@ -5,9 +5,10 @@ import {
 	KANBAN_TASK_LIMITS,
 	KANBAN_TASK_STAGES,
 } from '../../constants/kanban.js';
+import { listProjectMembers } from '../../models/kanban/Projects.js';
 import { findTaskForMember } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
-import { canChangeTaskStage, canManageTasks } from '../../services/kanban/permissions.js';
+import { canBeAssigned, canChangeTaskStage, canManageTasks } from '../../services/kanban/permissions.js';
 import { changeTaskAssignee } from '../../services/kanban/taskAssignments.js';
 import { listTaskEventsForMember } from '../../services/kanban/taskEvents.js';
 import { changeTaskStage, createTaskForProject, editTaskDetails } from '../../services/kanban/tasks.js';
@@ -16,13 +17,18 @@ export async function renderKanbanTask(req, res, next) {
 	try {
 		const task = await findTaskForMember(req.params.taskId, req.user.id);
 		if (!task) return res.sendStatus(404);
+		const canEditTask = canManageTasks(task.viewer_role);
+		const members = canEditTask
+			? await listProjectMembers(task.project_id, req.user.id)
+			: [];
 		return res.render('kanban/task', {
 			titleKey: 'kanban:taskDetails',
 			styles: ['modals/main', 'kanban/main'],
-			scripts: ['kanban/dueDates'],
+			scripts: ['kanban/dueDates', 'kanban/taskAssignee'],
 			task,
-			canEditTask: canManageTasks(task.viewer_role),
+			canEditTask,
 			canChangeStage: canChangeTaskStage(task.viewer_role, req.user.id, task.assignee_user_id),
+			assignableMembers: members.filter((member) => canBeAssigned(member.role)),
 			taskStages: Object.values(KANBAN_TASK_STAGES),
 			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
 			taskLimits: KANBAN_TASK_LIMITS,

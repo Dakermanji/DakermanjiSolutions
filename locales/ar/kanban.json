@@ -39,6 +39,7 @@
 		"low": "منخفضة"
 	},
 	"assignedTo": "مُسندة إلى",
+	"updateAssignee": "تحديث المسؤول عن المهمة",
 	"unassigned": "غير مُسندة",
 	"projectName": "اسم المشروع",
 	"description": "الوصف",

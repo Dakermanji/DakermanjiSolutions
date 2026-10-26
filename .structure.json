@@ -511,7 +511,8 @@
 			],
 			"kanban": [
 				"archiveProject.js",
-				"dueDates.js"
+				"dueDates.js",
+				"taskAssignee.js"
 			],
 			"notifications": [
 				"main.js"

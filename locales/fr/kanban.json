@@ -39,6 +39,7 @@
 		"low": "Faible"
 	},
 	"assignedTo": "Attribuée à",
+	"updateAssignee": "Modifier l’attribution",
 	"unassigned": "Non attribuée",
 	"projectName": "Nom du projet",
 	"description": "Description",
