@@ -8,6 +8,7 @@ import {
 import { findTaskForMember } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
 import { canChangeTaskStage, canManageTasks } from '../../services/kanban/permissions.js';
+import { changeTaskAssignee } from '../../services/kanban/taskAssignments.js';
 import { listTaskEventsForMember } from '../../services/kanban/taskEvents.js';
 import { changeTaskStage, createTaskForProject, editTaskDetails } from '../../services/kanban/tasks.js';
 
@@ -71,6 +72,22 @@ export async function changeKanbanTaskStage(req, res, next) {
 	try {
 		const result = await changeTaskStage(req.kanbanTaskStageInput);
 		if (result.status === 'forbidden') return res.sendStatus(404);
+		return res.redirect(`/kanban/tasks/${taskId}`);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function changeKanbanTaskAssignee(req, res, next) {
+	const { taskId } = req.kanbanTaskAssignmentInput;
+	try {
+		const result = await changeTaskAssignee(req.kanbanTaskAssignmentInput);
+		if (result.status === 'forbidden') return res.sendStatus(404);
+		if (result.status === 'invalid_assignee') {
+			return fail(req, res, 'kanban:error.invalidAssignee', {
+				to: `/kanban/tasks/${taskId}`,
+			});
+		}
 		return res.redirect(`/kanban/tasks/${taskId}`);
 	} catch (error) {
 		return next(error);
