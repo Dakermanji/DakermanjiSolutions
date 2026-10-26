@@ -654,6 +654,7 @@
 			"permissions.js",
 			"projectEvents.js",
 			"projects.js",
+			"taskAssignments.js",
 			"taskEvents.js",
 			"tasks.js"
 		],
