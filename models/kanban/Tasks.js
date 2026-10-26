@@ -130,6 +130,33 @@ export async function findTaskEditContext(taskId, actorUserId, db) {
 	return rows[0] || null;
 }
 
+export async function findTaskAssignmentContext(taskId, actorUserId, db) {
+	const { rows } = await db.query(
+		`SELECT t.id, t.project_id, t.title, t.assignee_user_id,
+		        p.owner_user_id, actor.role
+		 FROM kanban_projects p
+		 JOIN kanban_tasks t ON t.project_id = p.id
+		 JOIN kanban_project_members actor
+		   ON actor.project_id = p.id AND actor.user_id = $2
+		 WHERE t.id = $1 AND t.archived_at IS NULL
+		   AND p.archived_at IS NULL
+		 FOR UPDATE OF p, t, actor`,
+		[taskId, actorUserId],
+	);
+	return rows[0] || null;
+}
+
+export async function updateTaskAssignee({ taskId, projectId, assigneeUserId }, db) {
+	const { rows } = await db.query(
+		`UPDATE kanban_tasks
+		 SET assignee_user_id = $3, updated_at = NOW()
+		 WHERE id = $1 AND project_id = $2 AND archived_at IS NULL
+		 RETURNING id, project_id, assignee_user_id, updated_at`,
+		[taskId, projectId, assigneeUserId],
+	);
+	return rows[0] || null;
+}
+
 export async function updateTaskDetails({
 	taskId,
 	projectId,
