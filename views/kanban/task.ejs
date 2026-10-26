@@ -13,12 +13,18 @@
 			<p><%= task.project_name %></p>
 			<h1 id="task-title"><%= task.title %></h1>
 		</div>
-		<% if (canEditTask) { %>
-			<button type="button" class="btn btn-action btn-sm" data-bs-toggle="modal" data-bs-target="#editKanbanTaskModal">
-				<i class="bi bi-pencil-square" aria-hidden="true"></i>
-				<%= t('kanban:editTask') %>
-			</button>
-		<% } %>
+		<div class="kanban-project-actions">
+			<a href="/kanban/tasks/<%= task.id %>/activity" class="btn btn-outline-secondary btn-sm" data-tooltip-mobile data-bs-title="<%= t('kanban:taskActivity') %>" aria-label="<%= t('kanban:taskActivity') %>">
+				<i class="bi bi-clock-history" aria-hidden="true"></i>
+				<span class="kanban-action-label"><%= t('kanban:taskActivity') %></span>
+			</a>
+			<% if (canEditTask) { %>
+				<button type="button" class="btn btn-action btn-sm" data-bs-toggle="modal" data-bs-target="#editKanbanTaskModal" data-tooltip-mobile data-bs-title="<%= t('kanban:editTask') %>" aria-label="<%= t('kanban:editTask') %>">
+					<i class="bi bi-pencil-square" aria-hidden="true"></i>
+					<span class="kanban-action-label"><%= t('kanban:editTask') %></span>
+				</button>
+			<% } %>
+		</div>
 	</header>
 
 	<section class="kanban-panel" aria-labelledby="task-details-title">
