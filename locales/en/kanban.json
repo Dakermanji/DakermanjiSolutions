@@ -24,6 +24,11 @@
 	"updateStage": "Update stage",
 	"createdBy": "Created by",
 	"dueDate": "Due date",
+	"dueStates": {
+		"ended": "Due date passed",
+		"within24": "Due within 24 hours",
+		"later": "Due in more than 24 hours"
+	},
 	"noDueDate": "No due date",
 	"noDescription": "No description.",
 	"importance": "Importance",

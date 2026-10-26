@@ -503,7 +503,8 @@
 				"portfolio.js"
 			],
 			"kanban": [
-				"archiveProject.js"
+				"archiveProject.js",
+				"dueDates.js"
 			],
 			"notifications": [
 				"main.js"

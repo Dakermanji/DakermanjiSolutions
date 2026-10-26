@@ -24,6 +24,11 @@
 	"updateStage": "Modifier l’étape",
 	"createdBy": "Créée par",
 	"dueDate": "Date d’échéance",
+	"dueStates": {
+		"ended": "Date d’échéance passée",
+		"within24": "Échéance dans 24 heures ou moins",
+		"later": "Échéance dans plus de 24 heures"
+	},
 	"noDueDate": "Aucune date d’échéance",
 	"noDescription": "Aucune description.",
 	"importance": "Importance",

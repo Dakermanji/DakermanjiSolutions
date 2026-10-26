@@ -1,5 +1,9 @@
 <!--! views/kanban/task.ejs -->
-<section class="kanban-page" aria-labelledby="task-title">
+<section class="kanban-page" aria-labelledby="task-title"
+	data-due-ended="<%= t('kanban:dueStates.ended') %>"
+	data-due-within-24="<%= t('kanban:dueStates.within24') %>"
+	data-due-later="<%= t('kanban:dueStates.later') %>"
+>
 	<div class="kanban-context-row">
 		<a href="/kanban/<%= task.project_id %>" class="kanban-back"><%= t('kanban:backToProject') %></a>
 		<span class="badge text-bg-secondary"><%= t(`kanban:roles.${task.viewer_role}`) %></span>
@@ -50,8 +54,11 @@
 			</div>
 			<div>
 				<dt><%= t('kanban:dueDate') %></dt>
-				<dd>
+				<dd class="kanban-task-due-date">
 					<% if (task.due_date) { %>
+						<span class="kanban-task-due-icon" data-kanban-due-date="<%= task.due_date %>" role="img" tabindex="0" aria-label="<%= t('kanban:dueDate') %>">
+							<span class="kanban-task-due-emoji" aria-hidden="true">📅</span>
+						</span>
 						<time datetime="<%= task.due_date %>"><%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${task.due_date}T00:00:00Z`)) %></time>
 					<% } else { %>
 						<%= t('kanban:noDueDate') %>

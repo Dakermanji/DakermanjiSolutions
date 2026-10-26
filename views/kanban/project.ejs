@@ -1,5 +1,9 @@
 <!--! views/kanban/project.ejs -->
-<section class="kanban-page" aria-labelledby="project-title">
+<section class="kanban-page" aria-labelledby="project-title"
+	data-due-ended="<%= t('kanban:dueStates.ended') %>"
+	data-due-within-24="<%= t('kanban:dueStates.within24') %>"
+	data-due-later="<%= t('kanban:dueStates.later') %>"
+>
 	<div class="kanban-context-row">
 		<a href="/kanban" class="kanban-back"><%= t('kanban:allProjects') %></a>
 		<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
@@ -62,14 +66,23 @@
 							<li class="kanban-task-card">
 								<div class="kanban-task-card-heading">
 									<h3><a href="/kanban/tasks/<%= task.id %>"><%= task.title %></a></h3>
-									<% if (task.importance) { %>
-										<span class="kanban-task-card-importance has-tooltip" role="img" tabindex="0" aria-label="<%= t(`kanban:importanceLevels.${task.importance}`) %>" data-bs-title="<%= t(`kanban:importanceLevels.${task.importance}`) %>">
-											<% if (task.importance === 'high' || task.importance === 'low') { %>
-												<i class="bi bi-chevron-double-<%= task.importance === 'high' ? 'up' : 'down' %>" aria-hidden="true"></i>
-											<% } else if (task.importance === 'medium') { %>
-												<span class="app-select__icon-text" aria-hidden="true">=</span>
+									<% if (task.importance || task.due_date) { %>
+										<div class="kanban-task-card-meta">
+											<% if (task.importance) { %>
+												<span class="kanban-task-card-importance has-tooltip" role="img" tabindex="0" aria-label="<%= t(`kanban:importanceLevels.${task.importance}`) %>" data-bs-title="<%= t(`kanban:importanceLevels.${task.importance}`) %>">
+													<% if (task.importance === 'high' || task.importance === 'low') { %>
+														<i class="bi bi-chevron-double-<%= task.importance === 'high' ? 'up' : 'down' %>" aria-hidden="true"></i>
+													<% } else if (task.importance === 'medium') { %>
+														<span class="app-select__icon-text" aria-hidden="true">=</span>
+													<% } %>
+												</span>
 											<% } %>
-										</span>
+											<% if (task.due_date) { %>
+												<span class="kanban-task-due-icon" data-kanban-due-date="<%= task.due_date %>" role="img" tabindex="0" aria-label="<%= t('kanban:dueDate') %>">
+													<span class="kanban-task-due-emoji" aria-hidden="true">📅</span>
+												</span>
+											<% } %>
+										</div>
 									<% } %>
 								</div>
 							</li>
