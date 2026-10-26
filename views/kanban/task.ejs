@@ -28,16 +28,16 @@
 				<dt><%= t('kanban:status') %></dt>
 				<dd>
 					<% if (canChangeStage) { %>
-						<form method="POST" action="/kanban/tasks/stage" class="d-flex flex-wrap gap-2">
+						<form method="POST" action="/kanban/tasks/stage" class="d-flex flex-wrap gap-2" data-kanban-change-form>
 							<%- include('../partials/_csrf') %>
 							<input type="hidden" name="taskId" value="<%= task.id %>">
 							<label for="task-stage" class="visually-hidden"><%= t('kanban:status') %></label>
-							<select id="task-stage" name="status" class="form-select w-auto" data-app-select>
+							<select id="task-stage" name="status" class="form-select w-auto" data-app-select data-initial-value="<%= task.status %>" data-kanban-change-select>
 								<% taskStages.forEach((stage) => { %>
 									<option value="<%= stage %>" <%= stage === task.status ? 'selected' : '' %>><%= t(`kanban:taskStages.${stage}`) %></option>
 								<% }) %>
 							</select>
-							<button type="submit" class="btn btn-action"><%= t('kanban:updateStage') %></button>
+							<button type="submit" class="btn btn-action" data-kanban-change-submit hidden><%= t('kanban:updateStage') %></button>
 						</form>
 					<% } else { %>
 						<%= t(`kanban:taskStages.${task.status}`) %>
@@ -48,17 +48,17 @@
 				<dt><%= t('kanban:assignedTo') %></dt>
 				<dd>
 					<% if (canEditTask) { %>
-						<form method="POST" action="/kanban/tasks/assign" class="d-flex flex-wrap gap-2" data-kanban-assignee-form>
+						<form method="POST" action="/kanban/tasks/assign" class="d-flex flex-wrap gap-2" data-kanban-change-form>
 							<%- include('../partials/_csrf') %>
 							<input type="hidden" name="taskId" value="<%= task.id %>">
 							<label for="task-assignee-change" class="visually-hidden"><%= t('kanban:assignedTo') %></label>
-							<select id="task-assignee-change" name="assigneeUserId" dir="ltr" class="form-select w-auto" data-app-select data-initial-assignee="<%= task.assignee_user_id || '' %>" data-kanban-assignee-select>
+							<select id="task-assignee-change" name="assigneeUserId" dir="ltr" class="form-select w-auto" data-app-select data-initial-value="<%= task.assignee_user_id || '' %>" data-kanban-change-select>
 								<option value="" <%= !task.assignee_user_id ? 'selected' : '' %>><%= t('kanban:unassigned') %></option>
 								<% assignableMembers.forEach((member) => { %>
 									<option value="<%= member.user_id %>" <%= member.user_id === task.assignee_user_id ? 'selected' : '' %>><%= member.username || member.email %> (<%= t(`kanban:roles.${member.role}`) %>)</option>
 								<% }) %>
 							</select>
-							<button type="submit" class="btn btn-action" data-kanban-assignee-submit hidden><%= t('kanban:updateAssignee') %></button>
+							<button type="submit" class="btn btn-action" data-kanban-change-submit hidden><%= t('kanban:updateAssignee') %></button>
 						</form>
 					<% } else { %>
 						<%= task.assignee_username || task.assignee_email || t('kanban:unassigned') %>

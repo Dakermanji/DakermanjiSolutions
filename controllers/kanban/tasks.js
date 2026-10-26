@@ -24,7 +24,7 @@ export async function renderKanbanTask(req, res, next) {
 		return res.render('kanban/task', {
 			titleKey: 'kanban:taskDetails',
 			styles: ['modals/main', 'kanban/main'],
-			scripts: ['kanban/dueDates', 'kanban/taskAssignee'],
+			scripts: ['kanban/dueDates', 'kanban/taskChanges'],
 			task,
 			canEditTask,
 			canChangeStage: canChangeTaskStage(task.viewer_role, req.user.id, task.assignee_user_id),

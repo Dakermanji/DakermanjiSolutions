@@ -512,7 +512,7 @@
 			"kanban": [
 				"archiveProject.js",
 				"dueDates.js",
-				"taskAssignee.js"
+				"taskChanges.js"
 			],
 			"notifications": [
 				"main.js"
