@@ -21,3 +21,9 @@ export const KANBAN_TASK_STAGES = Object.freeze({
 	IN_PROGRESS: 'in_progress',
 	DONE: 'done',
 });
+
+export const KANBAN_IMPORTANCE_EMOJIS = Object.freeze({
+	high: '🚨',
+	medium: '⚠️',
+	low: '⬇️',
+});

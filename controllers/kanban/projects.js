@@ -1,6 +1,7 @@
 //! controllers/kanban/projects.js
 
 import {
+	KANBAN_IMPORTANCE_EMOJIS,
 	KANBAN_INVITATION_LIMITS,
 	KANBAN_PROJECT_LIMITS,
 	KANBAN_TASK_LIMITS,
@@ -81,6 +82,7 @@ export async function renderProject(req, res, next) {
 			tasks,
 			canCreateTask,
 			assignableMembers: members.filter((member) => canBeAssigned(member.role)),
+			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
 			taskLimits: KANBAN_TASK_LIMITS,
 		});
 	} catch (error) {

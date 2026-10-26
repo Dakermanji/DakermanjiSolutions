@@ -29,8 +29,7 @@
 							<% ['high', 'medium', 'low'].forEach((importance) => { %>
 								<option
 									value="<%= importance %>"
-									data-icon-class="<%= importance === 'high' ? 'bi-chevron-double-up' : importance === 'low' ? 'bi-chevron-double-down' : '' %>"
-									data-icon-text="<%= importance === 'medium' ? '=' : '' %>"
+									data-icon-text="<%= importanceEmojis[importance] %>"
 								><%= t(`kanban:importanceLevels.${importance}`) %></option>
 							<% }) %>
 						</select>

@@ -1,6 +1,10 @@
 //! controllers/kanban/tasks.js
 
-import { KANBAN_TASK_LIMITS, KANBAN_TASK_STAGES } from '../../constants/kanban.js';
+import {
+	KANBAN_IMPORTANCE_EMOJIS,
+	KANBAN_TASK_LIMITS,
+	KANBAN_TASK_STAGES,
+} from '../../constants/kanban.js';
 import { findTaskForMember } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
 import { canChangeTaskStage, canManageTasks } from '../../services/kanban/permissions.js';
@@ -18,6 +22,7 @@ export async function renderKanbanTask(req, res, next) {
 			canEditTask: canManageTasks(task.viewer_role),
 			canChangeStage: canChangeTaskStage(task.viewer_role, req.user.id, task.assignee_user_id),
 			taskStages: Object.values(KANBAN_TASK_STAGES),
+			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
 			taskLimits: KANBAN_TASK_LIMITS,
 		});
 	} catch (error) {

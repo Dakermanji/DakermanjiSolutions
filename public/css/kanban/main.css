@@ -118,7 +118,8 @@
 	cursor: help;
 }
 
-.kanban-task-due-emoji {
+.kanban-task-due-emoji,
+.kanban-task-importance-emoji {
 	font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
 	font-size: 1.05rem;
 	line-height: 1;
@@ -175,11 +176,6 @@
 	display: flex;
 	align-items: center;
 	gap: .5rem;
-}
-
-.kanban-task-importance > .bi,
-.kanban-task-importance > .app-select__icon-text {
-	color: var(--color-secondary);
 }
 
 .kanban-invitations {
