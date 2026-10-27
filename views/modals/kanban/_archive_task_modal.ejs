@@ -1,0 +1,29 @@
+<!--! views/modals/kanban/_archive_task_modal.ejs -->
+<div
+	class="modal fade"
+	id="archiveKanbanTaskModal"
+	tabindex="-1"
+	aria-labelledby="archiveKanbanTaskModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="archiveKanbanTaskModalLabel"><%= t('kanban:archiveTask') %></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('common:close') %>"></button>
+			</div>
+			<form method="POST" action="/kanban/tasks/archive">
+				<%- include('../../partials/_csrf') %>
+				<input type="hidden" name="taskId" data-archive-task-id />
+				<div class="modal-body">
+					<p><%= t('kanban:archiveTaskMessage') %></p>
+					<p class="fw-semibold mb-0" data-archive-task-title></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common:cancel') %></button>
+					<button type="submit" class="btn btn-danger"><%= t('kanban:archiveTask') %></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

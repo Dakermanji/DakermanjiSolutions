@@ -511,6 +511,7 @@
 			],
 			"kanban": [
 				"archiveProject.js",
+				"archiveTask.js",
 				"dueDates.js",
 				"taskChanges.js"
 			],
@@ -830,6 +831,7 @@
 			"dashboard": [],
 			"kanban": [
 				"_archive_project_modal.ejs",
+				"_archive_task_modal.ejs",
 				"_create_project_modal.ejs",
 				"_create_task_modal.ejs",
 				"_declined_invitations_modal.ejs",

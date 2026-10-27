@@ -23,6 +23,10 @@
 					<i class="bi bi-pencil-square" aria-hidden="true"></i>
 					<span class="kanban-action-label"><%= t('kanban:editTask') %></span>
 				</button>
+				<button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#archiveKanbanTaskModal" data-task-id="<%= task.id %>" data-task-title="<%= task.title %>" data-tooltip-mobile data-bs-title="<%= t('kanban:archiveTask') %>" aria-label="<%= t('kanban:archiveTaskNamed', { name: task.title }) %>">
+					<i class="bi bi-archive" aria-hidden="true"></i>
+					<span class="kanban-action-label"><%= t('kanban:archiveTask') %></span>
+				</button>
 			<% } %>
 		</div>
 	</header>
@@ -105,4 +109,5 @@
 
 <% if (canEditTask) { %>
 	<%- include('../modals/kanban/_edit_task_modal') %>
+	<%- include('../modals/kanban/_archive_task_modal') %>
 <% } %>
