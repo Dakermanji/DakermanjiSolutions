@@ -17,6 +17,7 @@ export {
 	parseTaskInput,
 	validateChangeTaskAssignee,
 	validateChangeTaskStage,
+	validateArchiveTask,
 	validateCreateTask,
 	validateEditTask,
 	validateTaskId,

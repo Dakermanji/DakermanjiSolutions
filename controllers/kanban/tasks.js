@@ -12,7 +12,18 @@ import { canBeAssigned, canChangeTaskStage, canManageTasks } from '../../service
 import { changeTaskAssignee } from '../../services/kanban/taskAssignments.js';
 import { createTaskForProject } from '../../services/kanban/taskCreation.js';
 import { listTaskEventsForMember } from '../../services/kanban/taskEvents.js';
-import { changeTaskStage, editTaskDetails } from '../../services/kanban/tasks.js';
+import { archiveTaskWithLog, changeTaskStage, editTaskDetails } from '../../services/kanban/tasks.js';
+
+export async function archiveKanbanTask(req, res, next) {
+	try {
+		const result = await archiveTaskWithLog(req.kanbanTaskArchiveInput);
+		if (result.status === 'forbidden') return res.sendStatus(404);
+		req.flash('success', 'kanban:taskArchived');
+		return res.redirect(`/kanban/${result.task.project_id}`);
+	} catch (error) {
+		return next(error);
+	}
+}
 
 export async function renderKanbanTask(req, res, next) {
 	try {
@@ -25,7 +36,7 @@ export async function renderKanbanTask(req, res, next) {
 		return res.render('kanban/task', {
 			titleKey: 'kanban:taskDetails',
 			styles: ['modals/main', 'kanban/main'],
-			scripts: ['kanban/dueDates', 'kanban/taskChanges'],
+			scripts: ['kanban/dueDates', 'kanban/taskChanges', 'kanban/archiveTask'],
 			task,
 			canEditTask,
 			canChangeStage: canChangeTaskStage(task.viewer_role, req.user.id, task.assignee_user_id),

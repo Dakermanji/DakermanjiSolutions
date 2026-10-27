@@ -90,6 +90,14 @@ export function validateEditTask(req, res, next) {
 	return next();
 }
 
+export function validateArchiveTask(req, res, next) {
+	const taskId = req.body?.taskId;
+	if (!isValidUuid(taskId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	req.kanbanTaskArchiveInput = { taskId, actorUserId: req.user.id };
+	return next();
+}
+
 export function validateChangeTaskStage(req, res, next) {
 	const taskId = req.body?.taskId;
 	if (!isValidUuid(taskId)) return res.sendStatus(404);

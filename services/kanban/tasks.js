@@ -3,12 +3,40 @@
 import pool from '../../config/database.js';
 import { createTaskEvent } from '../../models/kanban/TaskEvents.js';
 import {
+	archiveTask,
+	findTaskArchiveContext,
 	findTaskEditContext,
 	findTaskStageContext,
 	moveTaskToStage,
 	updateTaskDetails,
 } from '../../models/kanban/Tasks.js';
 import { canChangeTaskStage, canManageTasks } from './permissions.js';
+
+export async function archiveTaskWithLog({ taskId, actorUserId }) {
+	const client = await pool.connect();
+	try {
+		await client.query('BEGIN');
+		const current = await findTaskArchiveContext(taskId, actorUserId, client);
+		if (!current || !canManageTasks(current.role)) {
+			await client.query('ROLLBACK');
+			return { status: 'forbidden', task: null };
+		}
+
+		const task = await archiveTask({ taskId, projectId: current.project_id }, client);
+		if (!task) {
+			await client.query('ROLLBACK');
+			return { status: 'forbidden', task: null };
+		}
+		await createTaskEvent({ taskId, actorUserId, action: 'archived' }, client);
+		await client.query('COMMIT');
+		return { status: 'archived', task };
+	} catch (error) {
+		await client.query('ROLLBACK');
+		throw error;
+	} finally {
+		client.release();
+	}
+}
 
 export async function changeTaskStage({ taskId, actorUserId, status }) {
 	const client = await pool.connect();

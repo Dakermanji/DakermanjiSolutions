@@ -15,6 +15,7 @@ import {
 	renderProjects,
 } from '../controllers/kanban/projects.js';
 import {
+	archiveKanbanTask,
 	changeKanbanTaskAssignee,
 	changeKanbanTaskStage,
 	createKanbanTask,
@@ -27,6 +28,7 @@ import {
 	validateAcceptInvitation,
 	validateChangeTaskAssignee,
 	validateChangeTaskStage,
+	validateArchiveTask,
 	validateCreateProject,
 	validateCreateTask,
 	validateDeclineInvitation,
@@ -42,6 +44,7 @@ router.get('/', renderProjects);
 router.post('/', validateCreateProject, createKanbanProject);
 router.post('/archive', validateArchiveProject, archiveKanbanProject);
 router.post('/tasks', validateCreateTask, createKanbanTask);
+router.post('/tasks/archive', validateArchiveTask, archiveKanbanTask);
 router.post('/tasks/edit', validateEditTask, editKanbanTask);
 router.post('/tasks/assign', validateChangeTaskAssignee, changeKanbanTaskAssignee);
 router.post('/tasks/stage', validateChangeTaskStage, changeKanbanTaskStage);
