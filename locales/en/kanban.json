@@ -110,7 +110,7 @@
 		"actions": {
 			"created": "created the task.",
 			"edited": "edited the task.",
-			"assigned": "assigned the task.",
+			"assigned": "assigned the task to",
 			"reassigned": "reassigned the task.",
 			"unassigned": "removed the task assignee.",
 			"status_changed": "changed the task stage.",

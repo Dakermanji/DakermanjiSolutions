@@ -23,7 +23,14 @@
 							<% if (event.action === 'reassigned') { %>
 								<span role="img" aria-label="<%= t('kanban:taskEvents.reassignmentAlert') %>">⚠️</span>
 							<% } %>
-							<span><%= t(`kanban:taskEvents.actions.${event.action}`) %></span>
+							<span>
+								<% if (event.action === 'assigned') { %>
+									<%= t('kanban:taskEvents.actions.assigned') %>
+									<strong><%= event.assigned_username || t('kanban:member') %></strong>.
+								<% } else { %>
+									<%= t(`kanban:taskEvents.actions.${event.action}`) %>
+								<% } %>
+							</span>
 						</div>
 						<time datetime="<%= new Date(event.created_at).toISOString() %>">
 							<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(event.created_at)) %>

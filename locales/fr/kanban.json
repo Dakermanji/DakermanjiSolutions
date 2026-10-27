@@ -110,7 +110,7 @@
 		"actions": {
 			"created": "a créé la tâche.",
 			"edited": "a modifié la tâche.",
-			"assigned": "a attribué la tâche.",
+			"assigned": "a attribué la tâche à",
 			"reassigned": "a réattribué la tâche.",
 			"unassigned": "a retiré la personne responsable de la tâche.",
 			"status_changed": "a changé l’étape de la tâche.",

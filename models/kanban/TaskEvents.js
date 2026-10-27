@@ -28,6 +28,7 @@ export function listTaskEvents({
 	return queryRows(
 		`SELECT e.id, e.task_id, e.actor_user_id,
 		        actor.username AS actor_username,
+		        assigned_user.username AS assigned_username,
 		        e.action, e.details, e.created_at
 		 FROM kanban_task_events e
 		 JOIN kanban_tasks t ON t.id = e.task_id
@@ -35,6 +36,8 @@ export function listTaskEvents({
 		 JOIN kanban_project_members viewer
 		   ON viewer.project_id = p.id AND viewer.user_id = $2
 		 LEFT JOIN users actor ON actor.id = e.actor_user_id
+		 LEFT JOIN users assigned_user
+		   ON assigned_user.id = NULLIF(e.details->>'assigneeUserId', '')::uuid
 		 WHERE e.task_id = $1 AND t.archived_at IS NULL
 		   AND p.archived_at IS NULL
 		 ORDER BY e.created_at DESC, e.id DESC
