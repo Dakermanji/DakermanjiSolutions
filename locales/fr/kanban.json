@@ -110,12 +110,19 @@
 		"actions": {
 			"created": "a créé la tâche.",
 			"edited": "a modifié la tâche.",
+			"editedFields": "a modifié la tâche : {{fields}}.",
 			"assigned": "a attribué la tâche à",
 			"reassigned": "a réattribué la tâche.",
 			"unassigned": "a retiré la personne responsable de la tâche.",
 			"status_changed": "a changé l’étape de la tâche.",
 			"archived": "a archivé la tâche.",
 			"restored": "a restauré la tâche."
+		},
+		"fields": {
+			"title": "titre de la tâche",
+			"description": "description",
+			"dueDate": "date d’échéance",
+			"importance": "importance"
 		}
 	},
 	"error": {

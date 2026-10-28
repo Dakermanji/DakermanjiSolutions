@@ -27,6 +27,16 @@
 								<% if (event.action === 'assigned') { %>
 									<%= t('kanban:taskEvents.actions.assigned') %>
 									<strong><%= event.assigned_username || t('kanban:member') %></strong>.
+								<% } else if (event.action === 'edited' && event.details && Array.isArray(event.details.changedFields)) { %>
+									<% const knownFields = ['title', 'description', 'dueDate', 'importance']; %>
+									<% const changedFields = event.details.changedFields.filter((field) => knownFields.includes(field)); %>
+									<% if (changedFields.length > 0) { %>
+										<%= t('kanban:taskEvents.actions.editedFields', {
+											fields: new Intl.ListFormat(currentLang || 'en', { style: 'long', type: 'conjunction' }).format(changedFields.map((field) => t(`kanban:taskEvents.fields.${field}`))),
+										}) %>
+									<% } else { %>
+										<%= t('kanban:taskEvents.actions.edited') %>
+									<% } %>
 								<% } else { %>
 									<%= t(`kanban:taskEvents.actions.${event.action}`) %>
 								<% } %>

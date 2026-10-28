@@ -110,12 +110,19 @@
 		"actions": {
 			"created": "أنشأ المهمة.",
 			"edited": "عدّل المهمة.",
+			"editedFields": "عدّل المهمة: {{fields}}.",
 			"assigned": "أسند المهمة إلى",
 			"reassigned": "أعاد إسناد المهمة.",
 			"unassigned": "أزال المسؤول عن المهمة.",
 			"status_changed": "غيّر مرحلة المهمة.",
 			"archived": "أرشف المهمة.",
 			"restored": "استعاد المهمة."
+		},
+		"fields": {
+			"title": "عنوان المهمة",
+			"description": "الوصف",
+			"dueDate": "تاريخ الاستحقاق",
+			"importance": "الأهمية"
 		}
 	},
 	"error": {
