@@ -22,6 +22,8 @@ import {
 	editKanbanTask,
 	renderKanbanTask,
 	renderKanbanTaskActivity,
+	renderArchivedKanbanTasks,
+	restoreKanbanTask,
 } from '../controllers/kanban/tasks.js';
 import {
 	validateArchiveProject,
@@ -29,6 +31,7 @@ import {
 	validateChangeTaskAssignee,
 	validateChangeTaskStage,
 	validateArchiveTask,
+	validateRestoreTask,
 	validateCreateProject,
 	validateCreateTask,
 	validateDeclineInvitation,
@@ -45,6 +48,7 @@ router.post('/', validateCreateProject, createKanbanProject);
 router.post('/archive', validateArchiveProject, archiveKanbanProject);
 router.post('/tasks', validateCreateTask, createKanbanTask);
 router.post('/tasks/archive', validateArchiveTask, archiveKanbanTask);
+router.post('/tasks/restore', validateRestoreTask, restoreKanbanTask);
 router.post('/tasks/edit', validateEditTask, editKanbanTask);
 router.post('/tasks/assign', validateChangeTaskAssignee, changeKanbanTaskAssignee);
 router.post('/tasks/stage', validateChangeTaskStage, changeKanbanTaskStage);
@@ -55,6 +59,7 @@ router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvita
 router.post('/invitations/decline', validateDeclineInvitation, declineProjectInvitation);
 router.get('/:projectId/activity', validateProjectId, renderProjectActivity);
 router.get('/:projectId/members', validateProjectId, renderProjectMembers);
+router.get('/:projectId/archived-tasks', validateProjectId, renderArchivedKanbanTasks);
 router.get('/:projectId', validateProjectId, renderProject);
 
 export default router;

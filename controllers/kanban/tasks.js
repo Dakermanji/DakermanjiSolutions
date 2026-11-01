@@ -5,14 +5,19 @@ import {
 	KANBAN_TASK_LIMITS,
 	KANBAN_TASK_STAGES,
 } from '../../constants/kanban.js';
-import { listProjectMembers } from '../../models/kanban/Projects.js';
-import { findTaskForMember } from '../../models/kanban/Tasks.js';
+import { findProjectForUser, listProjectMembers } from '../../models/kanban/Projects.js';
+import { findTaskForMember, listArchivedTasksForProject } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
 import { canBeAssigned, canChangeTaskStage, canManageTasks } from '../../services/kanban/permissions.js';
 import { changeTaskAssignee } from '../../services/kanban/taskAssignments.js';
 import { createTaskForProject } from '../../services/kanban/taskCreation.js';
 import { listTaskEventsForMember } from '../../services/kanban/taskEvents.js';
-import { archiveTaskWithLog, changeTaskStage, editTaskDetails } from '../../services/kanban/tasks.js';
+import {
+	archiveTaskWithLog,
+	changeTaskStage,
+	editTaskDetails,
+	restoreTaskWithLog,
+} from '../../services/kanban/tasks.js';
 
 export async function archiveKanbanTask(req, res, next) {
 	try {
@@ -20,6 +25,33 @@ export async function archiveKanbanTask(req, res, next) {
 		if (result.status === 'forbidden') return res.sendStatus(404);
 		req.flash('success', 'kanban:taskArchived');
 		return res.redirect(`/kanban/${result.task.project_id}`);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function renderArchivedKanbanTasks(req, res, next) {
+	try {
+		const project = await findProjectForUser(req.params.projectId, req.user.id);
+		if (!project || !canManageTasks(project.role)) return res.sendStatus(404);
+		const tasks = await listArchivedTasksForProject(project.id);
+		return res.render('kanban/archivedTasks', {
+			titleKey: 'kanban:archivedTasks',
+			styles: ['kanban/main'],
+			project,
+			tasks,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function restoreKanbanTask(req, res, next) {
+	try {
+		const result = await restoreTaskWithLog(req.kanbanTaskRestoreInput);
+		if (result.status === 'forbidden') return res.sendStatus(404);
+		req.flash('success', 'kanban:taskRestored');
+		return res.redirect(`/kanban/${result.task.project_id}/archived-tasks`);
 	} catch (error) {
 		return next(error);
 	}

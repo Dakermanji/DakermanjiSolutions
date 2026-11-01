@@ -18,6 +18,7 @@ export {
 	validateChangeTaskAssignee,
 	validateChangeTaskStage,
 	validateArchiveTask,
+	validateRestoreTask,
 	validateCreateTask,
 	validateEditTask,
 	validateTaskId,
