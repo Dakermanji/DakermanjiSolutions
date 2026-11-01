@@ -136,8 +136,24 @@
 							<time datetime="<%= new Date(message.created_at).toISOString() %>">
 								<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(message.created_at)) %>
 							</time>
+							<% if (message.edited_at) { %>
+								<span class="small text-body-secondary"><%= t('kanban:commentEdited') %></span>
+							<% } %>
 						</div>
 						<p class="kanban-message-body" dir="auto"><%= message.body %></p>
+						<% if (message.can_edit) { %>
+							<details class="mt-3">
+								<summary><%= t('kanban:editTaskComment') %></summary>
+								<form method="POST" action="/kanban/tasks/messages/edit" class="mt-2">
+									<%- include('../partials/_csrf') %>
+									<input type="hidden" name="taskId" value="<%= task.id %>">
+									<input type="hidden" name="messageId" value="<%= message.id %>">
+									<label for="edit-task-comment-<%= message.id %>" class="visually-hidden"><%= t('kanban:taskMessage') %></label>
+									<textarea id="edit-task-comment-<%= message.id %>" name="body" class="form-control mb-2" rows="3" maxlength="<%= taskMessageLimits.BODY_MAX_LENGTH %>" dir="auto" required><%= message.body %></textarea>
+									<button type="submit" class="btn btn-outline-secondary btn-sm"><%= t('kanban:saveTaskComment') %></button>
+								</form>
+							</details>
+						<% } %>
 					</li>
 				<% }) %>
 			</ul>
