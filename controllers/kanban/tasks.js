@@ -130,6 +130,9 @@ export async function changeKanbanTaskStage(req, res, next) {
 	try {
 		const result = await changeTaskStage(req.kanbanTaskStageInput);
 		if (result.status === 'forbidden') return res.sendStatus(404);
+		if (req.kanbanTaskStageInput.returnToBoard && result.task?.project_id) {
+			return res.redirect(`/kanban/${result.task.project_id}`);
+		}
 		return res.redirect(`/kanban/tasks/${taskId}`);
 	} catch (error) {
 		return next(error);

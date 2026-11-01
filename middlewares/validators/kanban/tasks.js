@@ -116,7 +116,12 @@ export function validateChangeTaskStage(req, res, next) {
 			to: `/kanban/tasks/${taskId}`,
 		});
 	}
-	req.kanbanTaskStageInput = { taskId, actorUserId: req.user.id, status };
+	req.kanbanTaskStageInput = {
+		taskId,
+		actorUserId: req.user.id,
+		status,
+		returnToBoard: req.body?.returnToBoard === 'true',
+	};
 	return next();
 }
 
