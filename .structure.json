@@ -160,6 +160,7 @@
 		],
 		"validators": {
 			"kanban": [
+				"members.js",
 				"invitations.js",
 				"projects.js",
 			"taskMessages.js",
