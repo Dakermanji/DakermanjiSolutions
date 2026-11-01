@@ -668,6 +668,7 @@
 			"taskAssignments.js",
 			"taskCreation.js",
 			"taskEvents.js",
+			"taskMessages.js",
 			"taskNotifications.js",
 			"tasks.js"
 		],
