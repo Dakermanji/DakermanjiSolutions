@@ -255,6 +255,7 @@
 			"ProjectEvents.js",
 			"Projects.js",
 			"TaskEvents.js",
+			"TaskMessages.js",
 			"Tasks.js"
 		],
 		"notifications": {
