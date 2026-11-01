@@ -1,0 +1,47 @@
+<!--! views/kanban/archivedTasks.ejs -->
+<section class="kanban-page" aria-labelledby="archived-tasks-title">
+	<div class="kanban-context-row">
+		<a href="/kanban/<%= project.id %>" class="kanban-back"><%= t('kanban:backToProject') %></a>
+		<span class="badge text-bg-secondary"><%= t(`kanban:roles.${project.role}`) %></span>
+	</div>
+	<header class="kanban-header">
+		<div>
+			<h1 id="archived-tasks-title"><%= t('kanban:archivedTasks') %></h1>
+			<p><%= project.name %></p>
+		</div>
+	</header>
+
+	<section class="kanban-panel" aria-labelledby="archived-tasks-title">
+		<% if (tasks.length === 0) { %>
+			<p><%= t('kanban:noArchivedTasks') %></p>
+		<% } else { %>
+			<ul class="kanban-task-list">
+				<% tasks.forEach((task) => { %>
+					<li class="kanban-task-card">
+						<div class="kanban-task-card-heading">
+							<h3><%= task.title %></h3>
+							<span class="badge text-bg-secondary"><%= t(`kanban:taskStages.${task.status}`) %></span>
+						</div>
+						<p>
+							<%= t('kanban:archivedOn') %>
+							<time datetime="<%= new Date(task.archived_at).toISOString() %>">
+								<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(task.archived_at)) %>
+							</time>
+							<% if (task.assignee_username) { %>
+								<span> · <%= t('kanban:assignedTo') %>: <%= task.assignee_username %></span>
+							<% } %>
+						</p>
+						<form method="POST" action="/kanban/tasks/restore">
+							<%- include('../partials/_csrf') %>
+							<input type="hidden" name="taskId" value="<%= task.id %>">
+							<button type="submit" class="btn btn-outline-secondary btn-sm">
+								<i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+								<%= t('kanban:restoreTask') %>
+							</button>
+						</form>
+					</li>
+				<% }) %>
+			</ul>
+		<% } %>
+	</section>
+</section>

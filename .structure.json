@@ -784,6 +784,7 @@
 		],
 		"kanban": [
 			"activity.ejs",
+			"archivedTasks.ejs",
 			"members.ejs",
 			"project.ejs",
 			"projects.ejs",

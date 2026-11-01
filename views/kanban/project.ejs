@@ -17,6 +17,10 @@
 		</div>
 		<div class="kanban-project-actions">
 			<% if (canCreateTask) { %>
+				<a href="/kanban/<%= project.id %>/archived-tasks" class="btn btn-outline-secondary btn-sm" data-tooltip-mobile data-bs-title="<%= t('kanban:archivedTasks') %>" aria-label="<%= t('kanban:archivedTasks') %>">
+					<i class="bi bi-archive" aria-hidden="true"></i>
+					<span class="kanban-action-label"><%= t('kanban:archivedTasks') %></span>
+				</a>
 				<button type="button" class="btn btn-action btn-sm" data-bs-toggle="modal" data-bs-target="#createKanbanTaskModal" data-tooltip-mobile data-bs-title="<%= t('kanban:createTask') %>" aria-label="<%= t('kanban:createTask') %>">
 					<i class="bi bi-plus-lg" aria-hidden="true"></i>
 					<span class="kanban-action-label"><%= t('kanban:createTask') %></span>
