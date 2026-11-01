@@ -1,0 +1,40 @@
+<!--! views/modals/kanban/_change_member_role_modal.ejs -->
+<div
+	class="modal fade"
+	id="changeKanbanMemberRoleModal"
+	tabindex="-1"
+	aria-labelledby="changeKanbanMemberRoleModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="changeKanbanMemberRoleModalLabel"><%= t('kanban:editRole') %></h5>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="<%= t('common:close') %>"
+				></button>
+			</div>
+			<form method="POST" action="/kanban/members/role" data-kanban-member-role-form>
+				<%- include('../../partials/_csrf') %>
+				<input type="hidden" name="projectId" value="<%= project.id %>">
+				<input type="hidden" name="targetUserId" data-kanban-member-id>
+				<div class="modal-body">
+					<p data-kanban-member-name></p>
+					<label for="kanban-member-role" class="form-label"><%= t('kanban:role') %></label>
+					<select id="kanban-member-role" name="role" class="form-select" data-app-select data-kanban-member-role required>
+						<% ['admin', 'editor', 'observer'].forEach((role) => { %>
+							<option value="<%= role %>"><%= t(`kanban:roles.${role}`) %></option>
+						<% }) %>
+					</select>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common:cancel') %></button>
+					<button type="submit" class="btn btn-action" data-kanban-member-role-submit hidden><%= t('kanban:updateRole') %></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

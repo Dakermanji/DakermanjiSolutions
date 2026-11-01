@@ -33,18 +33,21 @@
 						<% } %>
 					</div>
 					<% if (project.role === 'owner' && member.role !== 'owner') { %>
-						<form method="POST" action="/kanban/members/role" class="d-flex flex-wrap align-items-center gap-2" data-kanban-change-form>
-							<%- include('../partials/_csrf') %>
-							<input type="hidden" name="projectId" value="<%= project.id %>">
-							<input type="hidden" name="targetUserId" value="<%= member.user_id %>">
-							<label class="visually-hidden" for="member-role-<%= member.user_id %>"><%= t('kanban:changeMemberRole') %></label>
-							<select id="member-role-<%= member.user_id %>" name="role" class="form-select w-auto" data-app-select data-initial-value="<%= member.role %>" data-kanban-change-select>
-								<% ['admin', 'editor', 'observer'].forEach((role) => { %>
-									<option value="<%= role %>" <%= member.role === role ? 'selected' : '' %>><%= t(`kanban:roles.${role}`) %></option>
-								<% }) %>
-							</select>
-							<button type="submit" class="btn btn-outline-secondary btn-sm" data-kanban-change-submit hidden><%= t('kanban:updateRole') %></button>
-						</form>
+						<div class="d-flex flex-wrap align-items-center gap-2">
+							<span class="badge text-bg-secondary"><%= t(`kanban:roles.${member.role}`) %></span>
+							<button
+								type="button"
+								class="btn btn-outline-secondary btn-sm"
+								data-bs-toggle="modal"
+								data-bs-target="#changeKanbanMemberRoleModal"
+								data-member-id="<%= member.user_id %>"
+								data-member-name="<%= member.username || member.email || t('kanban:member') %>"
+								data-member-role="<%= member.role %>"
+							>
+								<i class="bi bi-pencil-square" aria-hidden="true"></i>
+								<%= t('kanban:editRole') %>
+							</button>
+						</div>
 					<% } else { %>
 						<span class="badge text-bg-secondary"><%= t(`kanban:roles.${member.role}`) %></span>
 					<% } %>
@@ -78,4 +81,5 @@
 
 <% if (project.role === 'owner') { %>
 	<%- include('../modals/kanban/_invite_member_modal') %>
+	<%- include('../modals/kanban/_change_member_role_modal') %>
 <% } %>

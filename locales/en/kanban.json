@@ -12,7 +12,7 @@
 	"declineInvitation": "Decline",
 	"invitationDeclined": "Invitation declined.",
 	"memberRoleUpdated": "Member role updated.",
-	"changeMemberRole": "Change member role",
+	"editRole": "Edit role",
 	"updateRole": "Update role",
 	"declinedInvitations": "Declined invitations",
 	"declinedInvitationsHelp": "You can still accept these invitations before they expire.",

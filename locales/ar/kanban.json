@@ -12,7 +12,7 @@
 	"declineInvitation": "رفض",
 	"invitationDeclined": "رُفضت الدعوة.",
 	"memberRoleUpdated": "تم تحديث دور العضو.",
-	"changeMemberRole": "تغيير دور العضو",
+	"editRole": "تعديل الدور",
 	"updateRole": "تحديث الدور",
 	"declinedInvitations": "الدعوات المرفوضة",
 	"declinedInvitationsHelp": "لا يزال بإمكانك قبول هذه الدعوات قبل انتهاء صلاحيتها.",

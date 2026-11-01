@@ -12,7 +12,7 @@
 	"declineInvitation": "Refuser",
 	"invitationDeclined": "Invitation refusée.",
 	"memberRoleUpdated": "Le rôle du membre a été mis à jour.",
-	"changeMemberRole": "Modifier le rôle du membre",
+	"editRole": "Modifier le rôle",
 	"updateRole": "Mettre à jour le rôle",
 	"declinedInvitations": "Invitations refusées",
 	"declinedInvitationsHelp": "Vous pouvez encore accepter ces invitations avant leur expiration.",
