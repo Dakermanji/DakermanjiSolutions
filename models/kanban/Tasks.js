@@ -269,3 +269,25 @@ export async function moveTaskToStage({ taskId, projectId, status }, db) {
 	);
 	return rows[0] || null;
 }
+
+export async function listTaskIdsForStage({ projectId, status }, db) {
+	const { rows } = await db.query(
+		`SELECT id FROM kanban_tasks
+		 WHERE project_id = $1 AND status = $2 AND archived_at IS NULL
+		 ORDER BY position ASC, created_at ASC, id ASC
+		 FOR UPDATE`,
+		[projectId, status],
+	);
+	return rows.map((row) => row.id);
+}
+
+export async function setTaskOrderForStage({ projectId, status, taskIds }, db) {
+	await db.query(
+		`UPDATE kanban_tasks task
+		 SET position = (ordered.position - 1)::integer, updated_at = NOW()
+		 FROM unnest($3::uuid[]) WITH ORDINALITY AS ordered(id, position)
+		 WHERE task.id = ordered.id AND task.project_id = $1
+		   AND task.status = $2 AND task.archived_at IS NULL`,
+		[projectId, status, taskIds],
+	);
+}

@@ -14,6 +14,7 @@ import { changeTaskAssignee } from '../../services/kanban/taskAssignments.js';
 import { createTaskForProject } from '../../services/kanban/taskCreation.js';
 import { listTaskEventsForMember } from '../../services/kanban/taskEvents.js';
 import { listTaskMessagesForMember } from '../../services/kanban/taskMessages.js';
+import { reorderTaskWithinStage } from '../../services/kanban/taskOrdering.js';
 import {
 	archiveTaskWithLog,
 	changeTaskStage,
@@ -134,6 +135,18 @@ export async function changeKanbanTaskStage(req, res, next) {
 			return res.redirect(`/kanban/${result.task.project_id}`);
 		}
 		return res.redirect(`/kanban/tasks/${taskId}`);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function reorderKanbanTask(req, res, next) {
+	try {
+		const result = await reorderTaskWithinStage(req.kanbanTaskReorderInput);
+		if (result.status === 'forbidden' || result.status === 'invalid_target') {
+			return res.sendStatus(404);
+		}
+		return res.redirect(`/kanban/${result.task.project_id}`);
 	} catch (error) {
 		return next(error);
 	}

@@ -25,6 +25,7 @@ import {
 	renderKanbanTaskActivity,
 	renderArchivedKanbanTasks,
 	restoreKanbanTask,
+	reorderKanbanTask,
 } from '../controllers/kanban/tasks.js';
 import {
 	createKanbanTaskMessage,
@@ -36,6 +37,7 @@ import {
 	validateChangeTaskAssignee,
 	validateChangeMemberRole,
 	validateChangeTaskStage,
+	validateReorderTask,
 	validateArchiveTask,
 	validateRestoreTask,
 	validateCreateProject,
@@ -62,6 +64,7 @@ router.post('/tasks/restore', validateRestoreTask, restoreKanbanTask);
 router.post('/tasks/edit', validateEditTask, editKanbanTask);
 router.post('/tasks/assign', validateChangeTaskAssignee, changeKanbanTaskAssignee);
 router.post('/tasks/stage', validateChangeTaskStage, changeKanbanTaskStage);
+router.post('/tasks/reorder', validateReorderTask, reorderKanbanTask);
 router.get('/tasks/:taskId', validateTaskId, renderKanbanTask);
 router.get('/tasks/:taskId/activity', validateTaskId, renderKanbanTaskActivity);
 router.post('/invitations', validateInviteMember, inviteProjectMember);

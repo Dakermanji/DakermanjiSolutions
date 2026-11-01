@@ -125,6 +125,20 @@ export function validateChangeTaskStage(req, res, next) {
 	return next();
 }
 
+export function validateReorderTask(req, res, next) {
+	const { taskId, targetTaskId, placement } = req.body || {};
+	if (!isValidUuid(taskId) || !isValidUuid(targetTaskId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	if (placement !== 'before' && placement !== 'after') return res.sendStatus(400);
+	req.kanbanTaskReorderInput = {
+		taskId,
+		actorUserId: req.user.id,
+		targetTaskId,
+		placement,
+	};
+	return next();
+}
+
 export function validateChangeTaskAssignee(req, res, next) {
 	const taskId = req.body?.taskId;
 	if (!isValidUuid(taskId)) return res.sendStatus(404);

@@ -673,6 +673,7 @@
 			"taskAssignments.js",
 			"taskCreation.js",
 			"taskEvents.js",
+			"taskOrdering.js",
 			"taskMessages.js",
 			"taskNotifications.js",
 			"tasks.js"
