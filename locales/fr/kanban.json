@@ -111,7 +111,7 @@
 			"invitation_accepted": "a accepté une invitation.",
 			"invitation_expired": "Une invitation a expiré.",
 			"member_joined": "a rejoint le projet.",
-			"member_role_changed": "a modifié le rôle d’un membre.",
+			"member_role_changed": "a modifié le rôle de {{memberUsername}}, de {{fromRole}} à {{toRole}}.",
 			"member_removed": "a retiré un membre.",
 			"ownership_transferred": "a transféré la propriété du projet."
 		}

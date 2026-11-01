@@ -234,16 +234,22 @@ export async function changeMemberRole({
 			await client.query('ROLLBACK');
 			return false;
 		}
-		const changed = await client.query(
-			`UPDATE kanban_project_members SET role = $1
-			 WHERE project_id = $2 AND user_id = $3 AND role <> 'owner'
-			 RETURNING user_id`,
-			[role, projectId, targetUserId],
+		const membership = await client.query(
+			`SELECT role FROM kanban_project_members
+			 WHERE project_id = $1 AND user_id = $2 AND role <> 'owner'
+			 FOR UPDATE`,
+			[projectId, targetUserId],
 		);
-		if (!changed.rowCount) {
+		const previousRole = membership.rows[0]?.role;
+		if (!previousRole || previousRole === role) {
 			await client.query('ROLLBACK');
 			return false;
 		}
+		await client.query(
+			`UPDATE kanban_project_members SET role = $1
+			 WHERE project_id = $2 AND user_id = $3`,
+			[role, projectId, targetUserId],
+		);
 		if (role === 'observer') {
 			await client.query(
 				`UPDATE kanban_tasks SET assignee_user_id = NULL, updated_at = NOW()
@@ -251,6 +257,17 @@ export async function changeMemberRole({
 				[projectId, targetUserId],
 			);
 		}
+		await client.query(
+			`INSERT INTO kanban_project_events
+			 (id, project_id, actor_user_id, action, details)
+			 VALUES ($1, $2, $3, 'member_role_changed', $4)`,
+			[
+				randomUUID(),
+				projectId,
+				ownerUserId,
+				{ memberUserId: targetUserId, fromRole: previousRole, toRole: role },
+			],
+		);
 		await client.query('COMMIT');
 		return true;
 	} catch (error) {

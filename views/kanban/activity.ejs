@@ -25,6 +25,12 @@
 							<span>
 								<% if (event.event_type === 'task') { %>
 									<%= t(`kanban:taskEvents.projectActions.${event.action}`, { taskTitle: event.task_title }) %>
+								<% } else if (event.action === 'member_role_changed') { %>
+									<%= t(`kanban:events.actions.${event.action}`, {
+										memberUsername: event.member_username || t('kanban:member'),
+										fromRole: t(`kanban:roles.${event.details.fromRole}`),
+										toRole: t(`kanban:roles.${event.details.toRole}`),
+									}) %>
 								<% } else { %>
 									<%= t(`kanban:events.actions.${event.action}`) %>
 								<% } %>

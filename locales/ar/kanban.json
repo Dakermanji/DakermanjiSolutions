@@ -111,7 +111,7 @@
 			"invitation_accepted": "قبل دعوة.",
 			"invitation_expired": "انتهت صلاحية دعوة.",
 			"member_joined": "انضم إلى المشروع.",
-			"member_role_changed": "غيّر دور أحد الأعضاء.",
+			"member_role_changed": "غيّر دور {{memberUsername}} من {{fromRole}} إلى {{toRole}}.",
 			"member_removed": "أزال أحد الأعضاء.",
 			"ownership_transferred": "نقل ملكية المشروع."
 		}
