@@ -18,7 +18,11 @@ import {
 } from '../../models/kanban/Projects.js';
 import { listTasksForProject } from '../../models/kanban/Tasks.js';
 import { listProjectEventsForMember } from '../../services/kanban/projectEvents.js';
-import { canBeAssigned, canManageTasks } from '../../services/kanban/permissions.js';
+import {
+	canBeAssigned,
+	canChangeTaskStage,
+	canManageTasks,
+} from '../../services/kanban/permissions.js';
 import { archiveProjectWithLog, createProjectWithLog } from '../../services/kanban/projects.js';
 
 export async function renderProjects(req, res, next) {
@@ -70,14 +74,22 @@ export async function renderProject(req, res, next) {
 		const project = await findProjectForUser(req.params.projectId, req.user.id);
 		if (!project) return res.sendStatus(404);
 		const canCreateTask = canManageTasks(project.role);
-		const [tasks, members] = await Promise.all([
+		const [projectTasks, members] = await Promise.all([
 			listTasksForProject(project.id, req.user.id),
 			canCreateTask ? listProjectMembers(project.id, req.user.id) : [],
 		]);
+		const tasks = projectTasks.map((task) => ({
+			...task,
+			canChangeStage: canChangeTaskStage(
+				project.role,
+				req.user.id,
+				task.assignee_user_id,
+			),
+		}));
 		return res.render('kanban/project', {
 			titleKey: 'kanban:title',
 			styles: ['modals/main', 'kanban/main'],
-			scripts: ['kanban/archiveProject', 'kanban/dueDates'],
+			scripts: ['kanban/archiveProject', 'kanban/dueDates', 'kanban/taskDragDrop'],
 			project,
 			tasks,
 			canCreateTask,

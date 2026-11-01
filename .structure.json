@@ -518,6 +518,7 @@
 				"archiveTask.js",
 				"dueDates.js",
 				"memberRoleModal.js",
+				"taskDragDrop.js",
 				"taskChanges.js"
 			],
 			"notifications": [

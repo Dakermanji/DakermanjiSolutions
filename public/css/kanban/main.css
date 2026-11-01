@@ -48,6 +48,12 @@
 
 .kanban-column {
 	min-width: 0;
+	transition: border-color var(--transition-time-method), box-shadow var(--transition-time-method);
+}
+
+.kanban-column.is-drop-target {
+	border-color: var(--color-secondary);
+	box-shadow: 0 0 0 .2rem var(--color-secondary-beta);
 }
 
 .kanban-column-heading {
@@ -77,6 +83,18 @@
 	border-radius: .75rem;
 	background: var(--bg-section);
 	overflow-wrap: anywhere;
+}
+
+.kanban-task-card[draggable="true"] {
+	cursor: grab;
+}
+
+.kanban-task-card[draggable="true"]:active {
+	cursor: grabbing;
+}
+
+.kanban-task-card.is-dragging {
+	opacity: .5;
 }
 
 .kanban-task-card h3 {

@@ -54,10 +54,10 @@
 	</header>
 
 	<% const stages = ['pending', 'in_progress', 'done']; %>
-	<div class="kanban-board" role="group" aria-label="<%= t('kanban:taskBoard') %>">
+	<div class="kanban-board" role="group" aria-label="<%= t('kanban:taskBoard') %>" data-kanban-board>
 		<% stages.forEach((stage) => { %>
 			<% const stageTasks = tasks.filter((task) => task.status === stage); %>
-			<section class="kanban-panel kanban-column" aria-labelledby="kanban-stage-<%= stage %>">
+			<section class="kanban-panel kanban-column" aria-labelledby="kanban-stage-<%= stage %>" data-kanban-dropzone data-stage="<%= stage %>">
 				<div class="kanban-column-heading">
 					<h2 id="kanban-stage-<%= stage %>"><%= t(`kanban:taskStages.${stage}`) %></h2>
 					<span class="badge text-bg-secondary"><%= new Intl.NumberFormat(currentLang || 'en').format(stageTasks.length) %></span>
@@ -67,7 +67,13 @@
 				<% } else { %>
 					<ul class="kanban-task-list">
 						<% stageTasks.forEach((task) => { %>
-							<li class="kanban-task-card">
+							<li
+								class="kanban-task-card"
+								data-kanban-task-card
+								data-task-id="<%= task.id %>"
+								data-task-status="<%= task.status %>"
+								<% if (task.canChangeStage) { %>draggable="true"<% } %>
+							>
 								<div class="kanban-task-card-heading">
 									<h3><a href="/kanban/tasks/<%= task.id %>"><%= task.title %></a></h3>
 									<% if (task.importance || task.due_date) { %>
@@ -85,6 +91,14 @@
 										</div>
 									<% } %>
 								</div>
+								<% if (task.canChangeStage) { %>
+									<form method="POST" action="/kanban/tasks/stage" hidden data-kanban-stage-form>
+										<%- include('../partials/_csrf') %>
+										<input type="hidden" name="taskId" value="<%= task.id %>">
+										<input type="hidden" name="status" data-kanban-stage-input>
+										<input type="hidden" name="returnToBoard" value="true">
+									</form>
+								<% } %>
 							</li>
 						<% }) %>
 					</ul>

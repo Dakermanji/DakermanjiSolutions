@@ -260,12 +260,12 @@ export async function moveTaskToStage({ taskId, projectId, status }, db) {
 		     position = (
 		       SELECT COALESCE(MAX(position), -1) + 1
 		       FROM kanban_tasks
-		       WHERE project_id = $2 AND status = $3 AND archived_at IS NULL
+		       WHERE project_id = $2 AND status = $4 AND archived_at IS NULL
 		     ),
 		     updated_at = NOW()
 		 WHERE id = $1 AND project_id = $2 AND archived_at IS NULL
 		 RETURNING id, project_id, status, position, updated_at`,
-		[taskId, projectId, status],
+		[taskId, projectId, status, status],
 	);
 	return rows[0] || null;
 }
