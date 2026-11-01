@@ -26,4 +26,5 @@ export {
 export {
 	parseTaskMessageInput,
 	validateCreateTaskMessage,
+	validateEditTaskMessage,
 } from './kanban/taskMessages.js';

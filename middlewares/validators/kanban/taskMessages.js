@@ -34,3 +34,25 @@ export function validateCreateTaskMessage(req, res, next) {
 	};
 	return next();
 }
+
+export function validateEditTaskMessage(req, res, next) {
+	const taskId = req.body?.taskId;
+	const messageId = req.body?.messageId;
+	if (!isValidUuid(taskId) || !isValidUuid(messageId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+
+	const result = parseTaskMessageInput(req.body);
+	if (!result.valid) {
+		return fail(req, res, 'kanban:error.invalidTaskMessage', {
+			to: `/kanban/tasks/${taskId}#task-discussion`,
+		});
+	}
+
+	req.kanbanTaskMessageEditInput = {
+		...result.values,
+		taskId,
+		messageId,
+		authorUserId: req.user.id,
+	};
+	return next();
+}
