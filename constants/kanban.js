@@ -23,6 +23,7 @@ export const KANBAN_TASK_LIMITS = Object.freeze({
 
 export const KANBAN_TASK_MESSAGE_LIMITS = Object.freeze({
 	BODY_MAX_LENGTH: 2000,
+	EDIT_WINDOW_MS: 2 * 60 * 1000,
 });
 
 export const KANBAN_TASK_STAGES = Object.freeze({

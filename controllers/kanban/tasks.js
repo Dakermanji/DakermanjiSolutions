@@ -3,15 +3,17 @@
 import {
 	KANBAN_IMPORTANCE_EMOJIS,
 	KANBAN_TASK_LIMITS,
+	KANBAN_TASK_MESSAGE_LIMITS,
 	KANBAN_TASK_STAGES,
 } from '../../constants/kanban.js';
 import { findProjectForUser, listProjectMembers } from '../../models/kanban/Projects.js';
-import { findTaskForMember, listArchivedTasksForProject } from '../../models/kanban/Tasks.js';
+import { listArchivedTasksForProject } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
 import { canBeAssigned, canChangeTaskStage, canManageTasks } from '../../services/kanban/permissions.js';
 import { changeTaskAssignee } from '../../services/kanban/taskAssignments.js';
 import { createTaskForProject } from '../../services/kanban/taskCreation.js';
 import { listTaskEventsForMember } from '../../services/kanban/taskEvents.js';
+import { listTaskMessagesForMember } from '../../services/kanban/taskMessages.js';
 import {
 	archiveTaskWithLog,
 	changeTaskStage,
@@ -59,8 +61,12 @@ export async function restoreKanbanTask(req, res, next) {
 
 export async function renderKanbanTask(req, res, next) {
 	try {
-		const task = await findTaskForMember(req.params.taskId, req.user.id);
-		if (!task) return res.sendStatus(404);
+		const discussion = await listTaskMessagesForMember({
+			taskId: req.params.taskId,
+			viewerUserId: req.user.id,
+		});
+		if (!discussion) return res.sendStatus(404);
+		const { task, messages } = discussion;
 		const canEditTask = canManageTasks(task.viewer_role);
 		const members = canEditTask
 			? await listProjectMembers(task.project_id, req.user.id)
@@ -70,6 +76,8 @@ export async function renderKanbanTask(req, res, next) {
 			styles: ['modals/main', 'kanban/main'],
 			scripts: ['kanban/dueDates', 'kanban/taskChanges', 'kanban/archiveTask'],
 			task,
+			messages,
+			taskMessageLimits: KANBAN_TASK_MESSAGE_LIMITS,
 			canEditTask,
 			canChangeStage: canChangeTaskStage(task.viewer_role, req.user.id, task.assignee_user_id),
 			assignableMembers: members.filter((member) => canBeAssigned(member.role)),

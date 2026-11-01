@@ -105,6 +105,44 @@
 		<h2><%= t('kanban:description') %></h2>
 		<p class="kanban-task-description" dir="auto"><%= task.description || t('kanban:noDescription') %></p>
 	</section>
+
+	<section class="kanban-panel mt-4" id="task-discussion" aria-labelledby="task-discussion-title">
+		<h2 id="task-discussion-title"><%= t('kanban:taskDiscussion') %></h2>
+		<form method="POST" action="/kanban/tasks/messages" class="mb-4">
+			<%- include('../partials/_csrf') %>
+			<input type="hidden" name="taskId" value="<%= task.id %>">
+			<div class="mb-3">
+				<label for="task-message-body" class="form-label"><%= t('kanban:taskMessage') %></label>
+				<textarea id="task-message-body" name="body" class="form-control" rows="3" maxlength="<%= taskMessageLimits.BODY_MAX_LENGTH %>" dir="auto" required></textarea>
+			</div>
+			<button type="submit" class="btn btn-action"><%= t('kanban:sendTaskMessage') %></button>
+		</form>
+		<% if (messages.length === 0) { %>
+			<p><%= t('kanban:noTaskMessages') %></p>
+		<% } else { %>
+			<% const roleIcons = { owner: 'bi-crown-fill', admin: 'bi-shield-check', editor: 'bi-pencil-square', observer: 'bi-eye' }; %>
+			<ul class="kanban-message-list">
+				<% messages.forEach((message) => { %>
+					<li class="kanban-message">
+						<div class="kanban-message-meta">
+							<strong><%= message.author_username || t(message.author_user_id ? 'kanban:member' : 'kanban:events.formerMember') %></strong>
+							<span class="kanban-message-role" aria-label="<%= t(`kanban:roles.${message.author_role}`) %>">
+								<i class="bi <%= roleIcons[message.author_role] %>" aria-hidden="true"></i>
+								<span><%= t(`kanban:roles.${message.author_role}`) %></span>
+							</span>
+							<% if (message.author_user_id === message.assignee_user_id) { %>
+								<span class="badge text-bg-info"><%= t('kanban:taskAssignee') %></span>
+							<% } %>
+							<time datetime="<%= new Date(message.created_at).toISOString() %>">
+								<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(message.created_at)) %>
+							</time>
+						</div>
+						<p class="kanban-message-body" dir="auto"><%= message.body %></p>
+					</li>
+				<% }) %>
+			</ul>
+		<% } %>
+	</section>
 </section>
 
 <% if (canEditTask) { %>

@@ -26,7 +26,7 @@ export function listTaskMessages({ taskId, viewerUserId }) {
 		`SELECT message.id, message.task_id, message.author_user_id,
 		        author.username AS author_username,
 		        message.author_role, message.body, message.created_at,
-		        message.edited_at
+		        message.edited_at, task.assignee_user_id
 		 FROM kanban_task_messages message
 		 JOIN kanban_tasks task ON task.id = message.task_id
 		 JOIN kanban_projects project ON project.id = task.project_id

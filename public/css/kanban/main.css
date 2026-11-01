@@ -85,6 +85,45 @@
 	min-width: 0;
 }
 
+.kanban-message-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: .75rem;
+}
+
+.kanban-message {
+	padding: 1rem;
+	border: 1px solid var(--border-subtle);
+	border-radius: .75rem;
+	background: var(--bg-section);
+}
+
+.kanban-message-meta,
+.kanban-message-role {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: .5rem;
+}
+
+.kanban-message-meta {
+	margin-bottom: .75rem;
+}
+
+.kanban-message-meta time {
+	margin-inline-start: auto;
+	font-size: .875rem;
+	opacity: .75;
+}
+
+.kanban-message-body {
+	margin: 0;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
 .kanban-task-card-heading {
 	display: flex;
 	align-items: center;
