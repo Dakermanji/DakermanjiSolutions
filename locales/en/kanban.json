@@ -45,6 +45,7 @@
 	"taskDetails": "Task details",
 	"status": "Status",
 	"updateStage": "Update stage",
+	"changeTaskStage": "Change task stage",
 	"createdBy": "Created by",
 	"dueDate": "Due date",
 	"dueStates": {

@@ -45,6 +45,7 @@
 	"taskDetails": "تفاصيل المهمة",
 	"status": "الحالة",
 	"updateStage": "تحديث المرحلة",
+	"changeTaskStage": "تغيير مرحلة المهمة",
 	"createdBy": "أنشأها",
 	"dueDate": "تاريخ الاستحقاق",
 	"dueStates": {

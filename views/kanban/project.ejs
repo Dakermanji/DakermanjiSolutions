@@ -76,7 +76,7 @@
 							>
 								<div class="kanban-task-card-heading">
 									<h3><a href="/kanban/tasks/<%= task.id %>"><%= task.title %></a></h3>
-									<% if (task.importance || task.due_date || (task.canChangeStage && stageTasks.length > 1)) { %>
+									<% if (task.importance || task.due_date || task.canChangeStage) { %>
 										<div class="kanban-task-card-meta">
 											<% if (task.importance) { %>
 												<span class="kanban-task-card-importance has-tooltip" role="img" tabindex="0" aria-label="<%= t(`kanban:importanceLevels.${task.importance}`) %>" data-bs-title="<%= t(`kanban:importanceLevels.${task.importance}`) %>">
@@ -114,6 +114,26 @@
 													<% } %>
 												</div>
 											<% } %>
+										<% if (task.canChangeStage) { %>
+											<div class="dropdown kanban-task-stage-menu">
+												<button type="button" class="btn btn-outline-secondary btn-sm has-tooltip" data-bs-toggle="dropdown" aria-expanded="false" aria-label="<%= t('kanban:changeTaskStage') %>" data-bs-title="<%= t('kanban:changeTaskStage') %>">
+													<i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+												</button>
+												<ul class="dropdown-menu app-dropdown-surface">
+													<% stages.filter((stageOption) => stageOption !== task.status).forEach((stageOption) => { %>
+														<li>
+															<form method="POST" action="/kanban/tasks/stage">
+																<%- include('../partials/_csrf') %>
+																<input type="hidden" name="taskId" value="<%= task.id %>">
+																<input type="hidden" name="status" value="<%= stageOption %>">
+																<input type="hidden" name="returnToBoard" value="true">
+																<button type="submit" class="dropdown-item app-dropdown-option"><%= t(`kanban:taskStages.${stageOption}`) %></button>
+															</form>
+														</li>
+													<% }) %>
+												</ul>
+											</div>
+										<% } %>
 										</div>
 									<% } %>
 								</div>

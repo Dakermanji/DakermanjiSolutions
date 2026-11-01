@@ -45,6 +45,7 @@
 	"taskDetails": "Détails de la tâche",
 	"status": "Statut",
 	"updateStage": "Modifier l’étape",
+	"changeTaskStage": "Modifier l’étape de la tâche",
 	"createdBy": "Créée par",
 	"dueDate": "Date d’échéance",
 	"dueStates": {
