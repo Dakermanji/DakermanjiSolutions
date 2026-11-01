@@ -98,6 +98,12 @@
 										<input type="hidden" name="status" data-kanban-stage-input>
 										<input type="hidden" name="returnToBoard" value="true">
 									</form>
+									<form method="POST" action="/kanban/tasks/reorder" hidden data-kanban-reorder-form>
+										<%- include('../partials/_csrf') %>
+										<input type="hidden" name="taskId" value="<%= task.id %>">
+										<input type="hidden" name="targetTaskId" data-kanban-reorder-target>
+										<input type="hidden" name="placement" data-kanban-reorder-placement>
+									</form>
 								<% } %>
 							</li>
 						<% }) %>
