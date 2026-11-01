@@ -76,6 +76,20 @@ export function listTasksForProject(projectId, viewerUserId) {
 	);
 }
 
+export function listArchivedTasksForProject(projectId) {
+	return queryRows(
+		`SELECT t.id, t.title, t.status, t.archived_at,
+		        assignee.username AS assignee_username
+		 FROM kanban_tasks t
+		 JOIN kanban_projects p ON p.id = t.project_id
+		 LEFT JOIN users assignee ON assignee.id = t.assignee_user_id
+		 WHERE t.project_id = $1 AND t.archived_at IS NOT NULL
+		   AND p.archived_at IS NULL
+		 ORDER BY t.archived_at DESC, t.id DESC`,
+		[projectId],
+	);
+}
+
 export async function findTaskForMember(taskId, viewerUserId) {
 	const rows = await queryRows(
 		`SELECT t.id, t.project_id, t.title, t.description, t.status,
@@ -167,6 +181,42 @@ export async function archiveTask({ taskId, projectId }, db) {
 		 SET archived_at = NOW(), updated_at = NOW()
 		 WHERE id = $1 AND project_id = $2 AND archived_at IS NULL
 		 RETURNING id, project_id, archived_at, updated_at`,
+		[taskId, projectId],
+	);
+	return rows[0] || null;
+}
+
+export async function findTaskRestoreContext(taskId, actorUserId, db) {
+	const { rows } = await db.query(
+		`SELECT t.id, t.project_id, t.title, t.status, actor.role
+		 FROM kanban_projects p
+		 JOIN kanban_tasks t ON t.project_id = p.id
+		 JOIN kanban_project_members actor
+		   ON actor.project_id = p.id AND actor.user_id = $2
+		 WHERE t.id = $1 AND t.archived_at IS NOT NULL
+		   AND p.archived_at IS NULL
+		 FOR UPDATE OF p, t, actor`,
+		[taskId, actorUserId],
+	);
+	return rows[0] || null;
+}
+
+export async function restoreArchivedTask({ taskId, projectId }, db) {
+	const { rows } = await db.query(
+		`UPDATE kanban_tasks task
+		 SET archived_at = NULL,
+		     position = (
+		       SELECT COALESCE(MAX(active_task.position), -1) + 1
+		       FROM kanban_tasks active_task
+		       WHERE active_task.project_id = task.project_id
+		         AND active_task.status = task.status
+		         AND active_task.archived_at IS NULL
+		     ),
+		     updated_at = NOW()
+		 WHERE task.id = $1 AND task.project_id = $2
+		   AND task.archived_at IS NOT NULL
+		 RETURNING task.id, task.project_id, task.status, task.position,
+		           task.archived_at, task.updated_at`,
 		[taskId, projectId],
 	);
 	return rows[0] || null;
