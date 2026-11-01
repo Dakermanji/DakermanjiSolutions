@@ -70,6 +70,9 @@
 	"projectCreated": "Projet créé.",
 	"taskCreated": "Tâche créée.",
 	"taskBoard": "Tableau des tâches",
+	"reorderTask": "Réorganiser la tâche",
+	"moveTaskUp": "Déplacer vers le haut",
+	"moveTaskDown": "Déplacer vers le bas",
 	"taskStages": {
 		"pending": "En attente",
 		"in_progress": "En cours",

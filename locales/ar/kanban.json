@@ -70,6 +70,9 @@
 	"projectCreated": "تم إنشاء المشروع.",
 	"taskCreated": "تم إنشاء المهمة.",
 	"taskBoard": "لوحة المهام",
+	"reorderTask": "إعادة ترتيب المهمة",
+	"moveTaskUp": "تحريك لأعلى",
+	"moveTaskDown": "تحريك لأسفل",
 	"taskStages": {
 		"pending": "قيد الانتظار",
 		"in_progress": "قيد التنفيذ",
