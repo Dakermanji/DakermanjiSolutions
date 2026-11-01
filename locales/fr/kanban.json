@@ -12,6 +12,8 @@
 	"declineInvitation": "Refuser",
 	"invitationDeclined": "Invitation refusée.",
 	"memberRoleUpdated": "Le rôle du membre a été mis à jour.",
+	"changeMemberRole": "Modifier le rôle du membre",
+	"updateRole": "Mettre à jour le rôle",
 	"declinedInvitations": "Invitations refusées",
 	"declinedInvitationsHelp": "Vous pouvez encore accepter ces invitations avant leur expiration.",
 	"noProjects": "Vous ne participez à aucun projet pour le moment.",
