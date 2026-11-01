@@ -55,6 +55,9 @@ export async function updateOwnTaskMessage({
 		 SET body = $4, edited_at = NOW()
 		 FROM kanban_tasks task
 		 JOIN kanban_projects project ON project.id = task.project_id
+		 JOIN kanban_project_members author_membership
+		   ON author_membership.project_id = project.id
+		  AND author_membership.user_id = $3
 		 WHERE message.id = $1 AND message.task_id = $2
 		   AND message.author_user_id = $3
 		   AND message.deleted_at IS NULL

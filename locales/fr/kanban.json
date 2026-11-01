@@ -27,6 +27,8 @@
 	"restoreTask": "Restaurer la tâche",
 	"taskRestored": "Tâche restaurée sur le tableau du projet.",
 	"taskMessagePosted": "Commentaire envoyé.",
+	"taskCommentEdited": "Commentaire modifié.",
+	"taskCommentNotEditable": "Ce commentaire ne peut plus être modifié.",
 	"taskDiscussion": "Discussion",
 	"taskMessage": "Commentaire",
 	"sendTaskMessage": "Publier le commentaire",

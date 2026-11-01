@@ -27,6 +27,8 @@
 	"restoreTask": "Restore task",
 	"taskRestored": "Task restored to the project board.",
 	"taskMessagePosted": "Comment posted.",
+	"taskCommentEdited": "Comment edited.",
+	"taskCommentNotEditable": "This comment can no longer be edited.",
 	"taskDiscussion": "Discussion",
 	"taskMessage": "Comment",
 	"sendTaskMessage": "Post comment",

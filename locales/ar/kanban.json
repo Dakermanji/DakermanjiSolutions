@@ -27,6 +27,8 @@
 	"restoreTask": "استعادة المهمة",
 	"taskRestored": "تمت استعادة المهمة إلى لوحة المشروع.",
 	"taskMessagePosted": "تم نشر التعليق.",
+	"taskCommentEdited": "تم تعديل التعليق.",
+	"taskCommentNotEditable": "لم يعد بالإمكان تعديل هذا التعليق.",
 	"taskDiscussion": "المناقشة",
 	"taskMessage": "التعليق",
 	"sendTaskMessage": "نشر التعليق",
