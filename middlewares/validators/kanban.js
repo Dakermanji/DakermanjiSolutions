@@ -23,3 +23,7 @@ export {
 	validateEditTask,
 	validateTaskId,
 } from './kanban/tasks.js';
+export {
+	parseTaskMessageInput,
+	validateCreateTaskMessage,
+} from './kanban/taskMessages.js';

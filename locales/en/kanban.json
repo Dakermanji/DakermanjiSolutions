@@ -133,6 +133,7 @@
 	"error": {
 		"invalidProject": "Enter a valid project name and description.",
 		"invalidTask": "Enter valid task details.",
+		"invalidTaskMessage": "Enter a message of 1 to 2,000 characters.",
 		"invalidTaskStage": "Choose a valid task stage.",
 		"invalidAssignee": "Choose an owner, admin, or editor from this project.",
 		"archiveFailed": "Could not delete this project.",

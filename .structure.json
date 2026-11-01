@@ -161,6 +161,7 @@
 			"kanban": [
 				"invitations.js",
 				"projects.js",
+			"taskMessages.js",
 				"tasks.js"
 			],
 			"~": [

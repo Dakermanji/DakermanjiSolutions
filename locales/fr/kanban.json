@@ -133,6 +133,7 @@
 	"error": {
 		"invalidProject": "Saisissez un nom et une description de projet valides.",
 		"invalidTask": "Saisissez des détails de tâche valides.",
+		"invalidTaskMessage": "Saisissez un message de 1 à 2 000 caractères.",
 		"invalidTaskStage": "Choisissez une étape valide pour la tâche.",
 		"invalidAssignee": "Choisissez un propriétaire, un administrateur ou un éditeur de ce projet.",
 		"archiveFailed": "Impossible de supprimer ce projet.",

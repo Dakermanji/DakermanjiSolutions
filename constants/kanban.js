@@ -21,6 +21,10 @@ export const KANBAN_TASK_LIMITS = Object.freeze({
 	DESCRIPTION_MAX_LENGTH: 10000,
 });
 
+export const KANBAN_TASK_MESSAGE_LIMITS = Object.freeze({
+	BODY_MAX_LENGTH: 2000,
+});
+
 export const KANBAN_TASK_STAGES = Object.freeze({
 	PENDING: 'pending',
 	IN_PROGRESS: 'in_progress',
