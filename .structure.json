@@ -78,6 +78,7 @@
 		"kanban": [
 			"members.js",
 			"projects.js",
+			"taskMessages.js",
 			"tasks.js"
 		],
 		"notifications": [

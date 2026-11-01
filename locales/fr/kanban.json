@@ -26,6 +26,7 @@
 	"archivedOn": "Archivée le",
 	"restoreTask": "Restaurer la tâche",
 	"taskRestored": "Tâche restaurée sur le tableau du projet.",
+	"taskMessagePosted": "Message envoyé.",
 	"saveTask": "Enregistrer les modifications",
 	"taskTitle": "Titre de la tâche",
 	"taskDetails": "Détails de la tâche",

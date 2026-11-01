@@ -26,6 +26,7 @@
 	"archivedOn": "Archived on",
 	"restoreTask": "Restore task",
 	"taskRestored": "Task restored to the project board.",
+	"taskMessagePosted": "Message posted.",
 	"saveTask": "Save changes",
 	"taskTitle": "Task title",
 	"taskDetails": "Task details",

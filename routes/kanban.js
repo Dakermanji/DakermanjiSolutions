@@ -25,6 +25,7 @@ import {
 	renderArchivedKanbanTasks,
 	restoreKanbanTask,
 } from '../controllers/kanban/tasks.js';
+import { createKanbanTaskMessage } from '../controllers/kanban/taskMessages.js';
 import {
 	validateArchiveProject,
 	validateAcceptInvitation,
@@ -34,6 +35,7 @@ import {
 	validateRestoreTask,
 	validateCreateProject,
 	validateCreateTask,
+	validateCreateTaskMessage,
 	validateDeclineInvitation,
 	validateEditTask,
 	validateInviteMember,
@@ -47,6 +49,7 @@ router.get('/', renderProjects);
 router.post('/', validateCreateProject, createKanbanProject);
 router.post('/archive', validateArchiveProject, archiveKanbanProject);
 router.post('/tasks', validateCreateTask, createKanbanTask);
+router.post('/tasks/messages', validateCreateTaskMessage, createKanbanTaskMessage);
 router.post('/tasks/archive', validateArchiveTask, archiveKanbanTask);
 router.post('/tasks/restore', validateRestoreTask, restoreKanbanTask);
 router.post('/tasks/edit', validateEditTask, editKanbanTask);
