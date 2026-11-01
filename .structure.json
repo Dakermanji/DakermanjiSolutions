@@ -664,6 +664,7 @@
 		],
 		"kanban": [
 			"invitations.js",
+			"memberRoles.js",
 			"permissions.js",
 			"projectEvents.js",
 			"projects.js",

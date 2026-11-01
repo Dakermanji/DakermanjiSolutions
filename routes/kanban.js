@@ -3,6 +3,7 @@
 import { Router } from 'express';
 import {
 	acceptProjectInvitation,
+	changeProjectMemberRole,
 	declineProjectInvitation,
 	inviteProjectMember,
 } from '../controllers/kanban/members.js';
@@ -33,6 +34,7 @@ import {
 	validateArchiveProject,
 	validateAcceptInvitation,
 	validateChangeTaskAssignee,
+	validateChangeMemberRole,
 	validateChangeTaskStage,
 	validateArchiveTask,
 	validateRestoreTask,
@@ -63,6 +65,7 @@ router.post('/tasks/stage', validateChangeTaskStage, changeKanbanTaskStage);
 router.get('/tasks/:taskId', validateTaskId, renderKanbanTask);
 router.get('/tasks/:taskId/activity', validateTaskId, renderKanbanTaskActivity);
 router.post('/invitations', validateInviteMember, inviteProjectMember);
+router.post('/members/role', validateChangeMemberRole, changeProjectMemberRole);
 router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvitation);
 router.post('/invitations/decline', validateDeclineInvitation, declineProjectInvitation);
 router.get('/:projectId/activity', validateProjectId, renderProjectActivity);

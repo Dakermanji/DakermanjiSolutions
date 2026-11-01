@@ -1,6 +1,7 @@
 //! controllers/kanban/members.js
 
 import { answerProjectInvitation, requestProjectInvitation } from '../../services/kanban/invitations.js';
+import { updateProjectMemberRole } from '../../services/kanban/memberRoles.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import { dismissNotification } from '../../services/notifications/appNotifications.js';
 
@@ -26,6 +27,20 @@ export async function inviteProjectMember(req, res, next) {
 			errorKeys[result] || 'kanban:invitationRequestSubmitted',
 		);
 		return res.redirect(`/kanban/${req.kanbanInvitationInput.projectId}/members`);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function changeProjectMemberRole(req, res, next) {
+	try {
+		const input = req.kanbanMemberRoleInput;
+		const changed = await updateProjectMemberRole(input);
+		req.flash(
+			changed ? 'success' : 'error',
+			changed ? 'kanban:memberRoleUpdated' : 'kanban:error.memberRoleUpdateFailed',
+		);
+		return res.redirect(`/kanban/${input.projectId}/members`);
 	} catch (error) {
 		return next(error);
 	}

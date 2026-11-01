@@ -11,6 +11,7 @@
 	"invitationAccepted": "Invitation acceptée. Vous pouvez maintenant ouvrir le projet.",
 	"declineInvitation": "Refuser",
 	"invitationDeclined": "Invitation refusée.",
+	"memberRoleUpdated": "Le rôle du membre a été mis à jour.",
 	"declinedInvitations": "Invitations refusées",
 	"declinedInvitationsHelp": "Vous pouvez encore accepter ces invitations avant leur expiration.",
 	"noProjects": "Vous ne participez à aucun projet pour le moment.",
@@ -153,6 +154,8 @@
 		"inviteeBlocked": "Débloquez cet utilisateur avant de l’inviter.",
 		"alreadyMember": "Cet utilisateur est déjà membre du projet.",
 		"invitationAlreadyRequested": "Une demande d’invitation pour ce nom d’utilisateur ou cette adresse courriel est déjà en cours.",
-		"invitationUnavailable": "Cette invitation n’est plus disponible."
+		"invitationUnavailable": "Cette invitation n’est plus disponible.",
+		"invalidMemberRole": "Choisissez un rôle valide pour ce membre.",
+		"memberRoleUpdateFailed": "Impossible de mettre à jour le rôle de ce membre."
 	}
 }

@@ -11,6 +11,7 @@
 	"invitationAccepted": "Invitation accepted. You can now open the project.",
 	"declineInvitation": "Decline",
 	"invitationDeclined": "Invitation declined.",
+	"memberRoleUpdated": "Member role updated.",
 	"declinedInvitations": "Declined invitations",
 	"declinedInvitationsHelp": "You can still accept these invitations before they expire.",
 	"noProjects": "You are not part of a project yet.",
@@ -153,6 +154,8 @@
 		"inviteeBlocked": "Unblock this user before inviting them.",
 		"alreadyMember": "This user is already a member of the project.",
 		"invitationAlreadyRequested": "An invitation request for this username or email is already open.",
-		"invitationUnavailable": "This invitation is no longer available."
+		"invitationUnavailable": "This invitation is no longer available.",
+		"invalidMemberRole": "Choose a valid role for this member.",
+		"memberRoleUpdateFailed": "Could not update this member's role."
 	}
 }
