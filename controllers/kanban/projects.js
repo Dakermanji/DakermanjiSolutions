@@ -103,7 +103,7 @@ export async function renderProjectMembers(req, res, next) {
 		return res.render('kanban/members', {
 			titleKey: 'kanban:members',
 			styles: ['modals/main', 'kanban/main'],
-			scripts: project.role === 'owner' ? ['kanban/taskChanges'] : [],
+			scripts: project.role === 'owner' ? ['kanban/memberRoleModal'] : [],
 			project,
 			members,
 			invitations,
