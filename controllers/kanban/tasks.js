@@ -69,9 +69,7 @@ export async function renderKanbanTask(req, res, next) {
 		if (!discussion) return res.sendStatus(404);
 		const { task, messages } = discussion;
 		const canEditTask = canManageTasks(task.viewer_role);
-		const members = canEditTask
-			? await listProjectMembers(task.project_id, req.user.id)
-			: [];
+		const members = await listProjectMembers(task.project_id, req.user.id);
 		return res.render('kanban/task', {
 			titleKey: 'kanban:taskDetails',
 			styles: ['modals/main', 'kanban/main'],
@@ -81,7 +79,13 @@ export async function renderKanbanTask(req, res, next) {
 			taskMessageLimits: KANBAN_TASK_MESSAGE_LIMITS,
 			canEditTask,
 			canChangeStage: canChangeTaskStage(task.viewer_role, req.user.id, task.assignee_user_id),
-			assignableMembers: members.filter((member) => canBeAssigned(member.role)),
+			assignableMembers: canEditTask
+				? members.filter((member) => canBeAssigned(member.role))
+				: [],
+			mentionMembers: members.map(({ user_id, username }) => ({
+				id: user_id,
+				username,
+			})),
 			taskStages: Object.values(KANBAN_TASK_STAGES),
 			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
 			taskLimits: KANBAN_TASK_LIMITS,
