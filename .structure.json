@@ -739,6 +739,7 @@
 		"29_kanban_task_events.sql",
 		"30_kanban_project_invitations.sql",
 		"31_kanban_project_events.sql",
+		"32_kanban_task_message_mentions.sql",
 		"z_alter.sql"
 	],
 	"tests": {
