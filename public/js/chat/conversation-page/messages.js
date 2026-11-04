@@ -68,8 +68,7 @@
 		});
 
 		async function submitLiveMessage(socket) {
-			const input = composer.elements.message;
-			const message = String(input?.value || '').trim();
+			const message = mentionController.getMessageText().trim();
 
 			if (!message) {
 				focusComposerInput();
@@ -104,7 +103,7 @@
 				}
 
 				appendMessage(response.message, socket);
-				input.value = '';
+				mentionController.clearMessage();
 				syncComposerInputDirection?.();
 				if (composer.elements.replyToMessageId) {
 					replyController.clearReplyTarget();
@@ -123,6 +122,7 @@
 
 		function submitComposerFallback() {
 			setFormControlsDisabled(composer, false);
+			mentionController.syncMessageValue();
 			window.AppCsrf?.addToForm(composer);
 			composer.submit();
 		}
@@ -278,6 +278,7 @@
 				reactionController.handleReactionDetailsFocusOut,
 			handleMentionInput: mentionController.handleInput,
 			handleMentionKeydown: mentionController.handleKeydown,
+			handleMentionPaste: mentionController.handlePaste,
 			handleMentionOutsideClick: mentionController.handleOutsideClick,
 			handleReactionDetailsOut: reactionController.handleReactionDetailsOut,
 			handleReactionDetailsOver: reactionController.handleReactionDetailsOver,

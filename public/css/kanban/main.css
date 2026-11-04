@@ -181,6 +181,14 @@
 	position: relative;
 }
 
+.kanban-mention-editor {
+	min-height: 6rem;
+	max-height: 16rem;
+	overflow-y: auto;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
 .kanban-mention-menu {
 	position: absolute;
 	inset-inline: 0;

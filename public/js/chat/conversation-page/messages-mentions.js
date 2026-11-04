@@ -1,14 +1,12 @@
 //! public/js/chat/conversation-page/messages-mentions.js
 
 (() => {
-	const LEFT_TO_RIGHT_MARK = '\u200e';
-	const MENTION_USERNAME_CHARS = /^[a-zA-Z0-9_.-]{0,20}$/;
-	const USERNAME_CHARACTER = /^[a-zA-Z0-9_.-]$/;
 	const TOKEN_PATTERN = /(^|[^a-zA-Z0-9_.-])@([a-zA-Z0-9_.-]{0,20})$/;
 	const MAX_VISIBLE_SUGGESTIONS = 8;
 
 	function createMentionController({ chatPage, composer, focusComposerInput }) {
-		const input = composer?.elements.message || null;
+		const editor = composer?.querySelector('[data-chat-message-editor]') || null;
+		const valueField = composer?.querySelector('[data-chat-message-value]') || null;
 		const menu = composer?.querySelector('[data-chat-mention-menu]') || null;
 		const mentionUsers = parseMentionUsers(chatPage?.dataset.mentionUsers);
 		let activeIndex = 0;
@@ -16,10 +14,13 @@
 		let visibleSuggestions = [];
 
 		function handleInput() {
-			if (!input || !menu || mentionUsers.length === 0) return;
+			if (!editor) return;
 
-			isolateActiveMentionTokenStart(input);
-			activeToken = findActiveMentionToken(input);
+			enforceMaxLength();
+			syncMessageValue();
+			if (!menu || mentionUsers.length === 0) return;
+
+			activeToken = findActiveMentionToken(editor);
 			if (!activeToken) {
 				hideSuggestions();
 				return;
@@ -34,33 +35,46 @@
 		}
 
 		function handleKeydown(event) {
-			if (menu?.hidden) return;
-
-			if (event.key === 'Escape') {
-				event.preventDefault();
-				hideSuggestions();
-				return;
+			if (!menu?.hidden) {
+				if (event.key === 'Escape') {
+					event.preventDefault();
+					hideSuggestions();
+					return;
+				}
+				if (event.key === 'ArrowDown' && visibleSuggestions.length) {
+					event.preventDefault();
+					moveActiveSuggestion(1);
+					return;
+				}
+				if (event.key === 'ArrowUp' && visibleSuggestions.length) {
+					event.preventDefault();
+					moveActiveSuggestion(-1);
+					return;
+				}
+				if ((event.key === 'Tab' || event.key === 'Enter') && visibleSuggestions[activeIndex]) {
+					event.preventDefault();
+					insertMention(visibleSuggestions[activeIndex]);
+					return;
+				}
 			}
 
-			if (event.key === 'ArrowDown') {
+			if (event.key === 'Enter') {
 				event.preventDefault();
-				moveActiveSuggestion(1);
-				return;
+				if (event.shiftKey) {
+					insertTextAtSelection(editor, '\n');
+					editor?.dispatchEvent(new Event('input', { bubbles: true }));
+					return;
+				}
+				syncMessageValue();
+				composer?.requestSubmit();
 			}
+		}
 
-			if (event.key === 'ArrowUp') {
-				event.preventDefault();
-				moveActiveSuggestion(-1);
-				return;
-			}
-
-			if (event.key === 'Tab' || event.key === 'Enter') {
-				const suggestion = visibleSuggestions[activeIndex];
-				if (!suggestion) return;
-
-				event.preventDefault();
-				insertMention(suggestion);
-			}
+		function handlePaste(event) {
+			if (!editor) return;
+			event.preventDefault();
+			insertTextAtSelection(editor, event.clipboardData?.getData('text/plain') || '');
+			editor.dispatchEvent(new Event('input', { bubbles: true }));
 		}
 
 		function handleBlur() {
@@ -72,15 +86,12 @@
 		}
 
 		function handleOutsideClick(event) {
-			if (!menu || menu.hidden) return;
-			if (composer?.contains(event.target)) return;
-
+			if (!menu || menu.hidden || composer?.contains(event.target)) return;
 			hideSuggestions();
 		}
 
 		function renderSuggestions() {
 			menu.textContent = '';
-
 			if (visibleSuggestions.length === 0) {
 				hideSuggestions();
 				return;
@@ -90,7 +101,7 @@
 				const button = document.createElement('button');
 				button.type = 'button';
 				button.className = 'chat-mention-option';
-				button.role = 'option';
+				button.setAttribute('role', 'option');
 				button.dataset.chatMentionIndex = String(index);
 				button.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
 				button.dir = 'ltr';
@@ -105,13 +116,10 @@
 				} else {
 					avatar.textContent = getInitial(user);
 				}
-				if (user.avatar?.background) {
-					avatar.style.background = user.avatar.background;
-				}
+				if (user.avatar?.background) avatar.style.background = user.avatar.background;
 
 				const body = document.createElement('span');
 				body.className = 'chat-mention-option-body';
-
 				const username = document.createElement('strong');
 				username.dir = 'ltr';
 				username.textContent = `@${user.username}`;
@@ -125,52 +133,69 @@
 				}
 
 				button.append(avatar, body);
-				button.addEventListener('mousedown', (event) => {
-					event.preventDefault();
-				});
+				button.addEventListener('mousedown', (event) => event.preventDefault());
 				button.addEventListener('click', () => insertMention(user));
 				menu.appendChild(button);
 			});
 
 			menu.hidden = false;
-			input?.setAttribute('aria-expanded', 'true');
+			editor?.setAttribute('aria-expanded', 'true');
 		}
 
 		function moveActiveSuggestion(offset) {
 			if (visibleSuggestions.length === 0) return;
-
-			activeIndex = (
-				activeIndex + offset + visibleSuggestions.length
-			) % visibleSuggestions.length;
-
-			menu
-				?.querySelectorAll('[data-chat-mention-index]')
-				.forEach((button, index) => {
-					button.setAttribute(
-						'aria-selected',
-						index === activeIndex ? 'true' : 'false',
-					);
-				});
+			activeIndex = (activeIndex + offset + visibleSuggestions.length) % visibleSuggestions.length;
+			menu?.querySelectorAll('[data-chat-mention-index]').forEach((button, index) => {
+				button.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
+			});
 		}
 
 		function insertMention(user) {
-			if (!input || !activeToken || !user?.username) return;
+			if (!editor || !activeToken || !user?.username) return;
+			const start = getTextPoint(editor, activeToken.start);
+			const end = getTextPoint(editor, activeToken.end);
+			if (!start || !end) return;
 
-			const value = input.value;
-			let before = value.slice(0, activeToken.start);
-			if (before.endsWith(LEFT_TO_RIGHT_MARK)) {
-				before = before.slice(0, -1);
-			}
-			const after = value.slice(activeToken.end);
-			const mentionText = LEFT_TO_RIGHT_MARK + '@' + user.username + LEFT_TO_RIGHT_MARK + ' ';
-			const nextValue = `${before}${mentionText}${after}`;
-			const nextCursor = before.length + mentionText.length;
+			const range = document.createRange();
+			range.setStart(start.node, start.offset);
+			range.setEnd(end.node, end.offset);
+			range.deleteContents();
 
-			input.value = nextValue;
-			input.setSelectionRange(nextCursor, nextCursor);
+			const mention = document.createElement('span');
+			mention.className = 'app-mention';
+			mention.dataset.chatMentionToken = '';
+			mention.dir = 'ltr';
+			mention.textContent = `@${user.username}`;
+			range.insertNode(mention);
+
+			const space = document.createTextNode(' ');
+			mention.parentNode.insertBefore(space, mention.nextSibling);
+			setCaret(space, space.length);
 			hideSuggestions();
 			focusComposerInput?.();
-			input.dispatchEvent(new Event('input', { bubbles: true }));
+			editor.dispatchEvent(new Event('input', { bubbles: true }));
+		}
+
+		function syncMessageValue() {
+			if (valueField && editor) valueField.value = getEditorText(editor);
+		}
+
+		function getMessageText() {
+			return editor ? getEditorText(editor) : String(valueField?.value || '');
+		}
+
+		function clearMessage() {
+			if (editor) editor.replaceChildren();
+			if (valueField) valueField.value = '';
+			hideSuggestions();
+		}
+
+		function enforceMaxLength() {
+			const maxLength = Number(editor?.dataset.maxLength);
+			const text = getEditorText(editor);
+			if (!Number.isFinite(maxLength) || text.length <= maxLength) return;
+			editor.textContent = text.slice(0, maxLength);
+			setCaretAtEnd(editor);
 		}
 
 		function hideSuggestions() {
@@ -178,71 +203,90 @@
 				menu.hidden = true;
 				menu.textContent = '';
 			}
-			input?.setAttribute('aria-expanded', 'false');
+			editor?.setAttribute('aria-expanded', 'false');
 			visibleSuggestions = [];
 			activeToken = null;
 			activeIndex = 0;
 		}
 
 		return {
+			clearMessage,
+			getMessageText,
 			handleBlur,
 			handleInput,
 			handleKeydown,
 			handleOutsideClick,
+			handlePaste,
+			syncMessageValue,
 		};
 	}
 
-	function isolateActiveMentionTokenStart(input) {
-		if (document.documentElement.dir !== 'rtl') return;
-
-		const caret = input.selectionStart ?? 0;
-		if (caret !== (input.selectionEnd ?? caret)) return;
-
-		const value = input.value;
-		const beforeCaret = value.slice(0, caret);
-		const atIndex = beforeCaret.lastIndexOf('@');
-		if (atIndex < 0) return;
-
-		const query = beforeCaret.slice(atIndex + 1);
-		if (!MENTION_USERNAME_CHARS.test(query)) return;
-
-		const previousCharacter = value.charAt(atIndex - 1);
-		if (previousCharacter === LEFT_TO_RIGHT_MARK) return;
-		if (previousCharacter && USERNAME_CHARACTER.test(previousCharacter)) return;
-
-		input.value = value.slice(0, atIndex) + LEFT_TO_RIGHT_MARK + value.slice(atIndex);
-		input.setSelectionRange(caret + 1, caret + 1);
-	}
-
-	function findActiveMentionToken(input) {
-		const caret = input.selectionStart ?? 0;
-		if (caret !== (input.selectionEnd ?? caret)) return null;
-
-		const beforeCaret = input.value.slice(0, caret);
-		const match = beforeCaret.match(TOKEN_PATTERN);
+	function findActiveMentionToken(editor) {
+		const selection = window.getSelection();
+		if (!selection?.rangeCount || !selection.isCollapsed) return null;
+		const caret = selection.getRangeAt(0);
+		if (!editor.contains(caret.startContainer)) return null;
+		const beforeCaret = document.createRange();
+		beforeCaret.selectNodeContents(editor);
+		beforeCaret.setEnd(caret.startContainer, caret.startOffset);
+		const text = beforeCaret.toString();
+		const match = text.match(TOKEN_PATTERN);
 		if (!match) return null;
-
-		const prefix = match[1] || '';
 		const query = match[2] || '';
-		const start = beforeCaret.length - query.length - 1;
+		return { query, start: text.length - query.length - 1, end: text.length };
+	}
 
-		return {
-			query,
-			start,
-			end: caret,
-			prefix,
-		};
+	function getTextPoint(root, targetOffset) {
+		const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+		let textNode = walker.nextNode();
+		let consumed = 0;
+		let lastNode = null;
+		while (textNode) {
+			lastNode = textNode;
+			const nextConsumed = consumed + textNode.textContent.length;
+			if (targetOffset <= nextConsumed) return { node: textNode, offset: targetOffset - consumed };
+			consumed = nextConsumed;
+			textNode = walker.nextNode();
+		}
+		if (lastNode) return { node: lastNode, offset: lastNode.textContent.length };
+		const emptyText = document.createTextNode('');
+		root.appendChild(emptyText);
+		return { node: emptyText, offset: 0 };
+	}
+
+	function insertTextAtSelection(editor, text) {
+		const selection = window.getSelection();
+		if (!selection?.rangeCount || !editor.contains(selection.anchorNode)) return;
+		const range = selection.getRangeAt(0);
+		range.deleteContents();
+		const textNode = document.createTextNode(text);
+		range.insertNode(textNode);
+		setCaret(textNode, textNode.length);
+	}
+
+	function setCaret(node, offset) {
+		const range = document.createRange();
+		range.setStart(node, offset);
+		range.collapse(true);
+		const selection = window.getSelection();
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
+
+	function setCaretAtEnd(editor) {
+		const point = getTextPoint(editor, getEditorText(editor).length);
+		if (point) setCaret(point.node, point.offset);
+	}
+
+	function getEditorText(editor) {
+		return String(editor?.textContent || '').replace(/\u00a0/g, ' ');
 	}
 
 	function filterMentionUsers(users, query) {
 		const normalizedQuery = String(query || '').toLowerCase();
 		if (!normalizedQuery) return users;
-
 		return users
-			.map((user) => ({
-				user,
-				rank: getSuggestionRank(user, normalizedQuery),
-			}))
+			.map((user) => ({ user, rank: getSuggestionRank(user, normalizedQuery) }))
 			.filter((item) => item.rank !== Number.POSITIVE_INFINITY)
 			.sort((a, b) => a.rank - b.rank || a.user.username.localeCompare(b.user.username))
 			.map((item) => item.user);
@@ -251,12 +295,10 @@
 	function getSuggestionRank(user, query) {
 		const username = String(user.username || '').toLowerCase();
 		const displayName = String(user.displayName || '').toLowerCase();
-
 		if (username.startsWith(query)) return 0;
 		if (displayName.startsWith(query)) return 1;
 		if (username.includes(query)) return 2;
 		if (displayName.includes(query)) return 3;
-
 		return Number.POSITIVE_INFINITY;
 	}
 
@@ -264,28 +306,20 @@
 		try {
 			const users = JSON.parse(value || '[]');
 			if (!Array.isArray(users)) return [];
-
-			return users
-				.map((user) => ({
-					id: user.id || '',
-					username: String(user.username || '').trim(),
-					displayName: String(user.displayName || user.username || '').trim(),
-					avatar: user.avatar || null,
-				}))
-				.filter((user) => user.id && user.username);
-		} catch (error) {
+			return users.map((user) => ({
+				id: user.id || '',
+				username: String(user.username || '').trim(),
+				displayName: String(user.displayName || user.username || '').trim(),
+				avatar: user.avatar || null,
+			})).filter((user) => user.id && user.username);
+		} catch {
 			return [];
 		}
 	}
 
 	function getInitial(user) {
-		return String(user.displayName || user.username || '?')
-			.trim()
-			.slice(0, 1)
-			.toUpperCase();
+		return String(user.displayName || user.username || '?').trim().slice(0, 1).toUpperCase();
 	}
 
-	window.ChatConversationMessageMentions = {
-		createMentionController,
-	};
+	window.ChatConversationMessageMentions = { createMentionController };
 })();

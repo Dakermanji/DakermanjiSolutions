@@ -214,13 +214,14 @@
 			void messages.submitLiveMessage(socket);
 		});
 
-		const input = composer?.elements.message;
+		const input = composer?.querySelector('[data-chat-message-editor]');
 		input?.addEventListener('input', () => {
 			syncComposerInputDirection();
 			messages.handleMentionInput();
 			typingController.handleTypingInput(socket, input);
 		});
 		input?.addEventListener('keydown', messages.handleMentionKeydown);
+		input?.addEventListener('paste', messages.handleMentionPaste);
 		input?.addEventListener('click', messages.handleMentionInput);
 		input?.addEventListener('blur', () => {
 			messages.handleMentionBlur();
@@ -259,6 +260,11 @@
 
 		for (const control of composer.querySelectorAll('input, button, textarea, select')) {
 			control.disabled = isDisabled;
+		}
+		const editor = composer.querySelector('[data-chat-message-editor]');
+		if (editor) {
+			editor.contentEditable = isDisabled ? 'false' : 'true';
+			editor.setAttribute('aria-disabled', isDisabled ? 'true' : 'false');
 		}
 
 		if (isDisabled) {
@@ -301,17 +307,17 @@
 		return notice;
 	}
 	function focusComposerInput() {
-		const input = composer?.elements.message;
-		if (!input || input.disabled) return;
+		const input = composer?.querySelector('[data-chat-message-editor]');
+		if (!input || input.getAttribute('aria-disabled') === 'true') return;
 
 		input.focus({ preventScroll: true });
 	}
 
 	function syncComposerInputDirection() {
-		const input = composer?.elements.message;
+		const input = composer?.querySelector('[data-chat-message-editor]');
 		if (!input) return;
 
-		input.dir = getTextDirection(input.value);
+		input.dir = getTextDirection(input.textContent);
 	}
 
 	function getTextDirection(value) {

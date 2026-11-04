@@ -46,26 +46,35 @@
 	/>
 	<div
 		class="chat-mention-menu"
+		id="chat-message-mention-menu"
 		data-chat-mention-menu
 		role="listbox"
 		dir="ltr"
 		aria-label="<%= t('chat:conversation.mentionSuggestions') %>"
 		hidden
 	></div>
-	<input
-		class="form-control"
-		type="text"
-		name="message"
-		maxlength="<%= messageBodyMaxLength %>"
-		placeholder="<%= t('chat:conversation.placeholder') %>"
-		autocomplete="off"
-		dir="<%= currentLang === 'ar' ? 'rtl' : 'ltr' %>"
-		data-chat-message-input
+	<div
+		class="form-control chat-message-editor"
+		role="textbox"
+		aria-label="<%= t('chat:conversation.composer') %>"
+		aria-multiline="true"
 		aria-autocomplete="list"
+		aria-controls="chat-message-mention-menu"
 		aria-expanded="false"
-		required
+		contenteditable="<%= canWriteConversation ? 'true' : 'false' %>"
+		data-placeholder="<%= t('chat:conversation.placeholder') %>"
+		data-chat-message-editor
+		data-chat-message-input
+		data-max-length="<%= messageBodyMaxLength %>"
+		dir="<%= currentLang === 'ar' ? 'rtl' : 'ltr' %>"
+		<% if (!canWriteConversation) { %>aria-disabled="true"<% } %>
+	></div>
+	<textarea
+		class="visually-hidden"
+		name="message"
+		data-chat-message-value
 		<% if (!canWriteConversation) { %>disabled<% } %>
-	/>
+	></textarea>
 	<button
 		class="btn btn-action-secondary"
 		type="submit"

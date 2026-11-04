@@ -16,7 +16,7 @@
 		const typingUserTimers = new Map();
 
 		function handleTypingInput(socket, input) {
-			const hasText = String(input?.value || '').trim().length > 0;
+			const hasText = String(input?.textContent || input?.value || '').trim().length > 0;
 
 			emitTypingState(socket, hasText);
 

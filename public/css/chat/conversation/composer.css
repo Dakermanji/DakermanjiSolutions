@@ -11,7 +11,30 @@
 	background: var(--bg-section);
 }
 
-.chat-composer input[name='message'] {
+.chat-message-editor {
+	grid-column: 1;
+	min-height: 2.5rem;
+	max-height: 12rem;
+	padding-block: 0.55rem;
+	overflow-y: auto;
+	text-align: start;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+.chat-message-editor:empty::before {
+	color: var(--color-text-muted);
+	content: attr(data-placeholder);
+	pointer-events: none;
+}
+
+.chat-message-editor[aria-disabled='true'] {
+	background: var(--bs-secondary-bg);
+	cursor: not-allowed;
+	opacity: 0.65;
+}
+
+.chat-composer textarea[name='message'] {
 	text-align: start;
 }
 

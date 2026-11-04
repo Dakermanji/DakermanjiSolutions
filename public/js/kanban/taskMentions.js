@@ -1,41 +1,41 @@
 //! public/js/kanban/taskMentions.js
 
 (() => {
-	const LEFT_TO_RIGHT_MARK = '\u200e';
-	const USERNAME_CHARS = /^[a-zA-Z0-9_.-]{0,20}$/;
-	const USERNAME_CHARACTER = /^[a-zA-Z0-9_.-]$/;
 	const TOKEN_PATTERN = /(^|[^a-zA-Z0-9_.-])@([a-zA-Z0-9_.-]{0,20})$/;
 	const MAX_VISIBLE_SUGGESTIONS = 8;
 	const page = document.querySelector('.kanban-page[data-kanban-mention-members]');
 	if (!page) return;
 
 	const members = parseMembers(page.dataset.kanbanMentionMembers);
-	if (members.length === 0) return;
-
-	for (const input of page.querySelectorAll('[data-kanban-mention-input]')) {
-		const form = input.closest('form');
+	for (const editor of page.querySelectorAll('[data-kanban-mention-input]')) {
+		const form = editor.closest('form');
 		const menu = form?.querySelector('[data-kanban-mention-menu]');
-		if (!menu) continue;
+		const valueField = form?.querySelector('[data-kanban-mention-value]');
+		if (!form || !menu || !valueField) continue;
 
 		let activeToken = null;
 		let activeIndex = 0;
 		let visibleMembers = [];
 
-		input.addEventListener('input', handleInput);
-		input.addEventListener('keydown', handleKeydown);
-		input.addEventListener('blur', () => {
+		editor.addEventListener('input', handleInput);
+		editor.addEventListener('keydown', handleKeydown);
+		editor.addEventListener('paste', handlePaste);
+		editor.addEventListener('blur', () => {
 			setTimeout(() => {
-				if (!form.contains(document.activeElement)) hideMenu();
+				if (!menu.contains(document.activeElement)) hideMenu();
 			}, 0);
+		});
+		form.addEventListener('submit', () => {
+			valueField.value = getEditorText(editor);
 		});
 		document.addEventListener('click', (event) => {
 			if (!form.contains(event.target)) hideMenu();
 		});
 
 		function handleInput() {
-			isolateActiveMentionTokenStart(input);
-			activeToken = findActiveMentionToken(input);
-			if (!activeToken) {
+			enforceMaxLength(editor);
+			activeToken = findActiveMentionToken(editor);
+			if (!activeToken || members.length === 0) {
 				hideMenu();
 				return;
 			}
@@ -55,20 +55,41 @@
 		}
 
 		function handleKeydown(event) {
-			if (menu.hidden) return;
-			if (event.key === 'Escape') {
-				event.preventDefault();
-				hideMenu();
-			} else if (event.key === 'ArrowDown' && visibleMembers.length) {
-				event.preventDefault();
-				moveActiveMember(1);
-			} else if (event.key === 'ArrowUp' && visibleMembers.length) {
-				event.preventDefault();
-				moveActiveMember(-1);
-			} else if ((event.key === 'Tab' || event.key === 'Enter') && visibleMembers[activeIndex]) {
-				event.preventDefault();
-				insertMention(visibleMembers[activeIndex]);
+			if (!menu.hidden) {
+				if (event.key === 'Escape') {
+					event.preventDefault();
+					hideMenu();
+					return;
+				}
+				if (event.key === 'ArrowDown' && visibleMembers.length) {
+					event.preventDefault();
+					moveActiveMember(1);
+					return;
+				}
+				if (event.key === 'ArrowUp' && visibleMembers.length) {
+					event.preventDefault();
+					moveActiveMember(-1);
+					return;
+				}
+				if ((event.key === 'Tab' || event.key === 'Enter') && visibleMembers[activeIndex]) {
+					event.preventDefault();
+					insertMention(visibleMembers[activeIndex]);
+					return;
+				}
 			}
+
+			if (event.key === 'Enter') {
+				event.preventDefault();
+				insertTextAtSelection(editor, '\n');
+				editor.dispatchEvent(new Event('input', { bubbles: true }));
+			}
+		}
+
+		function handlePaste(event) {
+			event.preventDefault();
+			const text = event.clipboardData?.getData('text/plain') || '';
+			insertTextAtSelection(editor, text);
+			editor.dispatchEvent(new Event('input', { bubbles: true }));
 		}
 
 		function renderMenu() {
@@ -82,7 +103,7 @@
 				const option = document.createElement('button');
 				option.type = 'button';
 				option.className = 'kanban-mention-option';
-				option.role = 'option';
+				option.setAttribute('role', 'option');
 				option.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
 				option.dir = 'ltr';
 				option.textContent = `@${member.username}`;
@@ -92,7 +113,7 @@
 			});
 
 			menu.hidden = false;
-			input.setAttribute('aria-expanded', 'true');
+			editor.setAttribute('aria-expanded', 'true');
 		}
 
 		function moveActiveMember(offset) {
@@ -104,62 +125,118 @@
 
 		function insertMention(member) {
 			if (!activeToken || !member?.username) return;
+			const start = getTextPoint(editor, activeToken.start);
+			const end = getTextPoint(editor, activeToken.end);
+			if (!start || !end) return;
 
-			const value = input.value;
-			let before = value.slice(0, activeToken.start);
-			if (before.endsWith(LEFT_TO_RIGHT_MARK)) before = before.slice(0, -1);
-			const mentionText = `${LEFT_TO_RIGHT_MARK}@${member.username}${LEFT_TO_RIGHT_MARK} `;
-			const nextValue = `${before}${mentionText}${value.slice(activeToken.end)}`;
-			const nextCursor = before.length + mentionText.length;
-			input.value = nextValue;
-			input.setSelectionRange(nextCursor, nextCursor);
+			const range = document.createRange();
+			range.setStart(start.node, start.offset);
+			range.setEnd(end.node, end.offset);
+			range.deleteContents();
+
+			const mention = document.createElement('span');
+			mention.className = 'app-mention';
+			mention.dataset.kanbanMentionToken = '';
+			mention.dir = 'ltr';
+			mention.textContent = `@${member.username}`;
+			range.insertNode(mention);
+
+			const space = document.createTextNode(' ');
+			mention.parentNode.insertBefore(space, mention.nextSibling);
+			setCaret(space, space.length);
 			hideMenu();
-			input.focus();
-			input.dispatchEvent(new Event('input', { bubbles: true }));
+			editor.focus();
+			editor.dispatchEvent(new Event('input', { bubbles: true }));
 		}
 
 		function hideMenu() {
 			menu.hidden = true;
 			menu.textContent = '';
-			input.setAttribute('aria-expanded', 'false');
+			editor.setAttribute('aria-expanded', 'false');
 			activeToken = null;
 			activeIndex = 0;
 			visibleMembers = [];
 		}
 	}
 
-	function isolateActiveMentionTokenStart(input) {
-		if (document.documentElement.dir !== 'rtl') return;
-		const caret = input.selectionStart ?? 0;
-		if (caret !== (input.selectionEnd ?? caret)) return;
+	function findActiveMentionToken(editor) {
+		const selection = window.getSelection();
+		if (!selection?.rangeCount || !selection.isCollapsed) return null;
+		const caret = selection.getRangeAt(0);
+		if (!editor.contains(caret.startContainer)) return null;
 
-		const value = input.value;
-		const beforeCaret = value.slice(0, caret);
-		const atIndex = beforeCaret.lastIndexOf('@');
-		if (atIndex < 0) return;
-
-		const query = beforeCaret.slice(atIndex + 1);
-		if (!USERNAME_CHARS.test(query)) return;
-		const previousCharacter = value.charAt(atIndex - 1);
-		if (previousCharacter === LEFT_TO_RIGHT_MARK) return;
-		if (previousCharacter && USERNAME_CHARACTER.test(previousCharacter)) return;
-
-		input.value = value.slice(0, atIndex) + LEFT_TO_RIGHT_MARK + value.slice(atIndex);
-		input.setSelectionRange(caret + 1, caret + 1);
-	}
-
-	function findActiveMentionToken(input) {
-		const caret = input.selectionStart ?? 0;
-		if (caret !== (input.selectionEnd ?? caret)) return null;
-		const beforeCaret = input.value.slice(0, caret);
-		const match = beforeCaret.match(TOKEN_PATTERN);
+		const beforeCaret = document.createRange();
+		beforeCaret.selectNodeContents(editor);
+		beforeCaret.setEnd(caret.startContainer, caret.startOffset);
+		const text = beforeCaret.toString();
+		const match = text.match(TOKEN_PATTERN);
 		if (!match) return null;
 
+		const query = match[2] || '';
 		return {
-			query: match[2] || '',
-			start: beforeCaret.length - (match[2] || '').length - 1,
-			end: caret,
+			query,
+			start: text.length - query.length - 1,
+			end: text.length,
 		};
+	}
+
+	function getTextPoint(root, targetOffset) {
+		const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+		let textNode = walker.nextNode();
+		let consumed = 0;
+		let lastNode = null;
+
+		while (textNode) {
+			lastNode = textNode;
+			const nextConsumed = consumed + textNode.textContent.length;
+			if (targetOffset <= nextConsumed) {
+				return { node: textNode, offset: targetOffset - consumed };
+			}
+			consumed = nextConsumed;
+			textNode = walker.nextNode();
+		}
+
+		if (lastNode) return { node: lastNode, offset: lastNode.textContent.length };
+		const emptyText = document.createTextNode('');
+		root.appendChild(emptyText);
+		return { node: emptyText, offset: 0 };
+	}
+
+	function insertTextAtSelection(editor, text) {
+		const selection = window.getSelection();
+		if (!selection?.rangeCount || !editor.contains(selection.anchorNode)) return;
+
+		const range = selection.getRangeAt(0);
+		range.deleteContents();
+		const textNode = document.createTextNode(text);
+		range.insertNode(textNode);
+		setCaret(textNode, textNode.length);
+	}
+
+	function setCaret(node, offset) {
+		const range = document.createRange();
+		range.setStart(node, offset);
+		range.collapse(true);
+		const selection = window.getSelection();
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
+
+	function getEditorText(editor) {
+		return String(editor.textContent || '').replace(/\u00a0/g, ' ');
+	}
+
+	function enforceMaxLength(editor) {
+		const maxLength = Number(editor.dataset.maxLength);
+		const text = getEditorText(editor);
+		if (!Number.isFinite(maxLength) || text.length <= maxLength) return;
+		editor.textContent = text.slice(0, maxLength);
+		setCaretAtEnd(editor);
+	}
+
+	function setCaretAtEnd(editor) {
+		const lastPoint = getTextPoint(editor, getEditorText(editor).length);
+		if (lastPoint) setCaret(lastPoint.node, lastPoint.offset);
 	}
 
 	function parseMembers(value) {
