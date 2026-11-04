@@ -31,6 +31,7 @@ export function validateCreateTaskMessage(req, res, next) {
 		...result.values,
 		taskId,
 		authorUserId: req.user.id,
+		authorUsername: req.user.username || '',
 	};
 	return next();
 }

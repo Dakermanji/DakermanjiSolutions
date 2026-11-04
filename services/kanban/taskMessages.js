@@ -8,6 +8,7 @@ import {
 	updateOwnTaskMessage,
 } from '../../models/kanban/TaskMessages.js';
 import { findTaskForMember } from '../../models/kanban/Tasks.js';
+import { notifyTaskCommentMentions } from './taskNotifications.js';
 
 async function withTaskMessageTransaction(work) {
 	const client = await pool.connect();
@@ -82,12 +83,30 @@ export async function listTaskMessagesForMember({ taskId, viewerUserId }) {
 	};
 }
 
-export async function postTaskMessage({ taskId, authorUserId, body }) {
+export async function postTaskMessage({
+	taskId,
+	authorUserId,
+	authorUsername,
+	body,
+}) {
 	const mentionUsernames = extractMessageMentionUsernames(body);
+	const task = mentionUsernames.length
+		? await findTaskForMember(taskId, authorUserId)
+		: null;
 	const message = await withTaskMessageTransaction((client) =>
 		createTaskMessage({ taskId, authorUserId, body, mentionUsernames }, client),
 	);
 	if (!message) return { status: 'forbidden', message: null };
+	if (task && message.mentionedUserIds?.length) {
+		await notifyTaskCommentMentions({
+			taskId,
+			taskTitle: task.title,
+			taskMessageId: message.id,
+			actorUserId: authorUserId,
+			actorUsername,
+			recipientUserIds: message.mentionedUserIds,
+		});
+	}
 	return { status: 'created', message };
 }
 

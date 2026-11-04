@@ -7,7 +7,10 @@ import {
 	NOTIFICATION_PRIORITIES,
 	NOTIFICATION_TYPES,
 } from '../../constants/notifications.js';
-import { createNotification } from '../notifications/appNotifications.js';
+import {
+	createNotification,
+	createNotificationIfNotExists,
+} from '../notifications/appNotifications.js';
 
 async function sendAssignmentNotifications({ taskId, actorUserId, taskTitle, recipients }) {
 	for (const [recipientUserId, notificationType] of recipients) {
@@ -67,4 +70,48 @@ export function notifyTaskReassigned({
 	}
 	if (newAssigneeUserId) recipients.set(newAssigneeUserId, 'assigned');
 	return sendAssignmentNotifications({ taskId, actorUserId, taskTitle, recipients });
+}
+
+export async function notifyTaskCommentMentions({
+	taskId,
+	taskTitle,
+	taskMessageId,
+	actorUserId,
+	actorUsername,
+	recipientUserIds = [],
+}) {
+	const recipients = [...new Set(recipientUserIds)].filter(
+		(userId) => userId && userId !== actorUserId,
+	);
+	if (!recipients.length) return;
+
+	const results = await Promise.allSettled(
+		recipients.map((recipientUserId) =>
+			createNotificationIfNotExists({
+				recipientUserId,
+				actorUserId,
+				appKey: NOTIFICATION_APP_KEYS.PROJECTS,
+				type: NOTIFICATION_TYPES.KANBAN_TASK_MESSAGE_MENTION,
+				entityType: NOTIFICATION_ENTITY_TYPES.KANBAN_TASK_MESSAGE_MENTION,
+				entityId: taskMessageId,
+				titleKey: 'notifications:types.kanbanTaskMessageMention.title',
+				bodyKey: 'notifications:types.kanbanTaskMessageMention.body',
+				linkUrl: `/kanban/tasks/${taskId}#task-discussion`,
+				data: { senderName: actorUsername, taskTitle },
+				priority: NOTIFICATION_PRIORITIES.NORMAL,
+			}),
+		),
+	);
+
+	const failedCount = results.filter(
+		(result) => result.status === 'rejected' || !result.value?.notification,
+	).length;
+	if (failedCount > 0) {
+		logger.warning('Kanban task comment mention notification failed', {
+			type: 'kanban',
+			taskId,
+			taskMessageId,
+			failedCount,
+		});
+	}
 }

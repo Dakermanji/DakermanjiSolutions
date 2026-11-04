@@ -26,7 +26,7 @@ export async function createTaskMessage({
 	);
 	const message = rows[0] || null;
 	if (message) {
-		await insertTaskMessageMentions(db, {
+		message.mentionedUserIds = await insertTaskMessageMentions(db, {
 			taskId,
 			messageId: message.id,
 			usernames: mentionUsernames,
@@ -118,8 +118,8 @@ export async function updateOwnTaskMessage({
 }
 
 async function insertTaskMessageMentions(db, { taskId, messageId, usernames }) {
-	if (!usernames.length) return;
-	await db.query(
+	if (!usernames.length) return [];
+	const { rows } = await db.query(
 		`INSERT INTO kanban_task_message_mentions
 		 (task_message_id, mentioned_user_id)
 		 SELECT $1, member.user_id
@@ -127,9 +127,11 @@ async function insertTaskMessageMentions(db, { taskId, messageId, usernames }) {
 		 JOIN kanban_project_members member ON member.project_id = task.project_id
 		 JOIN users mentioned_user ON mentioned_user.id = member.user_id
 		 WHERE task.id = $2 AND LOWER(mentioned_user.username) = ANY($3::text[])
-		 ON CONFLICT DO NOTHING`,
+		 ON CONFLICT DO NOTHING
+		 RETURNING mentioned_user_id`,
 		[messageId, taskId, usernames],
 	);
+	return rows.map((row) => row.mentioned_user_id);
 }
 
 async function replaceTaskMessageMentions(db, { taskId, messageId, usernames }) {
