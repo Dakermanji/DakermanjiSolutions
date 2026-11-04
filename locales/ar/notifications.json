@@ -62,6 +62,10 @@
 			"title": "إعادة إسناد مهمة",
 			"body": "أُعيد إسناد المهمة {{taskTitle}}."
 		},
+		"kanbanTaskMessageMention": {
+			"title": "تمت الإشارة إليك في تعليق مهمة",
+			"body": "أشار إليك {{senderName}} في {{taskTitle}}."
+		},
 		"chatRoomInvitation": {
 			"title": "دعوة إلى غرفة",
 			"body": "تمت دعوتك للانضمام إلى {{roomName}}."

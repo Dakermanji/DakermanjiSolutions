@@ -62,6 +62,10 @@
 			"title": "Task reassigned",
 			"body": "{{taskTitle}} was reassigned."
 		},
+		"kanbanTaskMessageMention": {
+			"title": "Mentioned in a task comment",
+			"body": "{{senderName}} mentioned you in {{taskTitle}}."
+		},
 		"chatRoomInvitation": {
 			"title": "Room invitation",
 			"body": "You were invited to join {{roomName}}."

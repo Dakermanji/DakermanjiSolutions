@@ -62,6 +62,10 @@
 			"title": "Tâche réattribuée",
 			"body": "La tâche {{taskTitle}} a été réattribuée."
 		},
+		"kanbanTaskMessageMention": {
+			"title": "Mention dans un commentaire de tâche",
+			"body": "{{senderName}} vous a mentionné dans {{taskTitle}}."
+		},
 		"chatRoomInvitation": {
 			"title": "Invitation à un salon",
 			"body": "Vous avez été invité à rejoindre {{roomName}}."
