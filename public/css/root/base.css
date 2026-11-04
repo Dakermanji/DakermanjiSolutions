@@ -42,6 +42,19 @@ body {
 	background-color: var(--color-bg-main);
 }
 
+.app-mention {
+	display: inline-block;
+	padding: 0 .28em;
+	border: 1px solid currentColor;
+	border-radius: .35em;
+	color: var(--color-secondary);
+	background-color: var(--color-secondary-beta);
+	font-weight: 700;
+	direction: ltr;
+	unicode-bidi: isolate;
+	white-space: nowrap;
+}
+
 h1,
 h2,
 h3,

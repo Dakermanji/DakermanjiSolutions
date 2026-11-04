@@ -38,7 +38,7 @@
 
 			if (mentionUsernames.has(username.toLowerCase())) {
 				const mention = document.createElement('span');
-				mention.className = 'chat-message-mention';
+				mention.className = 'app-mention';
 				mention.textContent = mentionText;
 				element.appendChild(mention);
 			} else {

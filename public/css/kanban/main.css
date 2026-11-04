@@ -177,6 +177,51 @@
 	overflow-wrap: anywhere;
 }
 
+.kanban-mention-control {
+	position: relative;
+}
+
+.kanban-mention-menu {
+	position: absolute;
+	inset-inline: 0;
+	bottom: calc(100% + .35rem);
+	z-index: 10;
+	display: grid;
+	gap: .2rem;
+	max-height: min(16rem, 45vh);
+	padding: .35rem;
+	overflow-y: auto;
+	border: 1px solid var(--border-subtle);
+	border-radius: .5rem;
+	background: var(--bg-section);
+	box-shadow: var(--shadow-lg);
+	direction: ltr;
+	unicode-bidi: isolate;
+}
+
+.kanban-mention-menu[hidden] {
+	display: none;
+}
+
+.kanban-mention-option {
+	width: 100%;
+	padding: .45rem .6rem;
+	border: 0;
+	border-radius: .35rem;
+	color: var(--color-text-body);
+	background: transparent;
+	text-align: left;
+	direction: ltr;
+	unicode-bidi: isolate;
+}
+
+.kanban-mention-option:hover,
+.kanban-mention-option:focus-visible,
+.kanban-mention-option[aria-selected='true'] {
+	color: var(--color-text-heading);
+	background: var(--bg-card-muted);
+}
+
 .kanban-task-card-heading {
 	display: flex;
 	align-items: center;

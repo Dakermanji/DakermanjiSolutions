@@ -114,8 +114,10 @@
 			<input type="hidden" name="taskId" value="<%= task.id %>">
 			<div class="mb-3">
 				<label for="task-message-body" class="form-label"><%= t('kanban:taskMessage') %></label>
-				<div id="kanban-task-message-mention-menu" class="kanban-mention-menu" data-kanban-mention-menu role="listbox" dir="ltr" aria-label="<%= t('chat:conversation.mentionSuggestions') %>" hidden></div>
-				<textarea id="task-message-body" name="body" class="form-control" rows="3" maxlength="<%= taskMessageLimits.BODY_MAX_LENGTH %>" dir="auto" aria-autocomplete="list" aria-controls="kanban-task-message-mention-menu" aria-expanded="false" data-kanban-mention-input required></textarea>
+				<div class="kanban-mention-control">
+					<div id="kanban-task-message-mention-menu" class="kanban-mention-menu" data-kanban-mention-menu role="listbox" dir="ltr" aria-label="<%= t('chat:conversation.mentionSuggestions') %>" hidden></div>
+					<textarea id="task-message-body" name="body" class="form-control" rows="3" maxlength="<%= taskMessageLimits.BODY_MAX_LENGTH %>" dir="auto" aria-autocomplete="list" aria-controls="kanban-task-message-mention-menu" aria-expanded="false" data-kanban-mention-input required></textarea>
+				</div>
 			</div>
 			<button type="submit" class="btn btn-action"><%= t('kanban:sendTaskMessage') %></button>
 		</form>
@@ -142,7 +144,7 @@
 								<span class="small text-body-secondary"><%= t('kanban:commentEdited') %></span>
 							<% } %>
 						</div>
-						<p class="kanban-message-body" dir="auto"><%= message.body %></p>
+						<p class="kanban-message-body" dir="auto"><% message.bodyParts.forEach((part) => { %><% if (part.isMention) { %><span class="app-mention"><%= part.text %></span><% } else { %><%= part.text %><% } %><% }) %></p>
 						<% if (message.can_edit) { %>
 							<details class="mt-3">
 								<summary><%= t('kanban:editTaskComment') %></summary>
@@ -151,8 +153,10 @@
 									<input type="hidden" name="taskId" value="<%= task.id %>">
 									<input type="hidden" name="messageId" value="<%= message.id %>">
 									<label for="edit-task-comment-<%= message.id %>" class="visually-hidden"><%= t('kanban:taskMessage') %></label>
-									<div id="kanban-task-comment-mention-menu-<%= message.id %>" class="kanban-mention-menu" data-kanban-mention-menu role="listbox" dir="ltr" aria-label="<%= t('chat:conversation.mentionSuggestions') %>" hidden></div>
-									<textarea id="edit-task-comment-<%= message.id %>" name="body" class="form-control mb-2" rows="3" maxlength="<%= taskMessageLimits.BODY_MAX_LENGTH %>" dir="auto" aria-autocomplete="list" aria-controls="kanban-task-comment-mention-menu-<%= message.id %>" aria-expanded="false" data-kanban-mention-input required><%= message.body %></textarea>
+									<div class="kanban-mention-control">
+										<div id="kanban-task-comment-mention-menu-<%= message.id %>" class="kanban-mention-menu" data-kanban-mention-menu role="listbox" dir="ltr" aria-label="<%= t('chat:conversation.mentionSuggestions') %>" hidden></div>
+										<textarea id="edit-task-comment-<%= message.id %>" name="body" class="form-control mb-2" rows="3" maxlength="<%= taskMessageLimits.BODY_MAX_LENGTH %>" dir="auto" aria-autocomplete="list" aria-controls="kanban-task-comment-mention-menu-<%= message.id %>" aria-expanded="false" data-kanban-mention-input required><%= message.body %></textarea>
+									</div>
 									<button type="submit" class="btn btn-outline-secondary btn-sm"><%= t('kanban:saveTaskComment') %></button>
 								</form>
 							</details>
