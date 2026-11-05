@@ -33,6 +33,10 @@ export async function archiveTaskWithLog({ taskId, actorUserId }) {
 		}
 		await createTaskEvent({ taskId, actorUserId, action: 'archived' }, client);
 		await client.query('COMMIT');
+		broadcastKanbanProjectEvent(task.project_id, 'kanban:task:archived', {
+			task,
+			actorUserId,
+		});
 		return { status: 'archived', task };
 	} catch (error) {
 		await client.query('ROLLBACK');
@@ -59,6 +63,10 @@ export async function restoreTaskWithLog({ taskId, actorUserId }) {
 		}
 		await createTaskEvent({ taskId, actorUserId, action: 'restored' }, client);
 		await client.query('COMMIT');
+		broadcastKanbanProjectEvent(task.project_id, 'kanban:task:restored', {
+			task,
+			actorUserId,
+		});
 		return { status: 'restored', task };
 	} catch (error) {
 		await client.query('ROLLBACK');
