@@ -9,8 +9,11 @@
 	if (!projectId || !taskId) return;
 
 	const socket = window.io({ withCredentials: true });
+	let taskDetailsRefreshVersion = 0;
+	let taskDiscussionRefreshVersion = 0;
 
 	async function refreshTaskDetails() {
+		const version = ++taskDetailsRefreshVersion;
 		const response = await fetch(`/kanban/tasks/${encodeURIComponent(taskId)}/details`, {
 			credentials: 'same-origin',
 		});
@@ -20,7 +23,7 @@
 		template.innerHTML = (await response.text()).trim();
 		const updated = template.content.querySelector('section[aria-labelledby="task-details-title"]');
 		const current = page.querySelector('section[aria-labelledby="task-details-title"]');
-		if (!updated || !current?.isConnected) return;
+		if (!updated || !current?.isConnected || version !== taskDetailsRefreshVersion) return;
 
 		current.querySelectorAll('[data-kanban-due-date]').forEach((icon) => {
 			window.AppTooltips?.reset(icon);
@@ -32,6 +35,7 @@
 	}
 
 	async function refreshTaskDiscussion() {
+		const version = ++taskDiscussionRefreshVersion;
 		const response = await fetch(`/kanban/tasks/${encodeURIComponent(taskId)}/discussion`, {
 			credentials: 'same-origin',
 		});
@@ -41,7 +45,7 @@
 		template.innerHTML = (await response.text()).trim();
 		const updated = template.content.querySelector('#task-discussion');
 		const current = page.querySelector('#task-discussion');
-		if (!updated || !current?.isConnected) return;
+		if (!updated || !current?.isConnected || version !== taskDiscussionRefreshVersion) return;
 		const currentEditor = current.querySelector('#task-message-body');
 		const updatedEditor = updated.querySelector('#task-message-body');
 		if (currentEditor && updatedEditor) updatedEditor.innerHTML = currentEditor.innerHTML;
