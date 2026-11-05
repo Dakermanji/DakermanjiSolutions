@@ -1,5 +1,8 @@
 <!--! views/kanban/task.ejs -->
 <section class="kanban-page" aria-labelledby="task-title"
+	data-kanban-project-id="<%= task.project_id %>"
+	data-kanban-task-id="<%= task.id %>"
+	data-archive-task-label-template="<%= t('kanban:archiveTaskNamed', { name: '__TASK_TITLE__' }) %>"
 	data-due-ended="<%= t('kanban:dueStates.ended') %>"
 	data-due-within-24="<%= t('kanban:dueStates.within24') %>"
 	data-due-later="<%= t('kanban:dueStates.later') %>"

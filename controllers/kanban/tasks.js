@@ -87,7 +87,7 @@ export async function renderKanbanTask(req, res, next) {
 		return res.render('kanban/task', {
 			titleKey: 'kanban:taskDetails',
 			styles: ['modals/main', 'kanban/main'],
-			scripts: ['kanban/dueDates', 'kanban/taskChanges', 'kanban/archiveTask', 'kanban/taskMentions'],
+			scripts: ['kanban/dueDates', 'kanban/taskChanges', 'kanban/archiveTask', 'kanban/taskMentions', 'kanban/taskLive'],
 			task,
 			messages,
 			taskMessageLimits: KANBAN_TASK_MESSAGE_LIMITS,

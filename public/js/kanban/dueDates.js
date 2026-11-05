@@ -69,8 +69,8 @@
 
 	registerDueIcons();
 	refreshDueIcons();
-	const board = document.querySelector('[data-kanban-board]');
-	if (board) {
+	const liveScope = document.querySelector('.kanban-page');
+	if (liveScope) {
 		new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				mutation.addedNodes.forEach((node) => {
@@ -78,7 +78,7 @@
 				});
 			}
 			refreshDueIcons();
-		}).observe(board, { childList: true, subtree: true });
+		}).observe(liveScope, { childList: true, subtree: true });
 	}
 	window.setInterval(() => {
 		if (!document.hidden) refreshDueIcons();

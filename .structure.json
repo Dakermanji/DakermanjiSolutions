@@ -528,6 +528,7 @@
 				"live.js",
 				"memberRoleModal.js",
 				"ownershipTransferModal.js",
+				"taskLive.js",
 				"taskDragDrop.js",
 				"taskChanges.js",
 				"taskMentions.js"
