@@ -806,6 +806,7 @@
 			"main.ejs"
 		],
 		"kanban": [
+			"_task_card.ejs",
 			"activity.ejs",
 			"archivedTasks.ejs",
 			"members.ejs",
