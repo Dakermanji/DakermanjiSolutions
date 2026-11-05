@@ -88,6 +88,15 @@
 		}
 	});
 
+	socket.on('kanban:task:assignee_changed', async ({ task } = {}) => {
+		if (!task?.id || task.project_id !== projectId) return;
+		try {
+			await refreshTaskCard(task.id);
+		} catch (error) {
+			console.error('Kanban task assignment update failed', error);
+		}
+	});
+
 	socket.on('connect', () => {
 		socket.emit('kanban:project:join', { projectId }, (response) => {
 			if (!response?.ok) socket.disconnect();
