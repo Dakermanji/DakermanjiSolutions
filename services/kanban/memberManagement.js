@@ -94,7 +94,7 @@ async function changeProjectMembership({
 		client.release();
 	}
 
-	removeKanbanMemberFromProjectRoom(projectId, targetUserId);
+	await removeKanbanMemberFromProjectRoom(projectId, targetUserId);
 	if (result.unassignedTasks.length) {
 		await notifyTasksUnassignedAfterMemberChange({
 			actorUserId,
