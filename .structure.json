@@ -253,14 +253,21 @@
 				"review.js"
 			]
 		},
-		"kanban": [
-			"Members.js",
-			"ProjectEvents.js",
-			"Projects.js",
-			"TaskEvents.js",
-			"TaskMessages.js",
-			"Tasks.js"
-		],
+		"kanban": {
+			"member": [
+				"invitations.js",
+				"queries.js",
+				"roles.js"
+			],
+			"~": [
+				"Members.js",
+				"ProjectEvents.js",
+				"Projects.js",
+				"TaskEvents.js",
+				"TaskMessages.js",
+				"Tasks.js"
+			]
+		},
 		"notifications": {
 			"appNotifications": [
 				"create.js",
