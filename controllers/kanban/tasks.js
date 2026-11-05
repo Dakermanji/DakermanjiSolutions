@@ -7,7 +7,11 @@ import {
 	KANBAN_TASK_STAGES,
 } from '../../constants/kanban.js';
 import { findProjectForUser, listProjectMembers } from '../../models/kanban/Projects.js';
-import { listArchivedTasksForProject } from '../../models/kanban/Tasks.js';
+import {
+	findTaskForMember,
+	listArchivedTasksForProject,
+	listTasksForProject,
+} from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
 import {
 	canAssignTaskToRole,
@@ -105,6 +109,38 @@ export async function renderKanbanTask(req, res, next) {
 			taskStages: Object.values(KANBAN_TASK_STAGES),
 			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
 			taskLimits: KANBAN_TASK_LIMITS,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function renderKanbanTaskCard(req, res, next) {
+	try {
+		const context = await findTaskForMember(req.params.taskId, req.user.id);
+		if (!context) return res.sendStatus(404);
+
+		const projectTasks = await listTasksForProject(context.project_id, req.user.id);
+		const tasks = projectTasks.map((task) => ({
+			...task,
+			canChangeStage: canChangeTaskStage(
+				context.viewer_role,
+				req.user.id,
+				task.assignee_user_id,
+			),
+		}));
+		const task = tasks.find((item) => item.id === context.id);
+		if (!task) return res.sendStatus(404);
+
+		const stageTasks = tasks.filter((item) => item.status === task.status);
+		const taskIndex = stageTasks.findIndex((item) => item.id === task.id);
+		return res.render('kanban/_task_card', {
+			layout: false,
+			task,
+			taskIndex,
+			stageTasks,
+			stages: KANBAN_TASK_STAGES,
+			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
 		});
 	} catch (error) {
 		return next(error);
