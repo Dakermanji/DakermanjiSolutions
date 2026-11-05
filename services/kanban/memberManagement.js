@@ -11,7 +11,10 @@ import {
 	listProjectManagerUserIds,
 	unassignTasksForMember,
 } from '../../models/kanban/Members.js';
-import { removeKanbanMemberFromProjectRoom } from './live.js';
+import {
+	broadcastKanbanProjectEvent,
+	removeKanbanMemberFromProjectRoom,
+} from './live.js';
 import { notifyTasksUnassignedAfterMemberChange } from './taskNotifications.js';
 
 export function removeProjectMember({ projectId, ownerUserId, targetUserId }) {
@@ -95,6 +98,10 @@ async function changeProjectMembership({
 	}
 
 	await removeKanbanMemberFromProjectRoom(projectId, targetUserId);
+	broadcastKanbanProjectEvent(projectId, 'kanban:project:activity_changed', {
+		projectId,
+		actorUserId,
+	});
 	if (result.unassignedTasks.length) {
 		await notifyTasksUnassignedAfterMemberChange({
 			actorUserId,
