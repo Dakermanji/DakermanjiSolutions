@@ -9,6 +9,7 @@ import {
 } from '../../models/kanban/TaskMessages.js';
 import { findTaskForMember } from '../../models/kanban/Tasks.js';
 import { notifyTaskCommentMentions } from './taskNotifications.js';
+import { broadcastKanbanProjectEvent } from './live.js';
 
 async function withTaskMessageTransaction(work) {
 	const client = await pool.connect();
@@ -90,20 +91,24 @@ export async function postTaskMessage({
 	body,
 }) {
 	const mentionUsernames = extractMessageMentionUsernames(body);
-	const task = mentionUsernames.length
-		? await findTaskForMember(taskId, authorUserId)
-		: null;
+	const task = await findTaskForMember(taskId, authorUserId);
+	if (!task) return { status: 'forbidden', message: null };
 	const message = await withTaskMessageTransaction((client) =>
 		createTaskMessage({ taskId, authorUserId, body, mentionUsernames }, client),
 	);
 	if (!message) return { status: 'forbidden', message: null };
+	broadcastKanbanProjectEvent(task.project_id, 'kanban:task:comment_created', {
+		taskId,
+		message,
+		actorUserId: authorUserId,
+	});
 	if (task && message.mentionedUserIds?.length) {
 		await notifyTaskCommentMentions({
 			taskId,
 			taskTitle: task.title,
 			taskMessageId: message.id,
 			actorUserId: authorUserId,
-			actorUsername,
+			actorUsername: authorUsername,
 			recipientUserIds: message.mentionedUserIds,
 		});
 	}
