@@ -22,6 +22,19 @@
 		return card?.matches('[data-kanban-task-card]') ? card : null;
 	}
 
+	async function refreshTaskCard(taskId) {
+		const existing = board?.querySelector(
+			`[data-kanban-task-card][data-task-id="${CSS.escape(taskId)}"]`,
+		);
+		if (!existing) return;
+
+		const updated = await fetchTaskCard(taskId);
+		if (!updated || !existing.isConnected) return;
+		window.AppTooltips?.reset(existing);
+		existing.replaceWith(updated);
+		window.AppTooltips?.initIn(updated);
+	}
+
 	socket.on('kanban:task:created', async ({ task } = {}) => {
 		if (!board || !task?.id || task.project_id !== projectId) return;
 		const column = board.querySelector(`[data-kanban-dropzone][data-stage="${task.status}"]`);
@@ -63,6 +76,15 @@
 			window.AppTooltips?.initIn(card);
 		} catch (error) {
 			console.error('Kanban task card update failed', error);
+		}
+	});
+
+	socket.on('kanban:task:edited', async ({ task } = {}) => {
+		if (!task?.id || task.project_id !== projectId) return;
+		try {
+			await refreshTaskCard(task.id);
+		} catch (error) {
+			console.error('Kanban task card refresh failed', error);
 		}
 	});
 
