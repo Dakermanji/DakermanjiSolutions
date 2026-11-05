@@ -54,6 +54,7 @@ export function validateEditTaskMessage(req, res, next) {
 		taskId,
 		messageId,
 		authorUserId: req.user.id,
+		authorUsername: req.user.username || '',
 	};
 	return next();
 }

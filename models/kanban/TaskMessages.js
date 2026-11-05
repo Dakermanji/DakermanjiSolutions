@@ -108,11 +108,19 @@ export async function updateOwnTaskMessage({
 	);
 	const message = rows[0] || null;
 	if (message) {
-		await replaceTaskMessageMentions(db, {
+		const previousMentionUserIds = await listTaskMessageMentionUserIds(
+			db,
+			message.id,
+		);
+		const nextMentionUserIds = await replaceTaskMessageMentions(db, {
 			taskId,
 			messageId: message.id,
 			usernames: mentionUsernames,
 		});
+		const previousMentionUserIdSet = new Set(previousMentionUserIds);
+		message.newlyMentionedUserIds = nextMentionUserIds.filter(
+			(userId) => !previousMentionUserIdSet.has(userId),
+		);
 	}
 	return message;
 }
@@ -139,5 +147,15 @@ async function replaceTaskMessageMentions(db, { taskId, messageId, usernames }) 
 		`DELETE FROM kanban_task_message_mentions WHERE task_message_id = $1`,
 		[messageId],
 	);
-	await insertTaskMessageMentions(db, { taskId, messageId, usernames });
+	return insertTaskMessageMentions(db, { taskId, messageId, usernames });
+}
+
+async function listTaskMessageMentionUserIds(db, messageId) {
+	const { rows } = await db.query(
+		`SELECT mentioned_user_id
+		 FROM kanban_task_message_mentions
+		 WHERE task_message_id = $1`,
+		[messageId],
+	);
+	return rows.map((row) => row.mentioned_user_id);
 }

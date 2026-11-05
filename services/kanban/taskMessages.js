@@ -110,8 +110,17 @@ export async function postTaskMessage({
 	return { status: 'created', message };
 }
 
-export async function editOwnTaskComment({ messageId, taskId, authorUserId, body }) {
+export async function editOwnTaskComment({
+	messageId,
+	taskId,
+	authorUserId,
+	authorUsername,
+	body,
+}) {
 	const mentionUsernames = extractMessageMentionUsernames(body);
+	const task = mentionUsernames.length
+		? await findTaskForMember(taskId, authorUserId)
+		: null;
 	const message = await withTaskMessageTransaction((client) =>
 		updateOwnTaskMessage({
 			messageId,
@@ -122,5 +131,15 @@ export async function editOwnTaskComment({ messageId, taskId, authorUserId, body
 		}, client),
 	);
 	if (!message) return { status: 'not_editable', message: null };
+	if (task && message.newlyMentionedUserIds?.length) {
+		await notifyTaskCommentMentions({
+			taskId,
+			taskTitle: task.title,
+			taskMessageId: message.id,
+			actorUserId: authorUserId,
+			actorUsername,
+			recipientUserIds: message.newlyMentionedUserIds,
+		});
+	}
 	return { status: 'edited', message };
 }
