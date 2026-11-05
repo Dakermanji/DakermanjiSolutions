@@ -155,3 +155,46 @@ export async function notifyTaskDetailsUpdated({
 		});
 	}
 }
+
+export async function notifyTasksUnassignedAfterMemberChange({
+	actorUserId,
+	recipientUserIds = [],
+	tasks = [],
+}) {
+	const recipients = [...new Set(recipientUserIds)].filter(
+		(userId) => userId && userId !== actorUserId,
+	);
+	if (!recipients.length || !tasks.length) return;
+
+	const deliveries = tasks.flatMap((task) =>
+		recipients.map((recipientUserId) => ({ task, recipientUserId })),
+	);
+	const results = await Promise.allSettled(
+		deliveries.map(({ task, recipientUserId }) =>
+			createNotificationIfNotExists({
+				recipientUserId,
+				actorUserId,
+				appKey: NOTIFICATION_APP_KEYS.PROJECTS,
+				type: NOTIFICATION_TYPES.KANBAN_TASK_UNASSIGNED,
+				entityType: NOTIFICATION_ENTITY_TYPES.KANBAN_TASK,
+				entityId: task.id,
+				titleKey: 'notifications:types.kanbanTaskUnassigned.title',
+				bodyKey: 'notifications:types.kanbanTaskUnassigned.body',
+				linkUrl: `/kanban/tasks/${task.id}`,
+				data: { taskTitle: task.title },
+				priority: NOTIFICATION_PRIORITIES.NORMAL,
+			}),
+		),
+	);
+
+	const failedCount = results.filter(
+		(result) => result.status === 'rejected' || !result.value?.notification,
+	).length;
+	if (failedCount > 0) {
+		logger.warning('Kanban task unassignment notifications failed', {
+			type: 'kanban',
+			failedCount,
+			taskIds: tasks.map((task) => task.id),
+		});
+	}
+}

@@ -70,6 +70,10 @@
 			"title": "Détails de la tâche mis à jour",
 			"body": "Les détails de {{taskTitle}} ont été mis à jour."
 		},
+		"kanbanTaskUnassigned": {
+			"title": "La tâche doit être attribuée",
+			"body": "{{taskTitle}} n'a plus de responsable et doit être attribuée à nouveau."
+		},
 		"chatRoomInvitation": {
 			"title": "Invitation à un salon",
 			"body": "Vous avez été invité à rejoindre {{roomName}}."

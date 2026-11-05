@@ -70,6 +70,10 @@
 			"title": "تم تحديث تفاصيل المهمة",
 			"body": "تم تحديث تفاصيل {{taskTitle}}."
 		},
+		"kanbanTaskUnassigned": {
+			"title": "المهمة بحاجة إلى مسؤول",
+			"body": "لم يعد للمهمة {{taskTitle}} مسؤول وتحتاج إلى تعيين مسؤول جديد."
+		},
 		"chatRoomInvitation": {
 			"title": "دعوة إلى غرفة",
 			"body": "تمت دعوتك للانضمام إلى {{roomName}}."

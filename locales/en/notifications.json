@@ -70,6 +70,10 @@
 			"title": "Task details updated",
 			"body": "The details of {{taskTitle}} were updated."
 		},
+		"kanbanTaskUnassigned": {
+			"title": "Task needs an assignee",
+			"body": "{{taskTitle}} is unassigned and needs a new assignee."
+		},
 		"chatRoomInvitation": {
 			"title": "Room invitation",
 			"body": "You were invited to join {{roomName}}."

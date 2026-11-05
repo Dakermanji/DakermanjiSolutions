@@ -250,12 +250,25 @@ export async function changeMemberRole({
 			 WHERE project_id = $2 AND user_id = $3`,
 			[role, projectId, targetUserId],
 		);
+		let unassignedTasks = [];
+		let notificationRecipientUserIds = [];
 		if (role === 'observer') {
-			await client.query(
+			const unassigned = await client.query(
 				`UPDATE kanban_tasks SET assignee_user_id = NULL, updated_at = NOW()
-				 WHERE project_id = $1 AND assignee_user_id = $2`,
+				 WHERE project_id = $1 AND assignee_user_id = $2
+				 RETURNING id, title`,
 				[projectId, targetUserId],
 			);
+			unassignedTasks = unassigned.rows;
+			if (unassignedTasks.length) {
+				const managers = await client.query(
+					`SELECT user_id
+					 FROM kanban_project_members
+					 WHERE project_id = $1 AND role IN ('owner', 'admin')`,
+					[projectId],
+				);
+				notificationRecipientUserIds = managers.rows.map((row) => row.user_id);
+			}
 		}
 		await client.query(
 			`INSERT INTO kanban_project_events
@@ -269,7 +282,11 @@ export async function changeMemberRole({
 			],
 		);
 		await client.query('COMMIT');
-		return true;
+		return {
+			changed: true,
+			notificationRecipientUserIds,
+			unassignedTasks,
+		};
 	} catch (error) {
 		await client.query('ROLLBACK');
 		throw error;
