@@ -41,6 +41,15 @@
 		});
 	}
 
+	socket.on('kanban:project:activity_changed', async ({ projectId: changedProjectId } = {}) => {
+		if (changedProjectId !== projectId) return;
+		try {
+			await refreshProjectActivity();
+		} catch (error) {
+			console.error('Kanban project activity refresh failed', error);
+		}
+	});
+
 	socket.on('connect', () => {
 		socket.emit('kanban:project:join', { projectId }, (response) => {
 			if (!response?.ok) socket.disconnect();
