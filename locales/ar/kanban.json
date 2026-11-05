@@ -12,6 +12,10 @@
 	"declineInvitation": "رفض",
 	"invitationDeclined": "رُفضت الدعوة.",
 	"memberRoleUpdated": "تم تحديث دور العضو.",
+	"transferOwnership": "نقل الملكية",
+	"ownershipTransferred": "تم نقل ملكية المشروع.",
+	"ownershipTransferWarning": "سيصبح مالك المشروع، وستصبح أنت مسؤولًا.",
+	"confirmOwnershipTransfer": "تأكيد النقل",
 	"memberRemoved": "تمت إزالة العضو من المشروع.",
 	"projectLeft": "غادرت المشروع.",
 	"editRole": "تعديل الدور",
@@ -120,7 +124,7 @@
 			"member_role_changed": "غيّر دور {{memberUsername}} من {{fromRole}} إلى {{toRole}}.",
 			"member_removed": "أزال أحد الأعضاء.",
 			"member_left": "غادر المشروع.",
-			"ownership_transferred": "نقل ملكية المشروع."
+			"ownership_transferred": "نقل ملكية المشروع إلى {{memberUsername}}."
 		}
 	},
 	"taskEvents": {
@@ -166,6 +170,7 @@
 		"invitationUnavailable": "لم تعد هذه الدعوة متاحة.",
 		"invalidMemberRole": "اختر دورًا صالحًا لهذا العضو.",
 		"memberRoleUpdateFailed": "تعذّر تحديث دور هذا العضو.",
+		"ownershipTransferFailed": "تعذّر نقل ملكية المشروع. تأكد من أن العضو المحدد لا يزال ضمن المشروع.",
 		"memberRemoveFailed": "تعذّرت إزالة هذا العضو.",
 		"projectLeaveFailed": "تعذّر مغادرة هذا المشروع.",
 		"ownerCannotLeave": "لا يمكن لمالك المشروع المغادرة قبل نقل الملكية."

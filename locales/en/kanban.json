@@ -12,6 +12,10 @@
 	"declineInvitation": "Decline",
 	"invitationDeclined": "Invitation declined.",
 	"memberRoleUpdated": "Member role updated.",
+	"transferOwnership": "Transfer ownership",
+	"ownershipTransferred": "Project ownership transferred.",
+	"ownershipTransferWarning": "will become the project owner. You will become an admin.",
+	"confirmOwnershipTransfer": "Confirm transfer",
 	"memberRemoved": "Member removed from the project.",
 	"projectLeft": "You left the project.",
 	"editRole": "Edit role",
@@ -120,7 +124,7 @@
 			"member_role_changed": "changed {{memberUsername}}’s role from {{fromRole}} to {{toRole}}.",
 			"member_removed": "removed a member.",
 			"member_left": "left the project.",
-			"ownership_transferred": "transferred project ownership."
+			"ownership_transferred": "transferred project ownership to {{memberUsername}}."
 		}
 	},
 	"taskEvents": {
@@ -166,6 +170,7 @@
 		"invitationUnavailable": "This invitation is no longer available.",
 		"invalidMemberRole": "Choose a valid role for this member.",
 		"memberRoleUpdateFailed": "Could not update this member's role.",
+		"ownershipTransferFailed": "Could not transfer project ownership. Make sure the selected member still belongs to the project.",
 		"memberRemoveFailed": "Could not remove this member.",
 		"projectLeaveFailed": "Could not leave this project.",
 		"ownerCannotLeave": "The project owner cannot leave until ownership is transferred."

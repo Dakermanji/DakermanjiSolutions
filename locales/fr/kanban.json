@@ -12,6 +12,10 @@
 	"declineInvitation": "Refuser",
 	"invitationDeclined": "Invitation refusée.",
 	"memberRoleUpdated": "Le rôle du membre a été mis à jour.",
+	"transferOwnership": "Transférer la propriété",
+	"ownershipTransferred": "La propriété du projet a été transférée.",
+	"ownershipTransferWarning": "deviendra propriétaire du projet. Vous deviendrez administrateur.",
+	"confirmOwnershipTransfer": "Confirmer le transfert",
 	"memberRemoved": "Le membre a été retiré du projet.",
 	"projectLeft": "Vous avez quitté le projet.",
 	"editRole": "Modifier le rôle",
@@ -120,7 +124,7 @@
 			"member_role_changed": "a modifié le rôle de {{memberUsername}}, de {{fromRole}} à {{toRole}}.",
 			"member_removed": "a retiré un membre.",
 			"member_left": "a quitté le projet.",
-			"ownership_transferred": "a transféré la propriété du projet."
+			"ownership_transferred": "a transféré la propriété du projet à {{memberUsername}}."
 		}
 	},
 	"taskEvents": {
@@ -166,6 +170,7 @@
 		"invitationUnavailable": "Cette invitation n’est plus disponible.",
 		"invalidMemberRole": "Choisissez un rôle valide pour ce membre.",
 		"memberRoleUpdateFailed": "Impossible de mettre à jour le rôle de ce membre.",
+		"ownershipTransferFailed": "Impossible de transférer la propriété du projet. Vérifiez que ce membre appartient toujours au projet.",
 		"memberRemoveFailed": "Impossible de retirer ce membre.",
 		"projectLeaveFailed": "Impossible de quitter ce projet.",
 		"ownerCannotLeave": "Le propriétaire ne peut pas quitter le projet avant le transfert de propriété."

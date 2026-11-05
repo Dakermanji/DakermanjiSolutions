@@ -31,6 +31,10 @@
 										fromRole: t(`kanban:roles.${event.details.fromRole}`),
 										toRole: t(`kanban:roles.${event.details.toRole}`),
 									}) %>
+								<% } else if (event.action === 'ownership_transferred') { %>
+									<%= t(`kanban:events.actions.${event.action}`, {
+										memberUsername: event.member_username || t('kanban:member'),
+									}) %>
 								<% } else { %>
 									<%= t(`kanban:events.actions.${event.action}`) %>
 								<% } %>
