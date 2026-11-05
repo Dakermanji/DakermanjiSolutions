@@ -13,6 +13,7 @@ import {
 	updateTaskDetails,
 } from '../../models/kanban/Tasks.js';
 import { canChangeTaskStage, canManageTasks } from './permissions.js';
+import { notifyTaskDetailsUpdated } from './taskNotifications.js';
 
 export async function archiveTaskWithLog({ taskId, actorUserId }) {
 	const client = await pool.connect();
@@ -147,6 +148,12 @@ export async function editTaskDetails({
 			details: { changedFields },
 		}, client);
 		await client.query('COMMIT');
+		await notifyTaskDetailsUpdated({
+			taskId,
+			taskTitle: task.title,
+			actorUserId,
+			assigneeUserId: current.assignee_user_id,
+		});
 		return { status: 'edited', task };
 	} catch (error) {
 		await client.query('ROLLBACK');

@@ -21,6 +21,7 @@ export const NOTIFICATION_TYPES = Object.freeze({
 	KANBAN_TASK_ASSIGNED: 'kanban_task_assigned',
 	KANBAN_TASK_MESSAGE_MENTION: 'kanban_task_message_mention',
 	KANBAN_TASK_REASSIGNED: 'kanban_task_reassigned',
+	KANBAN_TASK_UPDATED: 'kanban_task_updated',
 	CHAT_ROOM_INVITATION: 'chat_room_invitation',
 	CHAT_ROOM_INVITATION_ACCEPTED: 'chat_room_invitation_accepted',
 	CHAT_ROOM_INVITATION_REJECTED: 'chat_room_invitation_rejected',

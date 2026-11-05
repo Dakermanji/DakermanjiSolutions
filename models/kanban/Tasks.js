@@ -130,7 +130,7 @@ export async function findTaskStageContext(taskId, actorUserId, db) {
 
 export async function findTaskEditContext(taskId, actorUserId, db) {
 	const { rows } = await db.query(
-		`SELECT t.id, t.project_id, t.title, t.description,
+		`SELECT t.id, t.project_id, t.title, t.description, t.assignee_user_id,
 		        t.due_date::text AS due_date, t.importance, actor.role
 		 FROM kanban_projects p
 		 JOIN kanban_tasks t ON t.project_id = p.id

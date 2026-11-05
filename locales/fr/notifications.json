@@ -66,6 +66,10 @@
 			"title": "Mention dans un commentaire de tâche",
 			"body": "{{senderName}} vous a mentionné dans {{taskTitle}}."
 		},
+		"kanbanTaskUpdated": {
+			"title": "Détails de la tâche mis à jour",
+			"body": "Les détails de {{taskTitle}} ont été mis à jour."
+		},
 		"chatRoomInvitation": {
 			"title": "Invitation à un salon",
 			"body": "Vous avez été invité à rejoindre {{roomName}}."

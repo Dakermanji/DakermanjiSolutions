@@ -115,3 +115,43 @@ export async function notifyTaskCommentMentions({
 		});
 	}
 }
+
+export async function notifyTaskDetailsUpdated({
+	taskId,
+	taskTitle,
+	actorUserId,
+	assigneeUserId,
+}) {
+	if (!assigneeUserId || assigneeUserId === actorUserId) return;
+
+	try {
+		const result = await createNotification({
+			recipientUserId: assigneeUserId,
+			actorUserId,
+			appKey: NOTIFICATION_APP_KEYS.PROJECTS,
+			type: NOTIFICATION_TYPES.KANBAN_TASK_UPDATED,
+			entityType: NOTIFICATION_ENTITY_TYPES.KANBAN_TASK,
+			entityId: taskId,
+			titleKey: 'notifications:types.kanbanTaskUpdated.title',
+			bodyKey: 'notifications:types.kanbanTaskUpdated.body',
+			linkUrl: `/kanban/tasks/${taskId}`,
+			data: { taskTitle },
+			priority: NOTIFICATION_PRIORITIES.NORMAL,
+		});
+		if (!result.notification) {
+			logger.warning('Kanban task update notification was not created', {
+				type: 'kanban',
+				taskId,
+				assigneeUserId,
+				errors: result.errors,
+			});
+		}
+	} catch (error) {
+		logger.warning('Kanban task update notification failed', {
+			type: 'kanban',
+			taskId,
+			assigneeUserId,
+			error,
+		});
+	}
+}

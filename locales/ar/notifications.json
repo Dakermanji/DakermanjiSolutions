@@ -66,6 +66,10 @@
 			"title": "تمت الإشارة إليك في تعليق مهمة",
 			"body": "أشار إليك {{senderName}} في {{taskTitle}}."
 		},
+		"kanbanTaskUpdated": {
+			"title": "تم تحديث تفاصيل المهمة",
+			"body": "تم تحديث تفاصيل {{taskTitle}}."
+		},
 		"chatRoomInvitation": {
 			"title": "دعوة إلى غرفة",
 			"body": "تمت دعوتك للانضمام إلى {{roomName}}."
