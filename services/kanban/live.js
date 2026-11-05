@@ -13,10 +13,21 @@ export function getKanbanProjectRoom(projectId) {
 	return `kanban:project:${projectId}`;
 }
 
+export function getKanbanUserRoom(userId) {
+	return `kanban:user:${userId}`;
+}
+
 export function removeKanbanProjectRoom(projectId) {
 	if (!kanbanSocketServer) return;
 	return kanbanSocketServer
 		.in(getKanbanProjectRoom(projectId))
+		.socketsLeave(getKanbanProjectRoom(projectId));
+}
+
+export function removeKanbanMemberFromProjectRoom(projectId, userId) {
+	if (!kanbanSocketServer) return;
+	return kanbanSocketServer
+		.in(getKanbanUserRoom(userId))
 		.socketsLeave(getKanbanProjectRoom(projectId));
 }
 

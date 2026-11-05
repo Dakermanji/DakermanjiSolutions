@@ -21,6 +21,7 @@ import { createPresenceSocketService } from '../services/presence/live.js';
 import { createPresenceWatchService } from '../services/presence/watch.js';
 import { resolvePresenceAudience } from '../services/presence/audience.js';
 import {
+	getKanbanUserRoom,
 	registerKanbanSocketHandlers,
 	setKanbanSocketServer,
 } from '../services/kanban/live.js';
@@ -76,6 +77,7 @@ export default function configureSocket(server) {
 		socket.join(getSocialUserRoom(socket.data.userId));
 		socket.join(getChatUserRoom(socket.data.userId));
 		socket.join(getNotificationUserRoom(socket.data.userId));
+		socket.join(getKanbanUserRoom(socket.data.userId));
 		registerNotificationSocketHandlers(socket);
 		registerChatSocketHandlers(io, socket);
 		registerKanbanSocketHandlers(socket);
