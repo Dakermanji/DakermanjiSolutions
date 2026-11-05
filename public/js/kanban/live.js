@@ -35,6 +35,38 @@
 		window.AppTooltips?.initIn(updated);
 	}
 
+	function updateColumnCount(column) {
+		const list = column.querySelector('.kanban-task-list');
+		const count = list?.children.length || 0;
+		const badge = column.querySelector('.kanban-column-heading .badge');
+		if (badge) {
+			badge.textContent = new Intl.NumberFormat(
+				document.documentElement.lang || 'en',
+			).format(count);
+		}
+		if (!count) {
+			list?.remove();
+			if (!column.querySelector('.kanban-column-empty')) {
+				const empty = document.createElement('p');
+				empty.className = 'kanban-column-empty';
+				empty.textContent = page.dataset.noTasksInStage || '';
+				column.append(empty);
+			}
+		} else {
+			column.querySelector('.kanban-column-empty')?.remove();
+		}
+	}
+
+	async function refreshTaskCards(taskIds) {
+		await Promise.all([...new Set(taskIds)].map(async (taskId) => {
+			try {
+				await refreshTaskCard(taskId);
+			} catch (error) {
+				console.error('Kanban task neighbor refresh failed', error);
+			}
+		}));
+	}
+
 	socket.on('kanban:task:created', async ({ task } = {}) => {
 		if (!board || !task?.id || task.project_id !== projectId) return;
 		const column = board.querySelector(`[data-kanban-dropzone][data-stage="${task.status}"]`);
@@ -94,6 +126,51 @@
 			await refreshTaskCard(task.id);
 		} catch (error) {
 			console.error('Kanban task assignment update failed', error);
+		}
+	});
+
+	socket.on('kanban:task:stage_changed', async ({ task } = {}) => {
+		if (!board || !task?.id || task.project_id !== projectId) return;
+		const card = board.querySelector(
+			`[data-kanban-task-card][data-task-id="${CSS.escape(task.id)}"]`,
+		);
+		const targetColumn = board.querySelector(
+			`[data-kanban-dropzone][data-stage="${task.status}"]`,
+		);
+		const targetList = targetColumn?.querySelector('.kanban-task-list');
+		if (!card || !targetColumn || card.dataset.taskStatus === task.status) return;
+
+		const sourceColumn = card.closest('[data-kanban-dropzone]');
+		const neighborIds = [
+			card.previousElementSibling?.dataset.taskId,
+			card.nextElementSibling?.dataset.taskId,
+			targetList?.lastElementChild?.dataset.taskId,
+		].filter(Boolean);
+		try {
+			const [updatedCard] = await Promise.all([
+				fetchTaskCard(task.id),
+				refreshTaskCards(neighborIds),
+			]);
+			if (!updatedCard || !card.isConnected || !page.isConnected) return;
+
+			window.AppTooltips?.reset(card);
+			card.remove();
+			let destinationList = targetColumn.querySelector('.kanban-task-list');
+			if (!destinationList) {
+				destinationList = document.createElement('ul');
+				destinationList.className = 'kanban-task-list';
+				targetColumn.querySelector('.kanban-column-empty')?.remove();
+				targetColumn.append(destinationList);
+			}
+			destinationList.append(updatedCard);
+			[...destinationList.children]
+				.sort((left, right) => Number(left.dataset.taskPosition) - Number(right.dataset.taskPosition))
+				.forEach((item) => destinationList.append(item));
+			updateColumnCount(sourceColumn);
+			updateColumnCount(targetColumn);
+			window.AppTooltips?.initIn(updatedCard);
+		} catch (error) {
+			console.error('Kanban task stage update failed', error);
 		}
 	});
 

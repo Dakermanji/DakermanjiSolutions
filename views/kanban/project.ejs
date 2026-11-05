@@ -1,6 +1,7 @@
 <!--! views/kanban/project.ejs -->
 <section class="kanban-page" aria-labelledby="project-title"
 	data-kanban-project-id="<%= project.id %>"
+	data-no-tasks-in-stage="<%= t('kanban:noTasksInStage') %>"
 	data-due-ended="<%= t('kanban:dueStates.ended') %>"
 	data-due-within-24="<%= t('kanban:dueStates.within24') %>"
 	data-due-later="<%= t('kanban:dueStates.later') %>"
