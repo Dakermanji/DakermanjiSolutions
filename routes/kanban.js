@@ -15,6 +15,7 @@ import {
 	createKanbanProject,
 	renderProject,
 	renderProjectActivity,
+	renderProjectActivityEvents,
 	renderProjectMembers,
 	renderProjects,
 } from '../controllers/kanban/projects.js';
@@ -89,6 +90,7 @@ router.post('/members/leave', validateLeaveProject, leaveKanbanProjectController
 router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvitation);
 router.post('/invitations/decline', validateDeclineInvitation, declineProjectInvitation);
 router.get('/:projectId/activity', validateProjectId, renderProjectActivity);
+router.get('/:projectId/activity/events', validateProjectId, renderProjectActivityEvents);
 router.get('/:projectId/members', validateProjectId, renderProjectMembers);
 router.get('/:projectId/archived-tasks', validateProjectId, renderArchivedKanbanTasks);
 router.get('/:projectId', validateProjectId, renderProject);

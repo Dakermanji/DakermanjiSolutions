@@ -145,7 +145,24 @@ export async function renderProjectActivity(req, res, next) {
 		return res.render('kanban/activity', {
 			titleKey: 'kanban:projectActivity',
 			styles: ['kanban/main'],
+			scripts: ['kanban/projectActivityLive'],
 			project,
+			events,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function renderProjectActivityEvents(req, res, next) {
+	try {
+		const events = await listProjectEventsForMember({
+			projectId: req.params.projectId,
+			userId: req.user.id,
+		});
+		if (events === null) return res.sendStatus(404);
+		return res.render('kanban/_project_activity_events', {
+			layout: false,
 			events,
 		});
 	} catch (error) {

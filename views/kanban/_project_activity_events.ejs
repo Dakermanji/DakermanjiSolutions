@@ -1,0 +1,38 @@
+<!--! views/kanban/_project_activity_events.ejs -->
+	<section class="kanban-panel" aria-labelledby="project-activity-title">
+		<% if (events.length === 0) { %>
+			<p><%= t('kanban:noProjectActivity') %></p>
+		<% } else { %>
+			<ul class="kanban-event-list">
+				<% events.forEach((event) => { %>
+					<li>
+						<div>
+							<% if (event.action !== 'invitation_expired') { %>
+								<strong><%= event.actor_username || t(event.actor_user_id ? 'kanban:member' : 'kanban:events.formerMember') %></strong>
+							<% } %>
+							<span>
+								<% if (event.event_type === 'task') { %>
+									<%= t(`kanban:taskEvents.projectActions.${event.action}`, { taskTitle: event.task_title }) %>
+								<% } else if (event.action === 'member_role_changed') { %>
+									<%= t(`kanban:events.actions.${event.action}`, {
+										memberUsername: event.member_username || t('kanban:member'),
+										fromRole: t(`kanban:roles.${event.details.fromRole}`),
+										toRole: t(`kanban:roles.${event.details.toRole}`),
+									}) %>
+								<% } else if (event.action === 'ownership_transferred') { %>
+									<%= t(`kanban:events.actions.${event.action}`, {
+										memberUsername: event.member_username || t('kanban:member'),
+									}) %>
+								<% } else { %>
+									<%= t(`kanban:events.actions.${event.action}`) %>
+								<% } %>
+							</span>
+						</div>
+						<time datetime="<%= new Date(event.created_at).toISOString() %>">
+							<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(event.created_at)) %>
+						</time>
+					</li>
+				<% }) %>
+			</ul>
+		<% } %>
+	</section>
