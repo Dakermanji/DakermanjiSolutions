@@ -1,9 +1,8 @@
 //! public/js/kanban/dueDates.js
 
 (() => {
-	const dueIcons = [...document.querySelectorAll('[data-kanban-due-date]')];
 	const labelSource = document.querySelector('.kanban-page[data-due-ended]');
-	if (!dueIcons.length || !labelSource) return;
+	if (!labelSource) return;
 
 	const HOUR_MS = 60 * 60 * 1000;
 	const EMOJIS = {
@@ -34,10 +33,17 @@
 		return 'later';
 	}
 
-	const entries = dueIcons.map((element) => ({
-		element,
-		due: parseDueDate(element.dataset.kanbanDueDate),
-	})).filter((entry) => entry.due);
+	const entries = [];
+	const registeredIcons = new WeakSet();
+	function registerDueIcons(scope = document) {
+		scope.querySelectorAll('[data-kanban-due-date]').forEach((element) => {
+			if (registeredIcons.has(element)) return;
+			const due = parseDueDate(element.dataset.kanbanDueDate);
+			if (!due) return;
+			registeredIcons.add(element);
+			entries.push({ element, due });
+		});
+	}
 
 	function refreshDueIcons() {
 		const now = Date.now();
@@ -61,7 +67,19 @@
 		}
 	}
 
+	registerDueIcons();
 	refreshDueIcons();
+	const board = document.querySelector('[data-kanban-board]');
+	if (board) {
+		new MutationObserver((mutations) => {
+			for (const mutation of mutations) {
+				mutation.addedNodes.forEach((node) => {
+					if (node instanceof Element) registerDueIcons(node);
+				});
+			}
+			refreshDueIcons();
+		}).observe(board, { childList: true, subtree: true });
+	}
 	window.setInterval(() => {
 		if (!document.hidden) refreshDueIcons();
 	}, 60 * 1000);

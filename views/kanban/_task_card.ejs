@@ -4,6 +4,7 @@
 	data-kanban-task-card
 	data-task-id="<%= task.id %>"
 	data-task-status="<%= task.status %>"
+	data-task-position="<%= task.position %>"
 	<% if (task.canChangeStage) { %>draggable="true"<% } %>
 >
 	<div class="kanban-task-card-heading">
