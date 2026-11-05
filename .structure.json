@@ -534,6 +534,7 @@
 				"live.js",
 				"memberRoleModal.js",
 				"ownershipTransferModal.js",
+				"taskActivityLive.js",
 				"taskLive.js",
 				"taskDragDrop.js",
 				"taskChanges.js",
@@ -814,6 +815,7 @@
 		],
 		"kanban": [
 			"_task_card.ejs",
+			"_task_activity_events.ejs",
 			"_task_details.ejs",
 			"_task_discussion.ejs",
 			"activity.ejs",

@@ -1,0 +1,40 @@
+<!--! views/kanban/_task_activity_events.ejs -->
+	<section class="kanban-panel" aria-labelledby="task-activity-title">
+		<% if (events.length === 0) { %>
+			<p><%= t('kanban:noTaskActivity') %></p>
+		<% } else { %>
+			<ul class="kanban-event-list">
+				<% events.forEach((event) => { %>
+					<li>
+						<div>
+							<strong><%= event.actor_username || t(event.actor_user_id ? 'kanban:member' : 'kanban:events.formerMember') %></strong>
+							<% if (event.action === 'reassigned') { %>
+								<span role="img" aria-label="<%= t('kanban:taskEvents.reassignmentAlert') %>">⚠️</span>
+							<% } %>
+							<span>
+								<% if (event.action === 'assigned') { %>
+									<%= t('kanban:taskEvents.actions.assigned') %>
+									<strong><%= event.assigned_username || t('kanban:member') %></strong>.
+								<% } else if (event.action === 'edited' && event.details && Array.isArray(event.details.changedFields)) { %>
+									<% const knownFields = ['title', 'description', 'dueDate', 'importance']; %>
+									<% const changedFields = event.details.changedFields.filter((field) => knownFields.includes(field)); %>
+									<% if (changedFields.length > 0) { %>
+										<%= t('kanban:taskEvents.actions.editedFields', {
+											fields: new Intl.ListFormat(currentLang || 'en', { style: 'long', type: 'conjunction' }).format(changedFields.map((field) => t(`kanban:taskEvents.fields.${field}`))),
+										}) %>
+									<% } else { %>
+										<%= t('kanban:taskEvents.actions.edited') %>
+									<% } %>
+								<% } else { %>
+									<%= t(`kanban:taskEvents.actions.${event.action}`) %>
+								<% } %>
+							</span>
+						</div>
+						<time datetime="<%= new Date(event.created_at).toISOString() %>">
+							<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(event.created_at)) %>
+						</time>
+					</li>
+				<% }) %>
+			</ul>
+		<% } %>
+	</section>
