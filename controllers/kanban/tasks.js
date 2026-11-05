@@ -147,6 +147,44 @@ export async function renderKanbanTaskCard(req, res, next) {
 	}
 }
 
+export async function renderKanbanTaskDetails(req, res, next) {
+	try {
+		const task = await findTaskForMember(req.params.taskId, req.user.id);
+		if (!task) return res.sendStatus(404);
+
+		const members = await listProjectMembers(task.project_id, req.user.id);
+		const canEditTask = canManageTasks(task.viewer_role);
+		const canChangeAssignee = canChangeTaskAssignee(
+			task.viewer_role,
+			req.user.id,
+			task.assignee_user_id,
+		);
+		return res.render('kanban/_task_details', {
+			layout: false,
+			task,
+			canEditTask,
+			canChangeAssignee,
+			canChangeStage: canChangeTaskStage(
+				task.viewer_role,
+				req.user.id,
+				task.assignee_user_id,
+			),
+			assignableMembers: canChangeAssignee
+				? members.filter((member) => canAssignTaskToRole(
+					task.viewer_role,
+					req.user.id,
+					task.assignee_user_id,
+					member.role,
+				))
+				: [],
+			taskStages: Object.values(KANBAN_TASK_STAGES),
+			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
 export async function renderKanbanTaskActivity(req, res, next) {
 	try {
 		const result = await listTaskEventsForMember({

@@ -26,6 +26,7 @@ import {
 	editKanbanTask,
 	renderKanbanTask,
 	renderKanbanTaskCard,
+	renderKanbanTaskDetails,
 	renderKanbanTaskActivity,
 	renderArchivedKanbanTasks,
 	restoreKanbanTask,
@@ -73,6 +74,7 @@ router.post('/tasks/assign', validateChangeTaskAssignee, changeKanbanTaskAssigne
 router.post('/tasks/stage', validateChangeTaskStage, changeKanbanTaskStage);
 router.post('/tasks/reorder', validateReorderTask, reorderKanbanTask);
 router.get('/tasks/:taskId/card', validateTaskId, renderKanbanTaskCard);
+router.get('/tasks/:taskId/details', validateTaskId, renderKanbanTaskDetails);
 router.get('/tasks/:taskId', validateTaskId, renderKanbanTask);
 router.get('/tasks/:taskId/activity', validateTaskId, renderKanbanTaskActivity);
 router.post('/invitations', validateInviteMember, inviteProjectMember);
