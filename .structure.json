@@ -75,12 +75,18 @@
 				"session.js"
 			]
 		},
-		"kanban": [
-			"members.js",
-			"projects.js",
-			"taskMessages.js",
-			"tasks.js"
-		],
+		"kanban": {
+			"tasks": [
+				"actions.js",
+				"views.js"
+			],
+			"~": [
+				"members.js",
+				"projects.js",
+				"taskMessages.js",
+				"tasks.js"
+			]
+		},
 		"notifications": [
 			"actions.js",
 			"chat.js",
