@@ -3,6 +3,7 @@
 import pool from '../../config/database.js';
 import { archiveProject, createProject } from '../../models/kanban/Projects.js';
 import { recordProjectArchived, recordProjectCreated } from './projectEvents.js';
+import { removeKanbanProjectRoom } from './live.js';
 
 export async function createProjectWithLog(input) {
 	const client = await pool.connect();
@@ -32,6 +33,7 @@ export async function archiveProjectWithLog(input) {
 			await recordProjectArchived(input, client);
 		}
 		await client.query('COMMIT');
+		if (archived) await removeKanbanProjectRoom(input.projectId);
 		return archived;
 	} catch (error) {
 		await client.query('ROLLBACK');

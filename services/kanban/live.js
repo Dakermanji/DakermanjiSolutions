@@ -3,8 +3,21 @@
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import { findProjectForUser } from '../../models/kanban/Projects.js';
 
+let kanbanSocketServer = null;
+
+export function setKanbanSocketServer(io) {
+	kanbanSocketServer = io;
+}
+
 export function getKanbanProjectRoom(projectId) {
 	return `kanban:project:${projectId}`;
+}
+
+export function removeKanbanProjectRoom(projectId) {
+	if (!kanbanSocketServer) return;
+	return kanbanSocketServer
+		.in(getKanbanProjectRoom(projectId))
+		.socketsLeave(getKanbanProjectRoom(projectId));
 }
 
 export function registerKanbanSocketHandlers(socket) {

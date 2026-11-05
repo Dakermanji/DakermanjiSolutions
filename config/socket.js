@@ -20,7 +20,10 @@ import UserModel from '../models/User.js';
 import { createPresenceSocketService } from '../services/presence/live.js';
 import { createPresenceWatchService } from '../services/presence/watch.js';
 import { resolvePresenceAudience } from '../services/presence/audience.js';
-import { registerKanbanSocketHandlers } from '../services/kanban/live.js';
+import {
+	registerKanbanSocketHandlers,
+	setKanbanSocketServer,
+} from '../services/kanban/live.js';
 import logger from './logger.js';
 
 /**
@@ -80,6 +83,7 @@ export default function configureSocket(server) {
 
 	setSocialSocketServer(io);
 	setChatSocketServer(io);
+	setKanbanSocketServer(io);
 	setNotificationSocketServer(io);
 
 	return io;
