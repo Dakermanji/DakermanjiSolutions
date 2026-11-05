@@ -47,6 +47,17 @@
 								<i class="bi bi-pencil-square" aria-hidden="true"></i>
 								<%= t('kanban:editRole') %>
 							</button>
+							<button
+								type="button"
+								class="btn btn-outline-warning btn-sm"
+								data-bs-toggle="modal"
+								data-bs-target="#transferKanbanOwnershipModal"
+								data-member-id="<%= member.user_id %>"
+								data-member-name="<%= member.username || member.email || t('kanban:member') %>"
+							>
+								<i class="bi bi-person-gear" aria-hidden="true"></i>
+								<%= t('kanban:transferOwnership') %>
+							</button>
 						</div>
 					<% } else { %>
 						<span class="badge text-bg-secondary"><%= t(`kanban:roles.${member.role}`) %></span>
@@ -82,4 +93,5 @@
 <% if (project.role === 'owner') { %>
 	<%- include('../modals/kanban/_invite_member_modal') %>
 	<%- include('../modals/kanban/_change_member_role_modal') %>
+	<%- include('../modals/kanban/_transfer_ownership_modal') %>
 <% } %>

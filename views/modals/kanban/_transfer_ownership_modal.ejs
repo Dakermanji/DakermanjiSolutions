@@ -1,0 +1,29 @@
+<!--! views/modals/kanban/_transfer_ownership_modal.ejs -->
+<div
+	class="modal fade"
+	id="transferKanbanOwnershipModal"
+	tabindex="-1"
+	aria-labelledby="transferKanbanOwnershipModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="transferKanbanOwnershipModalLabel"><%= t('kanban:transferOwnership') %></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('common:close') %>"></button>
+			</div>
+			<form method="POST" action="/kanban/members/transfer-ownership">
+				<%- include('../../partials/_csrf') %>
+				<input type="hidden" name="projectId" value="<%= project.id %>">
+				<input type="hidden" name="targetUserId" data-kanban-ownership-target-id>
+				<div class="modal-body">
+					<p><strong data-kanban-ownership-target-name></strong> <%= t('kanban:ownershipTransferWarning') %></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('common:cancel') %></button>
+					<button type="submit" class="btn btn-warning"><%= t('kanban:confirmOwnershipTransfer') %></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
