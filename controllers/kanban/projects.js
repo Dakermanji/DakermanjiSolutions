@@ -89,7 +89,12 @@ export async function renderProject(req, res, next) {
 		return res.render('kanban/project', {
 			titleKey: 'kanban:title',
 			styles: ['modals/main', 'kanban/main'],
-			scripts: ['kanban/archiveProject', 'kanban/dueDates', 'kanban/taskDragDrop'],
+			scripts: [
+				'kanban/archiveProject',
+				'kanban/dueDates',
+				'kanban/live',
+				'kanban/taskDragDrop',
+			],
 			project,
 			tasks,
 			canCreateTask,

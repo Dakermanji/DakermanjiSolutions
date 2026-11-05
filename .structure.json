@@ -517,6 +517,7 @@
 				"archiveProject.js",
 				"archiveTask.js",
 				"dueDates.js",
+				"live.js",
 				"memberRoleModal.js",
 				"taskDragDrop.js",
 				"taskChanges.js",
@@ -667,6 +668,7 @@
 		],
 		"kanban": [
 			"invitations.js",
+			"live.js",
 			"memberRoles.js",
 			"permissions.js",
 			"projectEvents.js",
