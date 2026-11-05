@@ -7,6 +7,7 @@ import {
 	setTaskOrderForStage,
 } from '../../models/kanban/Tasks.js';
 import { canChangeTaskStage } from './permissions.js';
+import { broadcastKanbanProjectEvent } from './live.js';
 
 export async function reorderTaskWithinStage({
 	taskId,
@@ -51,6 +52,12 @@ export async function reorderTaskWithinStage({
 			taskIds: orderedIds,
 		}, client);
 		await client.query('COMMIT');
+		broadcastKanbanProjectEvent(task.project_id, 'kanban:task:reordered', {
+			taskId,
+			actorUserId,
+			status: task.status,
+			orderedTaskIds: orderedIds,
+		});
 		return { status: 'reordered', task };
 	} catch (error) {
 		await client.query('ROLLBACK');
