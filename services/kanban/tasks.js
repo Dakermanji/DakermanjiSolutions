@@ -14,6 +14,7 @@ import {
 } from '../../models/kanban/Tasks.js';
 import { canChangeTaskStage, canManageTasks } from './permissions.js';
 import { notifyTaskDetailsUpdated } from './taskNotifications.js';
+import { broadcastKanbanProjectEvent } from './live.js';
 
 export async function archiveTaskWithLog({ taskId, actorUserId }) {
 	const client = await pool.connect();
@@ -148,6 +149,11 @@ export async function editTaskDetails({
 			details: { changedFields },
 		}, client);
 		await client.query('COMMIT');
+		broadcastKanbanProjectEvent(task.project_id, 'kanban:task:edited', {
+			task,
+			actorUserId,
+			changedFields,
+		});
 		await notifyTaskDetailsUpdated({
 			taskId,
 			taskTitle: task.title,
