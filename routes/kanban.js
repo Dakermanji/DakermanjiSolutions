@@ -8,6 +8,7 @@ import {
 	inviteProjectMember,
 	leaveKanbanProjectController,
 	removeProjectMember,
+	transferProjectOwnershipController,
 } from '../controllers/kanban/members.js';
 import {
 	archiveKanbanProject,
@@ -40,6 +41,7 @@ import {
 	validateChangeMemberRole,
 	validateLeaveProject,
 	validateRemoveProjectMember,
+	validateTransferProjectOwnership,
 	validateChangeTaskStage,
 	validateReorderTask,
 	validateArchiveTask,
@@ -74,6 +76,7 @@ router.get('/tasks/:taskId/activity', validateTaskId, renderKanbanTaskActivity);
 router.post('/invitations', validateInviteMember, inviteProjectMember);
 router.post('/members/role', validateChangeMemberRole, changeProjectMemberRole);
 router.post('/members/remove', validateRemoveProjectMember, removeProjectMember);
+router.post('/members/transfer-ownership', validateTransferProjectOwnership, transferProjectOwnershipController);
 router.post('/members/leave', validateLeaveProject, leaveKanbanProjectController);
 router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvitation);
 router.post('/invitations/decline', validateDeclineInvitation, declineProjectInvitation);

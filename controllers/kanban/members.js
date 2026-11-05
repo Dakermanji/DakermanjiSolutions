@@ -1,7 +1,10 @@
 //! controllers/kanban/members.js
 
 import { answerProjectInvitation, requestProjectInvitation } from '../../services/kanban/invitations.js';
-import { updateProjectMemberRole } from '../../services/kanban/memberRoles.js';
+import {
+	transferProjectOwnership,
+	updateProjectMemberRole,
+} from '../../services/kanban/memberRoles.js';
 import {
 	leaveKanbanProject,
 	removeProjectMember as removeProjectMemberService,
@@ -45,6 +48,22 @@ export async function changeProjectMemberRole(req, res, next) {
 			changed ? 'kanban:memberRoleUpdated' : 'kanban:error.memberRoleUpdateFailed',
 		);
 		return res.redirect(`/kanban/${input.projectId}/members`);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function transferProjectOwnershipController(req, res, next) {
+	const { projectId } = req.kanbanOwnershipTransferInput;
+	try {
+		const transferred = await transferProjectOwnership(req.kanbanOwnershipTransferInput);
+		req.flash(
+			transferred ? 'success' : 'error',
+			transferred
+				? 'kanban:ownershipTransferred'
+				: 'kanban:error.ownershipTransferFailed',
+		);
+		return res.redirect(`/kanban/${projectId}/members`);
 	} catch (error) {
 		return next(error);
 	}

@@ -10,6 +10,7 @@ export {
 	validateChangeMemberRole,
 	validateLeaveProject,
 	validateRemoveProjectMember,
+	validateTransferProjectOwnership,
 } from './kanban/members.js';
 export {
 	parseProjectInput,
