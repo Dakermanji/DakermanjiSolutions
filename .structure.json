@@ -78,6 +78,8 @@
 		"kanban": {
 			"tasks": [
 				"actions.js",
+				"activity.js",
+				"pages.js",
 				"views.js"
 			],
 			"~": [
