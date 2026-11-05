@@ -7,157 +7,169 @@
 	if (!page) return;
 
 	const members = parseMembers(page.dataset.kanbanMentionMembers);
-	for (const editor of page.querySelectorAll('[data-kanban-mention-input]')) {
-		const form = editor.closest('form');
-		const menu = form?.querySelector('[data-kanban-mention-menu]');
-		const valueField = form?.querySelector('[data-kanban-mention-value]');
-		if (!form || !menu || !valueField) continue;
-
-		let activeToken = null;
-		let activeIndex = 0;
-		let visibleMembers = [];
-
-		editor.addEventListener('input', handleInput);
-		editor.addEventListener('keydown', handleKeydown);
-		editor.addEventListener('paste', handlePaste);
-		editor.addEventListener('blur', () => {
-			setTimeout(() => {
-				if (!menu.contains(document.activeElement)) hideMenu();
-			}, 0);
-		});
-		form.addEventListener('submit', () => {
-			valueField.value = getEditorText(editor);
-		});
-		document.addEventListener('click', (event) => {
-			if (!form.contains(event.target)) hideMenu();
-		});
-
-		function handleInput() {
-			enforceMaxLength(editor);
-			activeToken = findActiveMentionToken(editor);
-			if (!activeToken || members.length === 0) {
-				hideMenu();
-				return;
-			}
-
-			const query = activeToken.query.toLowerCase();
-			visibleMembers = members
-				.filter((member) => member.username.toLowerCase().includes(query))
-				.sort((a, b) => {
-					const aStarts = a.username.toLowerCase().startsWith(query);
-					const bStarts = b.username.toLowerCase().startsWith(query);
-					return Number(bStarts) - Number(aStarts)
-						|| a.username.localeCompare(b.username);
-				})
-				.slice(0, MAX_VISIBLE_SUGGESTIONS);
-			activeIndex = 0;
-			renderMenu();
-		}
-
-		function handleKeydown(event) {
-			if (!menu.hidden) {
-				if (event.key === 'Escape') {
-					event.preventDefault();
-					hideMenu();
-					return;
-				}
-				if (event.key === 'ArrowDown' && visibleMembers.length) {
-					event.preventDefault();
-					moveActiveMember(1);
-					return;
-				}
-				if (event.key === 'ArrowUp' && visibleMembers.length) {
-					event.preventDefault();
-					moveActiveMember(-1);
-					return;
-				}
-				if ((event.key === 'Tab' || event.key === 'Enter') && visibleMembers[activeIndex]) {
-					event.preventDefault();
-					insertMention(visibleMembers[activeIndex]);
-					return;
-				}
-			}
-
-			if (event.key === 'Enter') {
-				event.preventDefault();
-				insertTextAtSelection(editor, '\n');
-				editor.dispatchEvent(new Event('input', { bubbles: true }));
-			}
-		}
-
-		function handlePaste(event) {
-			event.preventDefault();
-			const text = event.clipboardData?.getData('text/plain') || '';
-			insertTextAtSelection(editor, text);
-			editor.dispatchEvent(new Event('input', { bubbles: true }));
-		}
-
-		function renderMenu() {
-			menu.textContent = '';
-			if (visibleMembers.length === 0) {
-				hideMenu();
-				return;
-			}
-
-			visibleMembers.forEach((member, index) => {
-				const option = document.createElement('button');
-				option.type = 'button';
-				option.className = 'kanban-mention-option';
-				option.setAttribute('role', 'option');
-				option.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
-				option.dir = 'ltr';
-				option.textContent = `@${member.username}`;
-				option.addEventListener('mousedown', (event) => event.preventDefault());
-				option.addEventListener('click', () => insertMention(member));
-				menu.appendChild(option);
-			});
-
-			menu.hidden = false;
-			editor.setAttribute('aria-expanded', 'true');
-		}
-
-		function moveActiveMember(offset) {
-			activeIndex = (activeIndex + offset + visibleMembers.length) % visibleMembers.length;
-			menu.querySelectorAll('[role="option"]').forEach((option, index) => {
-				option.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
-			});
-		}
-
-		function insertMention(member) {
-			if (!activeToken || !member?.username) return;
-			const start = getTextPoint(editor, activeToken.start);
-			const end = getTextPoint(editor, activeToken.end);
-			if (!start || !end) return;
-
-			const range = document.createRange();
-			range.setStart(start.node, start.offset);
-			range.setEnd(end.node, end.offset);
-			range.deleteContents();
-
-			const mention = document.createElement('span');
-			mention.className = 'app-mention';
-			mention.dataset.kanbanMentionToken = '';
-			mention.dir = 'ltr';
-			mention.textContent = `@${member.username}`;
-			range.insertNode(mention);
-
-			const space = document.createTextNode(' ');
-			mention.parentNode.insertBefore(space, mention.nextSibling);
-			setCaret(space, space.length);
-			hideMenu();
-			editor.focus();
-			editor.dispatchEvent(new Event('input', { bubbles: true }));
-		}
-
-		function hideMenu() {
+	document.addEventListener('click', (event) => {
+		for (const editor of page.querySelectorAll('[data-kanban-mention-input]')) {
+			const form = editor.closest('form');
+			const menu = form?.querySelector('[data-kanban-mention-menu]');
+			if (form?.contains(event.target) || !menu || menu.hidden) continue;
 			menu.hidden = true;
 			menu.textContent = '';
 			editor.setAttribute('aria-expanded', 'false');
-			activeToken = null;
-			activeIndex = 0;
-			visibleMembers = [];
+		}
+	});
+
+	function initIn(scope = page) {
+		for (const editor of scope.querySelectorAll('[data-kanban-mention-input]')) {
+			const form = editor.closest('form');
+			const menu = form?.querySelector('[data-kanban-mention-menu]');
+			const valueField = form?.querySelector('[data-kanban-mention-value]');
+			if (!form || !menu || !valueField) continue;
+
+			let activeToken = null;
+			let activeIndex = 0;
+			let visibleMembers = [];
+
+			editor.addEventListener('input', handleInput);
+			editor.addEventListener('keydown', handleKeydown);
+			editor.addEventListener('paste', handlePaste);
+			editor.addEventListener('blur', () => {
+				setTimeout(() => {
+					if (!menu.contains(document.activeElement)) hideMenu();
+				}, 0);
+			});
+			form.addEventListener('submit', () => {
+				valueField.value = getEditorText(editor);
+			});
+			function handleInput() {
+				enforceMaxLength(editor);
+				activeToken = findActiveMentionToken(editor);
+				if (!activeToken || members.length === 0) {
+					hideMenu();
+					return;
+				}
+
+				const query = activeToken.query.toLowerCase();
+				visibleMembers = members
+					.filter((member) => member.username.toLowerCase().includes(query))
+					.sort((a, b) => {
+						const aStarts = a.username.toLowerCase().startsWith(query);
+						const bStarts = b.username.toLowerCase().startsWith(query);
+						return Number(bStarts) - Number(aStarts)
+							|| a.username.localeCompare(b.username);
+					})
+					.slice(0, MAX_VISIBLE_SUGGESTIONS);
+				activeIndex = 0;
+				renderMenu();
+			}
+
+			function handleKeydown(event) {
+				if (!menu.hidden) {
+					if (event.key === 'Escape') {
+						event.preventDefault();
+						hideMenu();
+						return;
+					}
+					if (event.key === 'ArrowDown' && visibleMembers.length) {
+						event.preventDefault();
+						moveActiveMember(1);
+						return;
+					}
+					if (event.key === 'ArrowUp' && visibleMembers.length) {
+						event.preventDefault();
+						moveActiveMember(-1);
+						return;
+					}
+					if ((event.key === 'Tab' || event.key === 'Enter') && visibleMembers[activeIndex]) {
+						event.preventDefault();
+						insertMention(visibleMembers[activeIndex]);
+						return;
+					}
+				}
+
+				if (event.key === 'Enter') {
+					event.preventDefault();
+					insertTextAtSelection(editor, '\n');
+					editor.dispatchEvent(new Event('input', { bubbles: true }));
+				}
+			}
+
+			function handlePaste(event) {
+				event.preventDefault();
+				const text = event.clipboardData?.getData('text/plain') || '';
+				insertTextAtSelection(editor, text);
+				editor.dispatchEvent(new Event('input', { bubbles: true }));
+			}
+
+			function renderMenu() {
+				menu.textContent = '';
+				if (visibleMembers.length === 0) {
+					hideMenu();
+					return;
+				}
+
+				visibleMembers.forEach((member, index) => {
+					const option = document.createElement('button');
+					option.type = 'button';
+					option.className = 'kanban-mention-option';
+					option.setAttribute('role', 'option');
+					option.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
+					option.dir = 'ltr';
+					option.textContent = `@${member.username}`;
+					option.addEventListener('mousedown', (event) => event.preventDefault());
+					option.addEventListener('click', () => insertMention(member));
+					menu.appendChild(option);
+				});
+
+				menu.hidden = false;
+				editor.setAttribute('aria-expanded', 'true');
+			}
+
+			function moveActiveMember(offset) {
+				activeIndex = (activeIndex + offset + visibleMembers.length) % visibleMembers.length;
+				menu.querySelectorAll('[role="option"]').forEach((option, index) => {
+					option.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
+				});
+			}
+
+			function insertMention(member) {
+				if (!activeToken || !member?.username) return;
+				const start = getTextPoint(editor, activeToken.start);
+				const end = getTextPoint(editor, activeToken.end);
+				if (!start || !end) return;
+
+				const range = document.createRange();
+				range.setStart(start.node, start.offset);
+				range.setEnd(end.node, end.offset);
+				range.deleteContents();
+
+				const mention = document.createElement('span');
+				mention.className = 'app-mention';
+				mention.dataset.kanbanMentionToken = '';
+				mention.dir = 'ltr';
+				mention.textContent = `@${member.username}`;
+				range.insertNode(mention);
+
+				const space = document.createTextNode(' ');
+				mention.parentNode.insertBefore(space, mention.nextSibling);
+				setCaret(space, space.length);
+				hideMenu();
+				editor.focus();
+				editor.dispatchEvent(new Event('input', { bubbles: true }));
+			}
+
+			function hideMenu() {
+				menu.hidden = true;
+				menu.textContent = '';
+				editor.setAttribute('aria-expanded', 'false');
+				activeToken = null;
+				activeIndex = 0;
+				visibleMembers = [];
+			}
 		}
 	}
+
+	window.KanbanTaskMentions = { initIn };
+	initIn();
 
 	function findActiveMentionToken(editor) {
 		const selection = window.getSelection();

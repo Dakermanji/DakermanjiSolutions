@@ -815,6 +815,7 @@
 		"kanban": [
 			"_task_card.ejs",
 			"_task_details.ejs",
+			"_task_discussion.ejs",
 			"activity.ejs",
 			"archivedTasks.ejs",
 			"members.ejs",

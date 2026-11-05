@@ -31,6 +31,25 @@
 		window.AppTooltips?.initIn(updated);
 	}
 
+	async function refreshTaskDiscussion() {
+		const response = await fetch(`/kanban/tasks/${encodeURIComponent(taskId)}/discussion`, {
+			credentials: 'same-origin',
+		});
+		if (!response.ok) return;
+
+		const template = document.createElement('template');
+		template.innerHTML = (await response.text()).trim();
+		const updated = template.content.querySelector('#task-discussion');
+		const current = page.querySelector('#task-discussion');
+		if (!updated || !current?.isConnected) return;
+		const currentEditor = current.querySelector('#task-message-body');
+		const updatedEditor = updated.querySelector('#task-message-body');
+		if (currentEditor && updatedEditor) updatedEditor.innerHTML = currentEditor.innerHTML;
+
+		current.replaceWith(updated);
+		window.KanbanTaskMentions?.initIn(updated);
+	}
+
 	function updateTaskHeading(task) {
 		const heading = page.querySelector('#task-title');
 		if (heading) heading.textContent = task.title;
@@ -75,6 +94,17 @@
 				await refreshTaskDetails();
 			} catch (error) {
 				console.error('Kanban task detail refresh failed', error);
+			}
+		});
+	}
+
+	for (const event of ['kanban:task:comment_created', 'kanban:task:comment_edited']) {
+		socket.on(event, async ({ taskId: changedTaskId } = {}) => {
+			if (changedTaskId !== taskId) return;
+			try {
+				await refreshTaskDiscussion();
+			} catch (error) {
+				console.error('Kanban task discussion refresh failed', error);
 			}
 		});
 	}
