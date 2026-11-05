@@ -10,6 +10,7 @@ import {
 } from '../../models/kanban/Tasks.js';
 import { canBeAssigned, canManageTasks } from './permissions.js';
 import { notifyTaskAssigned } from './taskNotifications.js';
+import { broadcastKanbanProjectEvent } from './live.js';
 
 export async function createTaskForProject(input) {
 	const client = await pool.connect();
@@ -61,6 +62,10 @@ export async function createTaskForProject(input) {
 		client.release();
 	}
 
+	broadcastKanbanProjectEvent(input.projectId, 'kanban:task:created', {
+		task: result.task,
+		actorUserId: input.creatorUserId,
+	});
 	if (result.task.assignee_user_id) {
 		try {
 			await notifyTaskAssigned({

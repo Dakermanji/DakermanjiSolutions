@@ -17,6 +17,11 @@ export function getKanbanUserRoom(userId) {
 	return `kanban:user:${userId}`;
 }
 
+export function broadcastKanbanProjectEvent(projectId, event, payload) {
+	if (!kanbanSocketServer) return;
+	kanbanSocketServer.to(getKanbanProjectRoom(projectId)).emit(event, payload);
+}
+
 export function removeKanbanProjectRoom(projectId) {
 	if (!kanbanSocketServer) return;
 	return kanbanSocketServer
