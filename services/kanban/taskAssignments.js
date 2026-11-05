@@ -14,6 +14,7 @@ import {
 	canManageTasks,
 } from './permissions.js';
 import { notifyTaskAssigned, notifyTaskReassigned } from './taskNotifications.js';
+import { broadcastKanbanProjectEvent } from './live.js';
 
 export async function changeTaskAssignee({ taskId, actorUserId, assigneeUserId }) {
 	const client = await pool.connect();
@@ -92,6 +93,12 @@ export async function changeTaskAssignee({ taskId, actorUserId, assigneeUserId }
 	} finally {
 		client.release();
 	}
+	broadcastKanbanProjectEvent(result.task.project_id, 'kanban:task:assignee_changed', {
+		task: result.task,
+		actorUserId,
+		previousAssigneeUserId: result.previousAssigneeUserId,
+		action: result.action,
+	});
 	if (result.action === 'assigned' || result.action === 'reassigned') {
 		try {
 			if (result.action === 'reassigned') {
