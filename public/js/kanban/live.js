@@ -67,6 +67,53 @@
 		}));
 	}
 
+	function createOrderForm(template, taskId, targetTaskId, placement) {
+		if (!template) return null;
+		const form = template.cloneNode(true);
+		form.querySelector('[name="taskId"]').value = taskId;
+		form.querySelector('[name="targetTaskId"]').value = targetTaskId;
+		form.querySelector('[name="placement"]').value = placement;
+		const label = page.dataset[placement === 'before' ? 'moveTaskUp' : 'moveTaskDown'];
+		const button = form.querySelector('button');
+		button.setAttribute('aria-label', label);
+		button.setAttribute('data-bs-title', label);
+		button.querySelector('i').className = `bi bi-arrow-${placement === 'before' ? 'up' : 'down'}`;
+		return form;
+	}
+
+	function updateTaskOrderControls(list, orderedCards) {
+		const templates = {
+			before: list.querySelector('.kanban-task-card-order input[name="placement"][value="before"]')?.closest('form'),
+			after: list.querySelector('.kanban-task-card-order input[name="placement"][value="after"]')?.closest('form'),
+		};
+		for (const [index, card] of orderedCards.entries()) {
+			const group = card.querySelector('.kanban-task-card-order');
+			if (!group) continue;
+			group.querySelectorAll('button.has-tooltip').forEach((button) => {
+				window.AppTooltips?.reset(button);
+			});
+			const forms = [];
+			if (index > 0) {
+				forms.push(createOrderForm(
+					templates.before || templates.after,
+					card.dataset.taskId,
+					orderedCards[index - 1].dataset.taskId,
+					'before',
+				));
+			}
+			if (index < orderedCards.length - 1) {
+				forms.push(createOrderForm(
+					templates.after || templates.before,
+					card.dataset.taskId,
+					orderedCards[index + 1].dataset.taskId,
+					'after',
+				));
+			}
+			group.replaceChildren(...forms.filter(Boolean));
+			window.AppTooltips?.initIn(group);
+		}
+	}
+
 	socket.on('kanban:task:created', async ({ task } = {}) => {
 		if (!board || !task?.id || task.project_id !== projectId) return;
 		const column = board.querySelector(`[data-kanban-dropzone][data-stage="${task.status}"]`);
@@ -172,6 +219,26 @@
 		} catch (error) {
 			console.error('Kanban task stage update failed', error);
 		}
+	});
+
+	socket.on('kanban:task:reordered', ({ status, orderedTaskIds } = {}) => {
+		if (!board || !Array.isArray(orderedTaskIds)) return;
+		const column = board.querySelector(`[data-kanban-dropzone][data-stage="${status}"]`);
+		const list = column?.querySelector('.kanban-task-list');
+		if (!list) return;
+
+		const cardsById = new Map(
+			[...list.children].map((card) => [card.dataset.taskId, card]),
+		);
+		for (const taskId of orderedTaskIds) {
+			const card = cardsById.get(taskId);
+			if (card) {
+				list.append(card);
+				cardsById.delete(taskId);
+			}
+		}
+		for (const card of cardsById.values()) list.append(card);
+		updateTaskOrderControls(list, [...list.children]);
 	});
 
 	socket.on('connect', () => {
