@@ -64,12 +64,6 @@ export async function createInvitationRequest({
 			return matchedUser.blocked_by_owner ? 'blocked' : 'already_member';
 		}
 
-		await client.query(
-			`UPDATE kanban_project_invitations SET status = 'expired'
-			 WHERE project_id = $1 AND requested_identifier = $2
-			   AND status IN ('pending', 'declined') AND expires_at <= NOW()`,
-			[projectId, identifier],
-		);
 		const invitation = await client.query(
 			`INSERT INTO kanban_project_invitations
 			 (id, project_id, invitee_user_id, inviter_user_id,
@@ -104,6 +98,21 @@ export async function createInvitationRequest({
 	} finally {
 		client.release();
 	}
+}
+
+export async function expireProjectInvitationRequests({ projectId, ownerUserId, identifier }, db = pool) {
+	const { rows } = await db.query(
+		`UPDATE kanban_project_invitations i
+		 SET status = 'expired'
+		 FROM kanban_projects p
+		 WHERE i.project_id = $1 AND p.id = i.project_id
+		   AND p.owner_user_id = $2 AND p.archived_at IS NULL
+		   AND i.requested_identifier = $3
+		   AND i.status IN ('pending', 'declined') AND i.expires_at <= NOW()
+		 RETURNING i.project_id`,
+		[projectId, ownerUserId, identifier],
+	);
+	return rows;
 }
 
 function listInvitationsForUserWithStatus(userId, status) {

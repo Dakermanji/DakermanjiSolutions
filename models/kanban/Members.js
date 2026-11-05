@@ -8,6 +8,7 @@ import {
 	findInvitationResponseContext,
 	addInvitationMember,
 	updateInvitationResponse,
+	expireProjectInvitationRequests,
 	cancelInvitationRequest,
 } from './member/invitations.js';
 import { changeMemberRole } from './member/roles.js';
@@ -28,6 +29,7 @@ export {
 	findInvitationResponseContext,
 	addInvitationMember,
 	updateInvitationResponse,
+	expireProjectInvitationRequests,
 	cancelInvitationRequest,
 } from './member/invitations.js';
 export { changeMemberRole } from './member/roles.js';
@@ -48,6 +50,7 @@ export default {
 	findInvitationResponseContext,
 	addInvitationMember,
 	updateInvitationResponse,
+	expireProjectInvitationRequests,
 	cancelInvitationRequest,
 	changeMemberRole,
 	transferProjectOwnership,

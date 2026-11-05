@@ -12,17 +12,22 @@ import pool from '../../config/database.js';
 import {
 	addInvitationMember,
 	createInvitationRequest,
+	expireProjectInvitationRequests,
 	findInvitationResponseContext,
 	updateInvitationResponse,
 } from '../../models/kanban/Members.js';
 import { broadcastKanbanProjectEvent } from './live.js';
-import { recordInvitationAccepted } from './projectEvents.js';
+import {
+	recordInvitationAccepted,
+	recordInvitationExpired,
+} from './projectEvents.js';
 import {
 	createNotificationIfNotExists,
 	respondAndDismissNotificationsByEntity,
 } from '../notifications/appNotifications.js';
 
 export async function requestProjectInvitation(input) {
+	await expireAndLogProjectInvitationRequests(input);
 	const result = await createInvitationRequest(input);
 	if (typeof result === 'string') return result;
 
@@ -53,6 +58,31 @@ export async function requestProjectInvitation(input) {
 	}
 
 	return result.status;
+}
+
+async function expireAndLogProjectInvitationRequests(input) {
+	const client = await pool.connect();
+	let expired = [];
+	try {
+		await client.query('BEGIN');
+		expired = await expireProjectInvitationRequests(input, client);
+		for (const invitation of expired) {
+			await recordInvitationExpired({ projectId: invitation.project_id }, client);
+		}
+		await client.query('COMMIT');
+	} catch (error) {
+		await client.query('ROLLBACK');
+		throw error;
+	} finally {
+		client.release();
+	}
+
+	if (expired.length) {
+		broadcastKanbanProjectEvent(input.projectId, 'kanban:project:activity_changed', {
+			projectId: input.projectId,
+			actorUserId: null,
+		});
+	}
 }
 
 export async function answerProjectInvitation({ invitationId, userId, accept }) {
