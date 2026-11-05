@@ -98,6 +98,11 @@ export async function changeTaskStage({ taskId, actorUserId, status }) {
 			details: { fromStatus: current.status, toStatus: status },
 		}, client);
 		await client.query('COMMIT');
+		broadcastKanbanProjectEvent(task.project_id, 'kanban:task:stage_changed', {
+			task,
+			actorUserId,
+			previousStatus: current.status,
+		});
 		return { status: 'changed', task };
 	} catch (error) {
 		await client.query('ROLLBACK');
