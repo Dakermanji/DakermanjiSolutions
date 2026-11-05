@@ -1,0 +1,62 @@
+<!--! views/kanban/_task_discussion.ejs -->
+	<section class="kanban-panel mt-4" id="task-discussion" aria-labelledby="task-discussion-title">
+		<h2 id="task-discussion-title"><%= t('kanban:taskDiscussion') %></h2>
+		<form method="POST" action="/kanban/tasks/messages" class="mb-4">
+			<%- include('../partials/_csrf') %>
+			<input type="hidden" name="taskId" value="<%= task.id %>">
+			<div class="mb-3">
+				<label id="task-message-body-label" class="form-label"><%= t('kanban:taskMessage') %></label>
+				<div class="kanban-mention-control">
+					<div id="kanban-task-message-mention-menu" class="kanban-mention-menu" data-kanban-mention-menu role="listbox" dir="ltr" aria-label="<%= t('chat:conversation.mentionSuggestions') %>" hidden></div>
+					<div id="task-message-body" class="form-control kanban-mention-editor" contenteditable="true" role="textbox" aria-labelledby="task-message-body-label" aria-multiline="true" aria-required="true" aria-autocomplete="list" aria-controls="kanban-task-message-mention-menu" aria-expanded="false" dir="auto" data-kanban-mention-input data-max-length="<%= taskMessageLimits.BODY_MAX_LENGTH %>"></div>
+					<textarea name="body" data-kanban-mention-value hidden></textarea>
+				</div>
+			</div>
+			<button type="submit" class="btn btn-action"><%= t('kanban:sendTaskMessage') %></button>
+		</form>
+		<% if (messages.length === 0) { %>
+			<p><%= t('kanban:noTaskMessages') %></p>
+		<% } else { %>
+			<% const roleIcons = { owner: 'bi-crown-fill', admin: 'bi-shield-check', editor: 'bi-pencil-square', observer: 'bi-eye' }; %>
+			<ul class="kanban-message-list">
+				<% messages.forEach((message) => { %>
+					<li class="kanban-message">
+						<div class="kanban-message-meta">
+							<strong><%= message.author_username || t(message.author_user_id ? 'kanban:member' : 'kanban:events.formerMember') %></strong>
+							<span class="kanban-message-role" aria-label="<%= t(`kanban:roles.${message.author_role}`) %>">
+								<i class="bi <%= roleIcons[message.author_role] %>" aria-hidden="true"></i>
+								<span><%= t(`kanban:roles.${message.author_role}`) %></span>
+							</span>
+							<% if (message.author_user_id === message.assignee_user_id) { %>
+								<span class="badge text-bg-info"><%= t('kanban:taskAssignee') %></span>
+							<% } %>
+							<time datetime="<%= new Date(message.created_at).toISOString() %>">
+								<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(message.created_at)) %>
+							</time>
+							<% if (message.edited_at) { %>
+								<span class="small text-body-secondary"><%= t('kanban:commentEdited') %></span>
+							<% } %>
+						</div>
+						<p class="kanban-message-body" dir="auto"><% message.bodyParts.forEach((part) => { %><% if (part.isMention) { %><span class="app-mention"><%= part.text %></span><% } else { %><%= part.text %><% } %><% }) %></p>
+						<% if (message.can_edit) { %>
+							<details class="mt-3">
+								<summary><%= t('kanban:editTaskComment') %></summary>
+								<form method="POST" action="/kanban/tasks/messages/edit" class="mt-2">
+									<%- include('../partials/_csrf') %>
+									<input type="hidden" name="taskId" value="<%= task.id %>">
+									<input type="hidden" name="messageId" value="<%= message.id %>">
+									<label id="edit-task-comment-label-<%= message.id %>" class="visually-hidden"><%= t('kanban:taskMessage') %></label>
+									<div class="kanban-mention-control">
+										<div id="kanban-task-comment-mention-menu-<%= message.id %>" class="kanban-mention-menu" data-kanban-mention-menu role="listbox" dir="ltr" aria-label="<%= t('chat:conversation.mentionSuggestions') %>" hidden></div>
+										<div id="edit-task-comment-<%= message.id %>" class="form-control kanban-mention-editor mb-2" contenteditable="true" role="textbox" aria-labelledby="edit-task-comment-label-<%= message.id %>" aria-multiline="true" aria-required="true" aria-autocomplete="list" aria-controls="kanban-task-comment-mention-menu-<%= message.id %>" aria-expanded="false" dir="auto" data-kanban-mention-input data-max-length="<%= taskMessageLimits.BODY_MAX_LENGTH %>"><% message.bodyParts.forEach((part) => { %><% if (part.isMention) { %><span class="app-mention" data-kanban-mention-token><%= part.text %></span><% } else { %><%= part.text %><% } %><% }) %></div>
+										<textarea name="body" data-kanban-mention-value hidden><%= message.body %></textarea>
+									</div>
+									<button type="submit" class="btn btn-outline-secondary btn-sm"><%= t('kanban:saveTaskComment') %></button>
+								</form>
+							</details>
+						<% } %>
+					</li>
+				<% }) %>
+			</ul>
+		<% } %>
+	</section>

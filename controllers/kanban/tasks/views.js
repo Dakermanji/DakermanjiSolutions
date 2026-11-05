@@ -153,6 +153,23 @@ export async function renderKanbanTaskDetails(req, res, next) {
 	}
 }
 
+export async function renderKanbanTaskDiscussion(req, res, next) {
+	try {
+		const discussion = await listTaskMessagesForMember({
+			taskId: req.params.taskId,
+			viewerUserId: req.user.id,
+		});
+		if (!discussion) return res.sendStatus(404);
+		return res.render('kanban/_task_discussion', {
+			layout: false,
+			...discussion,
+			taskMessageLimits: KANBAN_TASK_MESSAGE_LIMITS,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
 export async function renderKanbanTaskActivity(req, res, next) {
 	try {
 		const result = await listTaskEventsForMember({

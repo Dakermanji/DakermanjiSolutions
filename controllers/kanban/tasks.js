@@ -14,5 +14,6 @@ export {
 	renderKanbanTask,
 	renderKanbanTaskCard,
 	renderKanbanTaskDetails,
+	renderKanbanTaskDiscussion,
 	renderKanbanTaskActivity,
 } from './tasks/views.js';
