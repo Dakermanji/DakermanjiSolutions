@@ -117,6 +117,7 @@
 			"member_joined": "a rejoint le projet.",
 			"member_role_changed": "a modifié le rôle de {{memberUsername}}, de {{fromRole}} à {{toRole}}.",
 			"member_removed": "a retiré un membre.",
+			"member_left": "a quitté le projet.",
 			"ownership_transferred": "a transféré la propriété du projet."
 		}
 	},

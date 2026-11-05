@@ -117,6 +117,7 @@
 			"member_joined": "انضم إلى المشروع.",
 			"member_role_changed": "غيّر دور {{memberUsername}} من {{fromRole}} إلى {{toRole}}.",
 			"member_removed": "أزال أحد الأعضاء.",
+			"member_left": "غادر المشروع.",
 			"ownership_transferred": "نقل ملكية المشروع."
 		}
 	},

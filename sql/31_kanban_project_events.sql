@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS kanban_project_events (
         CONSTRAINT kanban_project_events_action_check CHECK (action IN (
             'created', 'edited', 'archived', 'restored',
             'invitation_accepted', 'invitation_expired',
-            'member_joined', 'member_role_changed', 'member_removed',
+            'member_joined', 'member_role_changed', 'member_removed', 'member_left',
             'ownership_transferred'
         )),
     -- Invitation events must not store submitted identifiers or decline state.

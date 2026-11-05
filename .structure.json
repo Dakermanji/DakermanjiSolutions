@@ -669,6 +669,7 @@
 		"kanban": [
 			"invitations.js",
 			"live.js",
+			"memberManagement.js",
 			"memberRoles.js",
 			"permissions.js",
 			"projectEvents.js",
