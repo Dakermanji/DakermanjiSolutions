@@ -241,6 +241,24 @@
 		updateTaskOrderControls(list, [...list.children]);
 	});
 
+	socket.on('kanban:task:archived', async ({ task } = {}) => {
+		if (!board || !task?.id || task.project_id !== projectId) return;
+		const card = board.querySelector(
+			`[data-kanban-task-card][data-task-id="${CSS.escape(task.id)}"]`,
+		);
+		if (!card) return;
+
+		const column = card.closest('[data-kanban-dropzone]');
+		const neighborIds = [
+			card.previousElementSibling?.dataset.taskId,
+			card.nextElementSibling?.dataset.taskId,
+		].filter(Boolean);
+		window.AppTooltips?.reset(card);
+		card.remove();
+		updateColumnCount(column);
+		await refreshTaskCards(neighborIds);
+	});
+
 	socket.on('connect', () => {
 		socket.emit('kanban:project:join', { projectId }, (response) => {
 			if (!response?.ok) socket.disconnect();
