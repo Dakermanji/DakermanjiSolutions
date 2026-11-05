@@ -9,6 +9,13 @@
 
 	const socket = window.io({ withCredentials: true });
 	const board = page.querySelector('[data-kanban-board]');
+	const taskCardRefreshVersions = new Map();
+
+	function beginTaskCardRefresh(taskId) {
+		const version = (taskCardRefreshVersions.get(taskId) || 0) + 1;
+		taskCardRefreshVersions.set(taskId, version);
+		return version;
+	}
 
 	async function fetchTaskCard(taskId) {
 		const response = await fetch(`/kanban/tasks/${encodeURIComponent(taskId)}/card`, {
@@ -28,11 +35,18 @@
 		);
 		if (!existing) return;
 
-		const updated = await fetchTaskCard(taskId);
-		if (!updated || !existing.isConnected) return;
-		window.AppTooltips?.reset(existing);
-		existing.replaceWith(updated);
-		window.AppTooltips?.initIn(updated);
+		const version = beginTaskCardRefresh(taskId);
+		try {
+			const updated = await fetchTaskCard(taskId);
+			if (!updated || !existing.isConnected || taskCardRefreshVersions.get(taskId) !== version) return;
+			window.AppTooltips?.reset(existing);
+			existing.replaceWith(updated);
+			window.AppTooltips?.initIn(updated);
+		} finally {
+			if (taskCardRefreshVersions.get(taskId) === version) {
+				taskCardRefreshVersions.delete(taskId);
+			}
+		}
 	}
 
 	function updateColumnCount(column) {
@@ -196,12 +210,18 @@
 			card.nextElementSibling?.dataset.taskId,
 			targetList?.lastElementChild?.dataset.taskId,
 		].filter(Boolean);
+		const refreshVersion = beginTaskCardRefresh(task.id);
 		try {
 			const [updatedCard] = await Promise.all([
 				fetchTaskCard(task.id),
 				refreshTaskCards(neighborIds),
 			]);
-			if (!updatedCard || !card.isConnected || !page.isConnected) return;
+			if (
+				!updatedCard ||
+				!card.isConnected ||
+				!page.isConnected ||
+				taskCardRefreshVersions.get(task.id) !== refreshVersion
+			) return;
 
 			window.AppTooltips?.reset(card);
 			card.remove();
@@ -221,6 +241,10 @@
 			window.AppTooltips?.initIn(updatedCard);
 		} catch (error) {
 			console.error('Kanban task stage update failed', error);
+		} finally {
+			if (taskCardRefreshVersions.get(task.id) === refreshVersion) {
+				taskCardRefreshVersions.delete(task.id);
+			}
 		}
 	});
 
