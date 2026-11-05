@@ -147,53 +147,39 @@ export function listProjectInvitationRequests(projectId, ownerUserId) {
 	);
 }
 
-export async function respondToInvitation({ invitationId, userId, accept }) {
-	const client = await pool.connect();
-	try {
-		await client.query('BEGIN');
-		const { rows } = await client.query(
-			`SELECT i.project_id, i.role
-			 FROM kanban_project_invitations i
-			 JOIN kanban_projects p ON p.id = i.project_id
-			 WHERE i.id = $1 AND i.invitee_user_id = $2
-			   AND (i.status = 'pending' OR ($3::boolean AND i.status = 'declined'))
-			   AND i.expires_at > NOW()
-			   AND p.archived_at IS NULL
-			 FOR UPDATE OF i`,
-			[invitationId, userId, accept],
-		);
-		const invitation = rows[0];
-		if (!invitation) {
-			await client.query('ROLLBACK');
-			return false;
-		}
-		if (accept) {
-			await client.query(
-				`INSERT INTO kanban_project_members (project_id, user_id, role)
-				 VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
-				[invitation.project_id, userId, invitation.role],
-			);
-		}
-		const response = await client.query(
-			`UPDATE kanban_project_invitations
-			 SET status = $1, responded_at = NOW()
-			 WHERE id = $2
-			   AND (status = 'pending' OR ($3::boolean AND status = 'declined'))
-			   AND expires_at > NOW()`,
-			[accept ? 'accepted' : 'declined', invitationId, accept],
-		);
-		if (!response.rowCount) {
-			await client.query('ROLLBACK');
-			return false;
-		}
-		await client.query('COMMIT');
-		return true;
-	} catch (error) {
-		await client.query('ROLLBACK');
-		throw error;
-	} finally {
-		client.release();
-	}
+export async function findInvitationResponseContext({ invitationId, userId, accept }, db = pool) {
+	const { rows } = await db.query(
+		`SELECT i.project_id, i.role
+		 FROM kanban_project_invitations i
+		 JOIN kanban_projects p ON p.id = i.project_id
+		 WHERE i.id = $1 AND i.invitee_user_id = $2
+		   AND (i.status = 'pending' OR ($3::boolean AND i.status = 'declined'))
+		   AND i.expires_at > NOW()
+		   AND p.archived_at IS NULL
+		 FOR UPDATE OF i`,
+		[invitationId, userId, accept],
+	);
+	return rows[0] || null;
+}
+
+export function addInvitationMember({ projectId, userId, role }, db = pool) {
+	return db.query(
+		`INSERT INTO kanban_project_members (project_id, user_id, role)
+		 VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+		[projectId, userId, role],
+	);
+}
+
+export async function updateInvitationResponse({ invitationId, accept }, db = pool) {
+	const result = await db.query(
+		`UPDATE kanban_project_invitations
+		 SET status = $1, responded_at = NOW()
+		 WHERE id = $2
+		   AND (status = 'pending' OR ($3::boolean AND status = 'declined'))
+		   AND expires_at > NOW()`,
+		[accept ? 'accepted' : 'declined', invitationId, accept],
+	);
+	return result.rowCount > 0;
 }
 
 export async function cancelInvitationRequest({

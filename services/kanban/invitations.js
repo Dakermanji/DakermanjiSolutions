@@ -8,7 +8,15 @@ import {
 	NOTIFICATION_TYPES,
 } from '../../constants/notifications.js';
 import logger from '../../config/logger.js';
-import { createInvitationRequest, respondToInvitation } from '../../models/kanban/Members.js';
+import pool from '../../config/database.js';
+import {
+	addInvitationMember,
+	createInvitationRequest,
+	findInvitationResponseContext,
+	updateInvitationResponse,
+} from '../../models/kanban/Members.js';
+import { broadcastKanbanProjectEvent } from './live.js';
+import { recordInvitationAccepted } from './projectEvents.js';
 import {
 	createNotificationIfNotExists,
 	respondAndDismissNotificationsByEntity,
@@ -48,8 +56,55 @@ export async function requestProjectInvitation(input) {
 }
 
 export async function answerProjectInvitation({ invitationId, userId, accept }) {
-	const answered = await respondToInvitation({ invitationId, userId, accept });
-	if (!answered) return false;
+	const client = await pool.connect();
+	let answered;
+	try {
+		await client.query('BEGIN');
+		const invitation = await findInvitationResponseContext({
+			invitationId,
+			userId,
+			accept,
+		}, client);
+		if (!invitation) {
+			await client.query('ROLLBACK');
+			return false;
+		}
+
+		if (accept) {
+			await addInvitationMember({
+				projectId: invitation.project_id,
+				userId,
+				role: invitation.role,
+			}, client);
+		}
+		const updated = await updateInvitationResponse({ invitationId, accept }, client);
+		if (!updated) {
+			await client.query('ROLLBACK');
+			return false;
+		}
+		if (accept) {
+			await recordInvitationAccepted({
+				projectId: invitation.project_id,
+				userId,
+				role: invitation.role,
+			}, client);
+		}
+
+		await client.query('COMMIT');
+		answered = { projectId: invitation.project_id, accepted: Boolean(accept) };
+	} catch (error) {
+		await client.query('ROLLBACK');
+		throw error;
+	} finally {
+		client.release();
+	}
+
+	if (answered.accepted) {
+		broadcastKanbanProjectEvent(answered.projectId, 'kanban:project:activity_changed', {
+			projectId: answered.projectId,
+			actorUserId: userId,
+		});
+	}
 
 	try {
 		await respondAndDismissNotificationsByEntity({

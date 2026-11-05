@@ -5,7 +5,9 @@ import {
 	listDeclinedInvitationsForUser,
 	listInvitationsForUser,
 	listProjectInvitationRequests,
-	respondToInvitation,
+	findInvitationResponseContext,
+	addInvitationMember,
+	updateInvitationResponse,
 	cancelInvitationRequest,
 } from './member/invitations.js';
 import { changeMemberRole } from './member/roles.js';
@@ -23,7 +25,9 @@ export {
 	listDeclinedInvitationsForUser,
 	listInvitationsForUser,
 	listProjectInvitationRequests,
-	respondToInvitation,
+	findInvitationResponseContext,
+	addInvitationMember,
+	updateInvitationResponse,
 	cancelInvitationRequest,
 } from './member/invitations.js';
 export { changeMemberRole } from './member/roles.js';
@@ -41,7 +45,9 @@ export default {
 	listDeclinedInvitationsForUser,
 	listInvitationsForUser,
 	listProjectInvitationRequests,
-	respondToInvitation,
+	findInvitationResponseContext,
+	addInvitationMember,
+	updateInvitationResponse,
 	cancelInvitationRequest,
 	changeMemberRole,
 	transferProjectOwnership,
