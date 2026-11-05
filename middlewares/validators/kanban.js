@@ -6,7 +6,11 @@ export {
 	validateDeclineInvitation,
 	validateInviteMember,
 } from './kanban/invitations.js';
-export { validateChangeMemberRole } from './kanban/members.js';
+export {
+	validateChangeMemberRole,
+	validateLeaveProject,
+	validateRemoveProjectMember,
+} from './kanban/members.js';
 export {
 	parseProjectInput,
 	validateArchiveProject,

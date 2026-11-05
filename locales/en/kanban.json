@@ -12,6 +12,8 @@
 	"declineInvitation": "Decline",
 	"invitationDeclined": "Invitation declined.",
 	"memberRoleUpdated": "Member role updated.",
+	"memberRemoved": "Member removed from the project.",
+	"projectLeft": "You left the project.",
 	"editRole": "Edit role",
 	"updateRole": "Update role",
 	"declinedInvitations": "Declined invitations",
@@ -163,6 +165,9 @@
 		"invitationAlreadyRequested": "An invitation request for this username or email is already open.",
 		"invitationUnavailable": "This invitation is no longer available.",
 		"invalidMemberRole": "Choose a valid role for this member.",
-		"memberRoleUpdateFailed": "Could not update this member's role."
+		"memberRoleUpdateFailed": "Could not update this member's role.",
+		"memberRemoveFailed": "Could not remove this member.",
+		"projectLeaveFailed": "Could not leave this project.",
+		"ownerCannotLeave": "The project owner cannot leave until ownership is transferred."
 	}
 }

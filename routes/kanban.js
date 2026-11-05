@@ -6,6 +6,8 @@ import {
 	changeProjectMemberRole,
 	declineProjectInvitation,
 	inviteProjectMember,
+	leaveKanbanProjectController,
+	removeProjectMember,
 } from '../controllers/kanban/members.js';
 import {
 	archiveKanbanProject,
@@ -36,6 +38,8 @@ import {
 	validateAcceptInvitation,
 	validateChangeTaskAssignee,
 	validateChangeMemberRole,
+	validateLeaveProject,
+	validateRemoveProjectMember,
 	validateChangeTaskStage,
 	validateReorderTask,
 	validateArchiveTask,
@@ -69,6 +73,8 @@ router.get('/tasks/:taskId', validateTaskId, renderKanbanTask);
 router.get('/tasks/:taskId/activity', validateTaskId, renderKanbanTaskActivity);
 router.post('/invitations', validateInviteMember, inviteProjectMember);
 router.post('/members/role', validateChangeMemberRole, changeProjectMemberRole);
+router.post('/members/remove', validateRemoveProjectMember, removeProjectMember);
+router.post('/members/leave', validateLeaveProject, leaveKanbanProjectController);
 router.post('/invitations/accept', validateAcceptInvitation, acceptProjectInvitation);
 router.post('/invitations/decline', validateDeclineInvitation, declineProjectInvitation);
 router.get('/:projectId/activity', validateProjectId, renderProjectActivity);

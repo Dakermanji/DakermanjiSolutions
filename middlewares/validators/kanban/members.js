@@ -27,3 +27,30 @@ export function validateChangeMemberRole(req, res, next) {
 	};
 	return next();
 }
+
+export function validateRemoveProjectMember(req, res, next) {
+	const { projectId, targetUserId } = req.body || {};
+	if (!isValidUuid(projectId) || !isValidUuid(targetUserId)) {
+		return res.sendStatus(404);
+	}
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+
+	req.kanbanMemberRemovalInput = {
+		projectId,
+		ownerUserId: req.user.id,
+		targetUserId,
+	};
+	return next();
+}
+
+export function validateLeaveProject(req, res, next) {
+	const { projectId } = req.body || {};
+	if (!isValidUuid(projectId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+
+	req.kanbanProjectLeaveInput = {
+		projectId,
+		userId: req.user.id,
+	};
+	return next();
+}

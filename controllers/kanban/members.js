@@ -2,6 +2,10 @@
 
 import { answerProjectInvitation, requestProjectInvitation } from '../../services/kanban/invitations.js';
 import { updateProjectMemberRole } from '../../services/kanban/memberRoles.js';
+import {
+	leaveKanbanProject,
+	removeProjectMember as removeProjectMemberService,
+} from '../../services/kanban/memberManagement.js';
 import { isValidUuid } from '../../middlewares/validators/common.js';
 import { dismissNotification } from '../../services/notifications/appNotifications.js';
 
@@ -41,6 +45,37 @@ export async function changeProjectMemberRole(req, res, next) {
 			changed ? 'kanban:memberRoleUpdated' : 'kanban:error.memberRoleUpdateFailed',
 		);
 		return res.redirect(`/kanban/${input.projectId}/members`);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function removeProjectMember(req, res, next) {
+	const { projectId } = req.kanbanMemberRemovalInput;
+	try {
+		const result = await removeProjectMemberService(req.kanbanMemberRemovalInput);
+		const removed = result.status === 'removed';
+		req.flash(
+			removed ? 'success' : 'error',
+			removed ? 'kanban:memberRemoved' : 'kanban:error.memberRemoveFailed',
+		);
+		return res.redirect(`/kanban/${projectId}/members`);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function leaveKanbanProjectController(req, res, next) {
+	try {
+		const result = await leaveKanbanProject(req.kanbanProjectLeaveInput);
+		const left = result.status === 'left';
+		const messageKey = result.status === 'owner_cannot_leave'
+			? 'kanban:error.ownerCannotLeave'
+			: left
+				? 'kanban:projectLeft'
+				: 'kanban:error.projectLeaveFailed';
+		req.flash(left ? 'success' : 'error', messageKey);
+		return res.redirect('/kanban');
 	} catch (error) {
 		return next(error);
 	}

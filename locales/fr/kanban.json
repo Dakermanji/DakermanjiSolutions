@@ -12,6 +12,8 @@
 	"declineInvitation": "Refuser",
 	"invitationDeclined": "Invitation refusée.",
 	"memberRoleUpdated": "Le rôle du membre a été mis à jour.",
+	"memberRemoved": "Le membre a été retiré du projet.",
+	"projectLeft": "Vous avez quitté le projet.",
 	"editRole": "Modifier le rôle",
 	"updateRole": "Mettre à jour le rôle",
 	"declinedInvitations": "Invitations refusées",
@@ -163,6 +165,9 @@
 		"invitationAlreadyRequested": "Une demande d’invitation pour ce nom d’utilisateur ou cette adresse courriel est déjà en cours.",
 		"invitationUnavailable": "Cette invitation n’est plus disponible.",
 		"invalidMemberRole": "Choisissez un rôle valide pour ce membre.",
-		"memberRoleUpdateFailed": "Impossible de mettre à jour le rôle de ce membre."
+		"memberRoleUpdateFailed": "Impossible de mettre à jour le rôle de ce membre.",
+		"memberRemoveFailed": "Impossible de retirer ce membre.",
+		"projectLeaveFailed": "Impossible de quitter ce projet.",
+		"ownerCannotLeave": "Le propriétaire ne peut pas quitter le projet avant le transfert de propriété."
 	}
 }

@@ -12,6 +12,8 @@
 	"declineInvitation": "رفض",
 	"invitationDeclined": "رُفضت الدعوة.",
 	"memberRoleUpdated": "تم تحديث دور العضو.",
+	"memberRemoved": "تمت إزالة العضو من المشروع.",
+	"projectLeft": "غادرت المشروع.",
 	"editRole": "تعديل الدور",
 	"updateRole": "تحديث الدور",
 	"declinedInvitations": "الدعوات المرفوضة",
@@ -163,6 +165,9 @@
 		"invitationAlreadyRequested": "يوجد طلب دعوة مفتوح بالفعل لاسم المستخدم أو البريد الإلكتروني هذا.",
 		"invitationUnavailable": "لم تعد هذه الدعوة متاحة.",
 		"invalidMemberRole": "اختر دورًا صالحًا لهذا العضو.",
-		"memberRoleUpdateFailed": "تعذّر تحديث دور هذا العضو."
+		"memberRoleUpdateFailed": "تعذّر تحديث دور هذا العضو.",
+		"memberRemoveFailed": "تعذّرت إزالة هذا العضو.",
+		"projectLeaveFailed": "تعذّر مغادرة هذا المشروع.",
+		"ownerCannotLeave": "لا يمكن لمالك المشروع المغادرة قبل نقل الملكية."
 	}
 }
