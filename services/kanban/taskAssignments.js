@@ -8,7 +8,11 @@ import {
 	findTaskAssigneeMembership,
 	updateTaskAssignee,
 } from '../../models/kanban/Tasks.js';
-import { canBeAssigned, canManageTasks } from './permissions.js';
+import {
+	canAssignTaskToRole,
+	canChangeTaskAssignee,
+	canManageTasks,
+} from './permissions.js';
 import { notifyTaskAssigned, notifyTaskReassigned } from './taskNotifications.js';
 
 export async function changeTaskAssignee({ taskId, actorUserId, assigneeUserId }) {
@@ -17,7 +21,11 @@ export async function changeTaskAssignee({ taskId, actorUserId, assigneeUserId }
 	try {
 		await client.query('BEGIN');
 		const current = await findTaskAssignmentContext(taskId, actorUserId, client);
-		if (!current || !canManageTasks(current.role)) {
+		if (!current || !canChangeTaskAssignee(
+			current.role,
+			actorUserId,
+			current.assignee_user_id,
+		)) {
 			await client.query('ROLLBACK');
 			return { status: 'forbidden', task: null };
 		}
@@ -29,13 +37,23 @@ export async function changeTaskAssignee({ taskId, actorUserId, assigneeUserId }
 			await client.query('ROLLBACK');
 			return { status: 'unchanged', task: current };
 		}
+		const actorCanManageTasks = canManageTasks(current.role);
+		if (assigneeUserId === null && !actorCanManageTasks) {
+			await client.query('ROLLBACK');
+			return { status: 'invalid_assignee', task: null };
+		}
 		if (assigneeUserId !== null) {
 			const assignee = await findTaskAssigneeMembership(
 				current.project_id,
 				assigneeUserId,
 				client,
 			);
-			if (!assignee || !canBeAssigned(assignee.role)) {
+			if (!assignee || !canAssignTaskToRole(
+				current.role,
+				actorUserId,
+				current.assignee_user_id,
+				assignee.role,
+			)) {
 				await client.query('ROLLBACK');
 				return { status: 'invalid_assignee', task: null };
 			}
@@ -65,6 +83,7 @@ export async function changeTaskAssignee({ taskId, actorUserId, assigneeUserId }
 			task,
 			previousAssigneeUserId: current.assignee_user_id,
 			ownerUserId: current.owner_user_id,
+			actorCanManageTasks,
 			taskTitle: current.title,
 		};
 	} catch (error) {
@@ -80,7 +99,9 @@ export async function changeTaskAssignee({ taskId, actorUserId, assigneeUserId }
 					taskId,
 					actorUserId,
 					ownerUserId: result.ownerUserId,
-					previousAssigneeUserId: result.previousAssigneeUserId,
+					previousAssigneeUserId: result.actorCanManageTasks
+						? result.previousAssigneeUserId
+						: null,
 					newAssigneeUserId: result.task.assignee_user_id,
 					taskTitle: result.taskTitle,
 				});

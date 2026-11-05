@@ -9,7 +9,12 @@ import {
 import { findProjectForUser, listProjectMembers } from '../../models/kanban/Projects.js';
 import { listArchivedTasksForProject } from '../../models/kanban/Tasks.js';
 import { fail } from '../../services/http/response.js';
-import { canBeAssigned, canChangeTaskStage, canManageTasks } from '../../services/kanban/permissions.js';
+import {
+	canAssignTaskToRole,
+	canChangeTaskAssignee,
+	canChangeTaskStage,
+	canManageTasks,
+} from '../../services/kanban/permissions.js';
 import { changeTaskAssignee } from '../../services/kanban/taskAssignments.js';
 import { createTaskForProject } from '../../services/kanban/taskCreation.js';
 import { listTaskEventsForMember } from '../../services/kanban/taskEvents.js';
@@ -69,6 +74,11 @@ export async function renderKanbanTask(req, res, next) {
 		if (!discussion) return res.sendStatus(404);
 		const { task, messages } = discussion;
 		const canEditTask = canManageTasks(task.viewer_role);
+		const canChangeAssignee = canChangeTaskAssignee(
+			task.viewer_role,
+			req.user.id,
+			task.assignee_user_id,
+		);
 		const members = await listProjectMembers(task.project_id, req.user.id);
 		return res.render('kanban/task', {
 			titleKey: 'kanban:taskDetails',
@@ -78,9 +88,15 @@ export async function renderKanbanTask(req, res, next) {
 			messages,
 			taskMessageLimits: KANBAN_TASK_MESSAGE_LIMITS,
 			canEditTask,
+			canChangeAssignee,
 			canChangeStage: canChangeTaskStage(task.viewer_role, req.user.id, task.assignee_user_id),
-			assignableMembers: canEditTask
-				? members.filter((member) => canBeAssigned(member.role))
+			assignableMembers: canChangeAssignee
+				? members.filter((member) => canAssignTaskToRole(
+					task.viewer_role,
+					req.user.id,
+					task.assignee_user_id,
+					member.role,
+				))
 				: [],
 			mentionMembers: members.map(({ user_id, username }) => ({
 				id: user_id,

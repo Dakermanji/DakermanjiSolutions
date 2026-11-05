@@ -26,6 +26,22 @@ export function canBeAssigned(role) {
     return ASSIGNABLE_ROLES.has(role);
 }
 
+export function canChangeTaskAssignee(role, actorUserId, currentAssigneeUserId) {
+    return (
+        canManageTasks(role) ||
+        (Boolean(actorUserId) && actorUserId === currentAssigneeUserId)
+    );
+}
+
+export function canAssignTaskToRole(role, actorUserId, currentAssigneeUserId, targetRole) {
+    if (canManageTasks(role)) return canBeAssigned(targetRole);
+    return (
+        Boolean(actorUserId) &&
+        actorUserId === currentAssigneeUserId &&
+        (targetRole === KANBAN_ROLES.OWNER || targetRole === KANBAN_ROLES.ADMIN)
+    );
+}
+
 export function canChangeTaskStage(role, actorUserId, assigneeUserId) {
     return (
         canManageTasks(role) ||
