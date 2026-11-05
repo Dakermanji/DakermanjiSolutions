@@ -123,9 +123,8 @@ export async function editOwnTaskComment({
 	body,
 }) {
 	const mentionUsernames = extractMessageMentionUsernames(body);
-	const task = mentionUsernames.length
-		? await findTaskForMember(taskId, authorUserId)
-		: null;
+	const task = await findTaskForMember(taskId, authorUserId);
+	if (!task) return { status: 'not_editable', message: null };
 	const message = await withTaskMessageTransaction((client) =>
 		updateOwnTaskMessage({
 			messageId,
@@ -136,13 +135,18 @@ export async function editOwnTaskComment({
 		}, client),
 	);
 	if (!message) return { status: 'not_editable', message: null };
-	if (task && message.newlyMentionedUserIds?.length) {
+	broadcastKanbanProjectEvent(task.project_id, 'kanban:task:comment_edited', {
+		taskId,
+		message,
+		actorUserId: authorUserId,
+	});
+	if (message.newlyMentionedUserIds?.length) {
 		await notifyTaskCommentMentions({
 			taskId,
 			taskTitle: task.title,
 			taskMessageId: message.id,
 			actorUserId: authorUserId,
-			actorUsername,
+			actorUsername: authorUsername,
 			recipientUserIds: message.newlyMentionedUserIds,
 		});
 	}
