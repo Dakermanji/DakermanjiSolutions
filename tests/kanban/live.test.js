@@ -1,8 +1,13 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+	broadcastKanbanProjectEvent,
 	getKanbanProjectRoom,
+	getKanbanUserRoom,
+	removeKanbanMemberFromProjectRoom,
+	removeKanbanProjectRoom,
 	registerKanbanSocketHandlers,
+	setKanbanSocketServer,
 } from '../../services/kanban/live.js';
 
 const PROJECT_ID = 'b2d6c1a8-7f44-4a0e-9d27-6b1f8f11c901';
@@ -23,6 +28,15 @@ function createSocket(userId = 'member-user') {
 		rooms,
 		send: (event, ...args) => handlers.get(event)(...args),
 	};
+}
+
+async function withSocketServer(io, callback) {
+	setKanbanSocketServer(io);
+	try {
+		await callback();
+	} finally {
+		setKanbanSocketServer(null);
+	}
 }
 
 test('joins a project room after confirming the authenticated socket user is a member', async () => {
@@ -85,4 +99,56 @@ test('leaves a valid project room when the client requests it', async () => {
 
 	assert.equal(h.rooms.has(room), false);
 	assert.deepEqual(reply, { ok: true });
+});
+
+test('removes a departing member sockets from their project room', async () => {
+	const calls = [];
+	const io = {
+		in: (room) => ({
+			socketsLeave: async (targetRoom) => calls.push({ room, targetRoom }),
+		}),
+	};
+
+	await withSocketServer(io, () => removeKanbanMemberFromProjectRoom(PROJECT_ID, 'former-member'));
+
+	assert.deepEqual(calls, [{
+		room: getKanbanUserRoom('former-member'),
+		targetRoom: getKanbanProjectRoom(PROJECT_ID),
+	}]);
+});
+
+test('removes all sockets from an archived project room', async () => {
+	const calls = [];
+	const io = {
+		in: (room) => ({
+			socketsLeave: async (targetRoom) => calls.push({ room, targetRoom }),
+		}),
+	};
+
+	await withSocketServer(io, () => removeKanbanProjectRoom(PROJECT_ID));
+
+	assert.deepEqual(calls, [{
+		room: getKanbanProjectRoom(PROJECT_ID),
+		targetRoom: getKanbanProjectRoom(PROJECT_ID),
+	}]);
+});
+
+test('broadcasts project events to the project room', async () => {
+	const calls = [];
+	const io = {
+		to: (room) => ({
+			emit: (event, payload) => calls.push({ room, event, payload }),
+		}),
+	};
+	const payload = { projectId: PROJECT_ID, actorUserId: 'member-user' };
+
+	await withSocketServer(io, () => {
+		broadcastKanbanProjectEvent(PROJECT_ID, 'kanban:project:activity_changed', payload);
+	});
+
+	assert.deepEqual(calls, [{
+		room: getKanbanProjectRoom(PROJECT_ID),
+		event: 'kanban:project:activity_changed',
+		payload,
+	}]);
 });
