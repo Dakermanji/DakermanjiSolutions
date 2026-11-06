@@ -13,6 +13,7 @@ export {
 	renderArchivedKanbanTasks,
 	renderKanbanTask,
 	renderKanbanTaskCard,
+	renderKanbanTaskStageOrder,
 	renderKanbanTaskDetails,
 	renderKanbanTaskDiscussion,
 	renderKanbanTaskActivity,

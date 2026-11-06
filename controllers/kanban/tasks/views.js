@@ -4,6 +4,7 @@ export {
 	renderArchivedKanbanTasks,
 	renderKanbanTask,
 	renderKanbanTaskCard,
+	renderKanbanTaskStageOrder,
 	renderKanbanTaskDetails,
 	renderKanbanTaskDiscussion,
 } from './tasks/pages.js';

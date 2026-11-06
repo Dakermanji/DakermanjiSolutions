@@ -1,10 +1,10 @@
 //! controllers/kanban/tasks/pages.js
 
 import {
+	KANBAN_TASK_STAGES,
 	KANBAN_IMPORTANCE_EMOJIS,
 	KANBAN_TASK_LIMITS,
 	KANBAN_TASK_MESSAGE_LIMITS,
-	KANBAN_TASK_STAGES,
 } from '../../../constants/kanban.js';
 import { findProjectForUser, listProjectMembers } from '../../../models/kanban/Projects.js';
 import {
@@ -108,6 +108,25 @@ export async function renderKanbanTaskCard(req, res, next) {
 			stageTasks,
 			stages: KANBAN_TASK_STAGES,
 			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
+		});
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function renderKanbanTaskStageOrder(req, res, next) {
+	try {
+		const { projectId, stage } = req.params;
+		if (!Object.values(KANBAN_TASK_STAGES).includes(stage)) return res.sendStatus(404);
+
+		const project = await findProjectForUser(projectId, req.user.id);
+		if (!project) return res.sendStatus(404);
+
+		const tasks = await listTasksForProject(project.id, req.user.id);
+		return res.json({
+			orderedTaskIds: tasks
+				.filter((task) => task.status === stage)
+				.map((task) => task.id),
 		});
 	} catch (error) {
 		return next(error);

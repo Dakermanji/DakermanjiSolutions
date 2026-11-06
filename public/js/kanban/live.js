@@ -10,6 +10,7 @@
 	const socket = window.io({ withCredentials: true });
 	const board = page.querySelector('[data-kanban-board]');
 	const taskCardRefreshVersions = new Map();
+	const stageOrderRefreshVersions = new Map();
 
 	function beginTaskCardRefresh(taskId) {
 		const version = (taskCardRefreshVersions.get(taskId) || 0) + 1;
@@ -125,6 +126,46 @@
 			}
 			group.replaceChildren(...forms.filter(Boolean));
 			window.AppTooltips?.initIn(group);
+		}
+	}
+
+	async function refreshTaskOrder(status) {
+		const column = board?.querySelector(`[data-kanban-dropzone][data-stage="${CSS.escape(status)}"]`);
+		const list = column?.querySelector('.kanban-task-list');
+		if (!list) return;
+
+		const version = (stageOrderRefreshVersions.get(status) || 0) + 1;
+		stageOrderRefreshVersions.set(status, version);
+		try {
+			const response = await fetch(
+				`/kanban/${encodeURIComponent(projectId)}/task-order/${encodeURIComponent(status)}`,
+				{ credentials: 'same-origin' },
+			);
+			if (!response.ok) return;
+			const { orderedTaskIds } = await response.json();
+			if (
+				!Array.isArray(orderedTaskIds) ||
+				!list.isConnected ||
+				stageOrderRefreshVersions.get(status) !== version
+			) return;
+
+			const cardsById = new Map(
+				[...list.children].map((card) => [card.dataset.taskId, card]),
+			);
+			for (const taskId of orderedTaskIds) {
+				const card = cardsById.get(taskId);
+				if (!card) continue;
+				list.append(card);
+				cardsById.delete(taskId);
+			}
+			for (const card of cardsById.values()) list.append(card);
+			updateTaskOrderControls(list, [...list.children]);
+		} catch (error) {
+			console.error('Kanban task order refresh failed', error);
+		} finally {
+			if (stageOrderRefreshVersions.get(status) === version) {
+				stageOrderRefreshVersions.delete(status);
+			}
 		}
 	}
 
@@ -248,24 +289,8 @@
 		}
 	});
 
-	socket.on('kanban:task:reordered', ({ status, orderedTaskIds } = {}) => {
-		if (!board || !Array.isArray(orderedTaskIds)) return;
-		const column = board.querySelector(`[data-kanban-dropzone][data-stage="${status}"]`);
-		const list = column?.querySelector('.kanban-task-list');
-		if (!list) return;
-
-		const cardsById = new Map(
-			[...list.children].map((card) => [card.dataset.taskId, card]),
-		);
-		for (const taskId of orderedTaskIds) {
-			const card = cardsById.get(taskId);
-			if (card) {
-				list.append(card);
-				cardsById.delete(taskId);
-			}
-		}
-		for (const card of cardsById.values()) list.append(card);
-		updateTaskOrderControls(list, [...list.children]);
+	socket.on('kanban:task:reordered', ({ status } = {}) => {
+		if (typeof status === 'string') void refreshTaskOrder(status);
 	});
 
 	socket.on('kanban:task:archived', async ({ task } = {}) => {
