@@ -17,6 +17,7 @@ import {
 	canChangeTaskAssignee,
 	canChangeTaskStage,
 	canManageTasks,
+	canReorderTask,
 } from '../../../services/kanban/permissions.js';
 import { listTaskMessagesForMember } from '../../../services/kanban/taskMessages.js';
 
@@ -60,7 +61,12 @@ export async function renderKanbanTask(req, res, next) {
 			taskMessageLimits: KANBAN_TASK_MESSAGE_LIMITS,
 			canEditTask,
 			canChangeAssignee,
-			canChangeStage: canChangeTaskStage(task.viewer_role, req.user.id, task.assignee_user_id),
+			canChangeStage: canChangeTaskStage(
+				task.viewer_role,
+				req.user.id,
+				task.assignee_user_id,
+				task.is_overdue,
+			),
 			assignableMembers: canChangeAssignee
 				? members.filter((member) => canAssignTaskToRole(
 					task.viewer_role,
@@ -91,6 +97,12 @@ export async function renderKanbanTaskCard(req, res, next) {
 		const tasks = projectTasks.map((task) => ({
 			...task,
 			canChangeStage: canChangeTaskStage(
+				context.viewer_role,
+				req.user.id,
+				task.assignee_user_id,
+				task.is_overdue,
+			),
+			canReorder: canReorderTask(
 				context.viewer_role,
 				req.user.id,
 				task.assignee_user_id,
@@ -154,6 +166,7 @@ export async function renderKanbanTaskDetails(req, res, next) {
 				task.viewer_role,
 				req.user.id,
 				task.assignee_user_id,
+				task.is_overdue,
 			),
 			assignableMembers: canChangeAssignee
 				? members.filter((member) => canAssignTaskToRole(

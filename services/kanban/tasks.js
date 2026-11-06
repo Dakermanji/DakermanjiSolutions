@@ -85,6 +85,7 @@ export async function changeTaskStage({ taskId, actorUserId, status }) {
 			current.role,
 			actorUserId,
 			current.assignee_user_id,
+			current.is_overdue,
 		)) {
 			await client.query('ROLLBACK');
 			return { status: 'forbidden', task: null };

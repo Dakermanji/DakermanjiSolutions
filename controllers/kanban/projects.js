@@ -22,6 +22,7 @@ import {
 	canBeAssigned,
 	canChangeTaskStage,
 	canManageTasks,
+	canReorderTask,
 } from '../../services/kanban/permissions.js';
 import { archiveProjectWithLog, createProjectWithLog } from '../../services/kanban/projects.js';
 
@@ -81,6 +82,12 @@ export async function renderProject(req, res, next) {
 		const tasks = projectTasks.map((task) => ({
 			...task,
 			canChangeStage: canChangeTaskStage(
+				project.role,
+				req.user.id,
+				task.assignee_user_id,
+				task.is_overdue,
+			),
+			canReorder: canReorderTask(
 				project.role,
 				req.user.id,
 				task.assignee_user_id,

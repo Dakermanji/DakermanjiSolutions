@@ -5,11 +5,12 @@
 	data-task-id="<%= task.id %>"
 	data-task-status="<%= task.status %>"
 	data-task-position="<%= task.position %>"
-	<% if (task.canChangeStage) { %>draggable="true"<% } %>
+	data-can-change-stage="<%= task.canChangeStage %>"
+	<% if (task.canChangeStage || task.canReorder) { %>draggable="true"<% } %>
 >
 	<div class="kanban-task-card-heading">
 		<h3><a href="/kanban/tasks/<%= task.id %>"><%= task.title %></a></h3>
-		<% if (task.importance || task.due_date || task.canChangeStage) { %>
+		<% if (task.importance || task.due_date || task.canChangeStage || task.canReorder) { %>
 			<div class="kanban-task-card-meta">
 				<% if (task.importance) { %>
 					<span class="kanban-task-card-importance has-tooltip" role="img" tabindex="0" aria-label="<%= t(`kanban:importanceLevels.${task.importance}`) %>" data-bs-title="<%= t(`kanban:importanceLevels.${task.importance}`) %>">
@@ -21,7 +22,7 @@
 						<span class="kanban-task-due-emoji" aria-hidden="true">📅</span>
 					</span>
 				<% } %>
-				<% if (task.canChangeStage && stageTasks.length > 1) { %>
+				<% if (task.canReorder && stageTasks.length > 1) { %>
 					<div class="kanban-task-card-order" role="group" aria-label="<%= t('kanban:reorderTask') %>">
 						<% if (taskIndex > 0) { %>
 							<form method="POST" action="/kanban/tasks/reorder">
@@ -77,6 +78,8 @@
 			<input type="hidden" name="status" data-kanban-stage-input>
 			<input type="hidden" name="returnToBoard" value="true">
 		</form>
+	<% } %>
+	<% if (task.canReorder) { %>
 		<form method="POST" action="/kanban/tasks/reorder" hidden data-kanban-reorder-form>
 			<%- include('../partials/_csrf') %>
 			<input type="hidden" name="taskId" value="<%= task.id %>">

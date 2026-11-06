@@ -47,6 +47,7 @@
 				target.classList.add(`is-reorder-${placement}`);
 				return;
 			}
+			if (draggedTask.dataset.canChangeStage !== 'true') return;
 			event.preventDefault();
 			event.dataTransfer.dropEffect = 'move';
 			column.classList.add('is-drop-target');
@@ -73,6 +74,7 @@
 				form.requestSubmit();
 				return;
 			}
+			if (draggedTask.dataset.canChangeStage !== 'true') return;
 			const form = draggedTask.querySelector('[data-kanban-stage-form]');
 			const statusInput = form?.querySelector('[data-kanban-stage-input]');
 			if (!form || !statusInput) return;

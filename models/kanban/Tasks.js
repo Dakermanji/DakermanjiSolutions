@@ -57,7 +57,9 @@ export async function createTask({
 export function listTasksForProject(projectId, viewerUserId) {
 	return queryRows(
 		`SELECT t.id, t.project_id, t.title, t.description, t.status,
-		        t.position, t.due_date::text AS due_date, t.importance, t.creator_user_id,
+		        t.position, t.due_date::text AS due_date,
+		        (t.due_date < CURRENT_DATE) AS is_overdue,
+		        t.importance, t.creator_user_id,
 		        t.assignee_user_id, t.created_at, t.updated_at,
 		        creator.username AS creator_username,
 		        assignee.username AS assignee_username
@@ -93,7 +95,9 @@ export function listArchivedTasksForProject(projectId) {
 export async function findTaskForMember(taskId, viewerUserId) {
 	const rows = await queryRows(
 		`SELECT t.id, t.project_id, t.title, t.description, t.status,
-		        t.position, t.due_date::text AS due_date, t.importance, t.creator_user_id,
+		        t.position, t.due_date::text AS due_date,
+		        (t.due_date < CURRENT_DATE) AS is_overdue,
+		        t.importance, t.creator_user_id,
 		        t.assignee_user_id, t.created_at, t.updated_at,
 		        p.name AS project_name, viewer.role AS viewer_role,
 		        creator.username AS creator_username, creator.email AS creator_email,
@@ -115,6 +119,7 @@ export async function findTaskForMember(taskId, viewerUserId) {
 export async function findTaskStageContext(taskId, actorUserId, db) {
 	const { rows } = await db.query(
 		`SELECT t.id, t.project_id, t.status, t.assignee_user_id,
+		        (t.due_date < CURRENT_DATE) AS is_overdue,
 		        actor.role
 		 FROM kanban_projects p
 		 JOIN kanban_tasks t ON t.project_id = p.id

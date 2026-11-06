@@ -6,7 +6,7 @@ import {
 	listTaskIdsForStage,
 	setTaskOrderForStage,
 } from '../../models/kanban/Tasks.js';
-import { canChangeTaskStage } from './permissions.js';
+import { canReorderTask } from './permissions.js';
 import { broadcastKanbanProjectEvent } from './live.js';
 
 export async function reorderTaskWithinStage({
@@ -19,7 +19,7 @@ export async function reorderTaskWithinStage({
 	try {
 		await client.query('BEGIN');
 		const task = await findTaskStageContext(taskId, actorUserId, client);
-		if (!task || !canChangeTaskStage(task.role, actorUserId, task.assignee_user_id)) {
+		if (!task || !canReorderTask(task.role, actorUserId, task.assignee_user_id)) {
 			await client.query('ROLLBACK');
 			return { status: 'forbidden', task: null };
 		}

@@ -42,7 +42,7 @@ export function canAssignTaskToRole(role, actorUserId, currentAssigneeUserId, ta
     );
 }
 
-export function canChangeTaskStage(role, actorUserId, assigneeUserId) {
+export function canReorderTask(role, actorUserId, assigneeUserId) {
     return (
         canManageTasks(role) ||
         (canBeAssigned(role) &&
@@ -50,6 +50,11 @@ export function canChangeTaskStage(role, actorUserId, assigneeUserId) {
             Boolean(assigneeUserId) &&
             actorUserId === assigneeUserId)
     );
+}
+
+export function canChangeTaskStage(role, actorUserId, assigneeUserId, isOverdue = false) {
+	if (isOverdue) return role === KANBAN_ROLES.OWNER;
+	return canReorderTask(role, actorUserId, assigneeUserId);
 }
 
 export function canPostTaskMessage(role) {
