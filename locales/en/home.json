@@ -168,6 +168,18 @@
 					"main": "Screenshot of the chat app"
 				},
 				"link": "chat"
+			},
+			"kanban": {
+				"title": "Kanban Project Board",
+				"description": "Coordinate team projects with role-based access, task assignments, due dates, discussions, activity logs, and live updates.",
+				"tech": ["Express", "EJS", "PostgreSQL", "Socket.IO"],
+				"images": {
+					"members_pc_dark": "Kanban project members page on desktop in dark mode, showing project roles, the member list, and invitation controls",
+					"projects_mobile_dark": "Kanban project board on a mobile screen in dark mode, showing task columns and cards",
+					"task_pc_dark": "Kanban task details on desktop in dark mode, showing its status, assignee, and discussion",
+					"task_pc_light": "Kanban task details on desktop in light mode, showing its status, assignee, and discussion"
+				},
+				"link": "kanban"
 			}
 		},
 		"under_construction": {

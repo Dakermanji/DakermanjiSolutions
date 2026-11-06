@@ -168,6 +168,18 @@
 					"main": "Capture d’écran de l’application de chat"
 				},
 				"link": "chat"
+			},
+			"kanban": {
+				"title": "Tableau de projet Kanban",
+				"description": "Coordonnez les projets d’équipe grâce aux rôles, à l’attribution des tâches, aux échéances, aux discussions, au journal d’activité et aux mises à jour en temps réel.",
+				"tech": ["Express", "EJS", "PostgreSQL", "Socket.IO"],
+				"images": {
+					"members_pc_dark": "Page des membres d’un projet Kanban sur ordinateur en mode sombre, avec les rôles, la liste des membres et les commandes d’invitation",
+					"projects_mobile_dark": "Tableau de projet Kanban sur téléphone en mode sombre, avec les colonnes et les cartes de tâches",
+					"task_pc_dark": "Détails d’une tâche Kanban sur ordinateur en mode sombre, avec son statut, son responsable et la discussion",
+					"task_pc_light": "Détails d’une tâche Kanban sur ordinateur en mode clair, avec son statut, son responsable et la discussion"
+				},
+				"link": "kanban"
 			}
 		},
 		"under_construction": {
