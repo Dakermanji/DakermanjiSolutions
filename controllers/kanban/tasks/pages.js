@@ -106,7 +106,7 @@ export async function renderKanbanTaskCard(req, res, next) {
 			task,
 			taskIndex,
 			stageTasks,
-			stages: KANBAN_TASK_STAGES,
+			stages: Object.values(KANBAN_TASK_STAGES),
 			importanceEmojis: KANBAN_IMPORTANCE_EMOJIS,
 		});
 	} catch (error) {
