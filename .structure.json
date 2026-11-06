@@ -594,6 +594,7 @@
 			"notifications.js",
 			"profile.js",
 			"publicPagesLang.js",
+			"sitemap.js",
 			"social.js",
 			"theme.js",
 			"weather.js"

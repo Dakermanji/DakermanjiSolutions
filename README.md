@@ -171,7 +171,7 @@ Set `REQUEST_TIMING=false` and restart after diagnosis. The diagnostic file is i
 
 Email verification, password reset, and account deletion store hashed tokens in the database. Shared OAuth account handling lives in `services/auth/oauth.js`, with provider setup in `config/passport/strategies/`. Protected application pages require authentication, and users with incomplete signup are routed through account completion.
 
-`public/robots.txt` is served at `/robots.txt`. It leaves public pages and their rendering assets crawlable and asks crawlers to skip authentication, private application routes, and Socket.IO. It is not access control or a guarantee that a URL will never appear in search results. No sitemap is currently provided.
+`public/robots.txt` provides the crawler rules served at `/robots.txt`; the response adds the `/sitemap.xml` URL from `CLIENT_URL`. It leaves public pages and their rendering assets crawlable and asks crawlers to skip authentication, private application routes, and Socket.IO. The sitemap lists only the language-prefixed homepage and legal pages. These files are not access control or a guarantee that a URL will never appear in search results.
 
 ## Author and license
 

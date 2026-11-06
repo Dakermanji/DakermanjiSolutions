@@ -10,6 +10,7 @@
 import { Router } from 'express';
 import homeRoutes from '../routes/home.js';
 import publicPagesLangRoutes from '../routes/publicPagesLang.js';
+import sitemapRoutes from '../routes/sitemap.js';
 import langRoutes from '../routes/lang.js';
 import authRoutes from '../routes/auth.js';
 import chatRoutes from '../routes/chat.js';
@@ -29,6 +30,7 @@ const router = Router();
 router.use(dynamicRequestLimiter);
 
 // Public home and legal pages support URL-selected and saved languages.
+router.use('/', sitemapRoutes);
 router.use('/', publicPagesLangRoutes);
 
 // Homepage contact form route
