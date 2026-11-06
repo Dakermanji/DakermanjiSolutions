@@ -36,7 +36,9 @@ export function removeKanbanMemberFromProjectRoom(projectId, userId) {
 		.socketsLeave(getKanbanProjectRoom(projectId));
 }
 
-export function registerKanbanSocketHandlers(socket) {
+export function registerKanbanSocketHandlers(socket, {
+	findProject = findProjectForUser,
+} = {}) {
 	socket.on('kanban:project:join', async (payload, acknowledge) => {
 		const projectId = String(payload?.projectId || '').trim();
 		if (!isValidUuid(projectId)) {
@@ -46,7 +48,7 @@ export function registerKanbanSocketHandlers(socket) {
 
 		const room = getKanbanProjectRoom(projectId);
 		try {
-			const project = await findProjectForUser(projectId, socket.data.userId);
+			const project = await findProject(projectId, socket.data.userId);
 			if (!project) {
 				await socket.leave(room);
 				acknowledge?.({ ok: false });

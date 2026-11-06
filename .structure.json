@@ -768,6 +768,7 @@
 	],
 	"tests": {
 		"kanban": [
+			"live.test.js",
 			"permissions.test.js"
 		],
 		"presence": [
