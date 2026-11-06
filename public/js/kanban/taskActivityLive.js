@@ -9,8 +9,10 @@
 	if (!projectId || !taskId) return;
 
 	const socket = window.io({ withCredentials: true });
+	let activityRefreshVersion = 0;
 
 	async function refreshTaskActivity() {
+		const version = ++activityRefreshVersion;
 		const response = await fetch(
 			`/kanban/tasks/${encodeURIComponent(taskId)}/activity/events`,
 			{ credentials: 'same-origin' },
@@ -21,7 +23,9 @@
 		template.innerHTML = (await response.text()).trim();
 		const updated = template.content.querySelector('.kanban-panel');
 		const current = page.querySelector('.kanban-panel');
-		if (updated && current?.isConnected) current.replaceWith(updated);
+		if (updated && current?.isConnected && version === activityRefreshVersion) {
+			current.replaceWith(updated);
+		}
 	}
 
 	for (const event of [
