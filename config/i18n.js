@@ -24,6 +24,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { SUPPORTED_LANGUAGE_CODES } from './languages.js';
+import env from './dotenv.js';
 
 // WHC loads the entry module synchronously, so use the backend's CJS build.
 const require = createRequire(import.meta.url);
@@ -90,6 +91,9 @@ const i18nReady = i18next
 		// Disable HTML escaping (EJS already escapes output)
 		interpolation: {
 			escapeValue: false,
+			defaultVariables: {
+				companyName: env.COMPANY_NAME,
+			},
 		},
 
 		// Enable returning objects

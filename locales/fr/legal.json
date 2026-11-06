@@ -3,7 +3,7 @@
 		"metaTitle": "Politique de confidentialité",
 		"kicker": "Votre vie privée",
 		"title": "Politique de confidentialité",
-		"summary": "Dakermanji Solutions est un site portfolio et de démonstration. Cette politique explique comment nous traitons les renseignements personnels, notamment les messages de clavardage stockés sous forme lisible et les données qui peuvent être supprimées lors de réinitialisations du site.",
+		"summary": "{{companyName}} est un site portfolio et de démonstration. Cette politique explique comment nous traitons les renseignements personnels, notamment les messages de clavardage stockés sous forme lisible et les données qui peuvent être supprimées lors de réinitialisations du site.",
 		"lastUpdatedLabel": "Dernière mise à jour :",
 		"lastUpdated": "2 octobre 2026",
 		"contentsLabel": "Sur cette page",
@@ -12,7 +12,7 @@
 				"id": "responsibility",
 				"title": "1. Personne responsable",
 				"paragraphs": [
-					"Dakermanji Solutions est le nom d’exploitation public de Behnam Dakermanji, établi à Laval, Québec, Canada. Behnam Dakermanji est responsable de la protection des renseignements personnels."
+					"{{companyName}} est le nom d’exploitation public de Behnam Dakermanji, établi à Laval, Québec, Canada. Behnam Dakermanji est responsable de la protection des renseignements personnels."
 				],
 				"email": { "label": "Contact pour la vie privée : " }
 			},
@@ -129,7 +129,7 @@
 				"id": "operator",
 				"title": "1. Exploitant du service",
 				"paragraphs": [
-					"Dakermanji Solutions est le nom d’exploitation public de Behnam Dakermanji, établi à Laval, Québec, Canada. Toute mention de « Dakermanji Solutions », « nous », « notre » ou « nos » désigne Behnam Dakermanji exerçant ses activités sous ce nom."
+					"{{companyName}} est le nom d’exploitation public de Behnam Dakermanji, établi à Laval, Québec, Canada. Toute mention de « {{companyName}} », « nous », « notre » ou « nos » désigne Behnam Dakermanji exerçant ses activités sous ce nom."
 				],
 				"email": { "label": "Contact : " }
 			},
@@ -219,7 +219,7 @@
 				"id": "liability",
 				"title": "11. Limitation de responsabilité",
 				"paragraphs": [
-					"Dans toute la mesure permise par la loi applicable, Dakermanji Solutions n’est pas responsable des dommages indirects, accessoires, spéciaux, consécutifs ou punitifs, ni de la perte de données, d’occasions, de réputation ou de profits découlant de l’utilisation ou de l’impossibilité d’utiliser le service. Rien dans ces conditions n’exclut ni ne limite une responsabilité, une garantie, un recours ou un droit du consommateur qui ne peut légalement être exclu ou limité."
+					"Dans toute la mesure permise par la loi applicable, {{companyName}} n’est pas responsable des dommages indirects, accessoires, spéciaux, consécutifs ou punitifs, ni de la perte de données, d’occasions, de réputation ou de profits découlant de l’utilisation ou de l’impossibilité d’utiliser le service. Rien dans ces conditions n’exclut ni ne limite une responsabilité, une garantie, un recours ou un droit du consommateur qui ne peut légalement être exclu ou limité."
 				]
 			},
 			{

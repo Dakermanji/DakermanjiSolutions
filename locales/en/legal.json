@@ -3,7 +3,7 @@
 		"metaTitle": "Privacy Policy",
 		"kicker": "Your privacy",
 		"title": "Privacy Policy",
-		"summary": "Dakermanji Solutions is a portfolio and demonstration website. This policy explains how we handle personal information, including chat messages stored as readable text and data that may be removed during site resets.",
+		"summary": "{{companyName}} is a portfolio and demonstration website. This policy explains how we handle personal information, including chat messages stored as readable text and data that may be removed during site resets.",
 		"lastUpdatedLabel": "Last updated:",
 		"lastUpdated": "October 2, 2026",
 		"contentsLabel": "On this page",
@@ -12,7 +12,7 @@
 				"id": "responsibility",
 				"title": "1. Who is responsible",
 				"paragraphs": [
-					"Dakermanji Solutions is the public operating name of Behnam Dakermanji, based in Laval, Québec, Canada. Behnam Dakermanji is responsible for protecting personal information and acts as the Privacy Officer."
+					"{{companyName}} is the public operating name of Behnam Dakermanji, based in Laval, Québec, Canada. Behnam Dakermanji is responsible for protecting personal information and acts as the Privacy Officer."
 				],
 				"email": { "label": "Privacy contact: " }
 			},
@@ -129,7 +129,7 @@
 				"id": "operator",
 				"title": "1. Service operator",
 				"paragraphs": [
-					"Dakermanji Solutions is the public operating name of Behnam Dakermanji, based in Laval, Québec, Canada. References to “Dakermanji Solutions,” “we,” “us,” or “our” mean Behnam Dakermanji operating under that name."
+					"{{companyName}} is the public operating name of Behnam Dakermanji, based in Laval, Québec, Canada. References to “{{companyName}},” “we,” “us,” or “our” mean Behnam Dakermanji operating under that name."
 				],
 				"email": { "label": "Contact: " }
 			},
@@ -219,7 +219,7 @@
 				"id": "liability",
 				"title": "11. Limitation of liability",
 				"paragraphs": [
-					"To the maximum extent permitted by applicable law, Dakermanji Solutions is not liable for indirect, incidental, special, consequential, or punitive damages, or for loss of data, opportunity, reputation, or profits arising from use of or inability to use the service. Nothing in these terms excludes or limits liability, warranties, remedies, or consumer rights that cannot lawfully be excluded or limited."
+					"To the maximum extent permitted by applicable law, {{companyName}} is not liable for indirect, incidental, special, consequential, or punitive damages, or for loss of data, opportunity, reputation, or profits arising from use of or inability to use the service. Nothing in these terms excludes or limits liability, warranties, remedies, or consumer rights that cannot lawfully be excluded or limited."
 				]
 			},
 			{
