@@ -13,6 +13,7 @@ A multilingual portfolio and server-rendered web application with user accounts,
 - **Profile:** username, country, DiceBear avatars, login methods, and email-confirmed account deletion.
 - **Social:** follow requests, followers, followees, blocking, and live updates.
 - **Chat:** direct conversations, private self-notes, rooms, join requests, invitations, message reactions, mentions, message flags, and room activity logs.
+- **Kanban:** collaborative projects with role-based membership, task assignment and ordering, discussions, activity logs, and live updates.
 - **Presence:** Available, Away, Busy, and Offline indicators in the navbar, social lists, Chat Friends, friend conversations, and room member lists.
 - **Notifications:** an application inbox, unread badges, previews, and real-time updates.
 - **Weather:** city search, five-day forecasts, metric/imperial units, localized locations, and optional Unsplash backgrounds.
@@ -102,7 +103,7 @@ npm start
 
 Both commands preload `instrument.js` for Sentry initialization. Startup waits for translations and checks PostgreSQL connectivity before listening. The SMTP connection is verified separately and reports failures in the logs.
 
-There is currently no `npm test` script. Run the presence tests with `node --test tests/presence/*.test.js`, and verify affected flows manually after changes, including sign-in, protected pages, and any changed real-time features.
+There is currently no `npm test` script. Run the presence tests with `node --test tests/presence/*.test.js` and the Kanban tests with `node --test tests/kanban/*.test.js`. Verify affected flows manually after changes, including sign-in, protected pages, and real-time behavior across multiple users or tabs.
 
 ## Production deployment
 
