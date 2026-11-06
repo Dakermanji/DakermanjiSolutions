@@ -14,6 +14,7 @@ import {
 
 async function sendAssignmentNotifications({ taskId, actorUserId, taskTitle, recipients }) {
 	for (const [recipientUserId, notificationType] of recipients) {
+		if (!recipientUserId || recipientUserId === actorUserId) continue;
 		try {
 			const isNewAssignee = notificationType === 'assigned';
 			const result = await createNotification({
