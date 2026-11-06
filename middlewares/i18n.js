@@ -24,6 +24,11 @@ function setLocalizedSeoUrls(res, lang, pagePath) {
 		: env.CLIENT_URL;
 	const getLanguagePath = (code) => `/${code}${pagePath}`;
 
+	res.locals.metaImage = new URL(
+		'/favicons/light/android-chrome-512x512.png',
+		`${siteUrl}/`,
+	).toString();
+	res.locals.metaImageAlt = `${env.COMPANY_NAME} logo`;
 	res.locals.canonicalUrl = new URL(getLanguagePath(lang), `${siteUrl}/`).toString();
 	res.locals.hreflangUrls = SUPPORTED_LANGUAGE_CODES.map((code) => ({
 		lang: code,

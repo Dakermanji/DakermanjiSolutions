@@ -52,7 +52,7 @@ Edit the example values before starting. Configuration is defined in `config/dot
 
 | Group | Variables | Notes |
 | --- | --- | --- |
-| Application | `NODE_ENV`, `PORT`, `CLIENT_URL` | Local defaults are development, port 3000, and `http://localhost:3000`. |
+| Application | `NODE_ENV`, `PORT`, `CLIENT_URL`, `COMPANY_NAME` | Local defaults are development, port 3000, `http://localhost:3000`, and `Dakermanji Solutions`. |
 | Sessions | `SESSION_SECRET` | Required; use a long random secret. |
 | PostgreSQL | `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Password is required. Use the actual database host and credentials. |
 | Database TLS | `DB_SSL`, `DB_SSL_CA_PATH` | Set `DB_SSL=false` for a local database without TLS. For TLS, use `true`; provide a CA path only when needed. Certificate verification remains enabled. |

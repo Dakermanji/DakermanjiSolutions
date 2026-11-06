@@ -35,6 +35,7 @@ export default function configureLocals(app) {
 
 		// Passing email for consistency
 		res.locals.email = env.EMAIL_ADMIN;
+		res.locals.companyName = env.COMPANY_NAME;
 
 		// Flash locals:
 		// Keep modal feedback for the next HTML page when JSON is fetched.

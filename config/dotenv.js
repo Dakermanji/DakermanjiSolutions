@@ -35,6 +35,9 @@ const env = {
 	/** Base URL used for server/client references */
 	CLIENT_URL: optionalEnv('CLIENT_URL', 'http://localhost:3000'),
 
+	/** Public business name used in page metadata */
+	COMPANY_NAME: optionalEnv('COMPANY_NAME', 'Dakermanji Solutions'),
+
 	/** Sentry Data Source Name used for remote error monitoring */
 	SENTRY_DSN: optionalEnv('SENTRY_DSN', ''),
 

@@ -7,6 +7,8 @@ import logger from '../config/logger.js';
 import { getLocale } from '../services/i18n/locale.js';
 import { getCountryOptions } from '../services/country/list.js';
 import { createAvatarStyleOptions } from '../services/avatar/dicebear.js';
+import env from '../config/dotenv.js';
+import { SUPPORTED_LANGUAGE_CODES } from '../config/languages.js';
 
 /**
  * Home Controller
@@ -33,11 +35,60 @@ function normalizeSubject(value) {
  */
 export function renderHome(req, res) {
 	const locale = getLocale(req);
+	const siteUrl = new URL('/', env.CLIENT_URL).origin;
+	const organizationId = `${siteUrl}/#organization`;
+	const personId = `${siteUrl}/#behnam-dakermanji`;
+	const logoUrl = res.locals.metaImage;
+	const structuredData = {
+		'@context': 'https://schema.org',
+		'@graph': [
+			{
+				'@type': 'WebSite',
+				'@id': `${siteUrl}/#website`,
+				url: `${siteUrl}/en`,
+				name: env.COMPANY_NAME,
+				inLanguage: SUPPORTED_LANGUAGE_CODES,
+				publisher: { '@id': organizationId },
+			},
+			{
+				'@type': 'Organization',
+				'@id': organizationId,
+				name: env.COMPANY_NAME,
+				description: req.t('home:metaDescription'),
+				url: siteUrl,
+				logo: {
+					'@type': 'ImageObject',
+					url: logoUrl,
+					contentUrl: logoUrl,
+					width: 512,
+					height: 512,
+				},
+				founder: { '@id': personId },
+			},
+			{
+				'@type': 'Person',
+				'@id': personId,
+				name: 'Behnam Dakermanji',
+				url: `${siteUrl}/en`,
+				jobTitle: 'Secure Web and Backend Systems Developer',
+				description: req.t('home:metaDescription'),
+				address: {
+					'@type': 'PostalAddress',
+					addressLocality: 'Laval',
+					addressRegion: 'Quebec',
+					addressCountry: 'CA',
+				},
+				worksFor: { '@id': organizationId },
+			},
+		],
+	};
+	const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
 
 	res.render('home/main', {
 		titleKey: 'home:title',
 		metaTitle: req.t('home:metaTitle'),
 		metaDescription: req.t('home:metaDescription'),
+		structuredDataJson,
 		styles: [
 			'home/main',
 			'home/hero',
