@@ -7,8 +7,8 @@ export {
 	renderKanbanTaskStageOrder,
 	renderKanbanTaskDetails,
 	renderKanbanTaskDiscussion,
-} from './tasks/pages.js';
+} from './pages.js';
 export {
 	renderKanbanTaskActivity,
 	renderKanbanTaskActivityEvents,
-} from './tasks/activity.js';
+} from './activity.js';
