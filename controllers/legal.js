@@ -7,9 +7,10 @@
  * @param {import('express').Response} res
  * @returns {void}
  */
-export function renderPrivacyPolicy(_req, res) {
+export function renderPrivacyPolicy(req, res) {
 	res.render('legal/privacy', {
 		titleKey: 'legal:privacy.metaTitle',
+		metaDescription: req.t('legal:privacy.summary'),
 		styles: ['legal/main'],
 		scripts: [],
 	});
@@ -22,9 +23,10 @@ export function renderPrivacyPolicy(_req, res) {
  * @param {import('express').Response} res
  * @returns {void}
  */
-export function renderTermsOfService(_req, res) {
+export function renderTermsOfService(req, res) {
 	res.render('legal/terms', {
 		titleKey: 'legal:terms.metaTitle',
+		metaDescription: req.t('legal:terms.summary'),
 		styles: ['legal/main'],
 		scripts: [],
 	});

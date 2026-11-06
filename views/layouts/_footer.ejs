@@ -9,8 +9,9 @@
 			<%= t('footer.rights') %>
 		</p>
 		<nav class="footer-legal" aria-label="<%= t('footer.legal') %>">
-			<a href="/legal/privacy"><%= t('footer.privacy') %></a>
-			<a href="/legal/terms"><%= t('footer.terms') %></a>
+			<% const hasLanguagePrefix = /^\/(?:ar|en|fr)(?:\/|$)/.test(currentUrl.split(/[?#]/)[0]); %>
+			<a href="<%= hasLanguagePrefix || currentLang !== 'en' ? `/${currentLang}/legal/privacy` : '/legal/privacy' %>"><%= t('footer.privacy') %></a>
+			<a href="<%= hasLanguagePrefix || currentLang !== 'en' ? `/${currentLang}/legal/terms` : '/legal/terms' %>"><%= t('footer.terms') %></a>
 		</nav>
 		<a
 			href="#top"

@@ -114,7 +114,6 @@
 		"~": [
 			"avatar.js",
 			"home.js",
-			"legal.js",
 			"lang.js",
 			"profile.js",
 			"theme.js"
@@ -591,10 +590,10 @@
 			"chat.js",
 			"home.js",
 			"kanban.js",
-			"legal.js",
 			"lang.js",
 			"notifications.js",
 			"profile.js",
+			"publicPagesLang.js",
 			"social.js",
 			"theme.js",
 			"weather.js"

@@ -1,7 +1,7 @@
 <!--! views/layouts/_navBrand.ejs -->
 <a
 class="navbar-brand has-tooltip"
-href="/"
+href="<%= /^\/(?:ar|en|fr)(?:\/|$)/.test(currentUrl.split(/[?#]/)[0]) ? `/${currentLang}` : (currentLang === 'en' ? '/' : `/${currentLang}`) %>"
 aria-label="<%= t('nav.home') %>"
 data-bs-title="<%= t('nav.home') %>"
 >

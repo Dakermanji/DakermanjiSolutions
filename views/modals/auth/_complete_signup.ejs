@@ -217,9 +217,9 @@
 						/>
 						<label class="form-check-label" for="legalAcceptance">
 							<%= t('auth:signup.legalAcceptancePrefix') %>
-							<a href="/legal/terms" target="_blank" rel="noopener noreferrer"><%= t('auth:signup.terms') %></a>
+							<a href="<%= /^\/(?:ar|en|fr)(?:\/|$)/.test(currentUrl.split(/[?#]/)[0]) || currentLang !== 'en' ? `/${currentLang}/legal/terms` : '/legal/terms' %>" target="_blank" rel="noopener noreferrer"><%= t('auth:signup.terms') %></a>
 							<%= t('auth:signup.legalAcceptanceConnector') %>
-							<a href="/legal/privacy" target="_blank" rel="noopener noreferrer"><%= t('auth:signup.privacyPolicy') %></a>.
+							<a href="<%= /^\/(?:ar|en|fr)(?:\/|$)/.test(currentUrl.split(/[?#]/)[0]) || currentLang !== 'en' ? `/${currentLang}/legal/privacy` : '/legal/privacy' %>" target="_blank" rel="noopener noreferrer"><%= t('auth:signup.privacyPolicy') %></a>.
 						</label>
 					</div>
 

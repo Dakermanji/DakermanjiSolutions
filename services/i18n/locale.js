@@ -56,6 +56,7 @@ export function setLangCookie(res, lang) {
  */
 export function getLocale(req) {
 	return (
+		getSupportedLocale(req.publicLocale) ||
 		getSupportedLocale(req.user?.locale) ||
 		getSupportedLocale(req.session?.oauthLocale) ||
 		getSupportedLocale(req.language) ||

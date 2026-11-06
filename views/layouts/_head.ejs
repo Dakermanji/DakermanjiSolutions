@@ -10,18 +10,26 @@
     <meta name="theme-color" content="#ff7f27" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
 
-    <meta name="description" content="Dakermanji Solutions builds secure web and backend systems for practical business needs." />
+    <% const resolvedTitle = typeof metaTitle === 'string' ? metaTitle : (typeof titleKey !== 'undefined' ? `${t(titleKey)} 🔸 Dakermanji Solutions` : 'Dakermanji Solutions'); %>
+    <% const resolvedDescription = typeof metaDescription === 'string' ? metaDescription : 'Dakermanji Solutions builds secure web and backend systems for practical business needs.'; %>
+    <meta name="description" content="<%= resolvedDescription %>" />
     <meta name="keywords" content="Dakermanji Solutions, secure web development, backend systems, API development, Montreal developer" />
 
-    <!-- TODO: SEO -->
-    <meta property="og:title" content="Dakermanji Solutions" />
+    <meta property="og:title" content="<%= resolvedTitle %>" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="" />
+    <meta property="og:url" content="<%= typeof canonicalUrl === 'string' ? canonicalUrl : '' %>" />
     <meta property="og:image" content="" />
-    <meta property="og:description" content="Secure web and backend systems for practical business needs." />
+    <meta property="og:description" content="<%= resolvedDescription %>" />
+
+    <% if (typeof canonicalUrl === 'string') { %>
+    <link rel="canonical" href="<%= canonicalUrl %>" />
+    <% (hreflangUrls || []).forEach((alternate) => { %>
+    <link rel="alternate" hreflang="<%= alternate.lang %>" href="<%= alternate.url %>" />
+    <% }) %>
+    <% } %>
 
     <title>
-      <%= typeof titleKey !== 'undefined' ? `${t(titleKey)} 🔸 Dakermanji Solutions` : 'Dakermanji Solutions' %>
+      <%= resolvedTitle %>
     </title>
 
     <script src="/js/root/themeInit.js"></script>

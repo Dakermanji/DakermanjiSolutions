@@ -36,6 +36,8 @@ export function renderHome(req, res) {
 
 	res.render('home/main', {
 		titleKey: 'home:title',
+		metaTitle: req.t('home:metaTitle'),
+		metaDescription: req.t('home:metaDescription'),
 		styles: [
 			'home/main',
 			'home/hero',

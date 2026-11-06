@@ -1,5 +1,10 @@
 <!--! views/layouts/_navLang.ejs -->
 <% const langTrigger = t('nav.langTrigger') %>
+<% const currentPath = currentUrl.split(/[?#]/)[0].replace(/\/+$/, '') || '/'; %>
+<% const prefixedPublicPage = currentPath.match(/^\/(?:ar|en|fr)(\/legal\/(?:privacy|terms))?$/); %>
+<% const unprefixedLegalPage = currentPath.match(/^\/legal\/(?:privacy|terms)$/); %>
+<% const isPublicHomeOrLegal = currentPath === '/' || Boolean(prefixedPublicPage || unprefixedLegalPage); %>
+<% const publicPageSuffix = prefixedPublicPage ? (prefixedPublicPage[1] || '') : (unprefixedLegalPage ? unprefixedLegalPage[0] : ''); %>
 <li class="nav-item dropdown">
     <a
     class="nav-link"
@@ -33,7 +38,7 @@
                 <% const isCurrent = currentLang === lang.code; %>
                 <a
                 class="d-flex justify-content-between dropdown-item <%= isCurrent ? 'active pe-none' : '' %>"
-                href="<%= isCurrent ? '#' : `/language/${lang.code}?returnTo=${encodeURIComponent(currentUrl)}` %>"
+                href="<%= isCurrent ? '#' : (isPublicHomeOrLegal ? `/${lang.code}${publicPageSuffix}` : `/language/${lang.code}?returnTo=${encodeURIComponent(currentUrl)}`) %>"
                 aria-current="<%= isCurrent ? 'true' : 'false' %>"
                 >
                     <span class='align-self-start'><%= lang.name %></span>

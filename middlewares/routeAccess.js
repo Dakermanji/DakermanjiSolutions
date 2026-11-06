@@ -7,6 +7,8 @@
  * back to the homepage for protected application routes.
  */
 
+import { SUPPORTED_LANGUAGE_CODES } from '../config/languages.js';
+
 const PUBLIC_EXACT_ROUTES = new Set(['/']);
 
 const PUBLIC_PREFIXES = [
@@ -25,6 +27,10 @@ const PUBLIC_PREFIXES = [
 ];
 
 const ASSET_PATH_PATTERN = /\.[a-z0-9]+$/i;
+const LANGUAGE_CODE_PATTERN = SUPPORTED_LANGUAGE_CODES.join('|');
+const LOCALIZED_PUBLIC_PATH_PATTERN = new RegExp(
+	`^/(?:${LANGUAGE_CODE_PATTERN})(?:/legal/(?:privacy|terms))?/?$`,
+);
 
 function normalizePath(path = '/') {
 	if (path.length > 1) {
@@ -35,7 +41,7 @@ function normalizePath(path = '/') {
 }
 
 function isPublicRoute(path) {
-	if (PUBLIC_EXACT_ROUTES.has(path)) {
+	if (PUBLIC_EXACT_ROUTES.has(path) || LOCALIZED_PUBLIC_PATH_PATTERN.test(path)) {
 		return true;
 	}
 
