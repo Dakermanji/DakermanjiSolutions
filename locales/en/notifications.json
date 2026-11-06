@@ -58,6 +58,14 @@
 			"title": "Task assigned to you",
 			"body": "You were assigned {{taskTitle}}."
 		},
+		"kanbanTaskDueSoon": {
+			"title": "🔥 Task due within 24 hours",
+			"body": "{{taskTitle}} is due within 24 hours."
+		},
+		"kanbanTaskOverdue": {
+			"title": "🚫 Task is overdue",
+			"body": "{{taskTitle}} is past its due date."
+		},
 		"kanbanTaskReassigned": {
 			"title": "Task reassigned",
 			"body": "{{taskTitle}} was reassigned."

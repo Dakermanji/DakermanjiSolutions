@@ -58,6 +58,14 @@
 			"title": "أُسندت إليك مهمة",
 			"body": "أُسندت إليك المهمة {{taskTitle}}."
 		},
+		"kanbanTaskDueSoon": {
+			"title": "🔥 تبقى أقل من 24 ساعة على موعد المهمة",
+			"body": "موعد المهمة {{taskTitle}} خلال أقل من 24 ساعة."
+		},
+		"kanbanTaskOverdue": {
+			"title": "🚫 انتهى موعد المهمة",
+			"body": "تجاوزت المهمة {{taskTitle}} موعدها المحدد."
+		},
 		"kanbanTaskReassigned": {
 			"title": "إعادة إسناد مهمة",
 			"body": "أُعيد إسناد المهمة {{taskTitle}}."

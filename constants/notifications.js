@@ -19,6 +19,8 @@ export const NOTIFICATION_PRIORITIES = Object.freeze({
 export const NOTIFICATION_TYPES = Object.freeze({
 	KANBAN_PROJECT_INVITATION: 'kanban_project_invitation',
 	KANBAN_TASK_ASSIGNED: 'kanban_task_assigned',
+	KANBAN_TASK_DUE_SOON: 'kanban_task_due_soon',
+	KANBAN_TASK_OVERDUE: 'kanban_task_overdue',
 	KANBAN_TASK_MESSAGE_MENTION: 'kanban_task_message_mention',
 	KANBAN_TASK_REASSIGNED: 'kanban_task_reassigned',
 	KANBAN_TASK_UNASSIGNED: 'kanban_task_unassigned',

@@ -26,6 +26,8 @@ export const KANBAN_TASK_MESSAGE_LIMITS = Object.freeze({
 	EDIT_WINDOW_MS: 2 * 60 * 1000,
 });
 
+export const KANBAN_TASK_DUE_NOTIFICATION_INTERVAL_MS = 15 * 60 * 1000;
+
 export const KANBAN_TASK_STAGES = Object.freeze({
 	PENDING: 'pending',
 	IN_PROGRESS: 'in_progress',

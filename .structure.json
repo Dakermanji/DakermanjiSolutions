@@ -696,6 +696,7 @@
 			"projects.js",
 			"taskAssignments.js",
 			"taskCreation.js",
+			"taskDueNotifications.js",
 			"taskEvents.js",
 			"taskOrdering.js",
 			"taskMessages.js",

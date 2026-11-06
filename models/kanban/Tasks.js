@@ -78,6 +78,51 @@ export function listTasksForProject(projectId, viewerUserId) {
 	);
 }
 
+export function listTasksDueForNotifications({ appKey, entityType, dueSoonType, overdueType }) {
+	return queryRows(
+		`WITH due_tasks AS (
+			SELECT t.id, t.title, t.assignee_user_id, p.owner_user_id,
+			       CASE WHEN t.due_date = CURRENT_DATE THEN 'due_soon'
+			            ELSE 'overdue' END AS due_state
+			FROM kanban_tasks t
+			JOIN kanban_projects p ON p.id = t.project_id
+			WHERE t.due_date <= CURRENT_DATE
+			  AND t.status <> 'done'
+			  AND t.archived_at IS NULL
+			  AND p.archived_at IS NULL
+		)
+		SELECT due_tasks.*
+		FROM due_tasks
+		WHERE NOT EXISTS (
+			SELECT 1 FROM app_notifications notification
+			WHERE notification.recipient_user_id = due_tasks.owner_user_id
+			  AND notification.app_key = $1
+			  AND notification.type = CASE due_tasks.due_state
+			    WHEN 'due_soon' THEN $3 ELSE $4 END
+			  AND notification.entity_type = $2
+			  AND notification.entity_id = due_tasks.id
+			  AND notification.responded_at IS NULL
+			  AND (notification.expires_at IS NULL OR notification.expires_at > NOW())
+		)
+		OR (
+			due_tasks.assignee_user_id IS NOT NULL
+			AND due_tasks.assignee_user_id <> due_tasks.owner_user_id
+			AND NOT EXISTS (
+				SELECT 1 FROM app_notifications notification
+				WHERE notification.recipient_user_id = due_tasks.assignee_user_id
+				  AND notification.app_key = $1
+				  AND notification.type = CASE due_tasks.due_state
+				    WHEN 'due_soon' THEN $3 ELSE $4 END
+				  AND notification.entity_type = $2
+				  AND notification.entity_id = due_tasks.id
+				  AND notification.responded_at IS NULL
+				  AND (notification.expires_at IS NULL OR notification.expires_at > NOW())
+			)
+		)`,
+		[appKey, entityType, dueSoonType, overdueType],
+	);
+}
+
 export function listArchivedTasksForProject(projectId) {
 	return queryRows(
 		`SELECT t.id, t.title, t.status, t.archived_at,

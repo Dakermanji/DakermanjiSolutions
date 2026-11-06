@@ -20,6 +20,7 @@ import { i18nReady } from './config/i18n.js';
 import logger from './config/logger.js';
 import { testDatabaseConnection } from './config/database.js';
 import configureSocket from './config/socket.js';
+import { startKanbanTaskDueNotificationScheduler } from './services/kanban/taskDueNotifications.js';
 
 /**
  * Bootstrap and start the server
@@ -59,6 +60,9 @@ async function startServer() {
 		});
 
 		configureSocket(server);
+		const stopKanbanTaskDueNotificationScheduler =
+			startKanbanTaskDueNotificationScheduler();
+		server.once('close', stopKanbanTaskDueNotificationScheduler);
 
 		/**
 		 * Register global process-level error handlers
