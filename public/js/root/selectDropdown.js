@@ -4,9 +4,24 @@
 	if (!window.bootstrap?.Dropdown) return;
 	const initializedSelects = new WeakSet();
 
-	function showOption(container, option) {
+	function showOption(container, option, direction = 'ltr') {
 		const label = document.createElement('span');
 		label.className = 'app-select__label';
+		if (option.dataset.selectUsername !== undefined && option.dataset.selectRole !== undefined) {
+			label.classList.add('app-select__member-label');
+			label.dir = direction;
+			const username = document.createElement('span');
+			username.className = 'app-select__member-name';
+			username.dir = 'ltr';
+			username.textContent = option.dataset.selectUsername;
+			const role = document.createElement('span');
+			role.className = 'app-select__member-role';
+			role.dir = 'auto';
+			role.textContent = `(${option.dataset.selectRole})`;
+			label.replaceChildren(username, role);
+			container.replaceChildren(label);
+			return;
+		}
 		label.textContent = option.textContent.trim();
 		const iconClass = option.dataset.iconClass;
 		const iconText = option.dataset.iconText;
@@ -71,7 +86,7 @@
 
 			function syncSelection() {
 				const selectedOption = select.selectedOptions[0];
-				if (selectedOption) showOption(toggle, selectedOption);
+				if (selectedOption) showOption(toggle, selectedOption, select.dir || 'ltr');
 				else toggle.replaceChildren();
 				for (const { option, item } of items) {
 					const selected = option.selected;

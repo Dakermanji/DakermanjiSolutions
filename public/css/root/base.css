@@ -310,3 +310,23 @@ h6 {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+.app-select__member-label {
+	display: flex;
+	align-items: center;
+	gap: .25rem;
+	width: 100%;
+	white-space: nowrap;
+}
+
+.app-select__member-name {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	unicode-bidi: isolate;
+}
+
+.app-select__member-role {
+	flex: 0 0 auto;
+	unicode-bidi: isolate;
+}

@@ -30,14 +30,15 @@
 							<%- include('../partials/_csrf') %>
 							<input type="hidden" name="taskId" value="<%= task.id %>">
 							<label for="task-assignee-change" class="visually-hidden"><%= t('kanban:assignedTo') %></label>
-							<select id="task-assignee-change" name="assigneeUserId" dir="ltr" class="form-select w-auto" data-app-select data-initial-value="<%= task.assignee_user_id || '' %>" data-kanban-change-select>
+							<select id="task-assignee-change" name="assigneeUserId" dir="<%= currentLang === 'ar' ? 'rtl' : 'ltr' %>" class="form-select w-auto" data-app-select data-initial-value="<%= task.assignee_user_id || '' %>" data-kanban-change-select>
 								<% if (canEditTask) { %>
 									<option value="" <%= !task.assignee_user_id ? 'selected' : '' %>><%= t('kanban:unassigned') %></option>
 								<% } else { %>
-									<option value="<%= task.assignee_user_id %>" selected><%= task.assignee_username || task.assignee_email %> (<%= t(`kanban:roles.${task.viewer_role}`) %>)</option>
+									<% const assigneeName = task.assignee_username || task.assignee_email; const assigneeRole = t(`kanban:roles.${task.viewer_role}`); %>
+									<option value="<%= task.assignee_user_id %>" data-select-username="<%= assigneeName %>" data-select-role="<%= assigneeRole %>" selected><%= assigneeName %> (<%= assigneeRole %>)</option>
 								<% } %>
-								<% assignableMembers.forEach((member) => { %>
-									<option value="<%= member.user_id %>" <%= member.user_id === task.assignee_user_id ? 'selected' : '' %>><%= member.username || member.email %> (<%= t(`kanban:roles.${member.role}`) %>)</option>
+								<% assignableMembers.forEach((member) => { const memberName = member.username || member.email; const memberRole = t(`kanban:roles.${member.role}`); %>
+									<option value="<%= member.user_id %>" data-select-username="<%= memberName %>" data-select-role="<%= memberRole %>" <%= member.user_id === task.assignee_user_id ? 'selected' : '' %>><%= memberName %> (<%= memberRole %>)</option>
 								<% }) %>
 							</select>
 							<button type="submit" class="btn btn-action" data-kanban-change-submit hidden><%= t('kanban:updateAssignee') %></button>
