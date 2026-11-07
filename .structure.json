@@ -570,6 +570,12 @@
 		}
 	},
 	"routes": {
+		"kanban": [
+			"invitations.js",
+			"members.js",
+			"projects.js",
+			"tasks.js"
+		],
 		"chat": {
 			"rooms": [
 				"invitations.js",
