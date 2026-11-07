@@ -9,6 +9,7 @@
  */
 
 import { navbar } from '../config/navbar.js';
+import { SUPPORTED_LANGUAGE_SET } from '../config/languages.js';
 import { NOTIFICATION_LIMITS } from '../constants/notifications.js';
 import { countUnreadFriendMessages } from '../services/chat/friends.js';
 import { countUnreadRoomMessages } from '../services/chat/rooms.js';
@@ -52,8 +53,11 @@ export const navbarMiddleware = (app) => {
 		// Determine the navigation key based on the first path segment
 		const seg = firstSegment(req.path);
 
-		// Root path maps to "index" navigation
-		const key = seg === '' ? 'index' : seg;
+		// Root and language-prefixed home paths share the same navigation.
+		const path = req.path.replace(/\/+$/, '') || '/';
+		const isHome =
+			path === '/' || (SUPPORTED_LANGUAGE_SET.has(seg) && path === `/${seg}`);
+		const key = isHome ? 'index' : seg;
 
 		const baseUserAppsNavbar = Array.isArray(navbar.user_apps)
 			? navbar.user_apps.map((item) => ({ ...item }))
