@@ -36,9 +36,10 @@
         <% languages.forEach(lang => { %>
             <li class="lang">
                 <% const isCurrent = currentLang === lang.code; %>
+                <% const languageReturnTo = isPublicHomeOrLegal ? (publicPageSuffix || '/') : currentUrl; %>
                 <a
                 class="d-flex justify-content-between dropdown-item <%= isCurrent ? 'active pe-none' : '' %>"
-                href="<%= isCurrent ? '#' : (isPublicHomeOrLegal ? `/${lang.code}${publicPageSuffix}` : `/language/${lang.code}?returnTo=${encodeURIComponent(currentUrl)}`) %>"
+                href="<%= isCurrent ? '#' : `/language/${lang.code}?returnTo=${encodeURIComponent(languageReturnTo)}` %>"
                 aria-current="<%= isCurrent ? 'true' : 'false' %>"
                 >
                     <span class='align-self-start'><%= lang.name %></span>
