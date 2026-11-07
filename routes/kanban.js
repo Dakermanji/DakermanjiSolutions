@@ -4,12 +4,14 @@ import { Router } from 'express';
 import {
 	archiveKanbanProject,
 	createKanbanProject,
+	permanentlyDeleteKanbanProject,
 	renderProjects,
 	restoreKanbanProject,
 } from '../controllers/kanban/projects.js';
 import {
 	validateArchiveProject,
 	validateCreateProject,
+	validatePermanentlyDeleteProject,
 	validateRestoreProject,
 } from '../middlewares/validators/kanban.js';
 import invitationRoutes from './kanban/invitations.js';
@@ -23,6 +25,11 @@ router.get('/', renderProjects);
 router.post('/', validateCreateProject, createKanbanProject);
 router.post('/archive', validateArchiveProject, archiveKanbanProject);
 router.post('/restore', validateRestoreProject, restoreKanbanProject);
+router.post(
+	'/permanently-delete',
+	validatePermanentlyDeleteProject,
+	permanentlyDeleteKanbanProject,
+);
 router.use('/tasks', taskRoutes);
 router.use('/invitations', invitationRoutes);
 router.use('/members', memberRoutes);
