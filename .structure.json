@@ -778,6 +778,7 @@
 		"kanban": [
 			"browser-live.test.js",
 			"live.test.js",
+			"projects.test.js",
 			"permissions.test.js"
 		],
 		"presence": [

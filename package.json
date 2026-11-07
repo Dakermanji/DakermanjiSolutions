@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "node --import ./instrument.js --watch server.js",
 		"start": "node --import ./instrument.js server.js",
+		"test": "node --test",
 		"postinstall": "node scripts/apply-patches.js"
 	},
 	"engines": {
