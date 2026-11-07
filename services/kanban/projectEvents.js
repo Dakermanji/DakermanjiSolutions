@@ -23,6 +23,14 @@ export function recordProjectArchived({ projectId, ownerUserId }, db) {
 	}, db);
 }
 
+export function recordProjectRestored({ projectId, ownerUserId }, db) {
+	return createProjectEvent({
+		projectId,
+		actorUserId: ownerUserId,
+		action: 'restored',
+	}, db);
+}
+
 export function recordInvitationAccepted({ projectId, userId, role }, db) {
 	return createProjectEvent({
 		projectId,
