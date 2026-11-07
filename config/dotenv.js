@@ -37,6 +37,7 @@ const env = {
 
 	/** Public business name used in page metadata */
 	COMPANY_NAME: optionalEnv('COMPANY_NAME', 'Dakermanji Solutions'),
+	CONTACT_PHONE: optionalEnv('CONTACT_PHONE', '').trim(),
 
 	/** Sentry Data Source Name used for remote error monitoring */
 	SENTRY_DSN: optionalEnv('SENTRY_DSN', ''),

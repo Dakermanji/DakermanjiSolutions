@@ -33,8 +33,12 @@ export default function configureLocals(app) {
 		// Full URL including query params
 		res.locals.currentUrl = req.originalUrl;
 
-		// Passing email for consistency
+		// Public business contact details
 		res.locals.email = env.EMAIL_ADMIN;
+		res.locals.contactPhone = env.CONTACT_PHONE;
+		res.locals.contactPhoneHref = env.CONTACT_PHONE
+			? `tel:${env.CONTACT_PHONE.replace(/[^\d+]/g, '')}`
+			: '';
 		res.locals.companyName = env.COMPANY_NAME;
 
 		// Flash locals:

@@ -9,16 +9,28 @@
 
 		<% if (!user) { %>
 			<div class="contact-guest-message text-center div-1">
-				<p class="mb-3"><%= contact.guest_message %></p>
+				<p><%= contactPhone ? contact.guest_message_with_phone : contact.guest_message %></p>
 
-				<a
-					href="mailto:<%= email %>"
-					class="btn btn-action"
-					aria-label="<%= contact.email.aria %>"
-				>
-					<i class="bi bi-envelope-at"></i>
-					<%= contact.email.label %>
-				</a>
+				<div class="contact-actions">
+					<a
+						href="mailto:<%= email %>"
+						class="btn btn-action"
+						aria-label="<%= contact.email.aria %>"
+					>
+						<i class="bi bi-envelope-at" aria-hidden="true"></i>
+						<%= contact.email.label %>
+					</a>
+					<% if (contactPhone) { %>
+						<a
+							href="<%= contactPhoneHref %>"
+							class="btn btn-action-outline"
+							aria-label="<%= contact.phone.aria %> <%= contactPhone %>"
+						>
+							<i class="bi bi-telephone" aria-hidden="true"></i>
+							<%= contact.phone.label %> <span dir="ltr"><%= contactPhone %></span>
+						</a>
+					<% } %>
+				</div>
 			</div>
 		<% } else { %>
 			<form id="contact-form" class="contact-form div-1" method="post" action="/contact">
@@ -49,11 +61,21 @@
 					></textarea>
 				</div>
 
-				<div class="col-12 text-center">
+				<div class="col-12 contact-actions">
 					<button type="submit" class="btn btn-action" aria-label="<%= contact.form.submit %>">
-						<i class="bi bi-send"></i>
+						<i class="bi bi-send" aria-hidden="true"></i>
 						<%= contact.form.submit %>
 					</button>
+					<% if (contactPhone) { %>
+						<a
+							href="<%= contactPhoneHref %>"
+							class="btn btn-action-outline"
+							aria-label="<%= contact.phone.aria %> <%= contactPhone %>"
+						>
+							<i class="bi bi-telephone" aria-hidden="true"></i>
+							<%= contact.phone.label %> <span dir="ltr"><%= contactPhone %></span>
+						</a>
+					<% } %>
 				</div>
 			</form>
 		<% } %>

@@ -197,10 +197,15 @@
 	"contact": {
 		"title": "Contactez-moi",
 		"description": "Vous avez une question, une idée ou un projet en tête ? Je serai ravi de vous lire.",
-		"guest_message": "Veuillez vous connecter pour envoyer le formulaire. Vous pouvez aussi me contacter directement par e-mail.",
+		"guest_message": "Veuillez vous connecter pour envoyer le formulaire, ou me contacter directement par e-mail.",
+		"guest_message_with_phone": "Veuillez vous connecter pour envoyer le formulaire, ou me contacter directement par e-mail ou par téléphone.",
 		"email": {
 			"label": "Envoyer un e-mail",
 			"aria": "Envoyer un e-mail à Dakermanji"
+		},
+		"phone": {
+			"label": "Appeler",
+			"aria": "Appeler Dakermanji Solutions au"
 		},
 		"form": {
 			"subject": {

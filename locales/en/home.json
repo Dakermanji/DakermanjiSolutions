@@ -197,10 +197,15 @@
 	"contact": {
 		"title": "Contact Me",
 		"description": "Have a question, an idea, or a project in mind? I’d be happy to hear from you.",
-		"guest_message": "Please log in to send a form. You can also contact me directly by email.",
+		"guest_message": "Please log in to send the form, or contact me directly by email.",
+		"guest_message_with_phone": "Please log in to send the form, or contact me directly by email or phone.",
 		"email": {
 			"label": "Send an Email",
 			"aria": "Send an email to Dakermanji"
+		},
+		"phone": {
+			"label": "Call",
+			"aria": "Call Dakermanji Solutions at"
 		},
 		"form": {
 			"subject": {
