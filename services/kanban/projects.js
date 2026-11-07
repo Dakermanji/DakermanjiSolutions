@@ -4,6 +4,7 @@ import pool from '../../config/database.js';
 import {
 	archiveProject,
 	createProject,
+	permanentlyDeleteArchivedProject as deleteArchivedProject,
 	restoreProject,
 } from '../../models/kanban/Projects.js';
 import {
@@ -67,4 +68,8 @@ export async function restoreProjectWithLog(input) {
 	} finally {
 		client.release();
 	}
+}
+
+export function permanentlyDeleteArchivedProject(input) {
+	return deleteArchivedProject(input, pool);
 }
