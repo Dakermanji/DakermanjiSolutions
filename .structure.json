@@ -530,12 +530,13 @@
 			],
 			"kanban": [
 				"archiveProject.js",
+				"permanentlyDeleteProject.js",
 				"archiveTask.js",
 				"dueDates.js",
 				"live.js",
 				"memberRoleModal.js",
 				"ownershipTransferModal.js",
-			"projectActivityLive.js",
+				"projectActivityLive.js",
 				"taskActivityLive.js",
 				"taskLive.js",
 				"taskDragDrop.js",
@@ -887,7 +888,8 @@
 				"_create_task_modal.ejs",
 				"_declined_invitations_modal.ejs",
 				"_edit_task_modal.ejs",
-				"_invite_member_modal.ejs"
+				"_invite_member_modal.ejs",
+				"_permanently_delete_project_modal.ejs"
 			],
 			"profile": [
 				"_avatar_modal.ejs",

@@ -1,0 +1,48 @@
+<!--! views/modals/kanban/_permanently_delete_project_modal.ejs -->
+<div
+	class="modal fade"
+	id="permanentlyDeleteKanbanProjectModal"
+	tabindex="-1"
+	aria-labelledby="permanentlyDeleteKanbanProjectModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="permanentlyDeleteKanbanProjectModalLabel">
+					<%= t('kanban:permanentDeleteProjectTitle') %>
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('common:close') %>"></button>
+			</div>
+			<form method="POST" action="/kanban/permanently-delete" data-permanent-delete-project-form>
+				<%- include('../../partials/_csrf') %>
+				<input type="hidden" name="projectId" data-permanent-delete-project-id />
+				<div class="modal-body">
+					<p><%= t('kanban:permanentDeleteProjectMessage') %></p>
+					<p class="fw-semibold" dir="auto" data-permanent-delete-project-name></p>
+					<label class="form-label" for="permanentDeleteProjectConfirmation">
+						<%= t('kanban:confirmProjectName') %>
+					</label>
+					<input
+						id="permanentDeleteProjectConfirmation"
+						class="form-control"
+						type="text"
+						name="confirmationName"
+						dir="auto"
+						autocomplete="off"
+						required
+						data-permanent-delete-confirmation
+					/>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+						<%= t('common:cancel') %>
+					</button>
+					<button type="submit" class="btn btn-danger" data-permanent-delete-submit disabled>
+						<%= t('kanban:permanentlyDeleteProject') %>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

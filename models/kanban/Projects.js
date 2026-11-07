@@ -99,10 +99,34 @@ export async function permanentlyDeleteArchivedProject({
 	confirmationName,
 }, db) {
 	const { rows } = await db.query(
-		`DELETE FROM kanban_projects
-		 WHERE id = $1 AND owner_user_id = $2 AND archived_at IS NOT NULL
-		   AND name = $3
-		 RETURNING id`,
+		`WITH matching_project AS (
+			 SELECT id FROM kanban_projects
+			 WHERE id = $1 AND owner_user_id = $2
+			   AND archived_at IS NOT NULL AND name = $3
+		 ), matching_tasks AS (
+			 SELECT id FROM kanban_tasks
+			 WHERE project_id IN (SELECT id FROM matching_project)
+		 ), matching_messages AS (
+			 SELECT id FROM kanban_task_messages
+			 WHERE task_id IN (SELECT id FROM matching_tasks)
+		 ), matching_invitations AS (
+			 SELECT id FROM kanban_project_invitations
+			 WHERE project_id IN (SELECT id FROM matching_project)
+		 ), removed_notifications AS (
+			 DELETE FROM app_notifications
+			 WHERE (entity_type = 'kanban_project_invitation'
+			        AND entity_id IN (SELECT id FROM matching_invitations))
+			    OR (entity_type = 'kanban_task'
+			        AND entity_id IN (SELECT id FROM matching_tasks))
+			    OR (entity_type = 'kanban_task_message_mention'
+			        AND entity_id IN (SELECT id FROM matching_messages))
+			 RETURNING id
+		 ), deleted_project AS (
+			 DELETE FROM kanban_projects
+			 WHERE id IN (SELECT id FROM matching_project)
+			 RETURNING id
+		 )
+		 SELECT id FROM deleted_project`,
 		[projectId, ownerUserId, confirmationName],
 	);
 	return rows.length > 0;

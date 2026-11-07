@@ -43,7 +43,10 @@ export async function renderProjects(req, res, next) {
 		return res.render('kanban/projects', {
 			titleKey: 'kanban:title',
 			styles: ['modals/main', 'kanban/main'],
-			scripts: ['kanban/archiveProject'],
+			scripts: [
+				'kanban/archiveProject',
+				...(archivedProjects.length > 0 ? ['kanban/permanentlyDeleteProject'] : []),
+			],
 			projects,
 			invitations,
 			declinedInvitations,

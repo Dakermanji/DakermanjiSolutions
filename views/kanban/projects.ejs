@@ -99,14 +99,30 @@
 								<%= t('kanban:archivedOn') %>
 								<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(project.archived_at)) %>
 							</time>
-							<form method="POST" action="/kanban/restore">
-								<%- include('../partials/_csrf') %>
-								<input type="hidden" name="projectId" value="<%= project.id %>" />
-								<button type="submit" class="btn btn-outline-success btn-sm">
-									<i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
-									<%= t('kanban:restoreProject') %>
+							<div class="kanban-project-actions">
+								<form method="POST" action="/kanban/restore">
+									<%- include('../partials/_csrf') %>
+									<input type="hidden" name="projectId" value="<%= project.id %>" />
+									<button type="submit" class="btn btn-outline-success btn-sm">
+										<i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+										<%= t('kanban:restoreProject') %>
+									</button>
+								</form>
+								<button
+									type="button"
+									class="btn btn-outline-danger btn-sm"
+									data-bs-toggle="modal"
+									data-bs-target="#permanentlyDeleteKanbanProjectModal"
+									data-project-id="<%= project.id %>"
+									data-project-name="<%= project.name %>"
+									data-tooltip-mobile
+									data-bs-title="<%= t('kanban:permanentlyDeleteProjectNamed', { name: project.name }) %>"
+									aria-label="<%= t('kanban:permanentlyDeleteProjectNamed', { name: project.name }) %>"
+								>
+									<i class="bi bi-trash" aria-hidden="true"></i>
+									<span class="kanban-action-label"><%= t('kanban:permanentlyDeleteProject') %></span>
 								</button>
-							</form>
+							</div>
 						</div>
 						<% if (project.description) { %>
 							<p><%= project.description %></p>
@@ -124,4 +140,7 @@
 <% } %>
 <% if (projects.some((project) => project.role === 'owner')) { %>
 	<%- include('../modals/kanban/_archive_project_modal') %>
+<% } %>
+<% if (archivedProjects.length > 0) { %>
+	<%- include('../modals/kanban/_permanently_delete_project_modal') %>
 <% } %>
