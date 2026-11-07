@@ -28,6 +28,7 @@ import {
 import {
 	archiveProjectWithLog,
 	createProjectWithLog,
+	permanentlyDeleteArchivedProject,
 	restoreProjectWithLog,
 } from '../../services/kanban/projects.js';
 
@@ -83,6 +84,23 @@ export async function restoreKanbanProject(req, res, next) {
 		req.flash(
 			restored ? 'success' : 'error',
 			restored ? 'kanban:projectRestored' : 'kanban:error.restoreFailed',
+		);
+		return res.redirect('/kanban');
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function permanentlyDeleteKanbanProject(req, res, next) {
+	try {
+		const deleted = await permanentlyDeleteArchivedProject(
+			req.kanbanPermanentDeleteProjectInput,
+		);
+		req.flash(
+			deleted ? 'success' : 'error',
+			deleted
+				? 'kanban:projectPermanentlyDeleted'
+				: 'kanban:error.permanentDeleteFailed',
 		);
 		return res.redirect('/kanban');
 	} catch (error) {
