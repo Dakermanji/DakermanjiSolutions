@@ -63,3 +63,17 @@ export function validateRestoreProject(req, res, next) {
 	};
 	return next();
 }
+
+export function validatePermanentlyDeleteProject(req, res, next) {
+	if (!isValidUuid(req.body?.projectId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	const confirmationName = typeof req.body?.confirmationName === 'string'
+		? req.body.confirmationName.normalize('NFKC').trim()
+		: '';
+	req.kanbanPermanentDeleteProjectInput = {
+		projectId: req.body.projectId,
+		ownerUserId: req.user.id,
+		confirmationName,
+	};
+	return next();
+}
