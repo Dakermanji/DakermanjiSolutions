@@ -16,6 +16,7 @@ export {
 	parseProjectInput,
 	validateArchiveProject,
 	validateCreateProject,
+	validatePermanentlyDeleteProject,
 	validateProjectId,
 	validateRestoreProject,
 } from './kanban/projects.js';
