@@ -25,7 +25,11 @@ import {
 	canManageTasks,
 	canReorderTask,
 } from '../../services/kanban/permissions.js';
-import { archiveProjectWithLog, createProjectWithLog } from '../../services/kanban/projects.js';
+import {
+	archiveProjectWithLog,
+	createProjectWithLog,
+	restoreProjectWithLog,
+} from '../../services/kanban/projects.js';
 
 export async function renderProjects(req, res, next) {
 	try {
@@ -66,6 +70,19 @@ export async function archiveKanbanProject(req, res, next) {
 		req.flash(
 			archived ? 'success' : 'error',
 			archived ? 'kanban:projectArchived' : 'kanban:error.archiveFailed',
+		);
+		return res.redirect('/kanban');
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function restoreKanbanProject(req, res, next) {
+	try {
+		const restored = await restoreProjectWithLog(req.kanbanRestoreProjectInput);
+		req.flash(
+			restored ? 'success' : 'error',
+			restored ? 'kanban:projectRestored' : 'kanban:error.restoreFailed',
 		);
 		return res.redirect('/kanban');
 	} catch (error) {

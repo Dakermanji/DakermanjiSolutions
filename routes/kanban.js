@@ -18,6 +18,7 @@ import {
 	renderProjectActivityEvents,
 	renderProjectMembers,
 	renderProjects,
+	restoreKanbanProject,
 } from '../controllers/kanban/projects.js';
 import {
 	archiveKanbanTask,
@@ -60,6 +61,7 @@ import {
 	validateEditTask,
 	validateInviteMember,
 	validateProjectId,
+	validateRestoreProject,
 	validateTaskId,
 } from '../middlewares/validators/kanban.js';
 
@@ -68,6 +70,7 @@ const router = Router();
 router.get('/', renderProjects);
 router.post('/', validateCreateProject, createKanbanProject);
 router.post('/archive', validateArchiveProject, archiveKanbanProject);
+router.post('/restore', validateRestoreProject, restoreKanbanProject);
 router.post('/tasks', validateCreateTask, createKanbanTask);
 router.post('/tasks/messages', validateCreateTaskMessage, createKanbanTaskMessage);
 router.post('/tasks/messages/edit', validateEditTaskMessage, editKanbanTaskMessage);

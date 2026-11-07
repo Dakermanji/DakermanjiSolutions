@@ -53,3 +53,13 @@ export function validateArchiveProject(req, res, next) {
 	};
 	return next();
 }
+
+export function validateRestoreProject(req, res, next) {
+	if (!isValidUuid(req.body?.projectId)) return res.sendStatus(404);
+	if (!isValidUuid(req.user?.id)) return res.sendStatus(401);
+	req.kanbanRestoreProjectInput = {
+		projectId: req.body.projectId,
+		ownerUserId: req.user.id,
+	};
+	return next();
+}
