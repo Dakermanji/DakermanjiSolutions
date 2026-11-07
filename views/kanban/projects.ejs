@@ -99,6 +99,14 @@
 								<%= t('kanban:archivedOn') %>
 								<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(project.archived_at)) %>
 							</time>
+							<form method="POST" action="/kanban/restore">
+								<%- include('../partials/_csrf') %>
+								<input type="hidden" name="projectId" value="<%= project.id %>" />
+								<button type="submit" class="btn btn-outline-success btn-sm">
+									<i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+									<%= t('kanban:restoreProject') %>
+								</button>
+							</form>
 						</div>
 						<% if (project.description) { %>
 							<p><%= project.description %></p>
