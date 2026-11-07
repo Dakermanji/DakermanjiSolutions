@@ -92,3 +92,13 @@ export async function restoreProject({ projectId, ownerUserId }, db) {
 	);
 	return rows.length > 0;
 }
+
+export async function permanentlyDeleteArchivedProject({ projectId, ownerUserId }, db) {
+	const { rows } = await db.query(
+		`DELETE FROM kanban_projects
+		 WHERE id = $1 AND owner_user_id = $2 AND archived_at IS NOT NULL
+		 RETURNING id`,
+		[projectId, ownerUserId],
+	);
+	return rows.length > 0;
+}
