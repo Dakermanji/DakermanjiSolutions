@@ -13,6 +13,7 @@ import {
 } from '../../models/kanban/Members.js';
 import {
 	findProjectForUser,
+	listArchivedProjectsForOwner,
 	listProjectMembers,
 	listProjectsForUser,
 } from '../../models/kanban/Projects.js';
@@ -28,10 +29,11 @@ import { archiveProjectWithLog, createProjectWithLog } from '../../services/kanb
 
 export async function renderProjects(req, res, next) {
 	try {
-		const [projects, invitations, declinedInvitations] = await Promise.all([
+		const [projects, invitations, declinedInvitations, archivedProjects] = await Promise.all([
 			listProjectsForUser(req.user.id),
 			listInvitationsForUser(req.user.id),
 			listDeclinedInvitationsForUser(req.user.id),
+			listArchivedProjectsForOwner(req.user.id),
 		]);
 		return res.render('kanban/projects', {
 			titleKey: 'kanban:title',
@@ -40,6 +42,7 @@ export async function renderProjects(req, res, next) {
 			projects,
 			invitations,
 			declinedInvitations,
+			archivedProjects,
 			projectLimits: KANBAN_PROJECT_LIMITS,
 		});
 	} catch (error) {
