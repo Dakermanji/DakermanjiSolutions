@@ -81,3 +81,14 @@ export async function archiveProject({ projectId, ownerUserId }, db) {
 	);
 	return rows.length > 0;
 }
+
+export async function restoreProject({ projectId, ownerUserId }, db) {
+	const { rows } = await db.query(
+		`UPDATE kanban_projects
+		 SET archived_at = NULL, updated_at = NOW()
+		 WHERE id = $1 AND owner_user_id = $2 AND archived_at IS NOT NULL
+		 RETURNING id`,
+		[projectId, ownerUserId],
+	);
+	return rows.length > 0;
+}
