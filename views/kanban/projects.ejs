@@ -87,6 +87,27 @@
 			</ul>
 		<% } %>
 	</section>
+	<% if (archivedProjects.length > 0) { %>
+		<section class="kanban-panel" aria-labelledby="kanban-archived-projects-title">
+			<h2 id="kanban-archived-projects-title"><%= t('kanban:archivedProjects') %></h2>
+			<ul class="kanban-project-list">
+				<% archivedProjects.forEach((project) => { %>
+					<li>
+						<div class="kanban-project-row">
+							<strong><%= project.name %></strong>
+							<time datetime="<%= new Date(project.archived_at).toISOString() %>">
+								<%= t('kanban:archivedOn') %>
+								<%= new Intl.DateTimeFormat(currentLang || 'en', { dateStyle: 'medium' }).format(new Date(project.archived_at)) %>
+							</time>
+						</div>
+						<% if (project.description) { %>
+							<p><%= project.description %></p>
+						<% } %>
+					</li>
+				<% }) %>
+			</ul>
+		</section>
+	<% } %>
 </section>
 
 <%- include('../modals/kanban/_create_project_modal') %>
