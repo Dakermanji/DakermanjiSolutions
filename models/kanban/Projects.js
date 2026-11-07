@@ -31,6 +31,16 @@ export function listProjectsForUser(userId) {
 	);
 }
 
+export function listArchivedProjectsForOwner(ownerUserId) {
+	return queryRows(
+		`SELECT id, name, description, archived_at
+		 FROM kanban_projects
+		 WHERE owner_user_id = $1 AND archived_at IS NOT NULL
+		 ORDER BY archived_at DESC, name ASC`,
+		[ownerUserId],
+	);
+}
+
 export async function findProjectForUser(projectId, userId) {
 	const rows = await queryRows(
 		`SELECT p.id, p.name, p.description, p.owner_user_id,
