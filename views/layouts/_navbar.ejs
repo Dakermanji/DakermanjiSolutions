@@ -32,6 +32,9 @@
                 <% if (!user) { %>
                     <%- include('_navNotUser') %>
                 <% } else { %>
+                    <% if (navbar.length && userAppsNavbar.length) { %>
+                        <li class="nav-group-separator" aria-hidden="true"></li>
+                    <% } %>
                     <%- include('_navLinks', { navItems: typeof userAppsNavbar !== 'undefined' ? userAppsNavbar : [] }) %>
                     <%- include('_navUser') %>
                 <% } %>

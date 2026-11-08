@@ -254,6 +254,15 @@ nav .brand {
 	margin-inline-end: 10px;
 }
 
+.nav-group-separator {
+	align-self: center;
+	width: 1px;
+	height: 1.5rem;
+	margin-inline: 0.3rem 0.9rem;
+	background-color: var(--ui-bar-muted);
+	opacity: 0.55;
+}
+
 .nav-text {
 	display: none;
 }
@@ -387,6 +396,13 @@ footer a:hover {
 }
 
 @media (max-width: 991.98px) {
+	.nav-group-separator {
+		align-self: stretch;
+		width: auto;
+		height: 1px;
+		margin: 0.4rem 1rem;
+	}
+
 	.presence-trigger {
 		width: 100%;
 		justify-content: flex-start;
