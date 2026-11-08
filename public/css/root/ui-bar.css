@@ -229,12 +229,14 @@ nav .brand {
 	display: inline-flex;
 	align-items: baseline;
 	justify-content: center;
-	vertical-align: middle;
+	vertical-align: baseline;
 }
 
 .footer-brand .brand-logo {
+	align-self: center;
 	inline-size: 1.15em;
 	block-size: 1.15em;
+	transform: none;
 }
 
 .footer-brand .brand {
