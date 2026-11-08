@@ -2,6 +2,13 @@
 
 nav .brand {
 	font-size: 1.3rem;
+	align-items: center;
+}
+
+.navbar-brand .brand-logo {
+	inline-size: 1.4em;
+	block-size: 1.4em;
+	transform: translateY(-1px);
 }
 
 .navbar-brand {
