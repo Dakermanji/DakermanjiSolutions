@@ -192,6 +192,7 @@ nav .brand {
 .brand {
 	display: inline-flex;
 	align-items: baseline;
+	gap: 0.2em;
 }
 
 .brand-logo {
@@ -338,6 +339,10 @@ footer.ui-bar {
 
 .ui-bar .nav-link.active {
 	color: var(--color-secondary);
+}
+
+#langDropdown {
+	white-space: nowrap;
 }
 
 #langDropdown img {
