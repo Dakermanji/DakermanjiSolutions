@@ -147,6 +147,10 @@ nav .brand {
 	min-width: 0;
 }
 
+[dir='rtl'] .nav-notifications-item-content {
+	text-align: right;
+}
+
 .nav-notifications-item-content strong,
 .nav-notifications-item-content small {
 	overflow: hidden;
