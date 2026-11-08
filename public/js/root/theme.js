@@ -132,8 +132,8 @@ function applyTheme(preference) {
  */
 function updateThemeUI(preference) {
 	const themeButtons = document.querySelectorAll('[data-theme-value]');
-	const triggerIcon = document.querySelector('[data-theme-trigger-icon]');
-	const triggerText = document.querySelector('[data-theme-trigger-text]');
+	const triggerIcons = document.querySelectorAll('[data-theme-trigger-icon]');
+	const triggerTexts = document.querySelectorAll('[data-theme-trigger-text]');
 
 	const iconMap = {
 		light: 'bi-sun',
@@ -156,12 +156,14 @@ function updateThemeUI(preference) {
 		}
 	});
 
-	if (triggerIcon) {
+	triggerIcons.forEach((triggerIcon) => {
 		triggerIcon.className = `bi ${iconMap[preference]}`;
-	}
+	});
 
-	if (triggerText && activeLabel) {
-		triggerText.textContent = activeLabel;
+	if (activeLabel) {
+		triggerTexts.forEach((triggerText) => {
+			triggerText.textContent = activeLabel;
+		});
 	}
 }
 

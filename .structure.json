@@ -852,6 +852,7 @@
 			"_footer.ejs",
 			"_head.ejs",
 			"_i18n.ejs",
+			"_mobileNavPanels.ejs",
 			"_modalStates.ejs",
 			"_navbar.ejs",
 			"_navBrand.ejs",

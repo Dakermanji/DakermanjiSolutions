@@ -1,0 +1,90 @@
+<!--! views/layouts/_mobileNavPanels.ejs -->
+<%
+    const mobilePath = currentUrl.split(/[?#]/)[0].replace(/\/+$/, '') || '/';
+    const mobilePrefixedPage = mobilePath.match(/^\/(?:ar|en|fr)(\/legal\/(?:privacy|terms))?$/);
+    const mobileLegalPage = mobilePath.match(/^\/legal\/(?:privacy|terms)$/);
+    const mobilePublicPage = mobilePath === '/' || Boolean(mobilePrefixedPage || mobileLegalPage);
+    const mobilePageSuffix = mobilePrefixedPage ? (mobilePrefixedPage[1] || '') : (mobileLegalPage ? mobileLegalPage[0] : '');
+    const mobileReturnTo = mobilePublicPage ? (mobilePageSuffix || '/') : currentUrl;
+    const mobileThemeItems = [
+        { key: 'light', icon: 'bi-sun', label: t('theme.light') },
+        { key: 'dark', icon: 'bi-moon-stars', label: t('theme.dark') },
+        { key: 'system', icon: 'bi-circle-half', label: t('theme.system') },
+    ];
+%>
+
+<div class="modal fade mobile-nav-panel" id="mobileLanguageModal" tabindex="-1" aria-labelledby="mobileLanguageTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="mobileLanguageTitle"><%= t('nav.langTrigger') %></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('common:close') %>"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="mobile-nav-choices">
+                    <% languages.forEach((lang) => { %>
+                        <li>
+                            <% const isCurrent = currentLang === lang.code; %>
+                            <% if (isCurrent) { %>
+                                <span class="mobile-nav-choice active" aria-current="true">
+                            <% } else { %>
+                                <a class="mobile-nav-choice" href="/language/<%= lang.code %>?returnTo=<%= encodeURIComponent(mobileReturnTo) %>">
+                            <% } %>
+                                <span><%= lang.name %></span>
+                                <img src="/images/flags/<%= lang.flag %>.svg" alt="" width="24" height="16" />
+                            <% if (isCurrent) { %></span><% } else { %></a><% } %>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% if (user) { %>
+<div class="modal fade mobile-nav-panel" id="mobilePresenceModal" tabindex="-1" aria-labelledby="mobilePresenceTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="mobilePresenceTitle"><%= t('presence.label') %></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('common:close') %>"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="mobile-nav-choices">
+                    <% presenceSelectableStatuses.forEach((status) => { %>
+                        <li>
+                            <button type="button" class="mobile-nav-choice" data-presence-choice="<%= status %>" data-bs-dismiss="modal" aria-pressed="false" disabled>
+                                <span><%= t('presence.statuses.' + status) %></span>
+                                <span class="presence-dot" data-status="<%= status %>" aria-hidden="true"></span>
+                            </button>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<div class="modal fade mobile-nav-panel" id="mobileThemeModal" tabindex="-1" aria-labelledby="mobileThemeTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="mobileThemeTitle"><%= t('theme.trigger') %></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('common:close') %>"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="mobile-nav-choices">
+                    <% mobileThemeItems.forEach((theme) => { %>
+                        <li>
+                            <button type="button" class="mobile-nav-choice" data-theme-value="<%= theme.key %>" data-bs-dismiss="modal">
+                                <span class="theme-label"><%= theme.label %></span>
+                                <i class="bi <%= theme.icon %>" aria-hidden="true"></i>
+                            </button>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

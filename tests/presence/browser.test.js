@@ -20,14 +20,23 @@ function setup({ available = true } = {}) {
 		setAttribute(name, value) { this[name] = value; },
 		addEventListener(event, handler) { this.click = handler; },
 	}));
+	const mobileChoices = [PRESENCE_STATUSES.ONLINE, PRESENCE_STATUSES.AWAY, PRESENCE_STATUSES.BUSY].map((status) => ({
+		dataset: { presenceChoice: status }, disabled: true,
+		setAttribute(name, value) { this[name] = value; },
+		addEventListener(event, handler) { this.click = handler; },
+	}));
 	const dot = { dataset: { status: PRESENCE_STATUSES.OFFLINE }, setAttribute(name, value) { this[name] = value; } };
 	const statusText = { textContent: 'Offline' };
+	const mobileDot = { dataset: { status: PRESENCE_STATUSES.OFFLINE } };
+	const mobileStatusText = { textContent: 'Offline' };
 	const selector = {
 		dataset: { offlineStatus: PRESENCE_STATUSES.OFFLINE, statusLabels: JSON.stringify({ online: 'Available', offline: 'Offline', away: 'Away', busy: 'Busy' }) },
 		setAttribute(name, value) { this[name] = value; },
 		addEventListener() {},
 	};
+	const mobileSelector = { setAttribute(name, value) { this[name] = value; } };
 	const feedback = { textContent: '', dataset: { error: 'Failed', connecting: 'Connecting' } };
+	const mobileFeedback = { textContent: '' };
 	const socket = {
 		connected: false,
 		on: (event, handler) => handlers.set(event, handler),
@@ -38,8 +47,17 @@ function setup({ available = true } = {}) {
 		},
 	};
 	const document = {
-		querySelector: (query) => query === '[data-presence-trigger]' ? selector : query === '[data-presence-dot]' ? dot : query === '[data-presence-text]' ? statusText : feedback,
-		querySelectorAll: () => choices,
+		querySelector: (query) => ({
+			'[data-presence-trigger]': selector,
+			'[data-presence-dot]': dot,
+			'[data-presence-text]': statusText,
+			'[data-presence-mobile-trigger]': mobileSelector,
+			'[data-presence-mobile-dot]': mobileDot,
+			'[data-presence-mobile-text]': mobileStatusText,
+			'[data-presence-feedback]': feedback,
+			'[data-presence-mobile-feedback]': mobileFeedback,
+		})[query] || null,
+		querySelectorAll: () => [...choices, ...mobileChoices],
 		visibilityState: 'visible',
 		addEventListener: (event, handler) => documentHandlers.set(event, handler),
 	};
@@ -59,9 +77,10 @@ function setup({ available = true } = {}) {
 	};
 	vm.runInNewContext(source, { window, document, performance: { now: () => time } });
 	return {
-		socket, document, reports, documentHandlers, selector, feedback, changes, choices, dot, statusText, tooltipUpdates, dropdownCloses,
+		socket, document, reports, documentHandlers, selector, mobileSelector, feedback, mobileFeedback, changes, choices, mobileChoices, dot, mobileDot, statusText, mobileStatusText, tooltipUpdates, dropdownCloses,
 		receive(event, payload) { handlers.get(event)(payload); },
 		choose(status) { choices.find((choice) => choice.dataset.presenceChoice === status).click(); },
+		chooseMobile(status) { mobileChoices.find((choice) => choice.dataset.presenceChoice === status).click(); },
 		connect() { socket.connected = true; handlers.get('connect')(); },
 		advance(ms) { time += ms; },
 		activity(event = 'pointermove') { documentHandlers.get(event)(); },
@@ -141,6 +160,25 @@ test('selector follows server status and sends manual choices with acknowledgeme
 	h.receive('presence:changed', { status: PRESENCE_STATUSES.AWAY });
 	assert.equal(h.dot.dataset.status, PRESENCE_STATUSES.AWAY);
 	assert.equal(h.statusText.textContent, 'Away');
+});
+
+test('mobile presence panel mirrors status and sends choices', () => {
+	const h = setup();
+	h.connect();
+	h.receive('presence:changed', { status: PRESENCE_STATUSES.ONLINE });
+	assert.equal(h.mobileDot.dataset.status, PRESENCE_STATUSES.ONLINE);
+	assert.equal(h.mobileStatusText.textContent, 'Available');
+	assert.equal(h.mobileSelector['aria-label'], 'Available');
+	assert.equal(h.mobileChoices[0].disabled, false);
+	h.chooseMobile(PRESENCE_STATUSES.BUSY);
+	assert.equal(h.changes[0].payload.status, PRESENCE_STATUSES.BUSY);
+	assert.equal(h.mobileChoices[0].disabled, true);
+	h.changes[0].callback(null, { ok: true, status: PRESENCE_STATUSES.BUSY });
+	assert.equal(h.mobileDot.dataset.status, PRESENCE_STATUSES.BUSY);
+	assert.equal(h.mobileChoices[2]['aria-pressed'], 'true');
+	h.receive('disconnect');
+	assert.equal(h.mobileFeedback.textContent, 'Connecting');
+	assert.equal(h.mobileChoices[0].disabled, true);
 });
 
 test('failed choices restore confirmed status and stale acknowledgements cannot undo disconnects', () => {

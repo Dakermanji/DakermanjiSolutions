@@ -5,7 +5,7 @@
 <% const unprefixedLegalPage = currentPath.match(/^\/legal\/(?:privacy|terms)$/); %>
 <% const isPublicHomeOrLegal = currentPath === '/' || Boolean(prefixedPublicPage || unprefixedLegalPage); %>
 <% const publicPageSuffix = prefixedPublicPage ? (prefixedPublicPage[1] || '') : (unprefixedLegalPage ? unprefixedLegalPage[0] : ''); %>
-<li class="nav-item dropdown">
+<li class="nav-item dropdown d-none d-lg-block">
     <a
     class="nav-link"
     href="#"
@@ -55,4 +55,18 @@
             </li>
         <% }) %>
     </ul>
+</li>
+<li class="nav-item d-lg-none">
+    <button
+        type="button"
+        class="nav-link border-0 bg-transparent w-100 text-start"
+        data-bs-toggle="modal"
+        data-bs-target="#mobileLanguageModal"
+        aria-label="<%= langTrigger %>"
+    >
+        <span class="nav-icon">
+            <img src="/images/flags/<%= currentLangItem?.flag || 'ca' %>.svg" alt="" width="30" height="20" />
+        </span>
+        <%= currentLang === 'ar' ? 'عربي' : currentLang.toUpperCase() %>
+    </button>
 </li>

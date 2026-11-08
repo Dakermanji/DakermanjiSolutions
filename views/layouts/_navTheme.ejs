@@ -8,7 +8,7 @@
 %>
 
 <% const themeTrigger = t('theme.trigger') %>
-<li class="nav-item dropdown">
+<li class="nav-item dropdown d-none d-lg-block">
 	<a
 		class="nav-link"
 		href="#"
@@ -45,4 +45,18 @@
 			</li>
 		<% }) %>
 	</ul>
+</li>
+<li class="nav-item d-lg-none">
+    <button
+        type="button"
+        class="nav-link border-0 bg-transparent w-100 text-start"
+        data-bs-toggle="modal"
+        data-bs-target="#mobileThemeModal"
+        aria-label="<%= themeTrigger %>"
+    >
+        <span class="nav-icon">
+            <i class="bi bi-circle-half" data-theme-trigger-icon aria-hidden="true"></i>
+        </span>
+        <span class="nav-text" data-theme-trigger-text><%= themeTrigger %></span>
+    </button>
 </li>
