@@ -1,0 +1,54 @@
+<!--! views/modals/auth/_country.ejs -->
+<div class="mb-3">
+	<label for="countryCodeDropdown" class="form-label">
+		<%= t('common:country') %>
+	</label>
+	<input id="countryCode" type="hidden" name="countryCode" />
+	<div class="dropdown complete-signup-country">
+		<button
+			id="countryCodeDropdown"
+			type="button"
+			class="form-select complete-signup-country__toggle text-start"
+			data-bs-toggle="dropdown"
+			data-bs-auto-close="true"
+			aria-expanded="false"
+		>
+			<span class="complete-signup-country__selected">
+				<%= t('common:selectCountry') %>
+			</span>
+		</button>
+		<ul
+			class="dropdown-menu app-dropdown-surface complete-signup-country__menu w-100"
+			aria-labelledby="countryCodeDropdown"
+		>
+			<li>
+				<button
+					type="button"
+					class="dropdown-item app-dropdown-option complete-signup-country__option"
+					data-country-code=""
+					data-country-name="<%= t('common:selectCountry') %>"
+				>
+					<span class="complete-signup-country__placeholder">
+						<%= t('common:selectCountry') %>
+					</span>
+				</button>
+			</li>
+			<% ;(countryOptions || []).forEach((country) => { %>
+				<li>
+					<button
+						type="button"
+						class="dropdown-item app-dropdown-option complete-signup-country__option"
+						data-country-code="<%= country.code %>"
+						data-country-name="<%= country.name %>"
+					>
+						<span
+							class="fi fi-<%= country.code.toLowerCase() %> complete-signup-country__flag"
+							aria-hidden="true"
+						></span>
+						<span><%= country.name %></span>
+					</button>
+				</li>
+			<% }) %>
+		</ul>
+	</div>
+</div>

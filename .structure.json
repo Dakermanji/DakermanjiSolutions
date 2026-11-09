@@ -868,7 +868,9 @@
 				"_authTabs_tabs_signup.ejs",
 				"_authTabs_tabs.ejs",
 				"_authTabs.ejs",
+				"_avatar.ejs",
 				"_complete_signup.ejs",
+				"_country.ejs",
 				"_recovery.ejs",
 				"_resetPassword.ejs",
 				"_setPassword.ejs"
