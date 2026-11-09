@@ -1,9 +1,11 @@
 <!--! views/home/_hero.ejs -->
 <section class="hero-section">
 	<div class="hero-content">
-		<small class="role"><%- t('home:hero.role') %></small>
-		<h1>
-			<%- t('home:hero.intro') %>
-		</h1>
+		<p class="hero-eyebrow"><%= t('home:hero.role') %></p>
+		<h1><%= t('home:hero.intro') %> <span class="hero-emphasis"><%= t('home:hero.emphasis') %></span></h1>
+		<div class="hero-actions">
+			<a class="btn btn-action" href="#contact"><%= t('home:hero.contact') %></a>
+			<a class="btn btn-action-outline" href="#portfolio"><%= t('home:hero.portfolio') %></a>
+		</div>
 	</div>
 </section>

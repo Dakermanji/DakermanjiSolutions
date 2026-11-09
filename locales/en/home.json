@@ -4,8 +4,11 @@
 	"metaDescription": "Behnam Dakermanji builds secure, multilingual web platforms, backend systems, and APIs for businesses in Montreal and beyond.",
 	"hero": {
 		"canadaFlag": "Flag of Canada",
-		"intro": "Reliable web platforms built with secure backend architecture.",
-		"role": "Secure <span class='brand-color'>W</span>eb & Backend Systems"
+		"intro": "Websites and systems built for",
+		"emphasis": "your business.",
+		"role": "Web development & backend · Greater Montreal",
+		"contact": "Let's talk",
+		"portfolio": "See my work"
 	},
 	"about": {
 		"title": "About Me",
