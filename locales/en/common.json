@@ -16,6 +16,7 @@
 	"saveAvatar": "Save avatar",
 	"avatarUpdated": "Avatar updated.",
 	"country": "Country",
+	"optional": "optional",
 	"editName": "Edit name",
 	"editCountry": "Edit country",
 	"noCountry": "No country selected",

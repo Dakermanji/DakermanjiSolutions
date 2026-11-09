@@ -2,7 +2,7 @@
 <% const selectedCountry = (countryOptions || []).find((country) => country.code === signupForm.countryCode); %>
 <div class="mb-3">
 	<label for="countryCodeDropdown" class="form-label">
-		<%= t('common:country') %>
+		<%= t('common:country') %> (<%= t('common:optional') %>)
 	</label>
 	<input id="countryCode" type="hidden" name="countryCode" value="<%= selectedCountry?.code || '' %>" />
 	<div class="dropdown complete-signup-country">

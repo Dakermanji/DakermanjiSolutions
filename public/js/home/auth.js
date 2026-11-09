@@ -36,6 +36,7 @@ if (countryDropdown) {
 	const selected = countryDropdown.querySelector(
 		'.complete-signup-country__selected',
 	);
+	const menu = countryDropdown.querySelector('.complete-signup-country__menu');
 	const options = countryDropdown.querySelectorAll(
 		'.complete-signup-country__option',
 	);
@@ -83,7 +84,14 @@ if (countryDropdown) {
 	});
 
 	countryDropdown.addEventListener('keydown', (e) => {
-		if (e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) {
+		if (
+			!menu?.classList.contains('show') ||
+			e.isComposing ||
+			e.ctrlKey ||
+			e.metaKey ||
+			e.altKey ||
+			e.key.length !== 1
+		) {
 			return;
 		}
 
@@ -100,6 +108,11 @@ if (countryDropdown) {
 		countrySearchTimer = window.setTimeout(() => {
 			countrySearch = '';
 		}, 800);
+	});
+
+	countryDropdown.addEventListener('hidden.bs.dropdown', () => {
+		window.clearTimeout(countrySearchTimer);
+		countrySearch = '';
 	});
 }
 

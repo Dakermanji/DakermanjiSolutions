@@ -16,6 +16,7 @@
 	"saveAvatar": "Enregistrer l’avatar",
 	"avatarUpdated": "Avatar mis à jour.",
 	"country": "Pays",
+	"optional": "facultatif",
 	"editName": "Modifier le nom",
 	"editCountry": "Modifier le pays",
 	"noCountry": "Aucun pays sélectionné",
