@@ -1,16 +1,11 @@
 //! middlewares/validators/common.js
 
 import validator from 'validator';
-
-/**
- * Username: 3–20 chars, letters, numbers, `_`, `-`, `.`
- * Password: min 8 chars, upper, lower, number, special char
- */
-const USERNAME_REGEX = /^[a-zA-Z0-9_.-]{3,20}$/;
-const PASSWORD_REGEX =
-	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*()\[\]{}\-_=<>.,:;'"\~`#\\|\/+])[A-Za-z\d!@$%^&*()\[\]{}\-_=<>.,:;'"\~`#\\|\/+]{8,}$/;
-
-export const MAX_IDENTIFIER_LENGTH = 254;
+import {
+	MAX_IDENTIFIER_LENGTH,
+	PASSWORD_REGEX,
+	USERNAME_REGEX,
+} from '../../constants/common.js';
 
 /** Normalize email (trim + lowercase) */
 export const normalizeEmail = (email) =>
@@ -36,7 +31,7 @@ export const isValidUsername = (username) => {
 /** Check email length safety (<= 254 chars) */
 export const isSafeEmail = (email) => {
 	const normalizedEmail = normalizeEmail(email);
-	return normalizedEmail.length > 0 && normalizedEmail.length <= 254;
+	return normalizedEmail.length > 0 && normalizedEmail.length <= MAX_IDENTIFIER_LENGTH;
 };
 
 export const isValidPassword = (password) =>

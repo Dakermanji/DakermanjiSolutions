@@ -1,13 +1,6 @@
 //! middlewares/validators/token.js
 
-/**
- * Expected token length for public auth tokens.
- *
- * Current usage:
- * - email verification token
- * - local signup completion token
- */
-const TOKEN_LENGTH = 64;
+import { TOKEN_LENGTH } from '../../constants/token.js';
 
 /**
  * Normalize a token-like value.

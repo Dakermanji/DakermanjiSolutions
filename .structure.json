@@ -31,13 +31,20 @@
 			"views.js"
 		]
 	},
-	"constants": [
-		"chat.js",
-		"kanban.js",
-		"legal.js",
-		"notifications.js",
-		"presence.js"
-	],
+	"constants": {
+		"auth": [
+			"validation.js"
+		],
+		"~": [
+			"chat.js",
+			"common.js",
+			"kanban.js",
+			"legal.js",
+			"notifications.js",
+			"presence.js",
+			"token.js"
+		]
+	},
 	"controllers": {
 		"auth": [
 			"completeLocalSignup.js",
@@ -166,6 +173,13 @@
 			"index.js"
 		],
 		"validators": {
+			"auth": [
+				"credentials.js",
+				"email.js",
+				"fields.js",
+				"links.js",
+				"signup.js"
+			],
 			"kanban": [
 				"members.js",
 				"invitations.js",
