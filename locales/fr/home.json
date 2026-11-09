@@ -158,7 +158,7 @@
 			"chiens_royaux": {
 				"title": "Chiens Royaux",
 				"description": "Accompagnement informatique tout au long d’un projet de boutique Shopify pour aider le client à concrétiser sa boutique en ligne.",
-				"tech": ["Shopify"],
+				"tech": ["Shopify", "Commerce en ligne", "Collections de produits", "Suivi des commandes"],
 				"images": {
 					"main": "Page d’accueil de la boutique Chiens Royaux présentant des chiens et un lien vers les collections",
 					"track": "Formulaire de suivi de commande Chiens Royaux avec champs pour le numéro de commande, le courriel et le téléphone",

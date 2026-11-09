@@ -94,6 +94,9 @@
 									<% } %>
 									<a
 										href="<%= projectHref %>"
+										<% if (isExternal) { %>
+											target="_blank" rel="noopener noreferrer"
+										<% } %>
 										<% if (!isAuthenticated && !isExternal) { %>
 											data-bs-toggle="modal" data-bs-target="#authModal"
 											data-app-return-to="/<%= item.link %>"

@@ -158,7 +158,7 @@
 			"chiens_royaux": {
 				"title": "Chiens Royaux",
 				"description": "Provided IT support throughout a Shopify store project, helping the client bring their online shop to life.",
-				"tech": ["Shopify"],
+				"tech": ["Shopify", "E-commerce", "Product collections", "Order tracking"],
 				"images": {
 					"main": "Chiens Royaux storefront homepage featuring dogs and a link to product collections",
 					"track": "Chiens Royaux order tracking form with order number, email, and phone fields",
