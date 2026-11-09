@@ -5,8 +5,12 @@
 	</div>
 	<%
 		const avatarStyles = avatarStyleOptions || [];
-		const selectedStyle = avatarStyles[0] || null;
-		const selectedAvatar = selectedStyle?.options?.[0] || null;
+		const selectedStyle = avatarStyles.find((style) =>
+			style.key === signupForm.avatarSeed?.split(':')[0]
+		) || avatarStyles[0] || null;
+		const selectedAvatar = selectedStyle?.options?.find((avatar) =>
+			avatar.value === signupForm.avatarSeed
+		) || selectedStyle?.options?.[0] || null;
 	%>
 	<input
 		id="avatarSeed"
@@ -72,13 +76,13 @@
 				aria-label="<%= t('common:avatarStyle') %>"
 				dir="ltr"
 			>
-				<% avatarStyles.forEach((style, index) => { %>
+			<% avatarStyles.forEach((style) => { %>
 					<button
 						type="button"
-						class="complete-signup-avatar__style <%= index === 0 ? 'is-active' : '' %>"
+						class="complete-signup-avatar__style <%= style === selectedStyle ? 'is-active' : '' %>"
 						data-avatar-style="<%= style.key %>"
 						data-avatar-style-label="<%= style.label %>"
-						aria-pressed="<%= index === 0 %>"
+						aria-pressed="<%= style === selectedStyle %>"
 					>
 						<span class="complete-signup-avatar__style-preview">
 							<img src="<%= style.preview %>" alt="" />
@@ -88,9 +92,9 @@
 				<% }) %>
 			</div>
 			<div class="complete-signup-avatar__options">
-				<% avatarStyles.forEach((style, styleIndex) => { %>
+				<% avatarStyles.forEach((style) => { %>
 					<div
-						class="complete-signup-avatar__grid <%= styleIndex === 0 ? '' : 'd-none' %>"
+					class="complete-signup-avatar__grid <%= style === selectedStyle ? '' : 'd-none' %>"
 					role="group"
 					aria-label="<%= style.label %>"
 						data-avatar-grid="<%= style.key %>"
@@ -98,11 +102,11 @@
 						<% style.options.forEach((avatar, avatarIndex) => { %>
 							<button
 								type="button"
-								class="complete-signup-avatar__option <%= styleIndex === 0 && avatarIndex === 0 ? 'is-active' : '' %>"
+								class="complete-signup-avatar__option <%= avatar === selectedAvatar ? 'is-active' : '' %>"
 								data-avatar-value="<%= avatar.value %>"
 								data-avatar-src="<%= avatar.src %>"
 								aria-label="<%= t('common:avatar') %> <%= avatarIndex + 1 %>"
-								aria-pressed="<%= styleIndex === 0 && avatarIndex === 0 %>"
+								aria-pressed="<%= avatar === selectedAvatar %>"
 							>
 								<span>
 									<img src="<%= avatar.src %>" alt="" />

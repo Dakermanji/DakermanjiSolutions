@@ -4,6 +4,7 @@ import { fail, success } from '../../services/http/response.js';
 import UserModel from '../../models/User.js';
 import { appReturnTo } from '../../services/auth/returnTo.js';
 import { LEGAL_DOCUMENT_VERSIONS } from '../../constants/legal.js';
+import { rememberSignupForm } from '../../services/auth/signupFormState.js';
 
 /**
  * Complete OAuth signup by assigning a unique username.
@@ -32,10 +33,12 @@ export async function setUsername(req, res, next) {
 		// check if username is already taken by another user
 		const existingUser = await UserModel.usernameExists(username);
 
-		if (existingUser)
+		if (existingUser) {
+			rememberSignupForm(req);
 			return fail(req, res, `auth:error.username_taken`, {
 				modal: 'complete_signup_oauth',
 			});
+		}
 
 		// persist profile fields for current user
 		const updateResult = await UserModel.completeOAuthSignupById(
@@ -46,10 +49,12 @@ export async function setUsername(req, res, next) {
 			LEGAL_DOCUMENT_VERSIONS,
 		);
 
-		if (!updateResult.success)
+		if (!updateResult.success) {
+			rememberSignupForm(req);
 			return fail(req, res, updateResult.reason, {
 				modal: 'complete_signup_oauth',
 			});
+		}
 
 		Object.assign(req.user, updateResult.user);
 

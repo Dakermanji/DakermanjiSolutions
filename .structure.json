@@ -624,6 +624,7 @@
 			"recovery.js",
 			"resetPassword.js",
 			"security.js",
+			"signupFormState.js",
 			"signupLocal.js",
 			"signupSecurity.js",
 			"tokens.js",

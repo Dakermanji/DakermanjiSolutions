@@ -6,7 +6,10 @@ import { isSafeString, normalizeText } from '../middlewares/validators/common.js
 import logger from '../config/logger.js';
 import { getLocale } from '../services/i18n/locale.js';
 import { getCountryOptions } from '../services/country/list.js';
-import { createAvatarStyleOptions } from '../services/avatar/dicebear.js';
+import {
+	createAvatarStyleOptions,
+	getUserAvatarProfile,
+} from '../services/avatar/dicebear.js';
 import env from '../config/dotenv.js';
 import { SUPPORTED_LANGUAGE_CODES } from '../config/languages.js';
 
@@ -37,6 +40,20 @@ export function renderHome(req, res) {
 	const locale = getLocale(req);
 	const signinIdentifier = req.flash('signinIdentifier')[0] || '';
 	const signupEmail = req.flash('signupEmail')[0] || '';
+	const signupForm = req.flash('signupForm').at(-1) || {};
+	const avatarStyleOptions = createAvatarStyleOptions();
+	if (signupForm.avatarSeed) {
+		const avatar = getUserAvatarProfile(signupForm.avatarSeed);
+		const style = avatarStyleOptions.find((option) => option.key === avatar.styleKey);
+		if (style) {
+			style.options.unshift({
+				value: avatar.value,
+				background: avatar.background,
+				src: avatar.src,
+			});
+			signupForm.avatarSeed = avatar.value;
+		}
+	}
 	const siteUrl = new URL('/', env.CLIENT_URL).origin;
 	const organizationId = `${siteUrl}/#organization`;
 	const personId = `${siteUrl}/#behnam-dakermanji`;
@@ -105,9 +122,10 @@ export function renderHome(req, res) {
 		scripts: ['home/mouseTrailAndFollower', 'home/portfolio', 'home/auth'],
 		signinIdentifier,
 		signupEmail,
+		signupForm,
 		token: req.session.token || null,
 		countryOptions: getCountryOptions(locale),
-		avatarStyleOptions: createAvatarStyleOptions(),
+		avatarStyleOptions,
 	});
 }
 

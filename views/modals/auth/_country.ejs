@@ -1,9 +1,10 @@
 <!--! views/modals/auth/_country.ejs -->
+<% const selectedCountry = (countryOptions || []).find((country) => country.code === signupForm.countryCode); %>
 <div class="mb-3">
 	<label for="countryCodeDropdown" class="form-label">
 		<%= t('common:country') %>
 	</label>
-	<input id="countryCode" type="hidden" name="countryCode" />
+	<input id="countryCode" type="hidden" name="countryCode" value="<%= selectedCountry?.code || '' %>" />
 	<div class="dropdown complete-signup-country">
 		<button
 			id="countryCodeDropdown"
@@ -14,7 +15,12 @@
 			aria-expanded="false"
 		>
 			<span class="complete-signup-country__selected">
-				<%= t('common:selectCountry') %>
+				<% if (selectedCountry) { %>
+					<span class="fi fi-<%= selectedCountry.code.toLowerCase() %> complete-signup-country__flag" aria-hidden="true"></span>
+					<%= selectedCountry.name %>
+				<% } else { %>
+					<%= t('common:selectCountry') %>
+				<% } %>
 			</span>
 		</button>
 		<ul

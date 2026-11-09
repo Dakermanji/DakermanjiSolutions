@@ -7,6 +7,7 @@ import { verifyToken, tokenTypes } from '../../services/auth/verifyToken.js';
 import { hashPassword } from '../../services/auth/password.js';
 import { fail } from '../../services/http/response.js';
 import { LEGAL_DOCUMENT_VERSIONS } from '../../constants/legal.js';
+import { rememberSignupForm } from '../../services/auth/signupFormState.js';
 
 /**
  * Complete local signup after email verification.
@@ -52,6 +53,7 @@ export async function completeLocalSignup(req, res) {
 
 		// Stop early if request validation already failed.
 		if (errors.length > 0) {
+			rememberSignupForm(req);
 			req.flash('errors', errors);
 			req.flash('modal', 'complete_signup_local');
 			return res.redirect('/');
@@ -61,6 +63,7 @@ export async function completeLocalSignup(req, res) {
 		const tokenResult = await verifyToken(token, tokenTypes.signup);
 
 		if (!tokenResult.ok) {
+			rememberSignupForm(req);
 			return fail(req, res, 'auth:error.verify_email_invalid_link', {
 				modal: 'complete_signup_local',
 			});
@@ -80,6 +83,7 @@ export async function completeLocalSignup(req, res) {
 		);
 
 		if (!user) {
+			rememberSignupForm(req);
 			return fail(req, res, 'auth:error.error_generic', {
 				modal: 'complete_signup_local',
 			});

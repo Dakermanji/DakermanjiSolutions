@@ -17,6 +17,7 @@ import { fail } from '../../services/http/response.js';
 import { isSupportedCountryCode } from '../../services/country/list.js';
 import { isSupportedAvatarValue } from '../../services/avatar/dicebear.js';
 import { SUPPORTED_LANGUAGE_SET } from '../../config/languages.js';
+import { rememberSignupForm } from '../../services/auth/signupFormState.js';
 
 const ERROR_PREFIX = 'auth:error.';
 
@@ -292,6 +293,7 @@ export function validateSetUsername(req, res, next) {
 	});
 
 	if (errors.length > 0) {
+		rememberSignupForm(req);
 		req.flash('errors', errors);
 		req.flash('modal', 'complete_signup_oauth');
 		return res.redirect('/');

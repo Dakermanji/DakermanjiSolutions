@@ -38,15 +38,16 @@
 							type="text"
 							class="form-control"
 							name="username"
+							value="<%= signupForm.username || '' %>"
 							required
 						/>
 					</div>
 
 					<!-- Avatar -->
-					<%- include('./_avatar') %>
+					<%- include('./_avatar', { signupForm, avatarStyleOptions }) %>
 
 					<!-- Country -->
-					<%- include('./_country') %>
+					<%- include('./_country', { signupForm, countryOptions }) %>
 
 					<% if (isLocal) { %>
 						<!-- Set Password -->
