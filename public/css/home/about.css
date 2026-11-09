@@ -7,6 +7,7 @@
 .about-illustration img {
 	width: min(100%, 25rem);
 	height: auto;
+	aspect-ratio: 1325 / 1187;
 	display: inline-block;
 	filter: drop-shadow(var(--shadow-mascot));
 }
