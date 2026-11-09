@@ -3,8 +3,8 @@
 	<div class="container">
 		<h2 class="text-center"><%= t('home:about.title') %></h2>
 
-		<div class="row align-items-center g-4">
-			<div class="image-wraper col-12 col-lg-4 about-col-1 text-center align-self-start">
+		<div class="row align-items-start g-4 g-lg-5">
+			<div class="about-illustration col-12 col-lg-4 text-center">
 				<img
 					src="/images/home/maple-coder-about.png"
 					alt="<%= t('home:about.image') %>"
@@ -13,11 +13,17 @@
 				/>
 			</div>
 
-			<div class="col-12 col-lg-8 about-col-2 div-1">
-				<div class="about-intro pb-5">
-					<% t('home:about.description').forEach((paragraph) => { %>
-						<p><%= paragraph %></p>
-					<% }) %>
+			<div class="col-12 col-lg-8 about-content">
+				<div class="about-intro">
+					<p class="about-lead"><%= t('home:about.summary') %></p>
+					<details class="about-story">
+						<summary><%= t('home:about.storyLabel') %></summary>
+						<div class="about-story-content">
+							<% t('home:about.description').forEach((paragraph) => { %>
+								<p><%= paragraph %></p>
+							<% }) %>
+						</div>
+					</details>
 				</div>
 
 				<%

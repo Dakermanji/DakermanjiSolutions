@@ -12,9 +12,11 @@
 	},
 	"about": {
 		"title": "About Me",
+		"summary": "I'm Behnam Dakermanji, a web and backend developer in Greater Montreal. I build practical, multilingual tools for businesses with a focus on reliability and accessibility.",
+		"storyLabel": "Read my story",
 		"image": "Maple Coder, a friendly beaver mascot wearing a blue hoodie with a maple leaf, coding on a laptop",
 		"description": [
-			"Hello, I'm Behnam Dakermanji, a secure web and backend systems developer based in Montreal, Canada. My journey into tech has been anything but traditional. I originally studied medicine and worked as a doctor in Syria, but my long-standing passion for programming eventually led me to fully transition into web development after moving to Canada in 2019.",
+			"Hello, I'm Behnam Dakermanji, a secure web and backend systems developer based in Greater Montreal, Canada. My journey into tech has been anything but traditional. I originally studied medicine and worked as a doctor in Syria, but my long-standing passion for programming eventually led me to fully transition into web development after moving to Canada in 2019.",
 			"Since then, I have built my skills through continuous learning, online courses, and formal studies, earning multiple diplomas in web programming from Concordia University. I enjoy building practical, user-focused web experiences and solving real problems with clean, thoughtful solutions.",
 			"Professionally, I have worked as an IT consultant, contributed to small freelance projects, and gained valuable industry experience in different roles. I am especially interested in creating reliable, accessible, and well-structured applications that combine strong functionality with a smooth user experience."
 		],
