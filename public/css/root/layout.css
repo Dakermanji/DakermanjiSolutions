@@ -1,5 +1,16 @@
 /*! public/css/root/layout.css */
 
+/* Keep the last page content scrollable above the fixed footer. */
+#app-shell {
+	padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 991.98px) {
+	#app-shell {
+		padding-bottom: calc(7rem + env(safe-area-inset-bottom));
+	}
+}
+
 [dir='rtl'] .modal-header .modal-title {
 	text-align: right;
 	flex: 1;
