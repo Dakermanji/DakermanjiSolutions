@@ -21,17 +21,17 @@
 			</div>
 
 			<div class="modal-body">
-				<div class="oauth-buttons mb-3">
-					<% ['google', 'github', 'discord'].forEach((provider) => { %>
-						<%- include('../../partials/_logoWrapper', { provider }) %>
-					<% }) %>
-				</div>
-				<div class="auth-separator mb-3">
+				<%- include('./_authTabs_tabs') %>
+				<div class="auth-separator my-3">
 					<span class="auth-separator__text">
 						<%= t('common:or') %>
 					</span>
 				</div>
-				<%- include('./_authTabs_tabs') %>
+				<div class="oauth-buttons">
+					<% ['google', 'github', 'discord'].forEach((provider) => { %>
+						<%- include('../../partials/_logoWrapper', { provider }) %>
+					<% }) %>
+				</div>
 			</div>
 		</div>
 	</div>
