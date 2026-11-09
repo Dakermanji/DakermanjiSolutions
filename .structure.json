@@ -904,12 +904,10 @@
 		],
 		"partials": [
 			"_csrf.ejs",
-			"_discord.ejs",
 			"_discordLogo.ejs",
-			"_github.ejs",
 			"_githubLogo.ejs",
-			"_google.ejs",
-			"_googleLogo.ejs"
+			"_googleLogo.ejs",
+			"_logoWrapper.ejs"
 		],
 		"profile": [
 			"_account.ejs",

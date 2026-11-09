@@ -22,9 +22,9 @@
 
 			<div class="modal-body">
 				<div class="oauth-buttons mb-3">
-					<%- include('../../partials/_google') %>
-					<%- include('../../partials/_github') %>
-					<%- include('../../partials/_discord') %>
+					<% ['google', 'github', 'discord'].forEach((provider) => { %>
+						<%- include('../../partials/_logoWrapper', { provider }) %>
+					<% }) %>
 				</div>
 				<div class="auth-separator mb-3">
 					<span class="auth-separator__text">

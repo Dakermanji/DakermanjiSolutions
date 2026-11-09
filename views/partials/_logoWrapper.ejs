@@ -1,0 +1,19 @@
+<!--! views/partials/_logoWrapper.ejs -->
+<%
+	const providers = {
+		google: { name: 'Google', logo: '_googleLogo' },
+		github: { name: 'GitHub', logo: '_githubLogo' },
+		discord: { name: 'Discord', logo: '_discordLogo' },
+	};
+	const selectedProvider = providers[provider];
+	if (!selectedProvider) throw new Error(`Unsupported sign-in provider: ${provider}`);
+%>
+<a href="/auth/<%= provider %>" class="gsi-material-button">
+	<div class="gsi-material-button-state"></div>
+	<div class="gsi-material-button-content-wrapper">
+		<div class="gsi-material-button-icon<%= provider === 'github' ? ' github-icon' : '' %>">
+			<%- include(selectedProvider.logo) %>
+		</div>
+		<span class="gsi-material-button-contents"><%= t('auth:continueWithProvider', { provider: selectedProvider.name }) %></span>
+	</div>
+</a>
