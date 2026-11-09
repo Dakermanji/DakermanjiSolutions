@@ -822,6 +822,12 @@
 			"social.test.js",
 			"state.test.js",
 			"watch.test.js"
+		],
+		"social": [
+			"actions.test.js",
+			"counts.test.js",
+			"follow-request.test.js",
+			"helpers.js"
 		]
 	},
 	"utils": {
