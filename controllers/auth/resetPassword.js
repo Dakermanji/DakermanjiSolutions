@@ -1,7 +1,6 @@
 //! controllers/auth/resetPassword.js
 
 import logger from '../../config/logger.js';
-import { SUPPORTED_LANGUAGE_SET } from '../../config/languages.js';
 import { verifyToken, tokenTypes } from '../../services/auth/verifyToken.js';
 import { resetPassword } from '../../services/auth/resetPassword.js';
 import { setLangCookie } from '../../services/i18n/locale.js';
@@ -11,8 +10,8 @@ import { setLangCookie } from '../../services/i18n/locale.js';
  *
  * Flow:
  * - reads the raw token and optional lang from the query string
- * - syncs the site language with the language used in the email link
  * - validates the password-reset token without consuming it
+ * - syncs the site language with a supported language from the email link
  * - stores the raw token in session for the next POST step
  * - redirects home and opens the reset-password modal
  *
@@ -29,9 +28,6 @@ export async function getResetPassword(req, res) {
 	const { token, lang } = req.query;
 
 	try {
-		// Ensure the website opens in the same language as the email when possible.
-		setLangCookie(res, localelang);
-
 		// Reject missing or malformed links early.
 		if (!token) {
 			req.flash('error', 'auth:error.reset_password_invalid_link');
@@ -44,6 +40,9 @@ export async function getResetPassword(req, res) {
 			req.flash('error', 'auth:error.reset_password_invalid_link');
 			return res.redirect('/');
 		}
+
+		// Change the display language only after the reset token is verified.
+		setLangCookie(res, lang);
 
 		// Keep the raw token for the password submission step.
 		req.session.token = token;
