@@ -537,11 +537,17 @@
 				]
 			},
 			"dashboard": [],
-			"home": [
-				"auth.js",
-				"mouseTrailAndFollower.js",
-				"portfolio.js"
-			],
+			"home": {
+				"auth": [
+					"avatar.js",
+					"country.js",
+					"recovery.js"
+				],
+				"~": [
+					"mouseTrailAndFollower.js",
+					"portfolio.js"
+				]
+			},
 			"kanban": [
 				"archiveProject.js",
 				"permanentlyDeleteProject.js",
