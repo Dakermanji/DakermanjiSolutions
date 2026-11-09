@@ -1,8 +1,8 @@
 <!--! views/modals/auth/_avatar.ejs -->
 <div class="mb-3">
-	<label for="avatarSeed" class="form-label">
+	<div id="signupAvatarLabel" class="form-label">
 		<%= t('common:avatar') %>
-	</label>
+	</div>
 	<%
 		const avatarStyles = avatarStyleOptions || [];
 		const selectedStyle = avatarStyles[0] || null;
@@ -14,7 +14,13 @@
 		name="avatarSeed"
 		value="<%= selectedAvatar?.value || '' %>"
 	/>
-	<div class="complete-signup-avatar" data-active-style="<%= selectedStyle?.key || '' %>">
+	<div
+		class="complete-signup-avatar"
+		role="group"
+		aria-labelledby="signupAvatarLabel"
+		data-active-style="<%= selectedStyle?.key || '' %>"
+		data-avatar-label="<%= t('common:avatar') %>"
+	>
 		<div class="complete-signup-avatar__summary">
 			<div
 				class="complete-signup-avatar__preview"
@@ -54,6 +60,7 @@
 				class="has-tooltip btn btn-outline-secondary complete-signup-avatar__refresh"
 				data-avatar-refresh
 				data-bs-title="<%= t('common:refreshAvatars') %>"
+				aria-label="<%= t('common:refreshAvatars') %>"
 			>
 				<i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
 			</button>
@@ -61,6 +68,7 @@
 		<div class="complete-signup-avatar__picker">
 			<div
 				class="complete-signup-avatar__styles"
+				role="group"
 				aria-label="<%= t('common:avatarStyle') %>"
 				dir="ltr"
 			>
@@ -70,6 +78,7 @@
 						class="complete-signup-avatar__style <%= index === 0 ? 'is-active' : '' %>"
 						data-avatar-style="<%= style.key %>"
 						data-avatar-style-label="<%= style.label %>"
+						aria-pressed="<%= index === 0 %>"
 					>
 						<span class="complete-signup-avatar__style-preview">
 							<img src="<%= style.preview %>" alt="" />
@@ -82,6 +91,8 @@
 				<% avatarStyles.forEach((style, styleIndex) => { %>
 					<div
 						class="complete-signup-avatar__grid <%= styleIndex === 0 ? '' : 'd-none' %>"
+					role="group"
+					aria-label="<%= style.label %>"
 						data-avatar-grid="<%= style.key %>"
 					>
 						<% style.options.forEach((avatar, avatarIndex) => { %>
@@ -90,6 +101,8 @@
 								class="complete-signup-avatar__option <%= styleIndex === 0 && avatarIndex === 0 ? 'is-active' : '' %>"
 								data-avatar-value="<%= avatar.value %>"
 								data-avatar-src="<%= avatar.src %>"
+								aria-label="<%= t('common:avatar') %> <%= avatarIndex + 1 %>"
+								aria-pressed="<%= styleIndex === 0 && avatarIndex === 0 %>"
 							>
 								<span>
 									<img src="<%= avatar.src %>" alt="" />

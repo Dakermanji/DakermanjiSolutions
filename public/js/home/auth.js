@@ -145,8 +145,11 @@ if (avatarPicker) {
 	function selectAvatar(option) {
 		if (!input || !preview || !option) return;
 
-		options.forEach((item) => item.classList.remove('is-active'));
-		option.classList.add('is-active');
+		options.forEach((item) => {
+			const isSelected = item === option;
+			item.classList.toggle('is-active', isSelected);
+			item.setAttribute('aria-pressed', String(isSelected));
+		});
 
 		input.value = withBackground(
 			option.dataset.avatarValue || '',
@@ -155,7 +158,7 @@ if (avatarPicker) {
 		preview.src = option.dataset.avatarSrc || '';
 	}
 
-	function createAvatarOption(avatar) {
+	function createAvatarOption(avatar, index) {
 		const button = document.createElement('button');
 		const frame = document.createElement('span');
 		const image = document.createElement('img');
@@ -164,6 +167,8 @@ if (avatarPicker) {
 		button.className = 'complete-signup-avatar__option';
 		button.dataset.avatarValue = avatar.value || '';
 		button.dataset.avatarSrc = avatar.src || '';
+		button.setAttribute('aria-label', `${avatarPicker.dataset.avatarLabel} ${index + 1}`);
+		button.setAttribute('aria-pressed', 'false');
 		button.addEventListener('click', () => selectAvatar(button));
 
 		image.src = avatar.src || '';
@@ -182,8 +187,11 @@ if (avatarPicker) {
 	function selectStyle(styleButton) {
 		const styleKey = styleButton.dataset.avatarStyle || '';
 
-		styles.forEach((item) => item.classList.remove('is-active'));
-		styleButton.classList.add('is-active');
+		styles.forEach((item) => {
+			const isSelected = item === styleButton;
+			item.classList.toggle('is-active', isSelected);
+			item.setAttribute('aria-pressed', String(isSelected));
+		});
 		avatarPicker.dataset.activeStyle = styleKey;
 
 		if (styleName) {
