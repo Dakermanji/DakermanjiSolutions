@@ -14,12 +14,12 @@
  * - Includes a fallback in case `transitionend` does not fire
  *
  * Behavior:
- * - Waits 3 seconds before starting dismissal
+ * - Waits 5 seconds before starting dismissal of success and info messages
  * - Removes `show` to trigger CSS fade-out
  * - Removes the element after transition ends (or fallback timeout)
  */
 setTimeout(() => {
-	document.querySelectorAll('.flash-message').forEach((msg) => {
+	document.querySelectorAll('.flash-stack [data-auto-dismiss]').forEach((msg) => {
 		// Skip if already removed (safety check)
 		if (!document.body.contains(msg)) return;
 
@@ -42,4 +42,4 @@ setTimeout(() => {
 			}
 		}, 1000);
 	});
-}, 3000);
+}, 5000);

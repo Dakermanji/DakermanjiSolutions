@@ -1,33 +1,30 @@
 <!--! views/layouts/_flash.ejs -->
-
 <%
-const types = ['error', 'success', 'info', 'warning'];
-
-const bootstrapClassByType = {
-	error: 'danger',
-	success: 'success',
-	info: 'info',
-	warning: 'warning',
-};
-
-const groupedErrors = locals.errors || [];
+	const flashTypes = [
+		{ key: 'error', style: 'danger', urgent: true },
+		{ key: 'warning', style: 'warning', urgent: true },
+		{ key: 'success', style: 'success', urgent: false },
+		{ key: 'info', style: 'info', urgent: false },
+	];
+	const messages = [
+		...(locals.errors || []).flat(Infinity).map((key) => ({ key, style: 'danger', urgent: true })),
+		...flashTypes.flatMap(({ key, style, urgent }) =>
+			(locals[key] || []).map((messageKey) => ({ key: messageKey, style, urgent }))
+		),
+	].filter(({ key }) => typeof key === 'string' && key.length > 0);
 %>
 
-<% if (groupedErrors.length > 0) { %>
-	<% groupedErrors.forEach((key) => { %>
-		<div class="flash-message alert alert-danger fade show mb-0" role="alert">
-			<%= t(key) %>
-		</div>
-	<% }) %>
+<% if (messages.length) { %>
+	<div class="flash-stack">
+		<% messages.forEach(({ key, style, urgent }) => { %>
+			<div
+				class="flash-message alert alert-<%= style %> alert-dismissible fade show mb-0"
+				role="<%= urgent ? 'alert' : 'status' %>"
+				<% if (!urgent) { %>data-auto-dismiss<% } %>
+			>
+				<%= t(key) %>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('common:close') %>"></button>
+			</div>
+		<% }) %>
+	</div>
 <% } %>
-
-<% types.forEach((type) => { %>
-	<% const msgs = locals[type] || []; %>
-	<% const bs = bootstrapClassByType[type]; %>
-
-	<% msgs.forEach((key) => { %>
-		<div class="flash-message alert alert-<%= bs %> fade show mb-0" role="alert">
-			<%= t(key) %>
-		</div>
-	<% }) %>
-<% }) %>
