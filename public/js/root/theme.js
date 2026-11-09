@@ -147,6 +147,8 @@ function updateThemeUI(preference) {
 		const isActive = button.dataset.themeValue === preference;
 
 		button.classList.toggle('active', isActive);
+		button.classList.toggle('pe-none', isActive);
+		button.tabIndex = isActive ? -1 : 0;
 		button.setAttribute('aria-pressed', String(isActive));
 
 		if (isActive) {

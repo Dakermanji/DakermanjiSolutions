@@ -40,6 +40,7 @@
                 <a
                 class="d-flex justify-content-between dropdown-item <%= isCurrent ? 'active pe-none' : '' %>"
                 href="<%= isCurrent ? '#' : `/language/${lang.code}?returnTo=${encodeURIComponent(languageReturnTo)}` %>"
+                <% if (isCurrent) { %>tabindex="-1"<% } %>
                 aria-current="<%= isCurrent ? 'true' : 'false' %>"
                 >
                     <span class='align-self-start'><%= lang.name %></span>

@@ -123,13 +123,12 @@ if (countryEditor) {
 	}
 
 	async function loadEditor() {
-		if (!target || target.dataset.loaded === 'true') {
-			return;
-		}
+		if (!target) return false;
+		if (target.dataset.loaded === 'true') return true;
 
 		const url = editButton?.dataset.countryEditorUrl;
 
-		if (!url) return;
+		if (!url) return false;
 
 		editButton.disabled = true;
 
@@ -138,10 +137,9 @@ if (countryEditor) {
 				headers: { Accept: 'text/html' },
 			});
 
-			if (!response.ok) return;
+			if (!response.ok) return false;
 
 			target.innerHTML = await response.text();
-			target.dataset.loaded = 'true';
 			initCountryDropdown(target);
 			initDynamicTooltips(target);
 
@@ -152,6 +150,11 @@ if (countryEditor) {
 				target.classList.add('d-none');
 				window.AppTooltips?.initIn(countryEditor);
 			});
+			target.dataset.loaded = 'true';
+			return true;
+		} catch (error) {
+			console.error('Failed to load country editor', error);
+			return false;
 		} finally {
 			editButton.disabled = false;
 		}
@@ -159,7 +162,10 @@ if (countryEditor) {
 
 	editButton?.addEventListener('click', async () => {
 		window.AppTooltips?.reset(editButton);
-		await loadEditor();
+		if (!(await loadEditor())) {
+			window.AppTooltips?.initIn(countryEditor);
+			return;
+		}
 		display?.classList.add('d-none');
 		target?.classList.remove('d-none');
 	});

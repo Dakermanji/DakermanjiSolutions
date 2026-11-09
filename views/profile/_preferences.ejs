@@ -30,6 +30,7 @@
 					<a
 						class="profile-preference-option <%= isCurrent ? 'active pe-none' : '' %>"
 						href="<%= isCurrent ? '#' : `/language/${lang.code}?returnTo=${encodeURIComponent('/profile')}` %>"
+						<% if (isCurrent) { %>tabindex="-1"<% } %>
 						aria-current="<%= isCurrent ? 'true' : 'false' %>"
 					>
 						<img
