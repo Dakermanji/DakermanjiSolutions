@@ -1,5 +1,27 @@
 /*! public/css/root/layout.css */
 
+.skip-link {
+	position: fixed;
+	inset-block-start: 0.75rem;
+	inset-inline-start: 0.75rem;
+	z-index: 1101;
+	padding: 0.65rem 1rem;
+	border: 2px solid var(--color-primary);
+	border-radius: var(--radius-sm);
+	background: var(--bg-card);
+	color: var(--color-text-body);
+	transform: translateY(-200%);
+}
+
+.skip-link:focus {
+	color: var(--color-text-body);
+	transform: none;
+}
+
+#main-content {
+	scroll-margin-top: 5rem;
+}
+
 /* Keep the last page content scrollable above the fixed footer. */
 #app-shell {
 	padding-bottom: calc(5rem + env(safe-area-inset-bottom));

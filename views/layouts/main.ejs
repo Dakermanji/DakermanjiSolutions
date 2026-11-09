@@ -12,6 +12,7 @@
 	<%- include('_head') %>
 
 	<body id="top">
+		<a class="skip-link" href="#main-content"><%= t('skipToContent') %></a>
 		<div id="app-shell">
 			<%- include('_flash') %>
 
@@ -19,7 +20,7 @@
 			<%- include('_navbar') %>
 
 			<!-- Body (main contents) -->
-			<main class="container"><%- body %></main>
+			<main id="main-content" class="container" tabindex="-1"><%- body %></main>
 			<% if (user) { %>
 				<%- include('../social/main') %>
 			<% } %>
