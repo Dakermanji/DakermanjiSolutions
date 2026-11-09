@@ -84,9 +84,10 @@ export const sanitizeReturnTo = (value) => {
  * Parse an identifier as either email or username.
  *
  * @param {unknown} value
+ * @param {{ allowLegacyUsername?: boolean }} [options]
  * @returns {{ identifier: string, identifierType: 'email' | 'username' } | null}
  */
-export const parseIdentifier = (value) => {
+export const parseIdentifier = (value, { allowLegacyUsername = false } = {}) => {
 	if (!isSafeString(value, MAX_IDENTIFIER_LENGTH)) return null;
 
 	const email = normalizeEmail(value);
@@ -100,7 +101,8 @@ export const parseIdentifier = (value) => {
 
 	const username = normalizeText(value);
 
-	if (isValidUsername(username)) {
+	if (isValidUsername(username) ||
+		(allowLegacyUsername && /^[a-zA-Z0-9_.-]{3,20}$/.test(username))) {
 		return {
 			identifier: normalizeText(username, { lower: true }),
 			identifierType: 'username',

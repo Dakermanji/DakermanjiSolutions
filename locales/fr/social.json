@@ -68,6 +68,7 @@
 		}
 	},
 	"error": {
+		"invalid_identifier": "Saisissez un nom d’utilisateur ou une adresse e-mail valide.",
 		"cannot_follow_self": "Vous ne pouvez pas vous suivre vous-même.",
 		"you_blocked_this_user": "Vous avez bloqué cet utilisateur. Supprimez le blocage d’abord.",
 		"already_following": "Vous suivez déjà cet utilisateur."

@@ -37,7 +37,7 @@ export function validateSignIn(req, res, next) {
 	if (!isSafeString(passwordRaw, MAX_PASSWORD_LENGTH))
 		return failSignin();
 
-	const parsedIdentifier = parseIdentifier(identifierRaw);
+	const parsedIdentifier = parseIdentifier(identifierRaw, { allowLegacyUsername: true });
 
 	if (!parsedIdentifier) return failSignin();
 

@@ -20,6 +20,7 @@
 				class="form-control"
 				name="identifier"
 				type="text"
+				aria-describedby="follow-request-error"
 				placeholder="<%= t('social:followRequest.placeholder') %>"
 				autocomplete="off"
 				dir="ltr"
@@ -27,9 +28,12 @@
 				maxlength="254"
 			/>
 
-			<button type="submit" class="btn btn-primary">
-				<i class="bi bi-person-plus"></i>
+			<button type="submit" class="btn btn-primary" aria-label="<%= t('social:followRequest.title') %>">
+				<i class="bi bi-person-plus" aria-hidden="true"></i>
 			</button>
+		</div>
+		<div id="follow-request-error" class="text-danger small mt-1" role="alert" hidden>
+			<%= t('social:error.invalid_identifier') %>
 		</div>
 	</form>
 </section>
