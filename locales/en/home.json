@@ -115,21 +115,26 @@
 		}
 	},
 	"services": {
-		"title": "Services",
+		"title": "Web Development Services",
+		"web": {
+			"icon": "bi-laptop",
+			"title": "Websites & Web Platforms",
+			"description": "Responsive, multilingual sites and web apps that make your services easy to use."
+		},
 		"api": {
 			"icon": "bi-diagram-3",
 			"title": "API Development & Integration",
-			"description": "Designing and integrating APIs that allow your applications to communicate reliably with external services and systems."
+			"description": "Connect payments, bookings, and third-party tools so your systems work together."
 		},
 		"database": {
 			"icon": "bi-database-check",
 			"title": "Database Design & Management",
-			"description": "Building and maintaining structured, secure, and optimized databases."
+			"description": "Organize and maintain the data your applications rely on."
 		},
 		"backend": {
 			"icon": "bi-braces-asterisk",
 			"title": "Backend Development",
-			"description": "Developing scalable and maintainable server-side applications."
+			"description": "Reliable server-side logic for accounts, workflows, and the features your business needs."
 		}
 	},
 	"portfolio": {

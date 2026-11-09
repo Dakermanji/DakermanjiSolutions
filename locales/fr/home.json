@@ -115,21 +115,26 @@
 		}
 	},
 	"services": {
-		"title": "Services",
+		"title": "Services de développement web",
+		"web": {
+			"icon": "bi-laptop",
+			"title": "Sites web et plateformes",
+			"description": "Des sites et applications web responsives et multilingues qui facilitent l’accès à vos services."
+		},
 		"api": {
 			"icon": "bi-diagram-3",
 			"title": "Développement et intégration d’API",
-			"description": "Conception et intégration d’API permettant à vos applications de communiquer de manière fiable avec des services et systèmes externes. Des API REST personnalisées aux intégrations de services tiers."
+			"description": "Reliez les paiements, les réservations et les outils externes pour faire fonctionner vos systèmes ensemble."
 		},
 		"database": {
 			"icon": "bi-database-check",
 			"title": "Conception et gestion de bases de données",
-			"description": "Création et maintenance de bases de données structurées, sécurisées et optimisées. Cela inclut la conception, l’optimisation des performances et la maintenance continue."
+			"description": "Organisez et entretenez les données essentielles à vos applications."
 		},
 		"backend": {
 			"icon": "bi-braces-asterisk",
-			"title": "Développement Backend",
-			"description": "Développement d’applications côté serveur évolutives et maintenables avec une architecture propre, des API efficaces et une logique métier fiable."
+			"title": "Développement backend",
+			"description": "Une logique serveur fiable pour les comptes, les processus et les fonctions propres à votre activité."
 		}
 	},
 	"portfolio": {

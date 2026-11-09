@@ -1,7 +1,7 @@
 <!--! views/home/_services.ejs -->
 <%
 	const services = t('home:services', { returnObjects: true });
-	const serviceItems = ['api', 'database', 'backend'].map((key) => services[key]);
+	const serviceItems = ['web', 'backend', 'api', 'database'].map((key) => services[key]);
 %>
 
 <section id="services">
@@ -12,26 +12,13 @@
 			</div>
 		</div>
 
-		<div class="row g-4 justify-content-center div-1">
+		<div class="row g-4 justify-content-center">
 			<% serviceItems.forEach((service) => { %>
-				<div class="col-12 col-md-6 col-xl-4">
-					<article class="card h-100 text-center div-2">
-						<div class="card-body p-3 p-lg-4">
-							<div class="mb-4">
-								<i
-									class="bi <%= service.icon %> fs-1"
-									aria-hidden="true"
-								></i>
-							</div>
-
-							<h3 class="h4 card-title mb-3">
-								<%= service.title %>
-							</h3>
-
-							<p class="card-text mb-0">
-								<%= service.description %>
-							</p>
-						</div>
+				<div class="col-12 col-md-6 col-xl-3">
+					<article class="service-card h-100">
+						<span class="service-icon" aria-hidden="true"><i class="bi <%= service.icon %>"></i></span>
+						<h3 class="h4 service-title"><%= service.title %></h3>
+						<p class="service-description"><%= service.description %></p>
 					</article>
 				</div>
 			<% }) %>
