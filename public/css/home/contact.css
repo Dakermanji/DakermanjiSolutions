@@ -1,59 +1,136 @@
-/* public/css/home/contact.css */
+/*! public/css/home/contact.css */
+
+#contact {
+	scroll-margin-top: 5rem;
+}
 
 .contact-section .section-heading {
-	max-width: 42rem;
+	max-width: 48rem;
 	margin-inline: auto;
+	margin-bottom: 2rem;
 }
 
 .contact-intro {
-	color: var(--color-text-muted);
-	font-size: 2rem;
+	margin: 0;
+	color: var(--color-text-body);
+	font-size: clamp(1rem, 1.5vw, 1.25rem);
+	line-height: 1.65;
 }
 
-.contact-guest-message,
-.contact-form {
+.contact-layout {
 	max-width: 46rem;
 	margin-inline: auto;
 }
 
-.contact-guest-message {
+.contact-layout.has-form {
 	display: grid;
+	grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+	align-items: stretch;
+	gap: 1.5rem;
+	max-width: 68rem;
+}
+
+.contact-direct,
+.contact-form {
+	padding: clamp(1.5rem, 3vw, 2.25rem);
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-lg);
+	background: var(--bg-card);
+	color: var(--color-text-body);
+	box-shadow: var(--shadow-card);
+}
+
+.contact-direct h3,
+.contact-form h3 {
+	margin-bottom: 0.5rem;
+	color: var(--color-text-heading);
+}
+
+.contact-direct-description {
+	margin-bottom: 1rem;
+	line-height: 1.6;
+}
+
+.contact-guest-note {
+	margin-bottom: 1.5rem;
+	color: var(--color-text-muted);
+	font-size: 0.95rem;
+}
+
+.contact-method {
+	display: flex;
+	align-items: center;
 	gap: 1rem;
-	justify-items: center;
-	text-align: center;
+	min-width: 0;
+	padding: 1rem;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-lg);
+	background: var(--bg-subsection);
+	color: var(--color-text-body);
+	text-decoration: none;
+	transition: border-color var(--transition-time-method), background-color var(--transition-time-method);
+}
+
+.contact-method + .contact-method {
+	margin-top: 0.75rem;
+}
+
+.contact-method:hover,
+.contact-method:focus-visible {
+	border-color: var(--color-primary);
+	background: var(--bg-pill-hover);
+	color: var(--color-text-body);
+}
+
+.contact-method:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 3px;
+}
+
+.contact-method-icon {
+	display: grid;
+	place-items: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	flex: none;
+	border-radius: var(--radius-lg);
+	background: var(--bg-pill-hover);
+	color: var(--color-primary);
+	font-size: 1.25rem;
+}
+
+.contact-method-copy {
+	display: grid;
+	min-width: 0;
+	gap: 0.15rem;
+}
+
+.contact-method-copy span {
+	overflow-wrap: anywhere;
+}
+
+.contact-method-arrow {
+	margin-inline-start: auto;
+	color: var(--color-primary);
 }
 
 .contact-form {
 	display: grid;
+	align-content: start;
 	gap: 1rem;
 }
 
-.contact-actions {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	align-items: center;
-	gap: 0.75rem;
-	margin-top: 0.5rem;
-}
-
 .contact-form .form-label {
-	display: inline-block;
 	margin-bottom: 0.5rem;
 	color: var(--color-text-heading);
 	font-weight: 600;
 }
 
 .contact-form .form-control {
-	border-radius: var(--radius-lg);
-	border: 1px solid var(--border-subtle);
-	background: transparent;
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-sm);
+	background: var(--bg-subsection);
 	color: var(--color-text-body);
-	box-shadow: none;
-	transition:
-		border-color var(--transition-time-method),
-		box-shadow var(--transition-time-method),
-		background-color var(--transition-time-method);
 }
 
 .contact-form .form-control::placeholder {
@@ -62,26 +139,23 @@
 
 .contact-form .form-control:focus {
 	border-color: var(--color-primary);
-	background-color: var(--bg-card);
-	box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.08);
+	background: var(--bg-card);
+	box-shadow: var(--shadow-box-brand);
 }
 
 .contact-form textarea.form-control {
-	resize: vertical;
 	min-height: 10rem;
+	resize: vertical;
 }
 
-@media (max-width: 575.98px) {
-	.contact-guest-message,
-	.contact-form {
-		max-width: 100%;
-	}
+.contact-form .btn-action {
+	justify-self: start;
+	padding-inline: 1.5rem;
+	color: var(--color-on-primary);
+}
 
-	.contact-section .div-1 {
-		padding: 1.25rem;
-	}
-
-	.contact-section .div-2 {
-		padding: 0.9rem;
+@media (max-width: 767.98px) {
+	.contact-layout.has-form {
+		grid-template-columns: 1fr;
 	}
 }

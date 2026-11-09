@@ -2,82 +2,85 @@
 <% const contact = t('home:contact') %>
 <section id="contact" class="contact-section section-spacing">
 	<div class="container">
-		<div class="section-heading text-center mb-4">
+		<div class="section-heading text-center">
 			<h2><%= contact.title %></h2>
 			<p class="contact-intro"><%= contact.description %></p>
 		</div>
 
-		<% if (!user) { %>
-			<div class="contact-guest-message text-center div-1">
-				<p><%= contactPhone ? contact.guest_message_with_phone : contact.guest_message %></p>
+		<div class="contact-layout <%= user ? 'has-form' : '' %>">
+			<div class="contact-direct">
+				<h3 class="h4"><%= contact.direct_title %></h3>
+				<p class="contact-direct-description"><%= contact.direct_description %></p>
+				<% if (!user) { %>
+					<p class="contact-guest-note"><%= contact.guest_note %></p>
+				<% } %>
 
-				<div class="contact-actions">
-					<a
-						href="mailto:<%= email %>"
-						class="btn btn-action"
-						aria-label="<%= contact.email.aria %>"
-					>
-						<i class="bi bi-envelope-at" aria-hidden="true"></i>
-						<%= contact.email.label %>
+				<a class="contact-method" href="mailto:<%= email %>">
+					<span class="contact-method-icon" aria-hidden="true"><i class="bi bi-envelope-at"></i></span>
+					<span class="contact-method-copy">
+						<strong><%= contact.email.label %></strong>
+						<span dir="ltr"><%= email %></span>
+					</span>
+					<i class="bi bi-arrow-up-right contact-method-arrow" aria-hidden="true"></i>
+				</a>
+
+				<% if (contactPhone) { %>
+					<a class="contact-method" href="<%= contactPhoneHref %>">
+						<span class="contact-method-icon" aria-hidden="true"><i class="bi bi-telephone"></i></span>
+						<span class="contact-method-copy">
+							<strong><%= contact.phone.label %></strong>
+							<span dir="ltr"><%= contactPhone %></span>
+						</span>
+						<i class="bi bi-arrow-up-right contact-method-arrow" aria-hidden="true"></i>
 					</a>
-					<% if (contactPhone) { %>
-						<a
-							href="<%= contactPhoneHref %>"
-							class="btn btn-action-outline"
-							aria-label="<%= contact.phone.aria %> <%= contactPhone %>"
-						>
-							<i class="bi bi-telephone" aria-hidden="true"></i>
-							<%= contact.phone.label %> <span dir="ltr"><%= contactPhone %></span>
-						</a>
-					<% } %>
-				</div>
+				<% } %>
+
+				<% if (contactWhatsAppHref) { %>
+					<a class="contact-method" href="<%= contactWhatsAppHref %>" target="_blank" rel="noopener noreferrer">
+						<span class="contact-method-icon" aria-hidden="true"><i class="bi bi-chat-dots"></i></span>
+						<span class="contact-method-copy">
+							<strong><%= contact.whatsapp.label %></strong>
+							<span dir="ltr"><%= contactPhone %></span>
+						</span>
+						<i class="bi bi-arrow-up-right contact-method-arrow" aria-hidden="true"></i>
+					</a>
+				<% } %>
 			</div>
-		<% } else { %>
-			<form id="contact-form" class="contact-form div-1" method="post" action="/contact">
-				<%- include('../partials/_csrf') %>
-				<div class="col-12 div-2">
-					<label for="subject" class="form-label"><%= contact.form.subject.label %></label>
-					<input
-						type="text"
-						class="form-control"
-						id="subject"
-						name="subject"
-						placeholder="<%= contact.form.subject.placeholder %>"
-						required
-						maxlength="150"
-					>
-				</div>
 
-				<div class="col-12 div-2">
-					<label for="message" class="form-label"><%= contact.form.message.label %></label>
-					<textarea
-						class="form-control"
-						id="message"
-						name="message"
-						rows="6"
-						placeholder="<%= contact.form.message.placeholder %>"
-						required
-						maxlength="2000"
-					></textarea>
-				</div>
-
-				<div class="col-12 contact-actions">
-					<button type="submit" class="btn btn-action" aria-label="<%= contact.form.submit %>">
+			<% if (user) { %>
+				<form id="contact-form" class="contact-form" method="post" action="/contact">
+					<%- include('../partials/_csrf') %>
+					<h3 class="h4"><%= contact.form.title %></h3>
+					<div class="contact-field">
+						<label for="subject" class="form-label"><%= contact.form.subject.label %></label>
+						<input
+							type="text"
+							class="form-control"
+							id="subject"
+							name="subject"
+							placeholder="<%= contact.form.subject.placeholder %>"
+							required
+							maxlength="150"
+						>
+					</div>
+					<div class="contact-field">
+						<label for="message" class="form-label"><%= contact.form.message.label %></label>
+						<textarea
+							class="form-control"
+							id="message"
+							name="message"
+							rows="6"
+							placeholder="<%= contact.form.message.placeholder %>"
+							required
+							maxlength="2000"
+						></textarea>
+					</div>
+					<button type="submit" class="btn btn-action">
 						<i class="bi bi-send" aria-hidden="true"></i>
 						<%= contact.form.submit %>
 					</button>
-					<% if (contactPhone) { %>
-						<a
-							href="<%= contactPhoneHref %>"
-							class="btn btn-action-outline"
-							aria-label="<%= contact.phone.aria %> <%= contactPhone %>"
-						>
-							<i class="bi bi-telephone" aria-hidden="true"></i>
-							<%= contact.phone.label %> <span dir="ltr"><%= contactPhone %></span>
-						</a>
-					<% } %>
-				</div>
-			</form>
-		<% } %>
+				</form>
+			<% } %>
+		</div>
 	</div>
 </section>

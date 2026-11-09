@@ -215,18 +215,21 @@
 	},
 	"contact": {
 		"title": "Contact Me",
-		"description": "Have a question, an idea, or a project in mind? I’d be happy to hear from you.",
-		"guest_message": "Please log in to send the form, or contact me directly by email.",
-		"guest_message_with_phone": "Please log in to send the form, or contact me directly by email or phone.",
+		"description": "Have a website, web platform, or backend project in mind? Let’s talk about what you need.",
+		"direct_title": "Get in touch directly",
+		"direct_description": "Tell me what you’re building or where you need support.",
+		"guest_note": "No account is needed to reach me.",
 		"email": {
-			"label": "Send an Email",
-			"aria": "Send an email to Dakermanji"
+			"label": "Send an Email"
 		},
 		"phone": {
-			"label": "Call",
-			"aria": "Call Dakermanji Solutions at"
+			"label": "Call"
+		},
+		"whatsapp": {
+			"label": "Chat on WhatsApp"
 		},
 		"form": {
+			"title": "Send a message here",
 			"subject": {
 				"label": "Subject",
 				"placeholder": "Enter the subject"

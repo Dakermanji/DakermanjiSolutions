@@ -39,6 +39,11 @@ export default function configureLocals(app) {
 		res.locals.contactPhoneHref = env.CONTACT_PHONE
 			? `tel:${env.CONTACT_PHONE.replace(/[^\d+]/g, '')}`
 			: '';
+		const contactPhoneDigits = env.CONTACT_PHONE.replace(/\D/g, '');
+		const hasInternationalPhone = env.CONTACT_PHONE.startsWith('+') || /^1\d{10}$/.test(contactPhoneDigits);
+		res.locals.contactWhatsAppHref = hasInternationalPhone && /^\d{8,15}$/.test(contactPhoneDigits)
+			? `https://wa.me/${contactPhoneDigits}`
+			: '';
 		res.locals.companyName = env.COMPANY_NAME;
 
 		// Flash locals:

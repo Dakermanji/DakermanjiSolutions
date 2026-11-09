@@ -215,18 +215,21 @@
 	},
 	"contact": {
 		"title": "Contactez-moi",
-		"description": "Vous avez une question, une idée ou un projet en tête ? Je serai ravi de vous lire.",
-		"guest_message": "Veuillez vous connecter pour envoyer le formulaire, ou me contacter directement par e-mail.",
-		"guest_message_with_phone": "Veuillez vous connecter pour envoyer le formulaire, ou me contacter directement par e-mail ou par téléphone.",
+		"description": "Vous avez un projet de site web, de plateforme ou de backend ? Parlons de vos besoins.",
+		"direct_title": "Contactez-moi directement",
+		"direct_description": "Présentez-moi votre projet ou le soutien dont vous avez besoin.",
+		"guest_note": "Aucun compte n’est nécessaire pour me joindre.",
 		"email": {
-			"label": "Envoyer un e-mail",
-			"aria": "Envoyer un e-mail à Dakermanji"
+			"label": "Envoyer un e-mail"
 		},
 		"phone": {
-			"label": "Appeler",
-			"aria": "Appeler Dakermanji Solutions au"
+			"label": "Appeler"
+		},
+		"whatsapp": {
+			"label": "Discuter sur WhatsApp"
 		},
 		"form": {
+			"title": "Envoyer un message ici",
 			"subject": {
 				"label": "Sujet",
 				"placeholder": "Entrez le sujet"
