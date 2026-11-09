@@ -139,6 +139,21 @@
 	},
 	"portfolio": {
 		"title": "My Work",
+		"groups": {
+			"client": {
+				"title": "Client projects",
+				"description": "Websites and stores I helped clients bring to life."
+			},
+			"apps": {
+				"title": "Apps you can explore",
+				"description": "Try the tools I built for communication, planning, and everyday information."
+			}
+		},
+		"updates": {
+			"title": "Always evolving",
+			"description": "I keep improving my work and adding new features. More updates are on the way.",
+			"alt": "Maple Coder wearing a hard hat beside an under construction sign"
+		},
 		"items": {
 			"chiens_royaux": {
 				"title": "Chiens Royaux",
@@ -194,15 +209,9 @@
 				"link": "kanban"
 			}
 		},
-		"under_construction": {
-			"title": "Under Construction",
-			"alt": "Cute construction worker illustration with an under construction sign",
-			"soon": "Coming soon"
-		},
 		"view": "Try App",
 		"visit_website": "Visit Website",
-		"login_required": "Sign in to try this app.",
-		"see_more_btn": "See More"
+		"login_required": "Sign in to try this app."
 	},
 	"contact": {
 		"title": "Contact Me",

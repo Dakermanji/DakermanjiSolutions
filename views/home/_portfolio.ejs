@@ -1,19 +1,29 @@
 <!--! views/home/_portfolio.ejs -->
-<% const portfolio = t('home:portfolio', { returnObjects: true }) %>
+<%
+	const portfolio = t('home:portfolio', { returnObjects: true });
+	const projects = Object.entries(portfolio.items || {}).filter(([, item]) => item);
+	const clientProjects = projects.filter(([, item]) => item.link.startsWith('https://'));
+	clientProjects.sort(([firstKey], [secondKey]) =>
+		Number(secondKey === 'expertise_pro') - Number(firstKey === 'expertise_pro')
+	);
+	const groups = [
+		{ key: 'client', items: clientProjects },
+		{ key: 'apps', items: projects.filter(([, item]) => !item.link.startsWith('https://')) },
+	];
+%>
 
 <section id="portfolio">
 	<div class="container">
-		<div class="portfolio-background">
-			<div class="row g-4 align-items-stretch">
-				<div class="col-12">
-					<h2 class="text-center"><%= portfolio.title %></h2>
+		<h2 class="text-center"><%= portfolio.title %></h2>
+		<% groups.forEach((group) => { %>
+			<div class="portfolio-group">
+				<div class="portfolio-group-heading">
+					<h3 class="h4"><%= portfolio.groups[group.key].title %></h3>
+					<p><%= portfolio.groups[group.key].description %></p>
 				</div>
-			</div>
-
-			<div class="row g-4 align-items-stretch div-1" id="portfolio-grid">
-				<% Object.entries(portfolio.items || {}).forEach(([key, item]) => { %>
+				<div class="row g-4 align-items-stretch">
+				<% group.items.forEach(([key, item]) => { %>
 					<%
-						if (!item) return;
 						const isExternal = typeof item.link === 'string' && item.link.startsWith('https://');
 						const projectHref = isExternal ? item.link : `/${item.link}`;
 						const buttonLabel = isExternal ? portfolio.visit_website : portfolio.view;
@@ -24,9 +34,9 @@
 						const imageEntries = images;
 					%>
 
-					<div class="col-12 col-md-6 col-lg-4 col-xl-3 portfolio-item">
+					<div class="col-12 col-md-6 <%= group.key === 'apps' ? 'col-xl-4' : '' %>">
 						<article
-							class="card h-100 border-0 div-2"
+							class="card h-100 portfolio-card"
 							data-project="<%= key %>"
 							data-images-count="<%= imageEntries.length %>"
 						>
@@ -51,19 +61,22 @@
 								<% } %>
 
 								<% if (imageEntries.length > 1) { %>
-									<div class="portfolio-dots" aria-hidden="true">
-										<% imageEntries.forEach((_, index) => { %>
-											<span
+									<div class="portfolio-dots">
+										<% imageEntries.forEach(([, imageAlt], index) => { %>
+											<button
+												type="button"
 												class="portfolio-dot <%= index === 0 ? 'active' : '' %>"
 												data-slide-index="<%= index %>"
-											></span>
+												aria-label="<%= imageAlt %>"
+												aria-current="<%= index === 0 ? 'true' : 'false' %>"
+											></button>
 										<% }) %>
 									</div>
 								<% } %>
 							</div>
 
 							<div class="card-body d-flex flex-column">
-								<h3 class="card-title h4 mb-3"><%= item.title %></h3>
+								<h4 class="card-title h4 mb-3"><%= item.title %></h4>
 
 								<p class="card-text mb-3"><%= item.description %></p>
 
@@ -95,39 +108,19 @@
 						</article>
 					</div>
 				<% }) %>
-
-				<div class="col-12 col-md-6 col-lg-4 col-xl-3 portfolio-item">
-					<article class="card h-100 border-0 portfolio-card--placeholder div-2">
-						<div class="portfolio-media position-relative overflow-hidden">
-							<img
-								src="/images/home/portfolio/under_construction/<%= currentLang %>.png"
-								class="portfolio-image active"
-								alt="<%= portfolio.under_construction.alt %>"
-								loading="lazy"
-							/>
-						</div>
-
-						<div class="card-body d-flex flex-column justify-content-center text-center">
-							<h3 class="card-title h4 mb-3">
-								<%= portfolio.under_construction.title %>
-							</h3>
-
-							<p class="card-text mb-0">
-								<%= portfolio.under_construction.soon %>
-							</p>
-						</div>
-					</article>
-				</div>
-				<div class="btn-wrapper text-center">
-					<button
-						type="button"
-						id="portfolio-show-more"
-						class="btn btn-action-outline"
-					>
-						<%= portfolio.see_more_btn %>
-					</button>
 				</div>
 			</div>
-		</div>
+		<% }) %>
+		<aside class="portfolio-updates">
+			<img
+				src="/images/home/portfolio/under_construction/<%= currentLang %>.png"
+				alt="<%= portfolio.updates.alt %>"
+				loading="lazy"
+			/>
+			<div>
+				<h3 class="h4"><%= portfolio.updates.title %></h3>
+				<p><%= portfolio.updates.description %></p>
+			</div>
+		</aside>
 	</div>
 </section>

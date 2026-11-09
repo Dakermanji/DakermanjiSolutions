@@ -5,7 +5,6 @@
  *
  * Handles:
  * 1. Image slideshow for each portfolio card
- * 2. "Show more" behavior (reveal rows progressively)
  *
  * Design goals:
  * - Keep logic simple and robust (no fragile calculations)
@@ -43,19 +42,6 @@
 	// Root section guard (fail fast if section not present)
 	const portfolioSection = document.querySelector('#portfolio');
 	if (!portfolioSection) return;
-
-	/**
-	 * Utility: debounce
-	 * Prevents a function from firing too often (used for resize)
-	 */
-	function debounce(callback, delay = 120) {
-		let timeoutId;
-
-		return () => {
-			window.clearTimeout(timeoutId);
-			timeoutId = window.setTimeout(callback, delay);
-		};
-	}
 
 	/**
 	 * Detect if device supports hover
@@ -114,6 +100,7 @@
 
 				if (dot) {
 					dot.classList.toggle('active', isActive);
+				dot.setAttribute('aria-current', String(isActive));
 				}
 			}
 
@@ -213,90 +200,4 @@
 		});
 	});
 
-	/**
-	 * ============================
-	 * 2. SHOW MORE (ROW LOGIC)
-	 * ============================
-	 */
-
-	const portfolioGrid = document.querySelector('#portfolio-grid');
-	const showMoreBtn = document.querySelector('#portfolio-show-more');
-
-	if (portfolioGrid && showMoreBtn) {
-		const items = Array.from(
-			portfolioGrid.querySelectorAll('.portfolio-item'),
-		);
-
-		let itemsPerRow = 0;
-		let visibleRows = 1;
-		let gridWidth = portfolioGrid.clientWidth;
-
-		/**
-		 * Detect how many items fit in one row
-		 * (based on actual layout, not breakpoints)
-		 */
-		function getItemsPerRow() {
-			if (!items.length) return 1;
-
-			const firstTop = items[0].offsetTop;
-			let count = 0;
-
-			for (const item of items) {
-				if (item.offsetTop !== firstTop) break;
-				count += 1;
-			}
-
-			return count || 1;
-		}
-
-		/**
-		 * Apply visibility to items
-		 */
-		function updateVisibility() {
-			const visibleCount = Math.min(visibleRows * itemsPerRow, items.length);
-			items.forEach((item, index) => {
-				item.classList.toggle('is-hidden', index >= visibleCount);
-			});
-
-			// Hide button if everything is visible
-			showMoreBtn.hidden = visibleCount >= items.length;
-		}
-
-		/**
-		 * Initialize grid:
-		 * - calculate items per row dynamically
-		 * - preserve the number of rows the visitor has revealed
-		 */
-		function initPortfolioRows() {
-			// Reset (ensure accurate measurement)
-			items.forEach((item) => item.classList.remove('is-hidden'));
-
-			itemsPerRow = getItemsPerRow();
-
-			updateVisibility();
-		}
-
-		/**
-		 * Show more button → reveal next row
-		 */
-		showMoreBtn.addEventListener('click', () => {
-			visibleRows += 1;
-
-			updateVisibility();
-		});
-
-		/**
-		 * Recalculate when the grid width changes. Mobile browser chrome can
-		 * trigger height-only resize events while scrolling.
-		 */
-		window.addEventListener('resize', debounce(() => {
-			const nextWidth = portfolioGrid.clientWidth;
-			if (nextWidth === gridWidth) return;
-			gridWidth = nextWidth;
-			initPortfolioRows();
-		}));
-
-		// Initial setup
-		initPortfolioRows();
-	}
 })();

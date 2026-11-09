@@ -139,6 +139,21 @@
 	},
 	"portfolio": {
 		"title": "Mes Projets",
+		"groups": {
+			"client": {
+				"title": "Projets clients",
+				"description": "Des sites et boutiques en ligne auxquels j’ai contribué."
+			},
+			"apps": {
+				"title": "Applications à découvrir",
+				"description": "Essayez mes outils de communication, de planification et d’information au quotidien."
+			}
+		},
+		"updates": {
+			"title": "Toujours en évolution",
+			"description": "Je continue d’améliorer mon travail et d’ajouter de nouvelles fonctionnalités. D’autres nouveautés suivront.",
+			"alt": "Maple Coder portant un casque de chantier à côté d’un panneau de travaux"
+		},
 		"items": {
 			"chiens_royaux": {
 				"title": "Chiens Royaux",
@@ -194,15 +209,9 @@
 				"link": "kanban"
 			}
 		},
-		"under_construction": {
-			"title": "En Construction",
-			"alt": "Illustration d’un ouvrier avec un panneau en construction",
-			"soon": "Bientôt disponible"
-		},
 		"view": "Essayer",
 		"visit_website": "Visiter le site",
-		"login_required": "Connectez-vous pour essayer cette application.",
-		"see_more_btn": "Voir Plus"
+		"login_required": "Connectez-vous pour essayer cette application."
 	},
 	"contact": {
 		"title": "Contactez-moi",
