@@ -187,6 +187,8 @@ export async function signupLocal(req, res) {
 		});
 
 		req.flash('error', 'common:error.generic');
+		req.flash('modal', 'signup');
+		req.flash('signupEmail', email.slice(0, 254));
 		return res.redirect('/');
 	}
 }

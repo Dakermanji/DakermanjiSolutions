@@ -5,7 +5,7 @@
 	role="tabpanel"
 	aria-labelledby="auth-signin-tab"
 >
-	<form action="/auth/signin" method="POST" novalidate>
+	<form action="/auth/signin" method="POST">
 		<input type="hidden" name="returnTo" value="<%= appReturnTo %>" />
 		<%- include('../../partials/_csrf') %>
 		<div class="mb-3">
@@ -19,6 +19,8 @@
 				type="text"
 				class="form-control"
 				autocomplete="username"
+				maxlength="254"
+				value="<%= signinIdentifier %>"
 				required
 			/>
 		</div>

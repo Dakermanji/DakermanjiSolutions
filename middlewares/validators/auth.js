@@ -64,8 +64,12 @@ function validateProfileFields({ avatarSeed, countryCode, errors }) {
 export function validateEmailField(req, res, next, { modal }) {
 	const email = normalizeEmail(req.body?.email);
 
-	if (!isValidEmail(email) || !isSafeEmail(email))
+	if (!isValidEmail(email) || !isSafeEmail(email)) {
+		if (modal === 'signup' && typeof req.body?.email === 'string') {
+			req.flash('signupEmail', email.slice(0, 254));
+		}
 		return fail(req, res, `${ERROR_PREFIX}email_invalid`, { modal });
+	}
 
 	req.body.email = email;
 	next();
@@ -172,13 +176,19 @@ export function validateSignIn(req, res, next) {
 	const identifierRaw = req.body?.identifier;
 	const passwordRaw = req.body?.password;
 	const key = `${ERROR_PREFIX}invalid_credentials`;
+	const failSignin = () => {
+		if (typeof identifierRaw === 'string') {
+			req.flash('signinIdentifier', identifierRaw.trim().slice(0, MAX_IDENTIFIER_LENGTH));
+		}
+		return fail(req, res, key, { modal: 'signin' });
+	};
 
 	if (!isSafeString(passwordRaw, MAX_PASSWORD_LENGTH))
-		return fail(req, res, key, { modal: 'signin' });
+		return failSignin();
 
 	const parsedIdentifier = parseIdentifier(identifierRaw);
 
-	if (!parsedIdentifier) return fail(req, res, key, { modal: 'signin' });
+	if (!parsedIdentifier) return failSignin();
 
 	req.body.identifier = parsedIdentifier.identifier;
 	req.body.identifierType = parsedIdentifier.identifierType;

@@ -22,6 +22,7 @@ import { setLangCookie } from '../../services/i18n/locale.js';
 function handleSigninFailure(req, res, info) {
 	req.flash('error', info?.message || 'auth:error.invalid_credentials');
 	req.flash('modal', 'signin');
+	req.flash('signinIdentifier', req.body.identifier);
 
 	res.redirect('/');
 }

@@ -35,6 +35,8 @@ function normalizeSubject(value) {
  */
 export function renderHome(req, res) {
 	const locale = getLocale(req);
+	const signinIdentifier = req.flash('signinIdentifier')[0] || '';
+	const signupEmail = req.flash('signupEmail')[0] || '';
 	const siteUrl = new URL('/', env.CLIENT_URL).origin;
 	const organizationId = `${siteUrl}/#organization`;
 	const personId = `${siteUrl}/#behnam-dakermanji`;
@@ -101,6 +103,8 @@ export function renderHome(req, res) {
 			'partials/brands',
 		],
 		scripts: ['home/mouseTrailAndFollower', 'home/portfolio', 'home/auth'],
+		signinIdentifier,
+		signupEmail,
 		token: req.session.token || null,
 		countryOptions: getCountryOptions(locale),
 		avatarStyleOptions: createAvatarStyleOptions(),
