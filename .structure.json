@@ -539,6 +539,7 @@
 			"dashboard": [],
 			"home": {
 				"auth": [
+					"appReturnTo.js",
 					"avatar.js",
 					"country.js",
 					"recovery.js"

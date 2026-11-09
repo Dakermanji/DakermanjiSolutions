@@ -122,6 +122,7 @@ export function renderHome(req, res) {
 		scripts: [
 			'home/mouseTrailAndFollower',
 			'home/portfolio',
+			'home/auth/appReturnTo',
 			'home/auth/recovery',
 			'home/auth/country',
 			'home/auth/avatar',
