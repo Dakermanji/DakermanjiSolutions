@@ -581,10 +581,20 @@
 				"notifications.js",
 				"presence.js",
 				"selectDropdown.js",
-				"social.js",
 				"theme.js",
 				"themeInit.js",
 				"tooltips.js"
+			],
+			"social": [
+				"actions.js",
+				"feedback.js",
+				"follow-request.js",
+				"live.js",
+				"main.js",
+				"presence.js",
+				"render.js",
+				"sections.js",
+				"state.js"
 			],
 			"weather": [
 				"main.js"

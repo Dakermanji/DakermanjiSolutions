@@ -4,7 +4,10 @@ import vm from 'node:vm';
 import { readFileSync } from 'node:fs';
 import { isValidUsername, parseIdentifier } from '../../middlewares/validators/common.js';
 
-const source = readFileSync(new URL('../../public/js/root/social.js', import.meta.url), 'utf8');
+const socialScripts = ['state', 'feedback', 'render', 'actions', 'sections', 'live', 'presence', 'follow-request', 'main'];
+const sources = socialScripts.map((name) => readFileSync(
+	new URL(`../../public/js/social/${name}.js`, import.meta.url), 'utf8',
+));
 
 function setup({ withFollowRequest = false } = {}) {
 	const nodes = new Map();
@@ -47,7 +50,7 @@ function setup({ withFollowRequest = false } = {}) {
 	};
 	const window = { io: () => socket };
 	const context = vm.createContext({ document, window, console });
-	vm.runInContext(source, context);
+	for (const source of sources) vm.runInContext(source, context);
 	return { nodes, document, events, emitted, socketHandlers, context,
 		identifier, identifierEvents, formEvents, error,
 		open() { nodes.get('socialPanel').classes.add('show'); nodes.get('socialFollowers').classes.add('show'); },

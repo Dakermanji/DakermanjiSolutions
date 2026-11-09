@@ -104,13 +104,19 @@
 
     <!-- Static Scripts -->
     <% const staticScripts = ['csrf', 'theme', 'dropdownMenu', 'selectDropdown', 'tooltips', 'modals', 'flash', 'backToTop'] %>
-    <% if (user) staticScripts.push('social', 'chat', 'notifications', 'presence') %>
+    <% if (user) staticScripts.push('chat', 'notifications', 'presence') %>
     <% if (user) { %>
     <script src="/socket.io/socket.io.js" defer></script>
     <% } %>
     <% staticScripts.forEach((script) => { %>
     <script src="/js/root/<%= script %>.js" defer></script>
     <% }) %>
+    <% if (user) { %>
+    <% const socialScripts = ['state', 'feedback', 'render', 'actions', 'sections', 'live', 'presence', 'follow-request', 'main'] %>
+    <% socialScripts.forEach((script) => { %>
+    <script src="/js/social/<%= script %>.js" defer></script>
+    <% }) %>
+    <% } %>
 
     <!-- Dynamic page styles -->
     <% styles.forEach((style) => { %>
