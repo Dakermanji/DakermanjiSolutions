@@ -100,7 +100,7 @@ export async function postResetPassword(req, res, next) {
 		delete req.session.token;
 
 		// Inform the user that the password was reset successfully.
-		req.flash('success', req.t('auth:password_reset.success'));
+		req.flash('success', 'auth:resetPassword.success');
 
 		return res.redirect('/');
 	} catch (err) {
