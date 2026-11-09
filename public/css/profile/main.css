@@ -248,15 +248,37 @@
 	background-color: var(--color-bg);
 }
 
+.profile-danger {
+	margin-block: 1.5rem 2rem;
+	padding: 1.5rem;
+	border: 1px solid color-mix(in srgb, var(--bs-danger) 42%, var(--border-subtle));
+	border-inline-start: 4px solid var(--bs-danger);
+	border-radius: var(--radius-sm);
+	background-color: color-mix(in srgb, var(--bs-danger) 7%, var(--bg-section));
+}
+
+.profile-danger__title {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin-bottom: 1rem;
+	color: var(--bs-danger);
+}
+
 .profile-danger-row {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid color-mix(in srgb, var(--bs-danger) 22%, var(--border-subtle));
 }
 
 .profile-danger .btn-outline-danger {
 	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
 }
 
 .profile-delete-phrase {
@@ -264,6 +286,10 @@
 }
 
 @media (max-width: 575.98px) {
+	.profile-danger {
+		padding: 1.25rem;
+	}
+
 	.profile-security-row,
 	.profile-danger-row {
 		align-items: flex-start;

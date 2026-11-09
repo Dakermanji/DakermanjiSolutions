@@ -1,6 +1,7 @@
 <!--! views/profile/_danger.ejs -->
-<section aria-labelledby="profile-danger-title" class="py-5 profile-section profile-danger">
-	<h2 id="profile-danger-title" class="h5 mb-3">
+<section aria-labelledby="profile-danger-title" class="profile-section profile-danger">
+	<h2 id="profile-danger-title" class="h5 profile-danger__title">
+		<i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
 		<%= t('profile:danger.title') %>
 	</h2>
 
@@ -17,6 +18,7 @@
 			data-bs-toggle="modal"
 			data-bs-target="#profileDeleteAccountModal"
 		>
+			<i class="bi bi-trash3" aria-hidden="true"></i>
 			<%= t('profile:danger.deleteAccount') %>
 		</button>
 	</div>
