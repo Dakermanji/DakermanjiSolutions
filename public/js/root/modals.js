@@ -29,6 +29,7 @@
 	const MODALS = {
 		signup: { id: 'authModal', tab: 'auth-signup-tab' },
 		signin: { id: 'authModal', tab: 'auth-signin-tab' },
+		recovery: { id: 'recoveryModal' },
 		complete_signup_local: { id: 'completeSignUpModal' },
 		complete_signup_oauth: { id: 'completeSignUpModal' },
 		reset_password: { id: 'resetPasswordModal' },
