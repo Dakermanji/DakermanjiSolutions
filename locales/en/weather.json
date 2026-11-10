@@ -22,10 +22,15 @@
 		"on": "on"
 	},
 	"measurementUnits": {
+		"mm": "mm",
 		"km/h": "km/h",
 		"mph": "mph",
 		"km": "km",
 		"mi": "mi"
+	},
+	"precipitationTypes": {
+		"rain": "Rain",
+		"snow": "Snow"
 	},
 	"directions": {
 		"N": "N",

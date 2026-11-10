@@ -16,8 +16,8 @@
 			? `${gustLabel} - ${directionLabel}`
 			: `${directionLabel}${localizedComma}${gustLabel}`;
 	};
-	const precipitationLabel = day.precipitation
-		? `${day.precipitation.volume} mm ${day.precipitation.type}`
+	const precipitationVolume = day.precipitation
+		? new Intl.NumberFormat(currentLang, { maximumFractionDigits: 1 }).format(day.precipitation.volume)
 		: null;
 	const weatherMetrics = [
 		{ icon: 'bi-thermometer-half', label: t('weather:metrics.temperature'), value: formatTemperature(day.temp) },
@@ -34,11 +34,11 @@
 		{ icon: 'bi-cloud-fill', label: t('weather:metrics.condition'), value: formatCondition(day.condition) },
 	];
 
-	if (precipitationLabel) {
+	if (day.precipitation) {
 		weatherMetrics.push({
 			icon: day.precipitation.type === 'snow' ? 'bi-cloud-snow-fill' : 'bi-cloud-rain-heavy-fill',
-			label: t('weather:metrics.precipitation'),
-			value: precipitationLabel,
+			label: `${t('weather:metrics.precipitation')} · ${t(`weather:precipitationTypes.${day.precipitation.type}`)}`,
+			value: `${precipitationVolume} ${t('weather:measurementUnits.mm')}`,
 		});
 	}
 %>

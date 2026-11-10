@@ -22,10 +22,15 @@
 		"on": "على"
 	},
 	"measurementUnits": {
+		"mm": "مم",
 		"km/h": "كم/ساعة",
 		"mph": "ميل/ساعة",
 		"km": "كم",
 		"mi": "ميل"
+	},
+	"precipitationTypes": {
+		"rain": "مطر",
+		"snow": "ثلج"
 	},
 	"directions": {
 		"N": "شمال",
