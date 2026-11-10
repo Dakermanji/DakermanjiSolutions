@@ -234,17 +234,17 @@ function renderCityResults(cities) {
 }
 
 async function searchCities(query) {
-	if (citySearchController) {
-		citySearchController.abort();
-	}
-
-	citySearchController = new AbortController();
+	citySearchController?.abort();
+	const controller = new AbortController();
+	citySearchController = controller;
 
 	const params = new URLSearchParams({ query });
 	const response = await fetch(`/weather/cities?${params.toString()}`, {
 		headers: { Accept: 'application/json' },
-		signal: citySearchController.signal,
+		signal: controller.signal,
 	});
+
+	if (controller.signal.aborted || query !== cityInput?.value.trim()) return;
 
 	if (!response.ok) {
 		hideCityResults();
@@ -252,6 +252,8 @@ async function searchCities(query) {
 	}
 
 	const data = await response.json();
+	if (controller.signal.aborted || query !== cityInput?.value.trim()) return;
+
 	const cities = Array.isArray(data?.cities) ? data.cities : [];
 
 	if (!cities.length) {
@@ -268,15 +270,18 @@ if (cityInput) {
 
 		clearSelectedLocation();
 		window.clearTimeout(citySearchTimer);
+		citySearchController?.abort();
+		hideCityResults();
 
 		if (query.length < CITY_SEARCH_MIN_LENGTH) {
-			hideCityResults();
 			return;
 		}
 
 		citySearchTimer = window.setTimeout(() => {
 			searchCities(query).catch((error) => {
-				if (error.name !== 'AbortError') hideCityResults();
+				if (error.name !== 'AbortError' && query === cityInput.value.trim()) {
+					hideCityResults();
+				}
 			});
 		}, CITY_SEARCH_DEBOUNCE_MS);
 	});
