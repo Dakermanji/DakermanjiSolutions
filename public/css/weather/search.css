@@ -17,6 +17,17 @@
 	position: relative;
 }
 
+.weather-search__error {
+	grid-column: 1 / -1;
+	margin: 0;
+	padding: 0.65rem 0.8rem;
+	border: 1px solid var(--border-subtle);
+	border-inline-start: 3px solid var(--color-primary);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-body);
+	background-color: var(--bg-section);
+}
+
 .weather-search .input-group-text,
 .weather-search .form-control {
 	border-color: var(--border-soft);

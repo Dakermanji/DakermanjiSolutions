@@ -6,6 +6,7 @@
 		"placeholder": "Rechercher une ville",
 		"currentLocation": "Utiliser la position actuelle",
 		"results": "Résultats de villes",
+		"chooseCity": "Choisissez une ville dans les résultats ou utilisez votre position actuelle.",
 		"noResults": "Aucune ville trouvée."
 	},
 	"units": {

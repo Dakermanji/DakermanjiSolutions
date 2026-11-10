@@ -6,6 +6,7 @@
 		"placeholder": "Search city",
 		"currentLocation": "Use current location",
 		"results": "City results",
+		"chooseCity": "Choose a city from the results or use your current location.",
 		"noResults": "No cities found."
 	},
 	"units": {

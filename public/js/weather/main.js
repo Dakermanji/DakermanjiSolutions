@@ -8,6 +8,7 @@ const currentLocationButton = document.querySelector(
 );
 const cityInput = document.querySelector('[data-weather-city-input]');
 const cityResults = document.querySelector('[data-weather-city-results]');
+const citySelectionError = document.querySelector('[data-weather-city-error]');
 const weatherClocks = document.querySelectorAll('[data-weather-clock]');
 
 let citySearchTimer = null;
@@ -21,6 +22,8 @@ function getLocale() {
 }
 
 function parseCoordinate(value) {
+	if (value === '' || value === null || value === undefined) return null;
+
 	const coordinate = Number(value);
 
 	return Number.isFinite(coordinate) ? coordinate : null;
@@ -49,6 +52,26 @@ function getLocationInputs(form) {
 	};
 }
 
+function hasSelectedLocation(form) {
+	const { latitude, longitude } = getLocationInputs(form);
+
+	return hasValidCoordinates(
+		parseCoordinate(latitude?.value),
+		parseCoordinate(longitude?.value),
+	);
+}
+
+function clearCitySelectionError() {
+	if (citySelectionError) citySelectionError.hidden = true;
+	cityInput?.removeAttribute('aria-invalid');
+}
+
+function showCitySelectionError() {
+	if (citySelectionError) citySelectionError.hidden = false;
+	cityInput?.setAttribute('aria-invalid', 'true');
+	cityInput?.focus();
+}
+
 async function saveViewport() {
 	const width = window.innerWidth;
 	const height = window.innerHeight;
@@ -69,12 +92,20 @@ async function saveViewport() {
 
 async function submitWeatherForm(form) {
 	if (!form) return;
+	if (!hasSelectedLocation(form)) {
+		showCitySelectionError();
+		return;
+	}
+
+	clearCitySelectionError();
 
 	try {
 		await saveViewport();
 	} catch {
 		// Forecasts still work with the default background size.
 	}
+
+	if (!hasSelectedLocation(form)) return;
 
 	isSubmittingWeatherForm = true;
 	form.submit();
@@ -134,6 +165,7 @@ async function selectCity(city) {
 	if (inputs.latitude) inputs.latitude.value = latitude;
 	if (inputs.longitude) inputs.longitude.value = longitude;
 
+	clearCitySelectionError();
 	hideCityResults();
 	await submitWeatherForm(form);
 }
@@ -269,6 +301,7 @@ if (cityInput) {
 		const query = cityInput.value.trim();
 
 		clearSelectedLocation();
+		clearCitySelectionError();
 		window.clearTimeout(citySearchTimer);
 		citySearchController?.abort();
 		hideCityResults();

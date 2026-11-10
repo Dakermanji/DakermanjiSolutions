@@ -59,6 +59,9 @@
 			<label class="visually-hidden" for="weather-city"><%= t('weather:search.city') %></label>
 			<input type="hidden" name="latitude" data-weather-latitude />
 			<input type="hidden" name="longitude" data-weather-longitude />
+			<p id="weather-city-error" class="weather-search__error small" role="alert" data-weather-city-error hidden>
+				<%= t('weather:search.chooseCity') %>
+			</p>
 			<div class="input-group">
 				<span class="input-group-text"><i class="bi bi-search"></i></span>
 				<input
@@ -69,6 +72,7 @@
 					autocomplete="off"
 					aria-autocomplete="list"
 					aria-controls="weather-city-results"
+					aria-describedby="weather-city-error"
 					aria-expanded="false"
 					data-weather-city-input
 				/>
