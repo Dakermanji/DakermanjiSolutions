@@ -9,6 +9,7 @@ import {
 	WIND_DIRECTIONS,
 } from '../../constants/weather.js';
 import { findGeocodingCityByCoordinates } from './geocoding.js';
+import { getDailySunTimes } from './sunTimes.js';
 import {
 	cleanPlaceName,
 	getCountryName,
@@ -85,12 +86,36 @@ function getLocalHour(timestamp, timezoneOffset) {
 	return new Date((timestamp + timezoneOffset) * 1000).getUTCHours();
 }
 
-function formatTime(timestamp, timezoneOffset, locale) {
+function formatTime(timestamp, timezoneOffset, locale, timeZone = 'UTC') {
+	if (
+		timestamp === null ||
+		timestamp === undefined ||
+		!Number.isFinite(Number(timestamp))
+	) {
+		return '';
+	}
+
+	const adjustedTimestamp = Number(timestamp) +
+		(timeZone === 'UTC' ? timezoneOffset : 0);
+
 	return new Intl.DateTimeFormat(locale, {
 		hour: 'numeric',
 		minute: '2-digit',
-		timeZone: 'UTC',
-	}).format(new Date((timestamp + timezoneOffset) * 1000));
+		timeZone,
+	}).format(new Date(adjustedTimestamp * 1000));
+}
+
+function getSunTime(dateKey, kind, { sunTimes, city, timezoneOffset, locale }) {
+	const dailyTimes = sunTimes?.byDate.get(dateKey);
+
+	if (dailyTimes) {
+		return formatTime(dailyTimes[kind], 0, locale, sunTimes.timeZone);
+	}
+
+	const fallback = city?.[kind];
+	return fallback && getLocalDateKey(fallback, timezoneOffset) === dateKey
+		? formatTime(fallback, timezoneOffset, locale)
+		: '';
 }
 
 function getDayLabel(dateKey, todayKey) {
@@ -202,8 +227,8 @@ function serializeDay(entries, label, { locale, unit, timezoneOffset, sunrise, s
 		visibility: getVisibility(representative.visibility, unit),
 		visibilityUnit: unit === 'metric' ? 'km' : 'mi',
 		timezoneOffset,
-		sunrise: formatTime(sunrise, timezoneOffset, locale),
-		sunset: formatTime(sunset, timezoneOffset, locale),
+		sunrise,
+		sunset,
 		windDirection: getDirection(representative.wind?.deg),
 		windGust: getWindSpeed(representative.wind?.gust, unit),
 		windUnit: unit === 'metric' ? 'km/h' : 'mph',
@@ -223,7 +248,7 @@ function serializeDay(entries, label, { locale, unit, timezoneOffset, sunrise, s
 	};
 }
 
-function serializeForecast(data, { locale, unit, location = null }) {
+function serializeForecast(data, { locale, unit, location = null, sunTimes = null }) {
 	const timezoneOffset = Number(data.city?.timezone) || 0;
 	const todayKey = getLocalDateKey(Date.now() / 1000, timezoneOffset);
 	const groupedEntries = new Map();
@@ -243,8 +268,12 @@ function serializeForecast(data, { locale, unit, location = null }) {
 				locale,
 				unit,
 				timezoneOffset,
-				sunrise: data.city?.sunrise,
-				sunset: data.city?.sunset,
+				sunrise: getSunTime(dateKey, 'sunrise', {
+					sunTimes, city: data.city, timezoneOffset, locale,
+				}),
+				sunset: getSunTime(dateKey, 'sunset', {
+					sunTimes, city: data.city, timezoneOffset, locale,
+				}),
 			}),
 		);
 
@@ -332,9 +361,10 @@ export async function getWeatherForecast({ latitude, longitude, unit, locale }) 
 		appid: env.OPENWEATHER_API_KEY,
 	});
 
-	const [response, reverseLocation] = await Promise.all([
+	const [response, reverseLocation, sunTimes] = await Promise.all([
 		fetch(`${OPENWEATHER_FORECAST_URL}?${params}`),
 		getReverseGeocodingLocation({ latitude, longitude, locale }),
+		getDailySunTimes({ latitude, longitude }).catch(() => null),
 	]);
 
 	if (response.status === 429) {
@@ -352,5 +382,5 @@ export async function getWeatherForecast({ latitude, longitude, unit, locale }) 
 		location: reverseLocation,
 	});
 
-	return serializeForecast(await response.json(), { locale, unit, location });
+	return serializeForecast(await response.json(), { locale, unit, location, sunTimes });
 }

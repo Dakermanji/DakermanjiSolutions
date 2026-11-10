@@ -17,6 +17,7 @@ export const WEATHER_BACKGROUND_QUERIES = Object.freeze({
 
 export const OPEN_METEO_GEOCODING_URL =
 	'https://geocoding-api.open-meteo.com/v1/search';
+export const OPEN_METEO_FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 export const MAX_GEOCODING_RESULTS = 10;
 export const MAX_QUALIFIER_CANDIDATES = 100;
 

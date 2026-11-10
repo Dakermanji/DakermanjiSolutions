@@ -165,8 +165,8 @@
 							{ icon: 'bi-compass', label: t('weather:metrics.directionGusts'), value: formatDirectionGusts(day.windDirection, day.windGust, day.windUnit) },
 							{ icon: 'bi-clouds-fill', label: t('weather:metrics.cloudiness'), value: formatPercent(day.cloudiness) },
 							{ icon: 'bi-eye-fill', label: t('weather:metrics.visibility'), value: formatDistance(day.visibility, day.visibilityUnit) },
-							{ icon: 'bi-sunrise-fill', label: t('weather:metrics.sunrise'), value: day.sunrise },
-							{ icon: 'bi-sunset-fill', label: t('weather:metrics.sunset'), value: day.sunset },
+							...(day.sunrise ? [{ icon: 'bi-sunrise-fill', label: t('weather:metrics.sunrise'), value: day.sunrise }] : []),
+							...(day.sunset ? [{ icon: 'bi-sunset-fill', label: t('weather:metrics.sunset'), value: day.sunset }] : []),
 							{ icon: 'bi-cloud-fill', label: t('weather:metrics.condition'), value: formatCondition(day.condition) },
 						];
 
