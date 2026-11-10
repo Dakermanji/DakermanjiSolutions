@@ -13,7 +13,7 @@ main.container:has(.weather-page) {
 		rgb(255 255 255 / 46%)
 	);
 
-	min-height: calc(100vh - 6.5rem);
+	min-height: calc(100vh - 6rem);
 	position: relative;
 	display: grid;
 	place-items: center;
