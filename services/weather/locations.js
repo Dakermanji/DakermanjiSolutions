@@ -1,19 +1,6 @@
 //! services/weather/locations.js
 
-const SUBDIVISION_NAMES = {
-	CA: {
-		Quebec: {
-			ar: 'كيبيك',
-			en: 'Quebec',
-			fr: 'Québec',
-		},
-		Québec: {
-			ar: 'كيبيك',
-			en: 'Quebec',
-			fr: 'Québec',
-		},
-	},
-};
+import { SUBDIVISION_NAMES } from '../../constants/weather.js';
 
 export function getLanguage(locale) {
 	return String(locale || 'en')

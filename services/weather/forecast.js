@@ -1,6 +1,13 @@
 //! services/weather/forecast.js
 
 import env from '../../config/dotenv.js';
+import {
+	FORECAST_DAYS,
+	OPENWEATHER_FORECAST_URL,
+	OPENWEATHER_REVERSE_GEOCODING_URL,
+	WEATHER_MASCOT_CONDITIONS,
+	WIND_DIRECTIONS,
+} from '../../constants/weather.js';
 import { findGeocodingCityByCoordinates } from './geocoding.js';
 import {
 	cleanPlaceName,
@@ -8,12 +15,6 @@ import {
 	getLanguage,
 	getSubdivisionName,
 } from './locations.js';
-
-const OPENWEATHER_FORECAST_URL =
-	'https://api.openweathermap.org/data/2.5/forecast';
-const OPENWEATHER_REVERSE_GEOCODING_URL =
-	'https://api.openweathermap.org/geo/1.0/reverse';
-const FORECAST_DAYS = 5;
 
 export class OpenWeatherConfigError extends Error {
 	constructor(message = 'OpenWeather API key is not configured') {
@@ -133,8 +134,7 @@ function getConditionName(weatherMain) {
 }
 
 function getMascotImage(condition) {
-	const supportedConditions = new Set(['sunny', 'cloudy', 'rainy', 'stormy', 'snowy']);
-	const mascotCondition = supportedConditions.has(condition) ? condition : 'default';
+	const mascotCondition = WEATHER_MASCOT_CONDITIONS.includes(condition) ? condition : 'default';
 
 	return `/images/weather/maple-coder-weather-${mascotCondition}.png`;
 }
@@ -157,19 +157,9 @@ function getDirection(degrees) {
 	const value = Number(degrees);
 	if (!Number.isFinite(value)) return '';
 
-	const directions = [
-		'N',
-		'NE',
-		'E',
-		'SE',
-		'S',
-		'SW',
-		'W',
-		'NW',
-	];
-	const index = Math.round(value / 45) % directions.length;
+	const index = Math.round(value / 45) % WIND_DIRECTIONS.length;
 
-	return directions[index];
+	return WIND_DIRECTIONS[index];
 }
 
 function getRepresentativeEntry(entries, timezoneOffset) {

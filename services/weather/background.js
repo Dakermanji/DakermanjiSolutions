@@ -1,12 +1,14 @@
 //! services/weather/background.js
 
 import env from '../../config/dotenv.js';
-
-const UNSPLASH_SEARCH_URL = 'https://api.unsplash.com/search/photos';
-const UNSPLASH_REFERRAL_SOURCE = 'akermanji_solutions_weather';
-const DEFAULT_VIEWPORT_WIDTH = 1600;
-const DEFAULT_VIEWPORT_HEIGHT = 900;
-const MAX_VIEWPORT_SIZE = 3840;
+import {
+	DEFAULT_VIEWPORT_HEIGHT,
+	DEFAULT_VIEWPORT_WIDTH,
+	MAX_VIEWPORT_SIZE,
+	UNSPLASH_REFERRAL_SOURCE,
+	UNSPLASH_SEARCH_URL,
+	WEATHER_BACKGROUND_QUERIES,
+} from '../../constants/weather.js';
 
 export class UnsplashRateLimitError extends Error {
 	constructor(message = 'Unsplash background rate limit reached') {
@@ -34,16 +36,7 @@ function getOrientation(width, height) {
 }
 
 function getConditionQuery(condition) {
-	const queries = {
-		sunny: 'sunny weather sky',
-		cloudy: 'cloudy weather sky',
-		rainy: 'rainy weather city',
-		stormy: 'stormy weather clouds',
-		snowy: 'snowy weather landscape',
-		foggy: 'foggy weather landscape',
-	};
-
-	return queries[condition] || 'weather sky';
+	return WEATHER_BACKGROUND_QUERIES[condition] || 'weather sky';
 }
 
 function getCroppedImageUrl(photo, { width, height }) {

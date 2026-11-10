@@ -1,10 +1,10 @@
 //! services/weather/geocoding.js
 
-const OPEN_METEO_GEOCODING_URL =
-	'https://geocoding-api.open-meteo.com/v1/search';
-const MAX_GEOCODING_RESULTS = 10;
-const MAX_QUALIFIER_CANDIDATES = 100;
-
+import {
+	MAX_GEOCODING_RESULTS,
+	MAX_QUALIFIER_CANDIDATES,
+	OPEN_METEO_GEOCODING_URL,
+} from '../../constants/weather.js';
 import {
 	cleanPlaceName,
 	getCountryName,
