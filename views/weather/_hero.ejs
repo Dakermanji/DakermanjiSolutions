@@ -1,0 +1,33 @@
+<!--! views/weather/_hero.ejs -->
+<%
+	const localizedComma = t('common:comma');
+	const locationLabel = [location.city, location.state, location.country]
+		.filter(Boolean)
+		.join(localizedComma);
+	const hasLocation = Boolean(locationLabel);
+%>
+
+<div class="weather-hero">
+	<div>
+		<p class="weather-kicker"><%= t('weather:kicker') %></p>
+		<h1 id="weather-title" class="weather-location">
+			<% if (hasLocation && location.countryCode) { %>
+				<span
+					class="fi fi-<%= location.countryCode.toLowerCase() %> weather-location__flag"
+					role="img"
+					aria-label="<%= location.country %>"
+				></span>
+			<% } %>
+			<% if (hasLocation) { %>
+				<span><%= locationLabel %></span>
+			<% } %>
+		</h1>
+	</div>
+
+	<div class="weather-mascot" aria-hidden="true">
+		<img
+			src="<%= activeDay?.mascotImage || '/images/weather/maple-coder-weather-default.png' %>"
+			alt=""
+		/>
+	</div>
+</div>

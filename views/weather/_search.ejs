@@ -1,0 +1,66 @@
+<!--! views/weather/_search.ejs -->
+
+<form class="weather-search" action="/weather" method="get">
+	<label class="visually-hidden" for="weather-city"><%= t('weather:search.city') %></label>
+	<input type="hidden" name="latitude" data-weather-latitude />
+	<input type="hidden" name="longitude" data-weather-longitude />
+	<p id="weather-city-error" class="weather-search__error small" role="alert" data-weather-city-error hidden>
+		<%= t('weather:search.chooseCity') %>
+	</p>
+	<div class="input-group">
+		<span class="input-group-text"><i class="bi bi-search"></i></span>
+		<input
+			id="weather-city"
+			class="form-control"
+			type="search"
+			placeholder="<%= t('weather:search.placeholder') %>"
+			autocomplete="off"
+			aria-autocomplete="list"
+			aria-controls="weather-city-results"
+			aria-describedby="weather-city-error"
+			aria-expanded="false"
+			data-weather-city-input
+		/>
+		<button
+			id='current-location'
+			class="btn btn-action-outline weather-current-location has-tooltip"
+			type="button"
+			data-weather-current-location
+			data-bs-title="<%= t('weather:search.currentLocation') %>"
+			aria-label="<%= t('weather:search.currentLocation') %>"
+		>
+			<i class="bi bi-crosshair" aria-hidden="true"></i>
+		</button>
+		<div
+			id="weather-city-results"
+			class="weather-city-results app-dropdown-surface"
+			role="listbox"
+			aria-label="<%= t('weather:search.results') %>"
+			data-weather-city-results
+			data-empty-label="<%= t('weather:search.noResults') %>"
+			hidden
+		></div>
+	</div>
+
+	<div class="weather-units" role="group" aria-label="<%= t('weather:units.label') %>">
+		<input
+			class="btn-check"
+			type="radio"
+			name="unit"
+			id="weather-unit-metric"
+			value="metric"
+			<%= unit === 'metric' ? 'checked' : '' %>
+		/>
+		<label class="btn btn-action-outline" for="weather-unit-metric"><%= t('weather:units.metric') %></label>
+
+		<input
+			class="btn-check"
+			type="radio"
+			name="unit"
+			id="weather-unit-imperial"
+			value="imperial"
+			<%= unit === 'imperial' ? 'checked' : '' %>
+		/>
+		<label class="btn btn-action-outline" for="weather-unit-imperial"><%= t('weather:units.imperial') %></label>
+	</div>
+</form>

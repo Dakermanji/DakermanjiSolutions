@@ -1,0 +1,94 @@
+<!--! views/weather/_forecast_panel.ejs -->
+<%
+	const isArabic = currentLang === 'ar';
+	const localizedComma = t('common:comma');
+	const formatTemperature = (value) => isArabic ? `°${value}` : `${value}°`;
+	const formatPercent = (value) => isArabic ? `%${value}` : `${value}%`;
+	const formatSpeed = (value, unit) => `${value} ${t(`weather:measurementUnits.${unit}`)}`;
+	const formatDistance = (value, unit) => `${value} ${t(`weather:measurementUnits.${unit}`)}`;
+	const formatPressure = (value) => isArabic ? `hPa ${value}` : `${value} hPa`;
+	const formatCondition = (condition) => t(`weather:conditions.${condition}`);
+	const formatDirectionGusts = (direction, gust, unit) => {
+		const directionLabel = t(`weather:directions.${direction}`);
+		const gustLabel = formatSpeed(gust, unit);
+
+		return isArabic
+			? `${gustLabel} - ${directionLabel}`
+			: `${directionLabel}${localizedComma}${gustLabel}`;
+	};
+	const precipitationLabel = day.precipitation
+		? `${day.precipitation.volume} mm ${day.precipitation.type}`
+		: null;
+	const weatherMetrics = [
+		{ icon: 'bi-thermometer-half', label: t('weather:metrics.temperature'), value: formatTemperature(day.temp) },
+		{ icon: 'bi-thermometer-sun', label: t('weather:metrics.feelsLike'), value: formatTemperature(day.feelsLike) },
+		{ icon: 'bi-thermometer-high', label: t('weather:metrics.minMax'), value: `${formatTemperature(day.low)} / ${formatTemperature(day.high)}` },
+		{ icon: 'bi-droplet-fill', label: t('weather:metrics.humidity'), value: formatPercent(day.humidity) },
+		{ icon: 'bi-speedometer2', label: t('weather:metrics.pressure'), value: formatPressure(day.pressure) },
+		{ icon: 'bi-wind', label: t('weather:metrics.wind'), value: formatSpeed(day.wind, day.windUnit) },
+		{ icon: 'bi-compass', label: t('weather:metrics.directionGusts'), value: formatDirectionGusts(day.windDirection, day.windGust, day.windUnit) },
+		{ icon: 'bi-clouds-fill', label: t('weather:metrics.cloudiness'), value: formatPercent(day.cloudiness) },
+		{ icon: 'bi-eye-fill', label: t('weather:metrics.visibility'), value: formatDistance(day.visibility, day.visibilityUnit) },
+		...(day.sunrise ? [{ icon: 'bi-sunrise-fill', label: t('weather:metrics.sunrise'), value: day.sunrise }] : []),
+		...(day.sunset ? [{ icon: 'bi-sunset-fill', label: t('weather:metrics.sunset'), value: day.sunset }] : []),
+		{ icon: 'bi-cloud-fill', label: t('weather:metrics.condition'), value: formatCondition(day.condition) },
+	];
+
+	if (precipitationLabel) {
+		weatherMetrics.push({
+			icon: day.precipitation.type === 'snow' ? 'bi-cloud-snow-fill' : 'bi-cloud-rain-heavy-fill',
+			label: t('weather:metrics.precipitation'),
+			value: precipitationLabel,
+		});
+	}
+%>
+
+<article
+	class="tab-pane fade weather-panel <%= index === 0 ? 'show active' : '' %>"
+	id="<%= day.id %>-panel"
+	role="tabpanel"
+	aria-labelledby="<%= day.id %>-tab"
+	tabindex="0"
+>
+	<div class="weather-panel__main row g-3 align-items-center">
+		<div class="weather-panel__summary-block col-12 col-sm-8">
+			<i
+				class="has-tooltip bi <%= day.icon %>"
+				data-bs-title="<%= formatCondition(day.condition) %>: <%= day.description %>"
+				data-bs-toggle="tooltip"
+			></i>
+			<div>
+				<p class="weather-panel__day"><%= dayLabel %></p>
+				<p class="weather-panel__temp"><%= formatTemperature(day.temp) %></p>
+				<p class="weather-panel__summary"><%= day.summary %></p>
+			</div>
+		</div>
+		<div class="col-12 col-sm-4 d-flex justify-content-sm-end">
+			<div
+				class="weather-clock"
+				data-weather-clock
+				data-timezone-offset="<%= day.timezoneOffset %>"
+				aria-label="<%= t('weather:clock.localTime') %>"
+			>
+				<i class="bi bi-clock" aria-hidden="true"></i>
+				<span class="weather-clock__time" data-weather-clock-time>--:--</span>
+				<span class="weather-clock__date" data-weather-clock-date>--/--/----</span>
+				<span class="weather-clock__offset" data-weather-clock-offset>UTC</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="weather-metrics row g-3">
+		<% weatherMetrics.forEach((metric) => { %>
+			<div class="col-12 col-sm-6 col-lg-3">
+				<div class="weather-metric">
+					<span>
+						<i class="bi <%= metric.icon %>" aria-hidden="true"></i>
+						<%= metric.label %>
+					</span>
+					<strong><%= metric.value %></strong>
+				</div>
+			</div>
+		<% }) %>
+	</div>
+</article>

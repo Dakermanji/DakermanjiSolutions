@@ -978,6 +978,11 @@
 			"main.ejs"
 		],
 		"weather": [
+			"_attribution.ejs",
+			"_forecast.ejs",
+			"_forecast_panel.ejs",
+			"_hero.ejs",
+			"_search.ejs",
 			"main.ejs"
 		],
 		"~": [

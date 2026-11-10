@@ -1,0 +1,32 @@
+<!--! views/weather/_forecast.ejs -->
+<%
+	const getDayLabel = (day) => day.labelKey === 'day'
+		? t('weather:days.day', { number: day.dayNumber })
+		: t(`weather:days.${day.labelKey}`);
+%>
+
+<ul class="nav nav-tabs weather-tabs" id="weatherForecastTabs" role="tablist">
+	<% forecastDays.forEach((day, index) => { %>
+		<li class="nav-item" role="presentation">
+			<button
+				class="nav-link <%= index === 0 ? 'active' : '' %>"
+				id="<%= day.id %>-tab"
+				data-bs-toggle="tab"
+				data-bs-target="#<%= day.id %>-panel"
+				type="button"
+				role="tab"
+				aria-controls="<%= day.id %>-panel"
+				aria-selected="<%= index === 0 ? 'true' : 'false' %>"
+			>
+				<i class="bi <%= day.icon %>"></i>
+				<span><%= getDayLabel(day) %></span>
+			</button>
+		</li>
+	<% }) %>
+</ul>
+
+<div class="tab-content weather-panels" id="weatherForecastTabContent">
+	<% forecastDays.forEach((day, index) => { %>
+		<%- include('_forecast_panel', { day, index, dayLabel: getDayLabel(day) }) %>
+	<% }) %>
+</div>
