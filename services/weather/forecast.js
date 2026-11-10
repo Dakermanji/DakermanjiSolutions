@@ -93,13 +93,16 @@ function formatTime(timestamp, timezoneOffset, locale) {
 	}).format(new Date((timestamp + timezoneOffset) * 1000));
 }
 
-function getDayLabel(index) {
-	if (index === 0) return { labelKey: 'today' };
-	if (index === 1) return { labelKey: 'tomorrow' };
+function getDayLabel(dateKey, todayKey) {
+	const dayNumber =
+		Math.round((Date.parse(dateKey) - Date.parse(todayKey)) / 86_400_000) + 1;
+
+	if (dayNumber === 1) return { labelKey: 'today' };
+	if (dayNumber === 2) return { labelKey: 'tomorrow' };
 
 	return {
 		labelKey: 'day',
-		dayNumber: index + 1,
+		dayNumber,
 	};
 }
 
@@ -178,13 +181,12 @@ function sumVolume(entries, key) {
 	}, 0);
 }
 
-function serializeDay(entries, index, { locale, unit, timezoneOffset, sunrise, sunset }) {
+function serializeDay(entries, label, { locale, unit, timezoneOffset, sunrise, sunset }) {
 	const representative = getRepresentativeEntry(entries, timezoneOffset);
 	const weather = representative.weather?.[0] || {};
 	const rainVolume = sumVolume(entries, 'rain');
 	const snowVolume = sumVolume(entries, 'snow');
 	const condition = getConditionName(weather.main);
-	const label = getDayLabel(index);
 
 	return {
 		id: label.labelKey === 'day' ? `day-${label.dayNumber}` : label.labelKey,
@@ -223,6 +225,7 @@ function serializeDay(entries, index, { locale, unit, timezoneOffset, sunrise, s
 
 function serializeForecast(data, { locale, unit, location = null }) {
 	const timezoneOffset = Number(data.city?.timezone) || 0;
+	const todayKey = getLocalDateKey(Date.now() / 1000, timezoneOffset);
 	const groupedEntries = new Map();
 
 	for (const entry of data.list || []) {
@@ -233,10 +236,10 @@ function serializeForecast(data, { locale, unit, location = null }) {
 		groupedEntries.set(dateKey, entries);
 	}
 
-	const forecastDays = [...groupedEntries.values()]
+	const forecastDays = [...groupedEntries.entries()]
 		.slice(0, FORECAST_DAYS)
-		.map((entries, index) =>
-			serializeDay(entries, index, {
+		.map(([dateKey, entries]) =>
+			serializeDay(entries, getDayLabel(dateKey, todayKey), {
 				locale,
 				unit,
 				timezoneOffset,
