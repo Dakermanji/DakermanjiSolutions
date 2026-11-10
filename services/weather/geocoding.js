@@ -3,6 +3,7 @@
 const OPEN_METEO_GEOCODING_URL =
 	'https://geocoding-api.open-meteo.com/v1/search';
 const MAX_GEOCODING_RESULTS = 10;
+const MAX_QUALIFIER_CANDIDATES = 100;
 
 import {
 	cleanPlaceName,
@@ -32,6 +33,29 @@ function normalizeLanguage(locale) {
 	return String(locale || 'en')
 		.split('-')[0]
 		.toLocaleLowerCase();
+}
+
+function normalizeSearchPart(value) {
+	return String(value || '')
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.trim()
+		.toLocaleLowerCase();
+}
+
+function matchesQualifier(city, qualifier, locale) {
+	const normalizedQualifier = normalizeSearchPart(qualifier);
+	const names = [
+		city.admin1,
+		city.country,
+		city.country_code,
+		getCountryName(city.country_code, locale),
+		getCountryName(city.country_code, 'en'),
+	];
+
+	return names.some((name) =>
+		normalizeSearchPart(name).startsWith(normalizedQualifier),
+	);
 }
 
 function getStateName(city) {
@@ -109,14 +133,10 @@ function getDistanceScore(city, latitude, longitude) {
 	);
 }
 
-export async function searchGeocodingCities(
-	query,
-	{ locale = 'en', limit = 5 } = {},
-) {
-	const normalizedLimit = normalizeLimit(limit);
+async function fetchGeocodingCities(query, { locale, count }) {
 	const params = new URLSearchParams({
 		name: query,
-		count: String(normalizedLimit),
+		count: String(count),
 		language: normalizeLanguage(locale),
 		format: 'json',
 	});
@@ -132,11 +152,37 @@ export async function searchGeocodingCities(
 	}
 
 	const data = await response.json();
-	const cities = Array.isArray(data?.results) ? data.results : [];
+	return Array.isArray(data?.results) ? data.results : [];
+}
+
+export async function searchGeocodingCities(
+	query,
+	{ locale = 'en', limit = 5 } = {},
+) {
+	const normalizedLimit = normalizeLimit(limit);
+	const [cityName, qualifier] = String(query).split(',').map((part) => part.trim());
+	const cities = await fetchGeocodingCities(qualifier ? query : cityName, {
+		locale,
+		count: normalizedLimit,
+	});
+
+	if (!qualifier || cities.length) {
+		return sortCities(
+			cities.map((city) => serializeCity(city, locale)),
+			cityName,
+		).slice(0, normalizedLimit);
+	}
+
+	const candidates = await fetchGeocodingCities(cityName, {
+		locale,
+		count: MAX_QUALIFIER_CANDIDATES,
+	});
 
 	return sortCities(
-		cities.map((city) => serializeCity(city, locale)),
-		query,
+		candidates
+			.filter((city) => matchesQualifier(city, qualifier, locale))
+			.map((city) => serializeCity(city, locale)),
+		cityName,
 	).slice(0, normalizedLimit);
 }
 
