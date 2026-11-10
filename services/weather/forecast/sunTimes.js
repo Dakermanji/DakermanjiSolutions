@@ -1,6 +1,6 @@
-//! services/weather/sunTimes.js
+//! services/weather/forecast/sunTimes.js
 
-import { OPEN_METEO_FORECAST_URL } from '../../constants/weather.js';
+import { OPEN_METEO_FORECAST_URL } from '../../../constants/weather.js';
 
 export async function getDailySunTimes({ latitude, longitude }) {
 	const params = new URLSearchParams({

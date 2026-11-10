@@ -768,12 +768,20 @@
 		"theme": [
 			"preference.js"
 		],
-		"weather": [
-			"background.js",
-			"forecast.js",
-			"geocoding.js",
-			"locations.js"
-		]
+		"weather": {
+			"forecast": [
+				"format.js",
+				"location.js",
+				"serialize.js",
+				"sunTimes.js"
+			],
+			"~": [
+				"background.js",
+				"forecast.js",
+				"geocoding.js",
+				"locations.js"
+			]
+		}
 	},
 	"sql": [
 		"01_session.sql",
