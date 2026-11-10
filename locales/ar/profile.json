@@ -37,6 +37,7 @@
 	},
 	"error": {
 		"current_password_invalid": "كلمة المرور الحالية غير صحيحة.",
+		"password_unchanged": "اختر كلمة مرور جديدة تختلف عن كلمة المرور الحالية.",
 		"deleteAccountPhrase": "عبارة تأكيد حذف الحساب غير مطابقة.",
 		"deleteAccountInvalidLink": "رابط حذف الحساب غير صالح أو منتهي الصلاحية."
 	}

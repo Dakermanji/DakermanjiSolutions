@@ -112,8 +112,48 @@ const accountDeletionEmailContent = {
 	},
 };
 
+const passwordChangedEmailContent = {
+	subject: '🚨 Password changed / Mot de passe modifié / تم تغيير كلمة المرور',
+	html: (recoveryUrl, contactUrl) => `
+	<div>
+		<p lang="fr" dir="ltr"><strong>Une version française suit.</strong>strong></p>
+		<p lang="ar" dir="rtl"><strong>وتليها أدناه نسخة باللغة العربية.</strong></p>
+	<div>
+		<hr>
+		<div dir="ltr" lang="en">
+			<p>Your password was changed. If you made this change, you can ignore this email.</p>
+			<p>If you did not, <a href="${recoveryUrl}">reset your password</a> as soon as possible. If you cannot recover your account, <a href="${contactUrl}">contact us</a> and we will help you regain access.</p>
+		</div>
+		<hr>
+		<div dir="ltr" lang="fr">
+			<p>Votre mot de passe a été modifié. Si vous êtes à l’origine de ce changement, vous pouvez ignorer ce message.</p>
+			<p>Si ce n’est pas vous, <a href="${recoveryUrl}">réinitialisez votre mot de passe</a> dès que possible. Si vous ne parvenez pas à récupérer votre compte, <a href="${contactUrl}">contactez-nous</a> et nous vous aiderons à y accéder de nouveau.</p>
+		</div>
+		<hr>
+		<div dir="rtl" lang="ar">
+			<p>تم تغيير كلمة مرور حسابك. إذا كنت أنت من أجريت هذا التغيير، فيمكنك تجاهل هذه الرسالة.</p>
+			<p>إذا لم تكن أنت، <a href="${recoveryUrl}">فأعد تعيين كلمة مرورك</a> في أقرب وقت ممكن. إذا تعذّر عليك استعادة حسابك، <a href="${contactUrl}">فتواصل معنا</a> وسنساعدك على استعادة الوصول إليه.</p>
+		</div>
+	`,
+	text: (recoveryUrl, contactUrl) => `Une version française suit.
+وتليها أدناه نسخة باللغة العربية.
+
+Your password was changed. If you made this change, you can ignore this email.
+If you did not, reset your password as soon as possible: ${recoveryUrl}
+If you cannot recover your account, contact us: ${contactUrl}
+
+Votre mot de passe a été modifié. Si vous êtes à l’origine de ce changement, vous pouvez ignorer ce message.
+Si ce n’est pas vous, réinitialisez votre mot de passe dès que possible : ${recoveryUrl}
+Si vous ne parvenez pas à récupérer votre compte, contactez-nous : ${contactUrl}
+
+تم تغيير كلمة مرور حسابك. إذا كنت أنت من أجريت هذا التغيير، فيمكنك تجاهل هذه الرسالة.
+إذا لم تكن أنت، فأعد تعيين كلمة مرورك في أقرب وقت ممكن: ${recoveryUrl}
+إذا تعذّر عليك استعادة حسابك، فتواصل معنا: ${contactUrl}`,
+};
+
 export default {
 	signupEmailContent,
 	resetPasswordEmailContent,
 	accountDeletionEmailContent,
+	passwordChangedEmailContent,
 };

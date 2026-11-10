@@ -37,6 +37,7 @@
 	},
 	"error": {
 		"current_password_invalid": "Current password is incorrect.",
+		"password_unchanged": "Choose a new password that is different from your current one.",
 		"deleteAccountPhrase": "The account deletion confirmation phrase did not match.",
 		"deleteAccountInvalidLink": "Invalid or expired account deletion link."
 	}

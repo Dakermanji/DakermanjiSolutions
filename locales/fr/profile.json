@@ -37,6 +37,7 @@
 	},
 	"error": {
 		"current_password_invalid": "Le mot de passe actuel est incorrect.",
+		"password_unchanged": "Choisissez un nouveau mot de passe différent de votre mot de passe actuel.",
 		"deleteAccountPhrase": "La phrase de confirmation de suppression du compte ne correspond pas.",
 		"deleteAccountInvalidLink": "Lien de suppression du compte invalide ou expiré."
 	}

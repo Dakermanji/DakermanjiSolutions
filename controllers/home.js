@@ -37,6 +37,9 @@ function normalizeSubject(value) {
  * @returns {void}
  */
 export function renderHome(req, res) {
+	if (req.query?.modal === 'recovery' && !res.locals.modal) {
+		res.locals.modal = 'recovery';
+	}
 	const locale = getLocale(req);
 	const signinIdentifier = req.flash('signinIdentifier')[0] || '';
 	const signupEmail = req.flash('signupEmail')[0] || '';

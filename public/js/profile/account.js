@@ -175,6 +175,31 @@ const passwordModalTriggers = document.querySelectorAll(
 	'[data-password-modal-trigger]',
 );
 
+document.addEventListener('submit', (event) => {
+	const form = document.querySelector('#profilePasswordModal form');
+
+	if (event.target !== form) return;
+
+	if (form.dataset.submitting === 'true') {
+		event.preventDefault();
+		return;
+	}
+
+	form.dataset.submitting = 'true';
+	form.setAttribute('aria-busy', 'true');
+	form.querySelector('button[type="submit"]').disabled = true;
+});
+
+window.addEventListener('pageshow', () => {
+	const form = document.querySelector('#profilePasswordModal form');
+
+	if (!form) return;
+
+	delete form.dataset.submitting;
+	form.removeAttribute('aria-busy');
+	form.querySelector('button[type="submit"]').disabled = false;
+});
+
 async function loadPasswordModal() {
 	const existingModal = document.querySelector('#profilePasswordModal');
 

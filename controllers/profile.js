@@ -24,6 +24,8 @@ import {
 } from '../middlewares/validators/common.js';
 import { validateNoProfanity } from '../middlewares/profanity/index.js';
 import { comparePassword, hashPassword } from '../services/auth/password.js';
+import { sendPasswordChangedEmail } from '../services/auth/email.js';
+import logger from '../config/logger.js';
 
 const PROFILE_REDIRECT = '/profile';
 const MAX_AVATAR_VALUE_LENGTH = 96;
@@ -221,6 +223,13 @@ export async function updatePassword(req, res) {
 				to: PROFILE_REDIRECT,
 			});
 		}
+
+		if (await comparePassword(password, userPassword.hashed_password)) {
+			return fail(req, res, 'profile:error.password_unchanged', {
+				modal,
+				to: PROFILE_REDIRECT,
+			});
+		}
 	}
 
 	const hashedPassword = await hashPassword(password);
@@ -237,6 +246,16 @@ export async function updatePassword(req, res) {
 	}
 
 	req.user.has_password = true;
+
+	try {
+		await sendPasswordChangedEmail(user.email);
+	} catch (error) {
+		logger.error('Password changed, but security email failed', {
+			type: 'mail',
+			userId: user.id,
+			err: error.message,
+		});
+	}
 
 	return success(req, res, 'profile:password.updated', {
 		to: PROFILE_REDIRECT,

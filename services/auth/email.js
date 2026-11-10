@@ -113,8 +113,28 @@ export async function sendAccountDeletionEmail({
 	});
 }
 
+export async function sendPasswordChangedEmail(email) {
+	const recoveryUrl = new URL('/?modal=recovery', env.CLIENT_URL).toString();
+	const contactUrl = new URL('/#contact', env.CLIENT_URL).toString();
+	const content = emailContent.passwordChangedEmailContent;
+
+	await transporter.sendMail({
+		from: env.EMAIL_ADMIN,
+		to: email,
+		subject: content.subject,
+		html: content.html(recoveryUrl, contactUrl),
+		text: content.text(recoveryUrl, contactUrl),
+	});
+
+	logger.success('Password change email sent', {
+		type: 'mail',
+		email,
+	});
+}
+
 export default {
 	sendSignupEmail,
 	sendRecoveryIntentEmail,
 	sendAccountDeletionEmail,
+	sendPasswordChangedEmail,
 };

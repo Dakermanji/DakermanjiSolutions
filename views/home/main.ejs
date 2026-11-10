@@ -24,8 +24,10 @@
 <!-- Guest -->
 <% if (!user) { %>
 	<%- include('../modals/auth/_authTabs') %>
-	<%- include('../modals/auth/_recovery') %>
 	<%- include('../modals/auth/_resetPassword') %>
+<% } %>
+<% if (!user || modal === 'recovery') { %>
+	<%- include('../modals/auth/_recovery') %>
 <% } %>
 <% if (modal === 'complete_signup_local' || modal === 'complete_signup_oauth' ) { %>
 	<%- include('../modals/auth/_complete_signup') %>
