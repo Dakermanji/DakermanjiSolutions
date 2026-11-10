@@ -1,0 +1,64 @@
+/*! public/css/weather/mobile.css */
+
+@media (max-width: 575.98px) {
+	.weather-page {
+		min-height: calc(100svh - 3.5rem);
+		padding: 1rem;
+		padding-bottom: 6rem;
+	}
+
+	.weather-shell {
+		padding: 0;
+	}
+
+	.weather-hero {
+		align-items: center;
+		flex-direction: column-reverse;
+		text-align: center;
+	}
+
+	.weather-location {
+		justify-content: center;
+	}
+
+	.weather-mascot {
+		width: 4rem;
+	}
+
+	.weather-search {
+		grid-template-columns: 1fr;
+	}
+
+	.weather-city-results {
+		width: 100%;
+	}
+
+	.weather-units {
+		justify-content: stretch;
+	}
+
+	.weather-units .btn {
+		flex: 1;
+	}
+
+	.weather-tabs .nav-link {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.weather-panel__main {
+		row-gap: 1rem;
+	}
+
+	.weather-panel__summary-block {
+		align-items: flex-start;
+	}
+
+	.weather-clock {
+		width: 100%;
+	}
+
+	.weather-panel__temp {
+		font-size: 3.5rem;
+	}
+}

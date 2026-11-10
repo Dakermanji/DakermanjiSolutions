@@ -34,7 +34,12 @@ const emptyLocation = {
 function renderWeatherView(req, res, { location = emptyLocation, forecastDays = [] } = {}) {
 	res.render('weather/main', {
 		titleKey: 'weather:title',
-		styles: ['weather/main'],
+		styles: [
+			'weather/main',
+			'weather/search',
+			'weather/forecast',
+			'weather/mobile',
+		],
 		scripts: ['weather/main'],
 		location,
 		unit: req.weather?.unit || 'metric',

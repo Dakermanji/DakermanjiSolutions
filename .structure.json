@@ -42,7 +42,8 @@
 			"legal.js",
 			"notifications.js",
 			"presence.js",
-			"token.js"
+			"token.js",
+			"weather.js"
 		]
 	},
 	"controllers": {
@@ -392,7 +393,10 @@
 				"ui-bar.css"
 			],
 			"weather": [
-				"main.css"
+				"forecast.css",
+				"main.css",
+				"mobile.css",
+				"search.css"
 			]
 		},
 		"favicons": {
