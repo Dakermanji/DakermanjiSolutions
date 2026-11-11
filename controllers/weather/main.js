@@ -43,6 +43,8 @@ function renderWeatherView(req, res, { location = emptyLocation, forecastDays = 
 		scripts: ['weather/main'],
 		location,
 		unit: req.weather?.unit || 'metric',
+		forecastLatitude: forecastDays.length ? req.weather?.latitude : null,
+		forecastLongitude: forecastDays.length ? req.weather?.longitude : null,
 		forecastDays,
 	});
 }

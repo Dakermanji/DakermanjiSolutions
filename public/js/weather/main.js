@@ -91,13 +91,14 @@ async function saveViewport() {
 }
 
 async function submitWeatherForm(form) {
-	if (!form) return;
+	if (!form || isSubmittingWeatherForm) return;
 	if (!hasSelectedLocation(form)) {
 		showCitySelectionError();
 		return;
 	}
 
 	clearCitySelectionError();
+	isSubmittingWeatherForm = true;
 
 	try {
 		await saveViewport();
@@ -105,9 +106,11 @@ async function submitWeatherForm(form) {
 		// Forecasts still work with the default background size.
 	}
 
-	if (!hasSelectedLocation(form)) return;
+	if (!hasSelectedLocation(form)) {
+		isSubmittingWeatherForm = false;
+		return;
+	}
 
-	isSubmittingWeatherForm = true;
 	form.submit();
 }
 
@@ -394,12 +397,25 @@ const weatherForm = getWeatherForm();
 
 if (weatherForm) {
 	weatherForm.addEventListener('submit', (event) => {
-		if (isSubmittingWeatherForm) {
-			return;
-		}
-
 		event.preventDefault();
 		submitWeatherForm(weatherForm);
+	});
+
+	weatherForm.querySelectorAll('input[name="unit"]').forEach((unitInput) => {
+		unitInput.addEventListener('change', () => {
+			if (cityInput?.value.trim()) return;
+
+			const latitude = parseCoordinate(weatherForm.dataset.weatherForecastLatitude);
+			const longitude = parseCoordinate(weatherForm.dataset.weatherForecastLongitude);
+			if (!hasValidCoordinates(latitude, longitude)) return;
+
+			const inputs = getLocationInputs(weatherForm);
+			if (!inputs.latitude || !inputs.longitude) return;
+
+			inputs.latitude.value = latitude;
+			inputs.longitude.value = longitude;
+			submitWeatherForm(weatherForm);
+		});
 	});
 }
 

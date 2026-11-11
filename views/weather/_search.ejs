@@ -1,6 +1,12 @@
 <!--! views/weather/_search.ejs -->
 
-<form class="weather-search" action="/weather" method="get">
+<form
+	class="weather-search"
+	action="/weather"
+	method="get"
+	data-weather-forecast-latitude="<%= forecastLatitude ?? '' %>"
+	data-weather-forecast-longitude="<%= forecastLongitude ?? '' %>"
+>
 	<label class="visually-hidden" for="weather-city"><%= t('weather:search.city') %></label>
 	<input type="hidden" name="latitude" data-weather-latitude />
 	<input type="hidden" name="longitude" data-weather-longitude />
