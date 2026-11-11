@@ -204,20 +204,34 @@ function appendCityLabel(label, city) {
 	});
 }
 
-function renderNoCityResults() {
+function renderCityMessage(text, isError = false) {
 	if (!cityResults || !cityInput) return;
 
 	const message = document.createElement('div');
 
-	message.className = 'weather-city-empty';
-	message.setAttribute('role', 'status');
-	message.textContent = cityResults.dataset.emptyLabel || 'No cities found.';
+	message.className = isError
+		? 'weather-city-empty weather-city-error'
+		: 'weather-city-empty';
+	message.setAttribute('role', isError ? 'alert' : 'status');
+	message.textContent = text;
 
 	cityResults.replaceChildren(message);
 	activeCityIndex = -1;
 	renderedCities = [];
 	cityResults.hidden = false;
 	cityInput.setAttribute('aria-expanded', 'true');
+}
+
+function renderNoCityResults() {
+	renderCityMessage(cityResults?.dataset.emptyLabel || 'No cities found.');
+}
+
+function renderCitySearchError(isRateLimited = false) {
+	const message = isRateLimited
+		? cityResults?.dataset.limitLabel || 'Weather services are busy right now.'
+		: cityResults?.dataset.searchErrorLabel || 'City search is unavailable right now.';
+
+	renderCityMessage(message, true);
 }
 
 function createCityOption(city, index) {
@@ -282,12 +296,16 @@ async function searchCities(query) {
 	if (controller.signal.aborted || query !== cityInput?.value.trim()) return;
 
 	if (!response.ok) {
-		hideCityResults();
+		renderCitySearchError(response.status === 429);
 		return;
 	}
 
 	const data = await response.json();
 	if (controller.signal.aborted || query !== cityInput?.value.trim()) return;
+	if (!data?.ok) {
+		renderCitySearchError();
+		return;
+	}
 
 	const cities = Array.isArray(data?.cities) ? data.cities : [];
 
@@ -316,7 +334,7 @@ if (cityInput) {
 		citySearchTimer = window.setTimeout(() => {
 			searchCities(query).catch((error) => {
 				if (error.name !== 'AbortError' && query === cityInput.value.trim()) {
-					hideCityResults();
+					renderCitySearchError();
 				}
 			});
 		}, CITY_SEARCH_DEBOUNCE_MS);

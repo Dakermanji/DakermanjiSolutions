@@ -84,6 +84,11 @@
 	text-align: center;
 }
 
+.weather-city-error {
+	border-inline-start: 3px solid var(--color-primary);
+	color: var(--color-text-body);
+}
+
 .weather-city-option__flag {
 	flex: 0 0 auto;
 	box-shadow: 0 0.08rem 0.25rem rgb(0 0 0 / 18%);
