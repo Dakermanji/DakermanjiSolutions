@@ -842,6 +842,7 @@
 			"helpers.js"
 		],
 		"weather": [
+			"city-search.test.js",
 			"forecast.test.js",
 			"geocoding.test.js",
 			"unit-switch.test.js"
