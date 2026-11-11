@@ -59,7 +59,7 @@
 	"metrics": {
 		"temperature": "درجة الحرارة",
 		"feelsLike": "الإحساس الفعلي",
-		"minMax": "الصغرى / العظمى",
+		"minMax": "نطاق الحرارة المتوقعة",
 		"humidity": "الرطوبة",
 		"pressure": "الضغط",
 		"wind": "الرياح",

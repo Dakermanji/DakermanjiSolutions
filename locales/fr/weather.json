@@ -59,7 +59,7 @@
 	"metrics": {
 		"temperature": "Température",
 		"feelsLike": "Ressenti",
-		"minMax": "Min / max",
+		"minMax": "Plage de températures prévue",
 		"humidity": "Humidité",
 		"pressure": "Pression",
 		"wind": "Vent",
