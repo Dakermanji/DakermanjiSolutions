@@ -40,7 +40,12 @@ function renderWeatherView(req, res, { location = emptyLocation, forecastDays = 
 			'weather/forecast',
 			'weather/mobile',
 		],
-		scripts: ['weather/main'],
+		scripts: [
+			'weather/main',
+			'weather/cityResults',
+			'weather/citySearch',
+			'weather/clock',
+		],
 		location,
 		unit: req.weather?.unit || 'metric',
 		forecastLatitude: forecastDays.length ? req.weather?.latitude : null,

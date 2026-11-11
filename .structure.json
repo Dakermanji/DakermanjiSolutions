@@ -601,6 +601,9 @@
 				"state.js"
 			],
 			"weather": [
+				"cityResults.js",
+				"citySearch.js",
+				"clock.js",
 				"main.js"
 			]
 		}

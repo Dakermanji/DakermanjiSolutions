@@ -3,7 +3,12 @@ import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import vm from 'node:vm';
 
-const script = readFileSync('public/js/weather/main.js', 'utf8');
+const scripts = [
+	'public/js/weather/main.js',
+	'public/js/weather/cityResults.js',
+	'public/js/weather/citySearch.js',
+	'public/js/weather/clock.js',
+].map((path) => readFileSync(path, 'utf8'));
 
 function createPage({ forecastLatitude = '', forecastLongitude = '', city = '' } = {}) {
 	const submissions = [];
@@ -49,7 +54,8 @@ function createPage({ forecastLatitude = '', forecastLongitude = '', city = '' }
 		return { ok: true };
 	};
 
-	vm.runInNewContext(script, { document, window, fetch, URLSearchParams, AbortController, Intl, Date });
+	const context = vm.createContext({ document, window, fetch, URLSearchParams, AbortController, Intl, Date });
+	scripts.forEach((script) => vm.runInContext(script, context));
 
 	return {
 		submissions,
