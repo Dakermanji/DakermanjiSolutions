@@ -840,6 +840,11 @@
 			"counts.test.js",
 			"follow-request.test.js",
 			"helpers.js"
+		],
+		"weather": [
+			"forecast.test.js",
+			"geocoding.test.js",
+			"unit-switch.test.js"
 		]
 	},
 	"utils": {
