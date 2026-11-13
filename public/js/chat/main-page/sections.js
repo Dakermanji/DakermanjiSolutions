@@ -72,7 +72,11 @@
 				}
 
 				sectionCollapse.addEventListener('show.bs.collapse', () => {
-					if (sectionId !== 'friends') void loadChatSection(sectionBody);
+					if (sectionId !== 'friends') {
+						void loadChatSection(sectionBody, {
+							force: sectionBody.dataset.refreshFailed === 'true',
+						});
+					}
 				});
 
 				if (sectionCollapse.classList.contains('show')) {
@@ -116,18 +120,35 @@
 					throw new Error('Invalid chat section payload');
 				}
 
-				sectionBody.dataset.loaded = 'true';
-
 				if (sectionId === 'friends') {
 					renderFriendsSection(sectionBody, payload);
-					return;
+				} else {
+					renderRoomSection(sectionBody, payload);
 				}
 
-				renderRoomSection(sectionBody, payload);
+				sectionBody.dataset.loaded = 'true';
+				delete sectionBody.dataset.refreshFailed;
 			} catch (error) {
 				console.error('Failed to load chat section', error);
-				if (!onlyVisible) renderMessage(sectionBody, sectionBody.dataset.errorLabel);
+				if (onlyVisible) return;
+				if (force && sectionBody.dataset.loaded === 'true') {
+					sectionBody.dataset.refreshFailed = 'true';
+					showRefreshError(sectionBody);
+				} else {
+					renderMessage(sectionBody, sectionBody.dataset.errorLabel);
+				}
 			}
+		}
+
+		function showRefreshError(sectionBody) {
+			if (sectionBody.querySelector('[data-chat-refresh-error]')) return;
+
+			const message = document.createElement('p');
+			message.className = 'chat-section-refresh-error';
+			message.dataset.chatRefreshError = 'true';
+			message.setAttribute('role', 'alert');
+			message.textContent = sectionBody.dataset.errorLabel || '';
+			sectionBody.appendChild(message);
 		}
 
 		function renderFriendsSection(sectionBody, payload) {

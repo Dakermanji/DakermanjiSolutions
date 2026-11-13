@@ -10,6 +10,9 @@
 
 		function init() {
 			if (!form || !results || !template) return;
+			form.closest('.modal')?.addEventListener('shown.bs.modal', () => {
+				form.querySelector('input[name="query"]')?.focus();
+			});
 
 			form.addEventListener('submit', (event) => {
 				event.preventDefault();
