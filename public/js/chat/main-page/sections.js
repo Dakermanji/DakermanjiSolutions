@@ -17,6 +17,7 @@
 
 	function createChatSectionsController({ lazySections }) {
 		let refreshTimeout = null;
+		const latestSectionRequests = new WeakMap();
 		let friendPresenceSocket = null;
 		let friendSectionCollapse = null;
 		let friendSectionBody = null;
@@ -95,6 +96,9 @@
 			if (!sectionBody || (!force && sectionBody.dataset.loaded === 'true')) {
 				return;
 			}
+			const request = Symbol();
+			latestSectionRequests.set(sectionBody, request);
+			const isLatestRequest = () => latestSectionRequests.get(sectionBody) === request;
 
 			if (!force) {
 				renderLoadingState(sectionBody);
@@ -107,12 +111,14 @@
 					},
 					credentials: 'same-origin',
 				});
+				if (!isLatestRequest()) return;
 
 				if (!response.ok) {
 					throw new Error(`Request failed with status ${response.status}`);
 				}
 
 				const payload = await response.json();
+				if (!isLatestRequest()) return;
 				if (onlyVisible && !friendsVisible()) return;
 				const sectionId = sectionBody.dataset.chatSectionBody;
 
@@ -129,6 +135,7 @@
 				sectionBody.dataset.loaded = 'true';
 				delete sectionBody.dataset.refreshFailed;
 			} catch (error) {
+				if (!isLatestRequest()) return;
 				console.error('Failed to load chat section', error);
 				if (onlyVisible) return;
 				if (force && sectionBody.dataset.loaded === 'true') {

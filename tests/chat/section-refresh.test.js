@@ -10,6 +10,12 @@ const source = readFileSync(
 
 const flush = () => new Promise((resolve) => setImmediate(resolve));
 
+function deferred() {
+	let resolve;
+	const promise = new Promise((done) => { resolve = done; });
+	return { promise, resolve };
+}
+
 function createPage(responses) {
 	const handlers = new Map();
 	const calls = [];
@@ -54,7 +60,7 @@ function createPage(responses) {
 		},
 		ChatMainCards: {
 			renderFriendChats() {},
-			renderRooms: () => body.replaceChildren({ kind: 'cards' }),
+			renderRooms: (_, rooms) => body.replaceChildren({ kind: 'cards', label: rooms[0]?.title }),
 		},
 	};
 	const fetch = async () => {
@@ -91,4 +97,69 @@ test('a failed room refresh keeps cards and retries when the section reopens', a
 	assert.equal(page.body.children.length, 1);
 	assert.equal(page.body.children[0].kind, 'cards');
 	assert.equal(page.body.dataset.refreshFailed, undefined);
+});
+
+test('an older room response cannot replace cards from a newer refresh', async () => {
+	const older = deferred();
+	const newer = deferred();
+	const page = createPage([
+		{ ok: true, json: async () => ({ ok: true, rooms: [{ title: 'Initial' }] }) },
+		older.promise,
+		newer.promise,
+	]);
+	await flush();
+	page.controller.updateUnreadCounts({ publicRooms: 1 });
+	page.controller.updateUnreadCounts({ publicRooms: 2 });
+
+	newer.resolve({ ok: true, json: async () => ({ ok: true, rooms: [{ title: 'Newer' }] }) });
+	await flush();
+	older.resolve({ ok: true, json: async () => ({ ok: true, rooms: [{ title: 'Older' }] }) });
+	await flush();
+
+	assert.equal(page.calls.length, 3);
+	assert.equal(page.body.children[0].label, 'Newer');
+	assert.equal(page.body.dataset.refreshFailed, undefined);
+});
+
+test('an older failed request cannot show an error after a newer refresh succeeds', async () => {
+	const older = deferred();
+	const newer = deferred();
+	const page = createPage([
+		{ ok: true, json: async () => ({ ok: true, rooms: [{ title: 'Initial' }] }) },
+		older.promise,
+		newer.promise,
+	]);
+	await flush();
+	page.controller.updateUnreadCounts({ publicRooms: 1 });
+	page.controller.updateUnreadCounts({ publicRooms: 2 });
+
+	newer.resolve({ ok: true, json: async () => ({ ok: true, rooms: [{ title: 'Newer' }] }) });
+	await flush();
+	older.resolve({ ok: false, status: 503 });
+	await flush();
+
+	assert.equal(page.body.children.length, 1);
+	assert.equal(page.body.children[0].label, 'Newer');
+	assert.equal(page.body.dataset.refreshFailed, undefined);
+});
+
+test('an older parsed response cannot replace newer room cards', async () => {
+	const olderJson = deferred();
+	const newer = deferred();
+	const page = createPage([
+		{ ok: true, json: async () => ({ ok: true, rooms: [{ title: 'Initial' }] }) },
+		{ ok: true, json: () => olderJson.promise },
+		newer.promise,
+	]);
+	await flush();
+	page.controller.updateUnreadCounts({ publicRooms: 1 });
+	await flush();
+	page.controller.updateUnreadCounts({ publicRooms: 2 });
+
+	newer.resolve({ ok: true, json: async () => ({ ok: true, rooms: [{ title: 'Newer' }] }) });
+	await flush();
+	olderJson.resolve({ ok: true, rooms: [{ title: 'Older' }] });
+	await flush();
+
+	assert.equal(page.body.children[0].label, 'Newer');
 });
