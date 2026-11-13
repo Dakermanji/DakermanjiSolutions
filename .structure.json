@@ -823,6 +823,7 @@
 	],
 	"tests": {
 		"chat": [
+			"friend-counts.test.js",
 			"room-search.test.js",
 			"section-refresh.test.js"
 		],
