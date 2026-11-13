@@ -6,6 +6,8 @@
 	} = window.ChatMainUtils;
 
 	function createRoomSearchController({ form, results, template }) {
+		let activeSearchController = null;
+
 		function init() {
 			if (!form || !results || !template) return;
 
@@ -13,17 +15,27 @@
 				event.preventDefault();
 				void searchRooms();
 			});
+			form.querySelector('input[name="query"]')?.addEventListener('input', () => {
+				if (!activeSearchController) return;
+				activeSearchController.abort();
+				activeSearchController = null;
+				renderRoomSearchEmpty(form.dataset.promptLabel);
+			});
 		}
 
 		async function searchRooms() {
 			const queryInput = form.querySelector('input[name="query"]');
 			const query = queryInput?.value?.trim() || '';
+			activeSearchController?.abort();
+			activeSearchController = null;
 
 			if (!query) {
 				renderRoomSearchEmpty(form.dataset.emptyLabel);
 				return;
 			}
 
+			const controller = new AbortController();
+			activeSearchController = controller;
 			renderRoomSearchLoading();
 
 			try {
@@ -35,13 +47,16 @@
 						Accept: 'application/json',
 					},
 					credentials: 'same-origin',
+					signal: controller.signal,
 				});
+				if (!isCurrentSearch(controller, queryInput, query)) return;
 
 				if (!response.ok) {
 					throw new Error(`Request failed with status ${response.status}`);
 				}
 
 				const payload = await response.json();
+				if (!isCurrentSearch(controller, queryInput, query)) return;
 
 				if (!payload?.ok || !Array.isArray(payload.rooms)) {
 					throw new Error('Invalid room search payload');
@@ -49,12 +64,23 @@
 
 				renderRoomSearchResults(payload.rooms);
 			} catch (error) {
+				if (!isCurrentSearch(controller, queryInput, query)) return;
 				console.error('Failed to search rooms', error);
 				renderRoomSearchEmpty(
 					form.dataset.errorLabel,
 					'bi-exclamation-triangle',
 				);
+			} finally {
+				if (activeSearchController === controller) {
+					activeSearchController = null;
+				}
 			}
+		}
+
+		function isCurrentSearch(controller, queryInput, query) {
+			return activeSearchController === controller
+				&& !controller.signal.aborted
+				&& queryInput?.value?.trim() === query;
 		}
 
 		function renderRoomSearchResults(rooms) {
