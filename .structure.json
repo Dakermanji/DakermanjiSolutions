@@ -822,6 +822,9 @@
 		"z_alter.sql"
 	],
 	"tests": {
+		"chat": [
+			"room-search.test.js"
+		],
 		"kanban": [
 			"browser-live.test.js",
 			"live.test.js",
