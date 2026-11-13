@@ -99,6 +99,22 @@ test('a failed room refresh keeps cards and retries when the section reopens', a
 	assert.equal(page.body.dataset.refreshFailed, undefined);
 });
 
+test('a room section retries its first load after an error', async () => {
+	const page = createPage([
+		{ ok: false, status: 503 },
+		{ ok: true, json: async () => ({ ok: true, rooms: [{ title: 'Recovered' }] }) },
+	]);
+	await flush();
+	assert.equal(page.body.children[0].kind, 'error');
+	assert.equal(page.body.dataset.loaded, undefined);
+
+	page.handlers.get('show.bs.collapse')();
+	await flush();
+	assert.equal(page.calls.length, 2);
+	assert.equal(page.body.children[0].label, 'Recovered');
+	assert.equal(page.body.dataset.loaded, 'true');
+});
+
 test('an older room response cannot replace cards from a newer refresh', async () => {
 	const older = deferred();
 	const newer = deferred();
