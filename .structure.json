@@ -823,7 +823,8 @@
 	],
 	"tests": {
 		"chat": [
-			"room-search.test.js"
+			"room-search.test.js",
+			"section-refresh.test.js"
 		],
 		"kanban": [
 			"browser-live.test.js",

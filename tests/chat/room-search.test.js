@@ -18,9 +18,15 @@ function createPage() {
 	const requests = [];
 	const errors = [];
 	const handlers = {};
+	const modalHandlers = {};
+	let focusCount = 0;
 	const input = {
 		value: '',
+		focus: () => { focusCount += 1; },
 		addEventListener: (name, handler) => { handlers[`input:${name}`] = handler; },
+	};
+	const modal = {
+		addEventListener: (name, handler) => { modalHandlers[name] = handler; },
 	};
 	const results = {
 		children: [],
@@ -35,6 +41,7 @@ function createPage() {
 			promptLabel: 'Search for a room.',
 		},
 		querySelector: () => input,
+		closest: () => modal,
 		addEventListener: (name, handler) => { handlers[name] = handler; },
 	};
 	const document = {
@@ -63,6 +70,8 @@ function createPage() {
 
 	return {
 		input, requests, errors, results,
+		openModal: () => modalHandlers['shown.bs.modal'](),
+		getFocusCount: () => focusCount,
 		submit(query) {
 			input.value = query;
 			handlers.submit({ preventDefault() {} });
@@ -76,6 +85,13 @@ function createPage() {
 }
 
 const flush = () => new Promise((resolve) => setImmediate(resolve));
+
+test('opening the room search modal focuses its query input', () => {
+	const page = createPage();
+	assert.equal(page.getFocusCount(), 0);
+	page.openModal();
+	assert.equal(page.getFocusCount(), 1);
+});
 
 test('a late response cannot replace newer room search results', async () => {
 	const page = createPage();
