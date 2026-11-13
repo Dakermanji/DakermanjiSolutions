@@ -79,7 +79,7 @@
 				!isLoadingOlderMessages &&
 				messageSurface.scrollHeight <= messageSurface.clientHeight
 			) {
-				await loadOlderMessages();
+				if (!(await loadOlderMessages())) break;
 			}
 		}
 
