@@ -1,8 +1,8 @@
 //! controllers/chat/render.js
 
 import {
+	countFriendConversationSection,
 	getOpenFriendConversation,
-	listFriendConversations,
 } from '../../services/chat/friends.js';
 import { getOpenNotesConversation } from '../../services/chat/notes.js';
 import {
@@ -218,8 +218,8 @@ export async function renderChat(req, res, next) {
 			clearActiveChatConversation(req);
 		}
 
-		const [friendConversations, roomCounts] = await Promise.all([
-			listFriendConversations(req.user.id),
+		const [friendCounts, roomCounts] = await Promise.all([
+			countFriendConversationSection(req.user.id),
 			countVisibleRooms(req.user.id),
 		]);
 
@@ -239,15 +239,12 @@ export async function renderChat(req, res, next) {
 			activeChatConversationId: null,
 			roomVisibility: CHAT_ROOM_VISIBILITY,
 			chatSectionCounts: {
-				friends: friendConversations.length,
+				friends: friendCounts.conversationCount,
 				privateRooms: roomCounts.privateRooms,
 				publicRooms: roomCounts.publicRooms,
 			},
 			chatSectionUnreadCounts: {
-				friends: friendConversations.reduce(
-					(total, item) => total + item.conversation.unreadCount,
-					0,
-				),
+				friends: friendCounts.unreadCount,
 				privateRooms: roomCounts.unreadPrivateRooms,
 				publicRooms: roomCounts.unreadPublicRooms,
 			},

@@ -85,6 +85,16 @@ export async function listFriendConversations(userId) {
 }
 
 /**
+ * Count visible friend chats and unread messages for the chat main page.
+ *
+ * @param {string} userId
+ * @returns {Promise<{ conversationCount: number, unreadCount: number }>}
+ */
+export function countFriendConversationSection(userId) {
+	return ChatConversationsModel.countFriendConversationSectionForUser(userId);
+}
+
+/**
  * Count unread friend chat messages for one user.
  *
  * @param {string} userId

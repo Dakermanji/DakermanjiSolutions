@@ -83,6 +83,75 @@ export async function findFriendConversationsForUser(userId) {
 }
 
 /**
+ * Count visible friend conversations and their unread messages without loading cards.
+ *
+ * @param {string} userId
+ * @returns {Promise<{ conversationCount: number, unreadCount: number }>}
+ */
+export async function countFriendConversationSectionForUser(userId) {
+	const q = `
+		SELECT
+			COUNT(*)::int AS conversation_count,
+			COALESCE(SUM(unread.unread_count), 0)::int AS unread_count
+		FROM chat_direct_conversations cdc
+		INNER JOIN chat_conversations cc
+			ON cc.id = cdc.conversation_id
+			AND cc.type = $2
+		INNER JOIN chat_conversation_members ccm
+			ON ccm.conversation_id = cc.id
+			AND ccm.user_id = $1
+		INNER JOIN users friend
+			ON friend.id = CASE
+				WHEN cdc.user_one_id = $1 THEN cdc.user_two_id
+				ELSE cdc.user_one_id
+			END
+		LEFT JOIN LATERAL (
+			SELECT COUNT(*)::int AS unread_count
+			FROM chat_messages unread_messages
+			LEFT JOIN chat_messages read_message
+				ON read_message.id = ccm.last_read_message_id
+			WHERE unread_messages.conversation_id = cc.id
+				AND unread_messages.sender_user_id <> $1
+				AND unread_messages.deleted_at IS NULL
+				AND (
+					ccm.last_read_message_id IS NULL
+					OR unread_messages.created_at > read_message.created_at
+					OR (
+						unread_messages.created_at = read_message.created_at
+						AND unread_messages.id > read_message.id
+					)
+				)
+		) unread ON true
+		WHERE (cdc.user_one_id = $1 OR cdc.user_two_id = $1)
+			AND cdc.user_one_id <> cdc.user_two_id
+			AND EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = $1
+					AND uf.followee_id = friend.id
+			)
+			AND EXISTS (
+				SELECT 1
+				FROM user_follows uf
+				WHERE uf.follower_id = friend.id
+					AND uf.followee_id = $1
+			)
+			AND NOT EXISTS (
+				SELECT 1
+				FROM user_blocks ub
+				WHERE (ub.blocker_id = $1 AND ub.blocked_id = friend.id)
+					OR (ub.blocker_id = friend.id AND ub.blocked_id = $1)
+			);
+	`;
+
+	const rows = await queryRows(q, [userId, CHAT_CONVERSATION_TYPES.FRIEND]);
+	return {
+		conversationCount: rows[0]?.conversation_count || 0,
+		unreadCount: rows[0]?.unread_count || 0,
+	};
+}
+
+/**
  * Count unread friend messages for one user.
  *
  * @param {string} userId

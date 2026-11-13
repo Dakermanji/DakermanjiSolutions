@@ -5,6 +5,7 @@ import {
 	findOrCreateFriendConversation,
 } from './conversations/direct.js';
 import {
+	countFriendConversationSectionForUser,
 	countUnreadFriendMessagesForUser,
 	findFriendConversationForUserById,
 	findFriendConversationsForUser,
@@ -22,6 +23,7 @@ export {
 	findOrCreateFriendConversation,
 } from './conversations/direct.js';
 export {
+	countFriendConversationSectionForUser,
 	countUnreadFriendMessagesForUser,
 	findFriendConversationForUserById,
 	findFriendConversationsForUser,
@@ -35,6 +37,7 @@ export {
 } from './conversations/self.js';
 
 export default {
+	countFriendConversationSectionForUser,
 	countUnreadFriendMessagesForUser,
 	deleteSelfConversationMessages,
 	findDirectConversation,
