@@ -62,6 +62,7 @@ export async function createChatMessageForConversation({
 	kind,
 	conversationId,
 	senderUserId,
+	clientMessageId = null,
 	replyToMessageId = null,
 	body,
 }) {
@@ -69,6 +70,7 @@ export async function createChatMessageForConversation({
 		return createRoomMessage({
 			conversationId,
 			senderUserId,
+			clientMessageId,
 			replyToMessageId,
 			body,
 		});
@@ -78,6 +80,7 @@ export async function createChatMessageForConversation({
 		return createNotesMessage({
 			conversationId,
 			senderUserId,
+			clientMessageId,
 			replyToMessageId,
 			body,
 		});
@@ -86,6 +89,7 @@ export async function createChatMessageForConversation({
 	return createFriendMessage({
 		conversationId,
 		senderUserId,
+		clientMessageId,
 		replyToMessageId,
 		body,
 	});

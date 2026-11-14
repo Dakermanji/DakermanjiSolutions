@@ -9,6 +9,7 @@ import pool, { queryRows } from '../../../config/database.js';
  * @param {object} message
  * @param {string} message.conversationId
  * @param {string} message.senderUserId
+ * @param {string|null} [message.clientMessageId]
  * @param {string|null} [message.replyToMessageId]
  * @param {Array<string>} [message.mentionedUserIds]
  * @param {string} message.body
@@ -19,6 +20,7 @@ import pool, { queryRows } from '../../../config/database.js';
 export async function createConversationMessage({
 	conversationId,
 	senderUserId,
+	clientMessageId = null,
 	replyToMessageId = null,
 	mentionedUserIds = [],
 	body,
@@ -42,10 +44,11 @@ export async function createConversationMessage({
 					moderation_reason
 				)
 				VALUES ($1, $2, $3, $4, $5, $6, $7)
+				ON CONFLICT (id) DO NOTHING
 				RETURNING id;
 			`,
 			[
-				randomUUID(),
+				clientMessageId || randomUUID(),
 				conversationId,
 				senderUserId,
 				replyToMessageId,
@@ -54,35 +57,38 @@ export async function createConversationMessage({
 				moderationReason,
 			],
 		);
-		const messageId = messageRows.rows[0].id;
+		const created = messageRows.rows.length > 0;
+		const messageId = messageRows.rows[0]?.id || clientMessageId;
 
-		await client.query(
-			`
-				UPDATE chat_conversations
-				SET
-					last_message_id = $2,
-					updated_at = NOW()
-				WHERE id = $1;
-			`,
-			[conversationId, messageId],
-		);
+		if (created) {
+			await client.query(
+				`
+					UPDATE chat_conversations
+					SET
+						last_message_id = $2,
+						updated_at = NOW()
+					WHERE id = $1;
+				`,
+				[conversationId, messageId],
+			);
 
-		await client.query(
-			`
-				UPDATE chat_conversation_members
-				SET
-					last_read_message_id = $3,
-					updated_at = NOW()
-				WHERE conversation_id = $1
-					AND user_id = $2;
-			`,
-			[conversationId, senderUserId, messageId],
-		);
+			await client.query(
+				`
+					UPDATE chat_conversation_members
+					SET
+						last_read_message_id = $3,
+						updated_at = NOW()
+					WHERE conversation_id = $1
+						AND user_id = $2;
+				`,
+				[conversationId, senderUserId, messageId],
+			);
 
-		await createMessageMentions(client, {
-			messageId,
-			mentionedUserIds,
-		});
+			await createMessageMentions(client, {
+				messageId,
+				mentionedUserIds,
+			});
+		}
 
 		const messageRowsWithSender = await client.query(
 			`
@@ -144,9 +150,18 @@ export async function createConversationMessage({
 			[messageId],
 		);
 		const message = messageRowsWithSender.rows[0];
+		if (!message || (!created && (
+			message.conversation_id !== conversationId ||
+			message.sender_user_id !== senderUserId ||
+			message.body !== body ||
+			message.reply_to_message_id !== replyToMessageId
+		))) {
+			await client.query('ROLLBACK');
+			return null;
+		}
 
 		await client.query('COMMIT');
-		return message;
+		return { message, created };
 	} catch (error) {
 		await client.query('ROLLBACK');
 		throw error;

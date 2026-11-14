@@ -93,36 +93,39 @@ export function registerChatSocketHandlers(io, socket) {
 				return;
 			}
 
-			const message = await createChatMessageForConversation({
+			const result = await createChatMessageForConversation({
 				kind: openConversation.kind,
 				conversationId: openConversation.conversation.conversation_id,
 				senderUserId: socket.data.userId,
+				clientMessageId: payload?.clientMessageId,
 				replyToMessageId: payload?.replyToMessageId,
 				body: payload?.message,
 			});
 
-			if (message?.reason === MESSAGE_WRITE_RESULT.RATE_LIMITED) {
+			if (result?.reason === MESSAGE_WRITE_RESULT.RATE_LIMITED) {
 				acknowledge?.({
 					ok: false,
 					reason: MESSAGE_WRITE_RESULT.RATE_LIMITED,
-					retryAfterMs: message.retryAfterMs || 0,
+					retryAfterMs: result.retryAfterMs || 0,
 				});
 				return;
 			}
 
-			if (!message) {
+			if (!result) {
 				acknowledgeFailure(acknowledge);
 				return;
 			}
 
-			await emitChatMessageCreated(
-				message,
-				getSelfConversationEmitOptions(openConversation, socket.data.userId),
-			);
+			if (result.created) {
+				await emitChatMessageCreated(
+					result.message,
+					getSelfConversationEmitOptions(openConversation, socket.data.userId),
+				);
+			}
 
 			acknowledge?.({
 				ok: true,
-				message,
+				message: result.message,
 			});
 		} catch {
 			acknowledgeFailure(acknowledge);

@@ -1,6 +1,7 @@
 //! services/chat/messages/writes.js
 
 import ChatMessagesModel from '../../../models/chat/Messages.js';
+import { isValidUuid } from '../../../middlewares/validators/common.js';
 import {
 	CHAT_CONVERSATION_TYPES,
 	CHAT_MESSAGE_MODERATION_STATUSES,
@@ -41,9 +42,11 @@ export const MESSAGE_WRITE_RESULT = Object.freeze({
 export async function createFriendMessage({
 	conversationId,
 	senderUserId,
+	clientMessageId = null,
 	replyToMessageId = null,
 	body,
 }) {
+	if (clientMessageId && !isValidUuid(clientMessageId)) return null;
 	const normalizedBody = normalizeMessageBody(body);
 
 	if (!normalizedBody || normalizedBody.length > MESSAGE_BODY_MAX_LENGTH) {
@@ -73,22 +76,25 @@ export async function createFriendMessage({
 		body: normalizedBody,
 	});
 
-	const message = await ChatMessagesModel.createConversationMessage({
+	const result = await ChatMessagesModel.createConversationMessage({
 		conversationId: conversation.conversation_id,
 		senderUserId,
+		clientMessageId,
 		replyToMessageId: reply.replyToMessageId,
 		mentionedUserIds,
 		body: normalizedBody,
 	});
 
-	const formattedMessage = formatLiveMessage(message);
+	if (!result) return null;
+	const formattedMessage = formatLiveMessage(result.message);
+	if (result.created) {
+		await notifyMessageNotifications({
+			message: formattedMessage,
+			senderUserId,
+		});
+	}
 
-	await notifyMessageNotifications({
-		message: formattedMessage,
-		senderUserId,
-	});
-
-	return formattedMessage;
+	return { message: formattedMessage, created: result.created };
 }
 
 /**
@@ -104,9 +110,11 @@ export async function createFriendMessage({
 export async function createNotesMessage({
 	conversationId,
 	senderUserId,
+	clientMessageId = null,
 	replyToMessageId = null,
 	body,
 }) {
+	if (clientMessageId && !isValidUuid(clientMessageId)) return null;
 	const normalizedBody = normalizeMessageBody(body);
 
 	if (!normalizedBody || normalizedBody.length > MESSAGE_BODY_MAX_LENGTH) {
@@ -132,15 +140,16 @@ export async function createNotesMessage({
 		return null;
 	}
 
-	const message = await ChatMessagesModel.createConversationMessage({
+	const result = await ChatMessagesModel.createConversationMessage({
 		conversationId: conversation.conversation_id,
 		senderUserId,
+		clientMessageId,
 		replyToMessageId: reply.replyToMessageId,
 		mentionedUserIds: [],
 		body: normalizedBody,
 	});
 
-	return formatLiveMessage(message);
+	return result && { message: formatLiveMessage(result.message), created: result.created };
 }
 
 /**
@@ -156,9 +165,11 @@ export async function createNotesMessage({
 export async function createRoomMessage({
 	conversationId,
 	senderUserId,
+	clientMessageId = null,
 	replyToMessageId = null,
 	body,
 }) {
+	if (clientMessageId && !isValidUuid(clientMessageId)) return null;
 	const normalizedBody = normalizeMessageBody(body);
 
 	if (!normalizedBody || normalizedBody.length > MESSAGE_BODY_MAX_LENGTH) {
@@ -174,7 +185,12 @@ export async function createRoomMessage({
 		return null;
 	}
 
-	const rateLimit = checkRoomMessageRateLimit({
+	const existing = clientMessageId && await ChatMessagesModel.findConversationMessageById({
+		conversationId: conversation.conversation_id,
+		messageId: clientMessageId,
+		viewerUserId: senderUserId,
+	});
+	const rateLimit = existing ? { ok: true } : checkRoomMessageRateLimit({
 		conversation,
 		senderUserId,
 	});
@@ -206,9 +222,10 @@ export async function createRoomMessage({
 		conversation,
 	});
 
-	const message = await ChatMessagesModel.createConversationMessage({
+	const result = await ChatMessagesModel.createConversationMessage({
 		conversationId: conversation.conversation_id,
 		senderUserId,
+		clientMessageId,
 		replyToMessageId: reply.replyToMessageId,
 		mentionedUserIds,
 		body: normalizedBody,
@@ -216,16 +233,17 @@ export async function createRoomMessage({
 		moderationReason: safetyDecision.moderationReason,
 	});
 
-	const formattedMessage = formatLiveMessage(message);
+	if (!result) return null;
+	const formattedMessage = formatLiveMessage(result.message);
 
-	if (!formattedMessage.isPendingReview) {
+	if (result.created && !formattedMessage.isPendingReview) {
 		await notifyMessageNotifications({
 			message: formattedMessage,
 			senderUserId,
 		});
 	}
 
-	return formattedMessage;
+	return { message: formattedMessage, created: result.created };
 }
 
 async function notifyMessageNotifications({ message, senderUserId }) {

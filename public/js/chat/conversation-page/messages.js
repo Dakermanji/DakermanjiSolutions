@@ -75,6 +75,13 @@
 				return;
 			}
 
+			const clientMessageIdInput = composer.elements.clientMessageId;
+			const clientMessageId = window.crypto?.randomUUID?.();
+			if (!clientMessageId) {
+				submitComposerFallback();
+				return;
+			}
+			if (clientMessageIdInput) clientMessageIdInput.value = clientMessageId;
 			setFormControlsDisabled(composer, true);
 			let shouldRefocus = false;
 
@@ -83,11 +90,13 @@
 					composer.elements.replyToMessageId?.value || '';
 				const response = await emitWithAck(socket, 'chat:message:create', {
 					conversationId: chatPage.dataset.activeConversationId,
+					clientMessageId,
 					replyToMessageId,
 					message,
 				});
 
 				if (response?.reason === 'rate_limited') {
+				if (clientMessageIdInput) clientMessageIdInput.value = '';
 					showFlashMessage(
 						chatPage.dataset.messageRateLimitedLabel ||
 							chatPage.dataset.messageErrorLabel ||
@@ -103,6 +112,7 @@
 				}
 
 				appendMessage(response.message, socket);
+				if (clientMessageIdInput) clientMessageIdInput.value = '';
 				mentionController.clearMessage();
 				syncComposerInputDirection?.();
 				if (composer.elements.replyToMessageId) {

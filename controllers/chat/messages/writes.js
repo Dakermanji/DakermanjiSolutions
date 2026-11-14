@@ -19,20 +19,21 @@ export async function createFriendChatMessage(req, res, next) {
 	}
 
 	try {
-		const message = await createFriendMessage({
+		const result = await createFriendMessage({
 			conversationId: activeConversationId,
 			senderUserId: req.user.id,
+			clientMessageId: req.body?.clientMessageId,
 			replyToMessageId: req.body?.replyToMessageId,
 			body: req.body?.message,
 		});
 
-		if (!message) {
+		if (!result) {
 			req.flash(
 				'error',
 				await getRoomMessageFailureKey(activeConversationId, req.user.id),
 			);
-		} else {
-			await emitChatMessageCreated(message);
+		} else if (result.created) {
+			await emitChatMessageCreated(result.message);
 		}
 
 		return res.redirect(CHAT_OPEN_REDIRECT);
@@ -49,17 +50,18 @@ export async function createNotesChatMessage(req, res, next) {
 	}
 
 	try {
-		const message = await createNotesMessage({
+		const result = await createNotesMessage({
 			conversationId: activeConversationId,
 			senderUserId: req.user.id,
+			clientMessageId: req.body?.clientMessageId,
 			replyToMessageId: req.body?.replyToMessageId,
 			body: req.body?.message,
 		});
 
-		if (!message) {
+		if (!result) {
 			req.flash('error', 'chat:conversation.messageError');
-		} else {
-			await emitChatMessageCreated(message, {
+		} else if (result.created) {
+			await emitChatMessageCreated(result.message, {
 				targetUserId: req.user.id,
 			});
 		}
@@ -78,19 +80,20 @@ export async function createRoomChatMessage(req, res, next) {
 	}
 
 	try {
-		const message = await createRoomMessage({
+		const result = await createRoomMessage({
 			conversationId: activeConversationId,
 			senderUserId: req.user.id,
+			clientMessageId: req.body?.clientMessageId,
 			replyToMessageId: req.body?.replyToMessageId,
 			body: req.body?.message,
 		});
 
-		if (message?.reason === MESSAGE_WRITE_RESULT.RATE_LIMITED) {
+		if (result?.reason === MESSAGE_WRITE_RESULT.RATE_LIMITED) {
 			req.flash('error', 'chat:conversation.rateLimited');
-		} else if (!message) {
+		} else if (!result) {
 			req.flash('error', 'chat:conversation.messageError');
-		} else {
-			await emitChatMessageCreated(message);
+		} else if (result.created) {
+			await emitChatMessageCreated(result.message);
 		}
 
 		return res.redirect(CHAT_OPEN_REDIRECT);
