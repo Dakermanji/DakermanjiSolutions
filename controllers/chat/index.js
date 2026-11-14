@@ -1,7 +1,11 @@
 //! controllers/chat/index.js
 
 export { renderChat } from './render.js';
-export { renderNotesConversation, resetNotesConversation } from './notes.js';
+export {
+	getNotesMessageStatus,
+	renderNotesConversation,
+	resetNotesConversation,
+} from './notes.js';
 export {
 	closeFriendConversation,
 	getFriendChats,

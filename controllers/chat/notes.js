@@ -7,6 +7,8 @@ import {
 import { CHAT_REDIRECT } from '../../constants/chat.js';
 import { renderChat } from './render.js';
 import { emitChatNotesReset } from '../../services/chat/live.js';
+import { isValidUuid } from '../../middlewares/validators/common.js';
+import ChatMessagesModel from '../../models/chat/Messages.js';
 
 const NOTES_URL = '/chat/notes';
 
@@ -19,6 +21,29 @@ export async function renderNotesConversation(req, res, next) {
 		}
 
 		return renderChat(req, res, next, notesConversation.conversation.id);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export async function getNotesMessageStatus(req, res, next) {
+	const messageId = String(req.query?.messageId || '').trim();
+	if (!isValidUuid(messageId)) {
+		return res.status(400).json({ ok: false });
+	}
+
+	if (!req.chatNotesConversationId) {
+		return res.status(404).json({ ok: false });
+	}
+
+	try {
+		const message = await ChatMessagesModel.findConversationMessageById({
+			conversationId: req.chatNotesConversationId,
+			messageId,
+			viewerUserId: req.user.id,
+		});
+		res.set('Cache-Control', 'no-store');
+		return res.json({ ok: true, exists: Boolean(message) });
 	} catch (error) {
 		return next(error);
 	}

@@ -4,6 +4,8 @@ import { test } from 'node:test';
 import vm from 'node:vm';
 import { emitChatNotesReset } from '../../services/chat/live/messages.js';
 import { setChatSocketServer } from '../../services/chat/live/state.js';
+import { getNotesMessageStatus } from '../../controllers/chat/notes.js';
+import ChatMessagesModel from '../../models/chat/Messages.js';
 
 const source = readFileSync(
 	new URL('../../public/js/chat/conversation-page/notesReset.js', import.meta.url),
@@ -27,35 +29,119 @@ test('notes reset events go only to the owner’s socket room', () => {
 	}
 });
 
+test('notes status checks only the signed-in user’s resolved conversation', async () => {
+	const messageId = '00000000-0000-4000-8000-000000000001';
+	const conversationId = '00000000-0000-4000-8000-000000000002';
+	const originalFind = ChatMessagesModel.findConversationMessageById;
+	let lookup;
+	ChatMessagesModel.findConversationMessageById = async (options) => {
+		lookup = options;
+		return null;
+	};
+	const response = {
+		set: (name, value) => { response.headers[name] = value; return response; },
+		json: (value) => { response.body = value; return response; },
+		status: (value) => { response.statusCode = value; return response; },
+		headers: {},
+	};
+	try {
+		await getNotesMessageStatus({
+			query: { messageId },
+			chatNotesConversationId: conversationId,
+			user: { id: 'owner-1' },
+		}, response, (error) => { throw error; });
+		assert.deepEqual(lookup, {
+			conversationId,
+			messageId,
+			viewerUserId: 'owner-1',
+		});
+		assert.deepEqual(response.body, { ok: true, exists: false });
+		assert.equal(response.headers['Cache-Control'], 'no-store');
+	} finally {
+		ChatMessagesModel.findConversationMessageById = originalFind;
+	}
+});
+
 test('another notes tab reloads for its reset while the submitting tab waits for redirect', () => {
 	const window = {};
 	vm.runInNewContext(source, { window });
-	const createHandler = window.ChatConversationNotesReset.createNotesResetHandler;
+	const createController = window.ChatConversationNotesReset.createNotesResetController;
 	let submits;
 	let reloads = 0;
 	const options = {
 		chatPage: { dataset: {
 			chatConversationKind: 'self', activeConversationId: 'notes-1',
 		} },
+		messageSurface: { querySelector: () => null },
 		resetForm: { addEventListener: (_name, handler) => { submits = handler; } },
 		reload: () => { reloads += 1; },
 	};
-	const otherTab = createHandler(options);
-	otherTab({ conversationId: 'other-notes' });
-	otherTab({ conversationId: 'notes-1' });
+	const otherTab = createController(options);
+	otherTab.handleReset({ conversationId: 'other-notes' });
+	otherTab.handleReset({ conversationId: 'notes-1' });
 	assert.equal(reloads, 1);
 
-	const submittingTab = createHandler(options);
+	const submittingTab = createController(options);
 	submits();
-	submittingTab({ conversationId: 'notes-1' });
+	submittingTab.handleReset({ conversationId: 'notes-1' });
 	assert.equal(reloads, 1);
 
-	const friendTab = createHandler({
+	const friendTab = createController({
 		...options,
 		chatPage: { dataset: {
 			chatConversationKind: 'friend', activeConversationId: 'notes-1',
 		} },
 	});
-	friendTab({ conversationId: 'notes-1' });
+	assert.equal(friendTab, null);
 	assert.equal(reloads, 1);
+});
+
+test('a connected notes tab reloads when its displayed note was deleted during disconnection', async () => {
+	const window = {};
+	const messageId = '00000000-0000-4000-8000-000000000001';
+	const row = { dataset: { chatMessageId: messageId } };
+	const requests = [];
+	vm.runInNewContext(source, {
+		window,
+		URLSearchParams,
+		fetch: async (url, options) => {
+			requests.push({ url, options });
+			return { ok: true, json: async () => ({ ok: true, exists: false }) };
+		},
+	});
+	let reloads = 0;
+	const controller = window.ChatConversationNotesReset.createNotesResetController({
+		chatPage: { dataset: {
+			chatConversationKind: 'self', activeConversationId: 'notes-1',
+		} },
+		messageSurface: { querySelector: () => row },
+		reload: () => { reloads += 1; },
+	});
+
+	await controller.checkForMissedReset();
+	await controller.checkForMissedReset();
+	assert.equal(reloads, 1);
+	assert.equal(requests.length, 1);
+	assert.match(requests[0].url, /\/chat\/notes\/message-status\?messageId=/);
+	assert.equal(requests[0].options.cache, 'no-store');
+});
+
+test('notes check keeps the page when the displayed note still exists', async () => {
+	const window = {};
+	vm.runInNewContext(source, {
+		window,
+		URLSearchParams,
+		fetch: async () => ({
+			ok: true,
+			json: async () => ({ ok: true, exists: true }),
+		}),
+	});
+	let reloads = 0;
+	const controller = window.ChatConversationNotesReset.createNotesResetController({
+		chatPage: { dataset: { chatConversationKind: 'self' } },
+		messageSurface: { querySelector: () => ({ dataset: { chatMessageId: 'note-1' } }) },
+		reload: () => { reloads += 1; },
+	});
+	await controller.checkForMissedReset();
+	assert.equal(reloads, 0);
 });

@@ -6,6 +6,7 @@ import {
 	deleteNotesMessage,
 	editNotesMessage,
 	getNotesMessageReactionUsers,
+	getNotesMessageStatus,
 	getOlderNotesMessages,
 	reactToNotesMessage,
 	renderNotesConversation,
@@ -30,6 +31,7 @@ router.use(async (req, res, next) => {
 });
 
 router.get('/messages', getOlderNotesMessages);
+router.get('/message-status', getNotesMessageStatus);
 router.get('/messages/reactions', getNotesMessageReactionUsers);
 router.post('/reset', resetNotesConversation);
 router.post('/messages', messageWriteLimiter, createNotesChatMessage);

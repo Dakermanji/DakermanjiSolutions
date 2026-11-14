@@ -7,11 +7,19 @@
 	const messageSurface = document.querySelector('[data-chat-message-surface]');
 	const typingIndicator = document.querySelector('[data-chat-typing-indicator]');
 	const messageRenderer = window.ChatConversationRenderer;
-	const handleNotesReset = window.ChatConversationNotesReset?.createNotesResetHandler({
+	const notesReset = window.ChatConversationNotesReset?.createNotesResetController({
 		chatPage,
+		messageSurface,
 		resetForm: document.querySelector('#chatNotesResetModal form'),
 		reload: () => window.location.reload(),
 	});
+	if (notesReset) {
+		document.addEventListener('visibilitychange', () => {
+			if (document.visibilityState === 'visible') {
+				void notesReset.checkForMissedReset();
+			}
+		});
+	}
 	const roomLeave = window.ChatMainLeaveRoom?.createRoomLeaveController({
 		modal: document.getElementById('chatRoomLeaveModal'),
 	});
@@ -190,6 +198,7 @@
 				conversationId: chatPage.dataset.activeConversationId,
 			});
 			readState.scheduleSync();
+			void notesReset?.checkForMissedReset();
 		});
 
 		socket.on('chat:message:created', (payload) => {
@@ -201,7 +210,7 @@
 		socket.on('chat:message:deleted', (payload) => {
 			messages.removeMessage(payload);
 		});
-		if (handleNotesReset) socket.on('chat:notes:reset', handleNotesReset);
+		if (notesReset) socket.on('chat:notes:reset', notesReset.handleReset);
 		socket.on('chat:message:reactions', (payload) => {
 			messages.updateMessageReactions(payload);
 		});
