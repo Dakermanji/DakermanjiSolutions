@@ -9,6 +9,7 @@
 	const messageRenderer = window.ChatConversationRenderer;
 	const notesReset = window.ChatConversationNotesReset?.createNotesResetController({
 		chatPage,
+		composer,
 		messageSurface,
 		resetForm: document.querySelector('#chatNotesResetModal form'),
 		reload: () => window.location.reload(),
@@ -168,6 +169,7 @@
 	}
 
 	if (composer) {
+		notesReset?.restoreDraft();
 		syncComposerInputDirection();
 		composer
 			.querySelector('[data-chat-reply-clear]')

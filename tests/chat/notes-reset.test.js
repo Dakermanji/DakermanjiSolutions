@@ -96,6 +96,53 @@ test('another notes tab reloads for its reset while the submitting tab waits for
 	assert.equal(reloads, 1);
 });
 
+test('a reset reload restores the unsent notes draft once', () => {
+	const saved = new Map();
+	const sessionStorage = {
+		getItem: (key) => saved.get(key) ?? null,
+		setItem: (key, value) => saved.set(key, value),
+		removeItem: (key) => saved.delete(key),
+	};
+	const window = { sessionStorage };
+	vm.runInNewContext(source, { window });
+	const createController = window.ChatConversationNotesReset.createNotesResetController;
+	const chatPage = { dataset: {
+		chatConversationKind: 'self',
+		activeConversationId: 'notes-1',
+		currentUserId: 'user-1',
+	} };
+	let editor = {
+		textContent: 'A draft with\u00a0spaces',
+		getAttribute: () => null,
+	};
+	let valueField = { value: '' };
+	const composer = { querySelector: (selector) =>
+		selector === '[data-chat-message-editor]' ? editor : valueField };
+	let reloads = 0;
+	const options = {
+		chatPage,
+		composer,
+		messageSurface: { querySelector: () => null },
+		reload: () => { reloads += 1; },
+	};
+
+	createController(options).handleReset({ conversationId: 'notes-1' });
+	assert.equal(reloads, 1);
+	assert.equal(saved.size, 1);
+
+	editor = { textContent: '', getAttribute: () => null };
+	valueField = { value: '' };
+	const reloadedPage = createController(options);
+	reloadedPage.restoreDraft();
+	assert.equal(editor.textContent, 'A draft with spaces');
+	assert.equal(valueField.value, 'A draft with spaces');
+	assert.equal(saved.size, 0);
+
+	editor = { textContent: '', getAttribute: () => null };
+	createController(options).restoreDraft();
+	assert.equal(editor.textContent, '');
+});
+
 test('a connected notes tab reloads when its displayed note was deleted during disconnection', async () => {
 	const window = {};
 	const messageId = '00000000-0000-4000-8000-000000000001';

@@ -1,9 +1,10 @@
 //! public/js/chat/conversation-page/notesReset.js
 
 (() => {
-	function createNotesResetController({ chatPage, messageSurface, resetForm, reload }) {
+	function createNotesResetController({ chatPage, composer, messageSurface, resetForm, reload }) {
 		if (chatPage?.dataset.chatConversationKind !== 'self') return null;
 
+		const draftKey = `chat:notes:draft:${chatPage.dataset.currentUserId}:${chatPage.dataset.activeConversationId}`;
 		let isSubmittingReset = false;
 		let isChecking = false;
 		let isReloading = false;
@@ -15,7 +16,36 @@
 		function reloadNotes() {
 			if (isSubmittingReset || isReloading) return;
 			isReloading = true;
+			saveDraft();
 			reload();
+		}
+
+		function saveDraft() {
+			const editor = composer?.querySelector('[data-chat-message-editor]');
+			if (!editor) return;
+			const draft = String(editor.textContent || '').replace(/\u00a0/g, ' ');
+			try {
+				if (draft) window.sessionStorage.setItem(draftKey, draft);
+				else window.sessionStorage.removeItem(draftKey);
+			} catch {
+				// The reset can still refresh the page when browser storage is unavailable.
+			}
+		}
+
+		function restoreDraft() {
+			const editor = composer?.querySelector('[data-chat-message-editor]');
+			if (!editor || editor.getAttribute('aria-disabled') === 'true') return;
+			try {
+				const draft = window.sessionStorage.getItem(draftKey);
+				if (!draft) return;
+				window.sessionStorage.removeItem(draftKey);
+				if (editor.textContent) return;
+				editor.textContent = draft;
+				const valueField = composer.querySelector('[data-chat-message-value]');
+				if (valueField) valueField.value = draft;
+			} catch {
+				// Storage access is optional; the composer remains usable.
+			}
 		}
 
 		function handleReset(payload) {
@@ -59,7 +89,7 @@
 			}
 		}
 
-		return { handleReset, checkForMissedReset };
+		return { handleReset, checkForMissedReset, restoreDraft };
 	}
 
 	window.ChatConversationNotesReset = { createNotesResetController };
