@@ -828,6 +828,7 @@
 			"message-history.test.js",
 			"message-send.test.js",
 			"message-write-idempotency.test.js",
+			"notes-read-state.test.js",
 			"notes-request.test.js",
 			"notes-reset.test.js",
 			"room-search.test.js",

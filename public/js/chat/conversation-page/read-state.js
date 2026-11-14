@@ -9,6 +9,10 @@
 		messageSurface,
 		getChatSocket,
 	}) {
+		if (chatPage?.dataset.chatConversationKind === 'self') {
+			return { scheduleSync() {} };
+		}
+
 		let acknowledgedMessageId = '';
 		let animationFrameId = null;
 		let retryTimerId = null;
