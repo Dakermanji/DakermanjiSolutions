@@ -513,6 +513,7 @@
 					"messages-reactions.js",
 					"messages-reply.js",
 					"messages.js",
+					"notesReset.js",
 					"panels.js",
 					"roomPresence.js",
 					"read-state.js",
@@ -828,6 +829,7 @@
 			"message-send.test.js",
 			"message-write-idempotency.test.js",
 			"notes-request.test.js",
+			"notes-reset.test.js",
 			"room-search.test.js",
 			"section-refresh.test.js"
 		],
