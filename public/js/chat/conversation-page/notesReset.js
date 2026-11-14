@@ -6,6 +6,7 @@
 
 		const draftKey = `chat:notes:draft:${chatPage.dataset.currentUserId}:${chatPage.dataset.activeConversationId}`;
 		let isSubmittingReset = false;
+		let hasConnected = false;
 		let isChecking = false;
 		let isReloading = false;
 
@@ -58,6 +59,15 @@
 			reloadNotes();
 		}
 
+		function handleConnect() {
+			if (hasConnected) {
+				reloadNotes();
+				return;
+			}
+			hasConnected = true;
+			void checkForMissedReset();
+		}
+
 		async function checkForMissedReset() {
 			if (isSubmittingReset || isReloading || isChecking) return;
 			const messageId = messageSurface?.querySelector('[data-chat-message-id]')
@@ -89,7 +99,7 @@
 			}
 		}
 
-		return { handleReset, checkForMissedReset, restoreDraft };
+		return { handleConnect, handleReset, checkForMissedReset, restoreDraft };
 	}
 
 	window.ChatConversationNotesReset = { createNotesResetController };

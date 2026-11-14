@@ -96,7 +96,7 @@ test('another notes tab reloads for its reset while the submitting tab waits for
 	assert.equal(reloads, 1);
 });
 
-test('a reset reload restores the unsent notes draft once', () => {
+test('a notes reconnect reloads the view and restores the unsent draft once', () => {
 	const saved = new Map();
 	const sessionStorage = {
 		getItem: (key) => saved.get(key) ?? null,
@@ -126,7 +126,10 @@ test('a reset reload restores the unsent notes draft once', () => {
 		reload: () => { reloads += 1; },
 	};
 
-	createController(options).handleReset({ conversationId: 'notes-1' });
+	const firstPage = createController(options);
+	firstPage.handleConnect();
+	assert.equal(reloads, 0);
+	firstPage.handleConnect();
 	assert.equal(reloads, 1);
 	assert.equal(saved.size, 1);
 

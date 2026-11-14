@@ -200,7 +200,7 @@
 				conversationId: chatPage.dataset.activeConversationId,
 			});
 			readState.scheduleSync();
-			void notesReset?.checkForMissedReset();
+			notesReset?.handleConnect();
 		});
 
 		socket.on('chat:message:created', (payload) => {
