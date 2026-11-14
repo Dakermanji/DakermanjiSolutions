@@ -825,6 +825,8 @@
 		"chat": [
 			"friend-counts.test.js",
 			"message-history.test.js",
+			"message-send.test.js",
+			"message-write-idempotency.test.js",
 			"room-search.test.js",
 			"section-refresh.test.js"
 		],
