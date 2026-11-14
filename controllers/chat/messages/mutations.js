@@ -9,7 +9,7 @@ import {
 	emitChatMessageEdited,
 } from '../../../services/chat/live.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
-import { CHAT_OPEN_REDIRECT } from '../../../constants/chat.js';
+import { getMessageRedirect, getRequestConversationId } from './utils.js';
 
 const MESSAGE_MUTATION_HANDLERS = {
 	friend: {
@@ -32,9 +32,9 @@ const MESSAGE_MUTATION_HANDLERS = {
 	},
 };
 
-function getActiveMessageMutationInput(req) {
+function getActiveMessageMutationInput(req, kind) {
 	return {
-		conversationId: req.session.chat?.activeConversationId || null,
+		conversationId: getRequestConversationId(req, kind),
 		messageId: String(req.body?.messageId || '').trim(),
 		body: req.body?.message,
 	};
@@ -61,11 +61,11 @@ function createMessageEditHandler(kind) {
 	const config = MESSAGE_MUTATION_HANDLERS[kind];
 
 	return async function editChatMessage(req, res, next) {
-		const input = getActiveMessageMutationInput(req);
+		const input = getActiveMessageMutationInput(req, kind);
 
 		if (!hasValidMessageMutationIds(input)) {
 			req.flash('error', config.editErrorKey);
-			return res.redirect(CHAT_OPEN_REDIRECT);
+			return res.redirect(getMessageRedirect(kind, input.conversationId));
 		}
 
 		try {
@@ -87,7 +87,7 @@ function createMessageEditHandler(kind) {
 				req.flash('success', config.editSuccessKey);
 			}
 
-			return res.redirect(CHAT_OPEN_REDIRECT);
+			return res.redirect(getMessageRedirect(kind, input.conversationId));
 		} catch (error) {
 			return next(error);
 		}
@@ -98,11 +98,11 @@ function createMessageDeleteHandler(kind) {
 	const config = MESSAGE_MUTATION_HANDLERS[kind];
 
 	return async function deleteChatMessage(req, res, next) {
-		const input = getActiveMessageMutationInput(req);
+		const input = getActiveMessageMutationInput(req, kind);
 
 		if (!hasValidMessageMutationIds(input)) {
 			req.flash('error', config.deleteErrorKey);
-			return res.redirect(CHAT_OPEN_REDIRECT);
+			return res.redirect(getMessageRedirect(kind, input.conversationId));
 		}
 
 		try {
@@ -123,7 +123,7 @@ function createMessageDeleteHandler(kind) {
 				req.flash('success', config.deleteSuccessKey);
 			}
 
-			return res.redirect(CHAT_OPEN_REDIRECT);
+			return res.redirect(getMessageRedirect(kind, input.conversationId));
 		} catch (error) {
 			return next(error);
 		}

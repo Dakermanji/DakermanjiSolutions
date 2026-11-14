@@ -9,7 +9,7 @@ import {
 import { emitChatMessageCreated } from '../../../services/chat/live.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
 import { CHAT_OPEN_REDIRECT, CHAT_REDIRECT } from '../../../constants/chat.js';
-import { getRoomMessageFailureKey } from './utils.js';
+import { getMessageRedirect, getRequestConversationId, getRoomMessageFailureKey } from './utils.js';
 
 export async function createFriendChatMessage(req, res, next) {
 	const activeConversationId = req.session.chat?.activeConversationId || null;
@@ -43,7 +43,7 @@ export async function createFriendChatMessage(req, res, next) {
 }
 
 export async function createNotesChatMessage(req, res, next) {
-	const activeConversationId = req.session.chat?.activeConversationId || null;
+	const activeConversationId = getRequestConversationId(req, 'self');
 
 	if (!activeConversationId || !isValidUuid(activeConversationId)) {
 		return res.redirect(CHAT_REDIRECT);
@@ -66,7 +66,7 @@ export async function createNotesChatMessage(req, res, next) {
 			});
 		}
 
-		return res.redirect(CHAT_OPEN_REDIRECT);
+		return res.redirect(getMessageRedirect('self', activeConversationId));
 	} catch (error) {
 		return next(error);
 	}

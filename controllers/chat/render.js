@@ -35,18 +35,20 @@ import {
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
+ * @param {string|null} [notesConversationId]
  * @returns {Promise<void>}
  */
-export async function renderChat(req, res, next) {
-	const activeConversationId = consumeActiveChatConversation(req);
-	const focusMessageId = consumeFocusedChatMessage(req);
+export async function renderChat(req, res, next, notesConversationId = null) {
+	const isNotesRequest = Boolean(notesConversationId);
+	const activeConversationId = isNotesRequest
+		? notesConversationId
+		: consumeActiveChatConversation(req);
+	const focusMessageId = isNotesRequest ? null : consumeFocusedChatMessage(req);
 
 	try {
 		if (activeConversationId && isValidUuid(activeConversationId)) {
-			const activeConversation = await getOpenFriendConversation(
-				activeConversationId,
-				req.user.id,
-			);
+			const activeConversation = !isNotesRequest
+				&& await getOpenFriendConversation(activeConversationId, req.user.id);
 
 			if (activeConversation) {
 				const messages = await listFriendMessages(
@@ -145,10 +147,8 @@ export async function renderChat(req, res, next) {
 				});
 			}
 
-			const activeRoomConversation = await getOpenRoomConversation(
-				activeConversationId,
-				req.user.id,
-			);
+			const activeRoomConversation = !isNotesRequest
+				&& await getOpenRoomConversation(activeConversationId, req.user.id);
 
 			if (activeRoomConversation) {
 				const [
@@ -214,7 +214,7 @@ export async function renderChat(req, res, next) {
 			}
 		}
 
-		if (req.session.chat?.activeConversationId) {
+		if (!isNotesRequest && req.session.chat?.activeConversationId) {
 			clearActiveChatConversation(req);
 		}
 

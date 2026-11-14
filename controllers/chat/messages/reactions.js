@@ -5,21 +5,20 @@ import {
 	toggleMessageReaction,
 } from '../../../services/chat/messages.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
-import { CHAT_OPEN_REDIRECT } from '../../../constants/chat.js';
 import { emitChatMessageReactionsChanged } from '../../../services/chat/live.js';
-import { wantsJson } from './utils.js';
+import { getMessageRedirect, getRequestConversationId, wantsJson } from './utils.js';
 
-function getReactionDetailsInput(req) {
+function getReactionDetailsInput(req, kind) {
 	return {
-		conversationId: req.session.chat?.activeConversationId || null,
+		conversationId: getRequestConversationId(req, kind),
 		messageId: String(req.query?.messageId || '').trim(),
 		reaction: String(req.query?.reaction || '').trim(),
 	};
 }
 
-function getActiveReactionInput(req) {
+function getActiveReactionInput(req, kind) {
 	return {
-		conversationId: req.session.chat?.activeConversationId || null,
+		conversationId: getRequestConversationId(req, kind),
 		messageId: String(req.body?.messageId || '').trim(),
 		reaction: String(req.body?.reaction || '').trim(),
 	};
@@ -35,7 +34,7 @@ function getSelfConversationEmitOptions(kind, userId) {
 
 function createMessageReactionDetailsHandler(kind) {
 	return async function getChatMessageReactionUsers(req, res, next) {
-		const input = getReactionDetailsInput(req);
+		const input = getReactionDetailsInput(req, kind);
 
 		if (
 			!input.conversationId ||
@@ -70,7 +69,7 @@ function createMessageReactionDetailsHandler(kind) {
 
 function createMessageReactionHandler(kind) {
 	return async function reactToChatMessage(req, res, next) {
-		const input = getActiveReactionInput(req);
+		const input = getActiveReactionInput(req, kind);
 
 		if (
 			!input.conversationId ||
@@ -85,7 +84,7 @@ function createMessageReactionHandler(kind) {
 			}
 
 			req.flash('error', 'chat:conversation.messageError');
-			return res.redirect(CHAT_OPEN_REDIRECT);
+			return res.redirect(getMessageRedirect(kind, input.conversationId));
 		}
 
 		try {
@@ -115,7 +114,7 @@ function createMessageReactionHandler(kind) {
 				req.flash('error', 'chat:conversation.messageError');
 			}
 
-			return res.redirect(CHAT_OPEN_REDIRECT);
+			return res.redirect(getMessageRedirect(kind, input.conversationId));
 		} catch (error) {
 			return next(error);
 		}

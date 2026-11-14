@@ -6,10 +6,11 @@ import {
 	listOlderRoomMessages,
 } from '../../../services/chat/messages.js';
 import { isValidUuid } from '../../../middlewares/validators/common.js';
+import { getRequestConversationId } from './utils.js';
 
-function getOlderMessagesInput(req) {
+function getOlderMessagesInput(req, kind) {
 	return {
-		activeConversationId: req.session.chat?.activeConversationId || null,
+		activeConversationId: getRequestConversationId(req, kind),
 		beforeId: String(req.query?.beforeId || '').trim(),
 	};
 }
@@ -30,7 +31,7 @@ function createOlderMessagesHandler(kind) {
 			: listOlderFriendMessages;
 
 	return async function getOlderMessages(req, res, next) {
-		const input = getOlderMessagesInput(req);
+		const input = getOlderMessagesInput(req, kind);
 
 		if (!hasValidOlderMessagesInput(input)) {
 			return res.status(400).json({
