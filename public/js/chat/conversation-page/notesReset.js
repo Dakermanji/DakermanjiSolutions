@@ -24,6 +24,14 @@
 		function saveDraft() {
 			const editor = composer?.querySelector('[data-chat-message-editor]');
 			if (!editor) return;
+			if (composer.dataset.chatMessageSubmitting) {
+				try {
+					window.sessionStorage.removeItem(draftKey);
+				} catch {
+					// Storage access is optional.
+				}
+				return;
+			}
 			const draft = String(editor.textContent || '').replace(/\u00a0/g, ' ');
 			try {
 				if (draft) window.sessionStorage.setItem(draftKey, draft);

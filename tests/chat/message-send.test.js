@@ -13,6 +13,7 @@ test('socket timeout sends the same message ID through the HTTP fallback', async
 	const clientMessageId = { value: '' };
 	let submittedId = null;
 	const composer = {
+		dataset: {},
 		elements: { clientMessageId, replyToMessageId: { value: '' } },
 		submit() { submittedId = clientMessageId.value; },
 	};
@@ -22,6 +23,7 @@ test('socket timeout sends the same message ID through the HTTP fallback', async
 		ChatConversationUtils: {
 			emitWithAck: async (_socket, _event, payload) => {
 				sent.push(payload);
+					assert.equal(composer.dataset.chatMessageSubmitting, 'socket');
 				throw new Error('ack timed out');
 			},
 			escapeCssIdentifier: (value) => value,
@@ -56,4 +58,5 @@ test('socket timeout sends the same message ID through the HTTP fallback', async
 	assert.equal(sent.length, 1);
 	assert.equal(sent[0].clientMessageId, submittedId);
 	assert.equal(submittedId, '00000000-0000-4000-8000-000000000001');
+	assert.equal(composer.dataset.chatMessageSubmitting, 'http');
 });

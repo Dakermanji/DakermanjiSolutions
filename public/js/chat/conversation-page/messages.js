@@ -74,6 +74,8 @@
 				focusComposerInput();
 				return;
 			}
+			if (composer.dataset.chatMessageSubmitting) return;
+			composer.dataset.chatMessageSubmitting = 'socket';
 
 			const clientMessageIdInput = composer.elements.clientMessageId;
 			const clientMessageId = window.crypto?.randomUUID?.();
@@ -124,6 +126,9 @@
 				submitComposerFallback();
 			} finally {
 				setFormControlsDisabled(composer, false);
+				if (composer.dataset.chatMessageSubmitting === 'socket') {
+					delete composer.dataset.chatMessageSubmitting;
+				}
 				if (shouldRefocus) {
 					focusComposerInput();
 				}
@@ -131,6 +136,7 @@
 		}
 
 		function submitComposerFallback() {
+			composer.dataset.chatMessageSubmitting = 'http';
 			setFormControlsDisabled(composer, false);
 			mentionController.syncMessageValue();
 			window.AppCsrf?.addToForm(composer);

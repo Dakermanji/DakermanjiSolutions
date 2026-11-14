@@ -116,7 +116,7 @@ test('a notes reconnect reloads the view and restores the unsent draft once', ()
 		getAttribute: () => null,
 	};
 	let valueField = { value: '' };
-	const composer = { querySelector: (selector) =>
+	const composer = { dataset: {}, querySelector: (selector) =>
 		selector === '[data-chat-message-editor]' ? editor : valueField };
 	let reloads = 0;
 	const options = {
@@ -142,6 +142,42 @@ test('a notes reconnect reloads the view and restores the unsent draft once', ()
 	assert.equal(saved.size, 0);
 
 	editor = { textContent: '', getAttribute: () => null };
+	createController(options).restoreDraft();
+	assert.equal(editor.textContent, '');
+});
+
+test('a reset reload does not restore text from a message already being sent', () => {
+	const saved = new Map();
+	const window = { sessionStorage: {
+		getItem: (key) => saved.get(key) ?? null,
+		setItem: (key, value) => saved.set(key, value),
+		removeItem: (key) => saved.delete(key),
+	} };
+	vm.runInNewContext(source, { window });
+	const createController = window.ChatConversationNotesReset.createNotesResetController;
+	const chatPage = { dataset: {
+		chatConversationKind: 'self',
+		activeConversationId: 'notes-1',
+		currentUserId: 'user-1',
+	} };
+	const editor = { textContent: 'Already sent', getAttribute: () => null };
+	const composer = {
+		dataset: { chatMessageSubmitting: 'socket' },
+		querySelector: () => editor,
+	};
+	let reloads = 0;
+	const options = {
+		chatPage,
+		composer,
+		reload: () => { reloads += 1; },
+	};
+
+	createController(options).handleReset({ conversationId: 'notes-1' });
+	assert.equal(reloads, 1);
+	assert.equal(saved.size, 0);
+	assert.equal(editor.textContent, 'Already sent');
+
+	editor.textContent = '';
 	createController(options).restoreDraft();
 	assert.equal(editor.textContent, '');
 });
