@@ -7,6 +7,11 @@
 	const messageSurface = document.querySelector('[data-chat-message-surface]');
 	const typingIndicator = document.querySelector('[data-chat-typing-indicator]');
 	const messageRenderer = window.ChatConversationRenderer;
+	const handleNotesReset = window.ChatConversationNotesReset?.createNotesResetHandler({
+		chatPage,
+		resetForm: document.querySelector('#chatNotesResetModal form'),
+		reload: () => window.location.reload(),
+	});
 	const roomLeave = window.ChatMainLeaveRoom?.createRoomLeaveController({
 		modal: document.getElementById('chatRoomLeaveModal'),
 	});
@@ -196,6 +201,7 @@
 		socket.on('chat:message:deleted', (payload) => {
 			messages.removeMessage(payload);
 		});
+		if (handleNotesReset) socket.on('chat:notes:reset', handleNotesReset);
 		socket.on('chat:message:reactions', (payload) => {
 			messages.updateMessageReactions(payload);
 		});

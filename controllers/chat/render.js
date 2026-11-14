@@ -131,6 +131,7 @@ export async function renderChat(req, res, next, notesConversationId = null) {
 						'chat/conversation-page/messages-mentions',
 						'chat/conversation-page/read-state',
 						'chat/conversation-page/messages',
+						'chat/conversation-page/notesReset',
 						'chat/conversation',
 					],
 					activeConversation: activeNotesConversation,

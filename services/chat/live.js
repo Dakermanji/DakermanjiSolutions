@@ -10,6 +10,7 @@ export {
 	emitChatMessageDeleted,
 	emitChatMessageEdited,
 	emitChatMessageReactionsChanged,
+	emitChatNotesReset,
 } from './live/messages.js';
 export {
 	emitChatUnreadCountsChanged,
@@ -28,6 +29,7 @@ import {
 	emitChatMessageDeleted,
 	emitChatMessageEdited,
 	emitChatMessageReactionsChanged,
+	emitChatNotesReset,
 } from './live/messages.js';
 import {
 	emitChatUnreadCountsChanged,
@@ -41,6 +43,7 @@ export default {
 	emitChatMessageDeleted,
 	emitChatMessageEdited,
 	emitChatMessageReactionsChanged,
+	emitChatNotesReset,
 	emitChatRoomMembershipChanged,
 	emitChatUnreadCountsChanged,
 	emitChatUnreadCountsForConversation,

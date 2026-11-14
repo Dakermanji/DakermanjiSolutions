@@ -122,3 +122,12 @@ export async function emitChatMessageDeleted(message, options = {}) {
 
 	await emitChatUnreadCountsForConversation(message.conversation_id);
 }
+
+export function emitChatNotesReset(conversationId, userId) {
+	const chatSocketServer = getChatSocketServer();
+	if (!chatSocketServer || !conversationId || !userId) return;
+
+	chatSocketServer
+		.to(getChatUserRoom(userId))
+		.emit('chat:notes:reset', { conversationId });
+}

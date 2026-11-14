@@ -6,6 +6,7 @@ import {
 } from '../../services/chat/notes.js';
 import { CHAT_REDIRECT } from '../../constants/chat.js';
 import { renderChat } from './render.js';
+import { emitChatNotesReset } from '../../services/chat/live.js';
 
 const NOTES_URL = '/chat/notes';
 
@@ -50,6 +51,7 @@ export async function resetNotesConversation(req, res, next) {
 			return res.redirect(CHAT_REDIRECT);
 		}
 
+		emitChatNotesReset(result.conversationId, req.user.id);
 		req.flash('success', 'chat:notes.resetSuccess');
 
 		return res.redirect(NOTES_URL);
